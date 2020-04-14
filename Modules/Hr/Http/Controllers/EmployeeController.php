@@ -13,7 +13,6 @@ use Modules\Hr\Repositories\EmployeeRepository;
 class EmployeeController extends BaseController
 {
 
-
     protected $repository = EmployeeRepository::class;
 
     protected $storeJobMethod = "create";
