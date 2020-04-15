@@ -13,7 +13,23 @@ class CreateRequest extends BaseRequest
     function rules()
     {
         return [
-            "name" => ["required", Rule::unique("employees", 'name')]
+
+            "firstName" => "required",
+            "lastName" => "sometimes",
+            "dateOfBirth" => "required|date",
+            "maritalStatus" => "required",
+            "gender" => "required",
+            "religion" => "required",
+            "phone" => "required|digits:10",
+            "email" => "required|email",
+            "isPermanentStaff" => "required|boolean",
+            "typeOfAppointment" => "required",
+            "appointedOn" => "required|date",
+            "assumedDuty" => "required",
+            "jobPosition" => "required",
+            "adminUnit" => "required",
+            "workLocation" => "required",
+            "designation" => "required",
         ];
     }
 }

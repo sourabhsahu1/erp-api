@@ -20,22 +20,21 @@ class EmployeeController extends BaseController
     protected $storeRequest = CreateRequest::class;
 
     protected $updateJobMethod = "update";
-
     protected $updateJob = BaseJob::class;
     protected $updateRequest = BaseJob::class;
 
 
-    public function customGet(Request $request)
-    {
-        $this->jobMethod = "customGet";
-        return $this->handleCustomEndPointGet(BaseJob::class, $request);
-    }
-
-    public function customPost(Request $request)
-    {
-        $this->jobMethod = "customPost1";
-        return $this->handleCustomEndPoint(BaseJob::class, $request);
-    }
+//    public function customGet(Request $request)
+//    {
+//        $this->jobMethod = "customGet";
+//        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+//    }
+//
+//    public function customPost(Request $request)
+//    {
+//        $this->jobMethod = "customPost1";
+//        return $this->handleCustomEndPoint(BaseJob::class, $request);
+//    }
 
 //
 //Route::get('employees', 'EmployeeController@index');

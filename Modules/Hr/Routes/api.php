@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +14,15 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('employees', 'EmployeeController@index');
-Route::post('employees', 'EmployeeController@store');
-Route::get('employees/{id}', 'EmployeeController@show');
-Route::delete('employees', 'EmployeeController@destroy');
-Route::put('employees/{id}', 'EmployeeController@destroy');
-Route::get('employees/{id}/custom-get', 'EmployeeController@customGet');
-Route::post('employees/{id}/custom-post', 'EmployeeController@customPost');
+//Route::get('employees', 'EmployeeController@index');
+//Route::post('employees', 'EmployeeController@store');
+//Route::get('employees/{id}', 'EmployeeController@show');
+//Route::delete('employees', 'EmployeeController@destroy');
+//Route::put('employees/{id}', 'EmployeeController@destroy');
+//Route::get('employees/{id}/custom-get', 'EmployeeController@customGet');
+//Route::post('employees/{id}/custom-post', 'EmployeeController@customPost');
+
+Route::resource('departments', 'DepartmentController');
+Route::resource('designations', 'DesignationController');
+Route::resource('skills', 'SkillsController');
+Route::resource('qualifications', 'QualificationController');

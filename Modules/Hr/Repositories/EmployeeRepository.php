@@ -4,15 +4,57 @@
 namespace Modules\Hr\Repositories;
 
 
-
+use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Hr\Models\Employee;
+use Modules\Hr\Models\JobProfile;
+use Modules\Hr\Models\User;
+
 
 class EmployeeRepository extends EloquentBaseRepository
 
 {
 
     public $model = Employee::class;
+
+    public function create($data)
+    {
+
+        DB::beginTransaction();
+
+        try {
+
+            $employee = Employee::create([
+                "first_name" => $data['first_name'],
+                "last_name" => $data['last_name'] ?? null,
+                "date_of_birth" => $data['date_of_birth'],
+                "marital_status" => $data['marital_status'],
+                "gender" => $data['gender'],
+                "religion" => $data['religion'],
+                "phone" => $data['phone'],
+                "email" => $data['email'],
+                "is_permanent_staff" => $data['is_permanent_staff'],
+                "type_of_appointment" => $data['type_of_appointment'],
+                "appointed_on" => $data['appointed_on'],
+                "assumed_duty" => $data['assumed_duty']
+            ]);
+
+            $jobProfiles = JobProfile::create([
+                "job_position" => $data['job_position'],
+                "admin_unit" => $data['admin_unit'],
+                "work_location" => $data['work_location'],
+                "designation" => $data['designation']
+            ]);
+
+
+            DB::commit();
+            return $employee;
+        }catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+    }
 
     public function update($data)
     {

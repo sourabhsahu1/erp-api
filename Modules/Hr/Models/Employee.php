@@ -2,10 +2,10 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 14 Apr 2020 14:56:20 +0000.
+ * Date: Wed, 15 Apr 2020 21:37:05 +0000.
  */
 
-namespace App\Models;
+namespace Modules\Hr\Models;
 
 use Reliese\Database\Eloquent\Model as Eloquent;
 
@@ -13,9 +13,12 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * Class Employee
  * 
  * @property int $id
- * @property int $user_id
+ * @property int $created_by_id
+ * @property int $designation_id
+ * @property int $department_id
  * @property string $first_name
  * @property string $last_name
+ * @property string $title
  * @property int $profile_image_id
  * @property string $other_names
  * @property string $maiden_name
@@ -27,38 +30,44 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $email
  * @property bool $is_permanent_staff
  * @property string $type_of_appointment
- * @property \Carbon\Carbon $appointed
+ * @property \Carbon\Carbon $appointed_on
  * @property \Carbon\Carbon $assumed_duty
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property \App\Models\File $file
- * @property \App\Models\User $user
- * @property \Illuminate\Database\Eloquent\Collection $job_profiles
+ * @property \Modules\Hr\Models\User $user
+ * @property \Modules\Hr\Models\Department $department
+ * @property \Modules\Hr\Models\Designation $designation
+ * @property \Modules\Hr\Models\File $file
  *
- * @package App\Models
+ * @package Modules\Hr\Models
  */
 class Employee extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
 	protected $casts = [
-		'user_id' => 'int',
+		'created_by_id' => 'int',
+		'designation_id' => 'int',
+		'department_id' => 'int',
 		'profile_image_id' => 'int',
 		'is_permanent_staff' => 'bool'
 	];
 
 	protected $dates = [
 		'date_of_birth',
-		'appointed',
+		'appointed_on',
 		'assumed_duty'
 	];
 
 	protected $fillable = [
-		'user_id',
+		'created_by_id',
+		'designation_id',
+		'department_id',
 		'first_name',
 		'last_name',
+		'title',
 		'profile_image_id',
 		'other_names',
 		'maiden_name',
@@ -70,22 +79,27 @@ class Employee extends Eloquent
 		'email',
 		'is_permanent_staff',
 		'type_of_appointment',
-		'appointed',
+		'appointed_on',
 		'assumed_duty'
 	];
 
-	public function file()
-	{
-		return $this->belongsTo(\App\Models\File::class, 'profile_image_id');
-	}
-
 	public function user()
 	{
-		return $this->belongsTo(\App\Models\User::class);
+		return $this->belongsTo(\Modules\Hr\Models\User::class, 'created_by_id');
 	}
 
-	public function job_profiles()
+	public function department()
 	{
-		return $this->hasMany(\App\Models\JobProfile::class);
+		return $this->belongsTo(\Modules\Hr\Models\Department::class);
+	}
+
+	public function designation()
+	{
+		return $this->belongsTo(\Modules\Hr\Models\Designation::class);
+	}
+
+	public function file()
+	{
+		return $this->belongsTo(\Modules\Hr\Models\File::class, 'profile_image_id');
 	}
 }
