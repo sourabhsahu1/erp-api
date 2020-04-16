@@ -7,7 +7,9 @@
 
 namespace Modules\Hr\Models;
 
-use Reliese\Database\Eloquent\Model as Eloquent;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class User
@@ -25,10 +27,10 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  *
  * @package Modules\Hr\Models
  */
-class User extends Eloquent
+class User extends Authenticatable
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
-
+    use HasApiTokens, Notifiable;
 	protected $hidden = [
 		'password'
 	];

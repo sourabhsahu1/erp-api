@@ -14,15 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::get('employees', 'EmployeeController@index');
-//Route::post('employees', 'EmployeeController@store');
-//Route::get('employees/{id}', 'EmployeeController@show');
-//Route::delete('employees', 'EmployeeController@destroy');
-//Route::put('employees/{id}', 'EmployeeController@destroy');
-//Route::get('employees/{id}/custom-get', 'EmployeeController@customGet');
-//Route::post('employees/{id}/custom-post', 'EmployeeController@customPost');
-
-Route::resource('departments', 'DepartmentController');
-Route::resource('designations', 'DesignationController');
-Route::resource('skills', 'SkillsController');
-Route::resource('qualifications', 'QualificationController');
+Route::post('authenticate', "AuthenticationController@doLogin")->name('authenticate.store');
+Route::middleware(['auth:api'])->group(function () {
+    Route::resource('departments', 'DepartmentController');
+    Route::resource('designations', 'DesignationController');
+    Route::resource('skills', 'SkillsController');
+    Route::resource('qualifications', 'QualificationController');
+    Route::get('self', 'AuthenticationController@getSelfData')->name('self.index');
+});

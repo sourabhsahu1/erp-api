@@ -39,14 +39,6 @@ class EmployeeRepository extends EloquentBaseRepository
                 "assumed_duty" => $data['assumed_duty']
             ]);
 
-            $jobProfiles = JobProfile::create([
-                "job_position" => $data['job_position'],
-                "admin_unit" => $data['admin_unit'],
-                "work_location" => $data['work_location'],
-                "designation" => $data['designation']
-            ]);
-
-
             DB::commit();
             return $employee;
         }catch (\Exception $e) {
