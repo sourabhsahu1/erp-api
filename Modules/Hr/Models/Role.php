@@ -13,7 +13,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * Class Role
  * 
  * @property int $id
- * @property string $roles
+ * @property string $role
  * @property string $description
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
@@ -28,7 +28,7 @@ class Role extends Eloquent
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
 	protected $fillable = [
-		'roles',
+		'role',
 		'description'
 	];
 

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRolesTable extends Migration
+class CreateGradeLevelStepsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateRolesTable extends Migration
      */
     public function up()
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('grade_level_steps', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('role');
-            $table->string('description');
-            $table->softDeletes();
+            $table->unsignedBigInteger('grade_level_id');
+            $table->string('name');
+            $table->foreign('grade_level_id')->references('id')->on('grade_levels');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateRolesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('grade_level_steps');
     }
 }
