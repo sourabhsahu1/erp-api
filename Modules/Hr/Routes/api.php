@@ -25,4 +25,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('states','StateController');
     Route::resource('lgas','LgaController');
     Route::get('self', 'AuthenticationController@getSelfData')->name('self.index');
+    Route::get('locations', 'CountryController@getAllLocations');
 });

@@ -11,4 +11,9 @@ class CountryRepository extends EloquentBaseRepository
 {
     public $model = Country::class;
 
+
+    public function getAllLocations($params = []) {
+        $locations = Country::with('regions.states.lgas');
+        return $this->getAll($params, $locations);
+    }
 }
