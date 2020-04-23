@@ -18,6 +18,7 @@ class CreateOrganisationStructureTable extends Migration
             $table->unsignedBigInteger('parent_id');
             $table->foreign('parent_id')->references('id')->on('organisation_structure');
             $table->string('name');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

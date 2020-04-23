@@ -10,28 +10,34 @@ namespace Modules\Hr\Models;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class Skill
+ * Class Country
  * 
  * @property int $id
  * @property string $name
+ * @property bool $is_child_enabled
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property \Illuminate\Database\Eloquent\Collection $job_positions
+ * @property \Illuminate\Database\Eloquent\Collection $regions
  *
  * @package Modules\Hr\Models
  */
-class Skill extends Eloquent
+class Country extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
-	protected $fillable = [
-		'name'
+	protected $casts = [
+		'is_child_enabled' => 'bool'
 	];
 
-	public function job_positions()
+	protected $fillable = [
+		'name',
+		'is_child_enabled'
+	];
+
+	public function regions()
 	{
-		return $this->hasMany(\Modules\Hr\Models\JobPosition::class);
+		return $this->hasMany(\Modules\Hr\Models\Region::class);
 	}
 }

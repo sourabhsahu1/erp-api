@@ -10,48 +10,36 @@ namespace Modules\Hr\Models;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class Department
+ * Class GradeLevelStep
  * 
  * @property int $id
+ * @property int $grade_level_id
  * @property string $name
- * @property int $parent_id
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property \Modules\Hr\Models\Department $department
- * @property \Illuminate\Database\Eloquent\Collection $departments
- * @property \Illuminate\Database\Eloquent\Collection $employees
+ * @property \Modules\Hr\Models\GradeLevel $grade_level
  * @property \Illuminate\Database\Eloquent\Collection $job_positions
  *
  * @package Modules\Hr\Models
  */
-class Department extends Eloquent
+class GradeLevelStep extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
 	protected $casts = [
-		'parent_id' => 'int'
+		'grade_level_id' => 'int'
 	];
 
 	protected $fillable = [
-		'name',
-		'parent_id'
+		'grade_level_id',
+		'name'
 	];
 
-	public function department()
+	public function grade_level()
 	{
-		return $this->belongsTo(\Modules\Hr\Models\Department::class, 'parent_id');
-	}
-
-	public function departments()
-	{
-		return $this->hasMany(\Modules\Hr\Models\Department::class, 'parent_id');
-	}
-
-	public function employees()
-	{
-		return $this->hasMany(\Modules\Hr\Models\Employee::class);
+		return $this->belongsTo(\Modules\Hr\Models\GradeLevel::class);
 	}
 
 	public function job_positions()

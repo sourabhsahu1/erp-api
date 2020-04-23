@@ -10,52 +10,40 @@ namespace Modules\Hr\Models;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class Department
+ * Class Lga
  * 
  * @property int $id
  * @property string $name
- * @property int $parent_id
+ * @property int $state_id
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property \Modules\Hr\Models\Department $department
- * @property \Illuminate\Database\Eloquent\Collection $departments
+ * @property \Modules\Hr\Models\State $state
  * @property \Illuminate\Database\Eloquent\Collection $employees
- * @property \Illuminate\Database\Eloquent\Collection $job_positions
  *
  * @package Modules\Hr\Models
  */
-class Department extends Eloquent
+class Lga extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
 	protected $casts = [
-		'parent_id' => 'int'
+		'state_id' => 'int'
 	];
 
 	protected $fillable = [
 		'name',
-		'parent_id'
+		'state_id'
 	];
 
-	public function department()
+	public function state()
 	{
-		return $this->belongsTo(\Modules\Hr\Models\Department::class, 'parent_id');
-	}
-
-	public function departments()
-	{
-		return $this->hasMany(\Modules\Hr\Models\Department::class, 'parent_id');
+		return $this->belongsTo(\Modules\Hr\Models\State::class);
 	}
 
 	public function employees()
 	{
 		return $this->hasMany(\Modules\Hr\Models\Employee::class);
-	}
-
-	public function job_positions()
-	{
-		return $this->hasMany(\Modules\Hr\Models\JobPosition::class);
 	}
 }

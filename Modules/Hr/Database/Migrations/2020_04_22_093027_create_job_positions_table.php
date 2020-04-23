@@ -34,6 +34,7 @@ class CreateJobPositionsTable extends Migration
             $table->foreign('department_id')->references('id')->on('departments');
             $table->foreign('designation_id')->references('id')->on('designations');
             $table->foreign('grade_level_step_id')->references('id')->on('grade_level_steps');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

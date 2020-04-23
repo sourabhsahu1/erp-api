@@ -20,5 +20,9 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('designations', 'DesignationController');
     Route::resource('skills', 'SkillsController');
     Route::resource('qualifications', 'QualificationController');
+    Route::resource('countries','CountryController');
+    Route::resource('regions','RegionController');
+    Route::resource('states','StateController');
+    Route::resource('lgas','LgaController');
     Route::get('self', 'AuthenticationController@getSelfData')->name('self.index');
 });

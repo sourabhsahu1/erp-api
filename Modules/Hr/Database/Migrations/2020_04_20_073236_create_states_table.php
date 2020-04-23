@@ -17,7 +17,9 @@ class CreateStatesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->unsignedBigInteger('region_id');
+            $table->boolean('is_child_enabled')->default(1);
             $table->foreign('region_id')->references('id')->on('regions');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

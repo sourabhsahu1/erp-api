@@ -14,8 +14,3 @@
 Route::prefix('hr')->group(function() {
     Route::get('/', 'HrController@index');
 });
-
-
-\Illuminate\Support\Facades\Route::get('/', function () {
-    dd(\Illuminate\Support\Facades\Hash::make('asdf@123'));
-});

@@ -18,6 +18,8 @@ class CreateRegionsTable extends Migration
             $table->string('name');
             $table->unsignedBigInteger('country_id');
             $table->foreign('country_id')->references('id')->on('countries');
+            $table->boolean('is_child_enabled')->default(1);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
