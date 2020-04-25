@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateJobPositionsTable extends Migration
+class CreateHrJobPositionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateJobPositionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('job_positions', function (Blueprint $table) {
+        Schema::create('hr_job_positions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('organisation_structure_id');
             $table->unsignedBigInteger('department_id');
@@ -29,11 +29,11 @@ class CreateJobPositionsTable extends Migration
             $table->string('job_description_summary')->nullable();
             $table->string('experience')->nullable();
             $table->string('education')->nullable();
-            $table->foreign('skill_id')->references('id')->on('skills');
-            $table->foreign('organisation_structure_id')->references('id')->on('organisation_structure');
-            $table->foreign('department_id')->references('id')->on('departments');
-            $table->foreign('designation_id')->references('id')->on('designations');
-            $table->foreign('grade_level_step_id')->references('id')->on('grade_level_steps');
+            $table->foreign('skill_id')->references('id')->on('hr_skills');
+            $table->foreign('organisation_structure_id')->references('id')->on('hr_organisation_structure');
+            $table->foreign('department_id')->references('id')->on('hr_departments');
+            $table->foreign('designation_id')->references('id')->on('hr_designations');
+            $table->foreign('grade_level_step_id')->references('id')->on('hr_grade_level_steps');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -46,6 +46,6 @@ class CreateJobPositionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('job_positions');
+        Schema::dropIfExists('hr_job_positions');
     }
 }

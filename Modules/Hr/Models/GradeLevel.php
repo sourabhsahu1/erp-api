@@ -32,6 +32,8 @@ class GradeLevel extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
+    protected $table = "hr_grade_levels";
+
 	protected $casts = [
 		'salary_scale_id' => 'int',
 		'increment_due' => 'int',

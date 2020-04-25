@@ -27,6 +27,8 @@ class Designation extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
+    protected $table = "hr_designations";
+
 	protected $fillable = [
 		'name'
 	];

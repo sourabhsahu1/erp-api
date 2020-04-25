@@ -30,11 +30,13 @@ class Department extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
-	protected $casts = [
+    protected $table = "hr_departments";
+
+    protected $casts = [
 		'parent_id' => 'int'
 	];
 
-	protected $fillable = [
+    protected $fillable = [
 		'name',
 		'parent_id'
 	];

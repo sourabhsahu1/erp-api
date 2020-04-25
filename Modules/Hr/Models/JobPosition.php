@@ -43,6 +43,7 @@ class JobPosition extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
+    protected $table = "hr_job_positions";
 	protected $casts = [
 		'organisation_structure_id' => 'int',
 		'department_id' => 'int',

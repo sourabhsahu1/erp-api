@@ -28,6 +28,7 @@ class GradeLevelStep extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
+    protected $table = "hr_grade_level_steps";
 	protected $casts = [
 		'grade_level_id' => 'int'
 	];

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSalaryScalesTable extends Migration
+class CreateHrDesignationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateSalaryScalesTable extends Migration
      */
     public function up()
     {
-        Schema::create('salary_scales', function (Blueprint $table) {
+        Schema::create('hr_designations', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title');
-            $table->unsignedInteger('number_of_levels');
-            $table->unsignedInteger('number_of_steps');
+            $table->string('name');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -30,6 +28,6 @@ class CreateSalaryScalesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('salary_scales');
+        Schema::dropIfExists('hr_designations');
     }
 }

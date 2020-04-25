@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGradeLevelsTable extends Migration
+class CreateHrGradeLevelsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateGradeLevelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('grade_levels', function (Blueprint $table) {
+        Schema::create('hr_grade_levels', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('salary_scale_id');
-            $table->foreign('salary_scale_id')->references('id')->on('salary_scales');
+            $table->foreign('salary_scale_id')->references('id')->on('hr_salary_scales');
             $table->string('level');
             $table->unsignedInteger('increment_due')->comment('in months')->default(12);
             $table->unsignedInteger('promotion_due')->comment('in months')->default(24);
@@ -34,6 +34,6 @@ class CreateGradeLevelsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('grade_levels');
+        Schema::dropIfExists('hr_grade_levels');
     }
 }

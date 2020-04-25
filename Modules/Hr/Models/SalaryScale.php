@@ -28,6 +28,7 @@ class SalaryScale extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
+    protected $table = "hr_salary_scales";
 	protected $casts = [
 		'number_of_levels' => 'int',
 		'number_of_steps' => 'int'

@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEmployeesTable extends Migration
+class CreateHrEmployeesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class CreateEmployeesTable extends Migration
      */
     public function up()
     {
-        Schema::create('employees', function (Blueprint $table) {
+        Schema::create('hr_employees', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('created_by_id');
             $table->unsignedBigInteger('designation_id');
@@ -66,8 +66,8 @@ class CreateEmployeesTable extends Migration
             ]);
             $table->date('appointed_on')->nullable();
             $table->date('assumed_duty')->nullable();
-            $table->foreign('designation_id')->references('id')->on('designations');
-            $table->foreign('department_id')->references('id')->on('departments');
+            $table->foreign('designation_id')->references('id')->on('hr_designations');
+            $table->foreign('department_id')->references('id')->on('hr_departments');
             $table->foreign('lga_id')->references('id')->on('lgas');
             $table->foreign('profile_image_id')->references('id')->on('files');
             $table->foreign('created_by_id')->references('id')->on('users');
@@ -83,6 +83,6 @@ class CreateEmployeesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('employees');
+        Schema::dropIfExists('hr_employees');
     }
 }
