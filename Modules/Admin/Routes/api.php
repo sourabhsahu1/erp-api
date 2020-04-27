@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,12 +12,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 Route::post('authenticate', "AuthenticationController@doLogin")->name('authenticate.store');
 Route::middleware([])->group(function () {
-    Route::resource('departments', 'DepartmentController');
-    Route::resource('designations', 'DesignationController');
-    Route::resource('skills', 'SkillsController');
-    Route::resource('qualifications', 'QualificationController');
-    Route::get('self', 'AuthenticationController@getSelfData')->name('self.index');
+    Route::resource('admin', 'AdminController');
 });
