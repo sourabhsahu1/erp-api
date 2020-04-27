@@ -60,4 +60,15 @@ class Department extends Eloquent
 	{
 		return $this->hasMany(\Modules\Hr\Models\JobPosition::class);
 	}
+
+    public function sub_categories()
+    {
+        return $this->children()->with('sub_categories');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Department::class, 'parent_id');
+    }
+
 }

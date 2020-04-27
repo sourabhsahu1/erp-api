@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('authenticate', "AuthenticationController@doLogin")->name('authenticate.store');
 Route::middleware(['auth:api'])->group(function () {
+    Route::get('self', 'AuthenticationController@getSelfData')->name('self.index');
     Route::resource('departments', 'DepartmentController');
     Route::resource('designations', 'DesignationController');
     Route::resource('skills', 'SkillsController');
@@ -24,6 +25,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('regions','RegionController');
     Route::resource('states','StateController');
     Route::resource('lgas','LgaController');
+    Route::get('locations', 'CountryController@getAllLocations');
     Route::resource('languages','LanguageController');
     Route::resource('schedules','ScheduleController');
     Route::resource('academics','AcademicsController');
@@ -34,6 +36,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('censures','CensureController');
     Route::resource('arm-of-services','ArmOfServiceController');
     Route::resource('memberships','MembershipController');
-    Route::get('self', 'AuthenticationController@getSelfData')->name('self.index');
-    Route::get('locations', 'CountryController@getAllLocations');
+    Route::resource('work-locations', 'WorkLocationController');
+
 });
