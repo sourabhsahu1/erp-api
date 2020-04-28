@@ -10,6 +10,7 @@ use Modules\Hr\Repositories\DesignationRepository;
 
 class DesignationController extends BaseController
 {
+
     protected $repository = DesignationRepository::class;
     protected $createJob =  BaseJob::class;
     protected $updateJob = BaseJob::class;

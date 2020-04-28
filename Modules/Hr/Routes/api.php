@@ -16,9 +16,26 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('authenticate', "AuthenticationController@doLogin")->name('authenticate.store');
 Route::middleware(['auth:api'])->group(function () {
+    Route::get('self', 'AuthenticationController@getSelfData')->name('self.index');
     Route::resource('departments', 'DepartmentController');
     Route::resource('designations', 'DesignationController');
     Route::resource('skills', 'SkillsController');
     Route::resource('qualifications', 'QualificationController');
-    Route::get('self', 'AuthenticationController@getSelfData')->name('self.index');
+    Route::resource('countries','CountryController');
+    Route::resource('regions','RegionController');
+    Route::resource('states','StateController');
+    Route::resource('lgas','LgaController');
+    Route::get('locations', 'CountryController@getAllLocations');
+    Route::resource('languages','LanguageController');
+    Route::resource('schedules','ScheduleController');
+    Route::resource('academics','AcademicsController');
+    Route::resource('relationships','RelationshipController');
+    Route::resource('categories','CategoryController');
+    Route::resource('status','StatusController');
+    Route::resource('disengagements','DisengagementController');
+    Route::resource('censures','CensureController');
+    Route::resource('arm-of-services','ArmOfServiceController');
+    Route::resource('memberships','MembershipController');
+    Route::resource('work-locations', 'WorkLocationController');
+
 });
