@@ -14,8 +14,8 @@ class WorkLocationRepository extends EloquentBaseRepository
 
     public function getAll($params = [], $query = null)
     {
-        $query = WorkLocation::with('sub_categories')->where('parent_id' , null);
-        return parent::getAll($params, $query);
+        $query = WorkLocation::with('sub_categories')->where('parent_id', null);
+        return $query->get();
     }
 
 
