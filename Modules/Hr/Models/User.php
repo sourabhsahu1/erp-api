@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Wed, 15 Apr 2020 21:37:05 +0000.
+ * Date: Thu, 23 Apr 2020 12:36:33 +0000.
  */
 
 namespace Modules\Hr\Models;
@@ -13,15 +13,16 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class User
- * 
+ *
  * @property int $id
  * @property string $name
+ * @property string $email
  * @property string $username
  * @property string $password
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * 
+ *
  * @property \Illuminate\Database\Eloquent\Collection $employees
  * @property \Illuminate\Database\Eloquent\Collection $roles
  *
@@ -37,6 +38,7 @@ class User extends Authenticatable
 
 	protected $fillable = [
 		'name',
+		'email',
 		'username',
 		'password'
 	];

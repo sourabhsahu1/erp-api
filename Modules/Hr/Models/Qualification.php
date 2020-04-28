@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Wed, 15 Apr 2020 21:37:05 +0000.
+ * Date: Thu, 23 Apr 2020 13:56:49 +0000.
  */
 
 namespace Modules\Hr\Models;
@@ -24,6 +24,7 @@ class Qualification extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
+    protected $table = "hr_qualifications";
 	protected $fillable = [
 		'name'
 	];

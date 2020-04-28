@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Wed, 15 Apr 2020 21:37:05 +0000.
+ * Date: Thu, 23 Apr 2020 13:56:49 +0000.
  */
 
 namespace Modules\Hr\Models;
@@ -16,6 +16,11 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $created_by_id
  * @property int $designation_id
  * @property int $department_id
+ * @property int $country_id
+ * @property int $region_id
+ * @property int $state_id
+ * @property int $lga_id
+ * @property string $personnel_file_number
  * @property string $first_name
  * @property string $last_name
  * @property string $title
@@ -39,6 +44,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Modules\Hr\Models\User $user
  * @property \Modules\Hr\Models\Department $department
  * @property \Modules\Hr\Models\Designation $designation
+ * @property \Modules\Hr\Models\Lga $lga
  * @property \Modules\Hr\Models\File $file
  *
  * @package Modules\Hr\Models
@@ -47,10 +53,16 @@ class Employee extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
+    protected $table = "hr_employees";
+
 	protected $casts = [
 		'created_by_id' => 'int',
 		'designation_id' => 'int',
 		'department_id' => 'int',
+		'country_id' => 'int',
+		'region_id' => 'int',
+		'state_id' => 'int',
+		'lga_id' => 'int',
 		'profile_image_id' => 'int',
 		'is_permanent_staff' => 'bool'
 	];
@@ -65,6 +77,11 @@ class Employee extends Eloquent
 		'created_by_id',
 		'designation_id',
 		'department_id',
+		'country_id',
+		'region_id',
+		'state_id',
+		'lga_id',
+		'personnel_file_number',
 		'first_name',
 		'last_name',
 		'title',
@@ -96,6 +113,11 @@ class Employee extends Eloquent
 	public function designation()
 	{
 		return $this->belongsTo(\Modules\Hr\Models\Designation::class);
+	}
+
+	public function lga()
+	{
+		return $this->belongsTo(\Modules\Hr\Models\Lga::class);
 	}
 
 	public function file()

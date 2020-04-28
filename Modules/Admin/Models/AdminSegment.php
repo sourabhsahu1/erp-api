@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Sat, 25 Apr 2020 15:03:14 +0000.
+ * Date: Tue, 28 Apr 2020 05:51:12 +0000.
  */
 
 namespace Modules\Admin\Models;
@@ -14,19 +14,22 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  *
  * @property int $id
  * @property string $name
- * @property int $character_count
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_At
+ * @property string $combined_code
+ * @property string $individual_code
+ * @property int $max_level
+ * @property int $parent_id
  *
  * @package Modules\Admin\Models
  */
 class AdminSegment extends Eloquent
 {
-	public $incrementing = false;
 	public $timestamps = false;
 
 	protected $casts = [
-		'character_count' => 'int'
+		'max_level' => 'int',
+		'parent_id' => 'int'
 	];
 
 	protected $dates = [
@@ -35,8 +38,21 @@ class AdminSegment extends Eloquent
 
 	protected $fillable = [
 		'name',
-		'character_count',
 		'updated_At',
-        'id'
+		'combined_code',
+		'individual_code',
+		'max_level',
+		'parent_id'
 	];
+
+    public function sub_categories()
+    {
+        return $this->children()->with('sub_categories');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(AdminSegment::class, 'parent_id');
+    }
+
 }

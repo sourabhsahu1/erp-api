@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('authenticate', "AuthenticationController@doLogin")->name('authenticate.store');
-Route::middleware([])->group(function () {
+Route::middleware(['auth:api'])->group(function () {
     Route::resource('departments', 'DepartmentController');
     Route::resource('designations', 'DesignationController');
     Route::resource('skills', 'SkillsController');

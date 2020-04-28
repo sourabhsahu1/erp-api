@@ -28,7 +28,7 @@ class UserRepository extends EloquentBaseRepository
         $password = array_get($data['data'], 'password');
 
         $credentials = ["username" => $username, 'password' => $password];
-        $user = User::where("username", "=", $username)->first();
+        $user = User::with('roles')->where("username", "=", $username)->first();
 
         if (!$user) {
             throw new NotFoundHttpException(__('errors.user_not_found'));

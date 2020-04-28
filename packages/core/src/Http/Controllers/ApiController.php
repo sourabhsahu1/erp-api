@@ -135,7 +135,7 @@ abstract class ApiController extends BaseController
     {
         $this->defaultMessage = $this->resourceName ? $this->resourceName . " created successfully" : "Resource Created successfully";
         $this->jobMethod = $this->storeJobMethod;
-        if (!$this->createJob) throw new MethodNotAllowedHttpException(['message' => 'Method Not Allowed', 'code' => 405]);
+        if (!$this->createJob) throw new MethodNotAllowedHttpException(['message' => 'Methodsasdasda Not Allowed', 'code' => 405]);
 
         $data = array_replace_recursive(
             $request->json()->all(),
