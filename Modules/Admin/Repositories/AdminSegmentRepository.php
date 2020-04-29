@@ -18,9 +18,10 @@ class AdminSegmentRepository extends EloquentBaseRepository
         $parentId = Arr::get($data, 'data.parent_id');
 
         if ($parentId) {
-            $parent = $this->find($parentId)->toArray();
+            $parent = $this->find($parentId);
+
             $arrayToMerge = [
-                    'max_level' => $parent["max_level"] - 1,
+                    'max_level' => $parent->max_level - 1,
                     'combined_code' => $parent["combined_code"].$data['data']['individual_code']
                 ];
         }
@@ -32,6 +33,6 @@ class AdminSegmentRepository extends EloquentBaseRepository
     public function getAll($params = [], $query = null)
     {
         $query = AdminSegment::with('sub_categories')->where('parent_id', null);
-        return $query->get();
+        return parent::getAll($params, $query);
     }
 }

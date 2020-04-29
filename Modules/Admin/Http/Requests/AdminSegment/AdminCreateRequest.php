@@ -16,13 +16,15 @@ class AdminCreateRequest extends BaseRequest
     {
         return [
 
-            'name' => 'required|min:1',
-            'individualCode' => 'required|min:2',
-            'maxLevel' => 'required|min:1',
+            'name' => 'required|string|min:3',
+            'individualCode' => 'required|string|min:2',
+            'maxLevel' => 'required|integer|min:1',
             'characterCount' => ['required', 'min:1', function($a, $v, $f) {
                 $parentId = $this->get('parentId');
                 $individualCode = $this->get('individualCode');
                 if (!is_null($parentId)) {
+
+                    /** @var AdminSegment $parent */
                     $parent = AdminSegment::find($parentId);
                     if (is_null($parent)) return $f('Invalid parent id');
 
@@ -31,7 +33,7 @@ class AdminCreateRequest extends BaseRequest
                     }
                 }
             }],
-            'parentId' => 'sometimes'
+            'parentId' => 'sometimes|required|integer'
         ];
     }
 }
