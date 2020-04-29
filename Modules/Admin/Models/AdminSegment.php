@@ -10,7 +10,7 @@ namespace Modules\Admin\Models;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class AdminSegment
+ * Class Create
  *
  * @property int $id
  * @property string $name

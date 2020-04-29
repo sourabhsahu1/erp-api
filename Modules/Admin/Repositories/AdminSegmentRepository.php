@@ -6,6 +6,7 @@ namespace Modules\Admin\Repositories;
 
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\AdminSegment;
+use Illuminate\Support\Arr;
 
 class AdminSegmentRepository extends EloquentBaseRepository
 {
@@ -14,8 +15,10 @@ class AdminSegmentRepository extends EloquentBaseRepository
     public function create($data)
     {
         $arrayToMerge = ['combined_code' => $data['data']['individual_code']];
-        if ($data["data"]["parent_id"]) {
-            $parent = $this->find($data["data"]['parent_id'])->toArray();
+        $parentId = Arr::get($data, 'data.parent_id');
+
+        if ($parentId) {
+            $parent = $this->find($parentId)->toArray();
             $arrayToMerge = [
                     'max_level' => $parent["max_level"] - 1,
                     'combined_code' => $parent["combined_code"].$data['data']['individual_code']
