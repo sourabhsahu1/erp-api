@@ -49,4 +49,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('grade-levels-steps/{id}','GradeLevelStepController@update');
     Route::delete('grade-levels-steps/{id}','GradeLevelStepController@delete');
     Route::get('grade-levels-steps/{id}','GradeLevelStepController@show');
+    Route::resource('job-positions','JobPositionController');
 });
