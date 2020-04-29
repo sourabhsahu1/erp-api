@@ -37,5 +37,12 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('arm-of-services','ArmOfServiceController');
     Route::resource('memberships','MembershipController');
     Route::resource('work-locations', 'WorkLocationController');
+    Route::resource('salary-scales','SalaryScaleController');
+    Route::post('grade-levels','GradeLevelController@store');
+    Route::put('grade-levels/{id}','GradeLevelController@update');
+    Route::delete('grade-levels/{id}','GradeLevelController@delete');
+    Route::post('grade-levels','GradeLevelController@store');
+    Route::put('grade-levels/{id}','GradeLevelController@update');
+    Route::delete('grade-levels/{id}','GradeLevelController@delete');
 
 });
