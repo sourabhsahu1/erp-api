@@ -5,7 +5,7 @@ namespace Modules\Admin\Http\Controllers;
 use App\Http\Controllers\BaseController;
 use Luezoid\Laravelcore\Jobs\BaseJob;
 use Modules\Admin\Repositories\AdminSegmentRepository;
-use Modules\Admin\Http\Requests\AdminSegment\Create;
+use Modules\Admin\Http\Requests\AdminSegment\AdminCreateRequest;
 
 class AdminController extends BaseController
 {
@@ -16,5 +16,5 @@ class AdminController extends BaseController
    protected $storeJobMethod = "create";
    protected $updateJobMethod = "update";
    protected $deleteJobMethod = "delete";
-   protected $storeRequest = Create::class;
+   protected $storeRequest = AdminCreateRequest::class;
 }
