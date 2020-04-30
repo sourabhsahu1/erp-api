@@ -16,7 +16,7 @@ class SalaryScaleCreate extends BaseRequest
             'isAutomaticCreate' => ["required", "boolean"],
             'numberOfLevels' => 'required|numeric|between:1,99',
             'numberOfSteps' => "required|numeric|between:1,99",
-            'retireType' => 'required_with:isAutomaticCreate'
+            'retireType' => 'required_if:isAutomaticCreate,true'
         ];
     }
 }

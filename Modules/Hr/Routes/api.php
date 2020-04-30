@@ -50,4 +50,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('grade-levels-steps/{id}','GradeLevelStepController@delete');
     Route::get('grade-levels-steps/{id}','GradeLevelStepController@show');
     Route::resource('job-positions','JobPositionController');
+    Route::resource('leaves','LeaveController');
+    Route::resource('leave-groups','LeaveGroupController');
+    Route::resource('public-holidays','PublicHolidayController');
 });
