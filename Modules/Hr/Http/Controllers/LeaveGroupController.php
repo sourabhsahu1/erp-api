@@ -6,6 +6,8 @@ namespace Modules\Hr\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
 use Luezoid\Laravelcore\Jobs\BaseJob;
+use Modules\Hr\Http\Requests\LeaveGroup\Create;
+use Modules\Hr\Http\Requests\LeaveGroup\Update;
 use Modules\Hr\Repositories\LeaveGroupRepository;
 
 class LeaveGroupController extends BaseController
@@ -18,4 +20,6 @@ class LeaveGroupController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
+    protected $storeRequest = Create::class;
+    protected $updateRequest = Update::class;
 }

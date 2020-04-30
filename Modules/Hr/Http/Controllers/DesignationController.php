@@ -6,6 +6,8 @@ namespace Modules\Hr\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
 use Luezoid\Laravelcore\Jobs\BaseJob;
+use Modules\Hr\Http\Requests\Designations\Create;
+use Modules\Hr\Http\Requests\Designations\Update;
 use Modules\Hr\Repositories\DesignationRepository;
 
 class DesignationController extends BaseController
@@ -18,4 +20,6 @@ class DesignationController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
+    protected $storeRequest = Create::class;
+    protected $updateRequest = Update::class;
 }

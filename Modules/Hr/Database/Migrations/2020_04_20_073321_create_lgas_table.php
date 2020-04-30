@@ -17,6 +17,7 @@ class CreateLgasTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->unsignedBigInteger('state_id');
+            $table->boolean('is_active')->default(1);
             $table->foreign('state_id')->references('id')->on('states');
             $table->softDeletes();
             $table->timestamps();

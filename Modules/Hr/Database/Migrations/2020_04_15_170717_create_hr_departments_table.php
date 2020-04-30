@@ -17,6 +17,7 @@ class CreateHrDepartmentsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->unsignedBigInteger('parent_id')->nullable();
+            $table->boolean('is_active')->default(1);
             $table->foreign('parent_id')->references('id')->on('hr_departments');
             $table->softDeletes();
             $table->timestamps();

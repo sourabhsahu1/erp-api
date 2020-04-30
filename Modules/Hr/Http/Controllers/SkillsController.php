@@ -6,6 +6,8 @@ namespace Modules\Hr\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
 use Luezoid\Laravelcore\Jobs\BaseJob;
+use Modules\Hr\Http\Requests\Skills\Create;
+use Modules\Hr\Http\Requests\Skills\Update;
 use Modules\Hr\Repositories\SkillRepository;
 
 class SkillsController extends BaseController
@@ -17,5 +19,7 @@ class SkillsController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
+    protected $storeRequest = Create::class;
+    protected $updateRequest = Update::class;
 
 }

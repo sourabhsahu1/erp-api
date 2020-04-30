@@ -34,14 +34,16 @@ class SalaryScale extends Eloquent
 	protected $casts = [
 		'number_of_levels' => 'int',
 		'number_of_steps' => 'int',
-        'is_automatic_create' => 'bool'
+        'is_automatic_create' => 'bool',
+        'is_active' => 'bool'
 	];
 
 	protected $fillable = [
 		'name',
 		'number_of_levels',
 		'number_of_steps',
-        'is_automatic_create'
+        'is_automatic_create',
+        'is_active'
 	];
 
 	public function grade_levels()
