@@ -27,6 +27,7 @@ class PublicHoliday extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
+	protected $table = "hr_public_holidays";
 	protected $casts = [
 		'is_repeat_yearly' => 'bool',
 		'is_one_time' => 'bool'

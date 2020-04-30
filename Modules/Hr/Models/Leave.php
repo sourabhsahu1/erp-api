@@ -30,6 +30,7 @@ class Leave extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
+	protected $table = "hr_leaves";
 	protected $casts = [
 		'is_carry_over_unused_leave' => 'bool',
 		'is_paid_leave' => 'bool',
