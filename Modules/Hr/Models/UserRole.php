@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Thu, 23 Apr 2020 13:56:49 +0000.
+ * Date: Fri, 01 May 2020 14:54:14 +0000.
  */
 
 namespace Modules\Hr\Models;
@@ -15,6 +15,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $id
  * @property int $user_id
  * @property int $role_id
+ * @property int $created_by_id
+ * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
@@ -25,14 +27,18 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  */
 class UserRole extends Eloquent
 {
+	use \Illuminate\Database\Eloquent\SoftDeletes;
+
 	protected $casts = [
 		'user_id' => 'int',
-		'role_id' => 'int'
+		'role_id' => 'int',
+		'created_by_id' => 'int'
 	];
 
 	protected $fillable = [
 		'user_id',
-		'role_id'
+		'role_id',
+		'created_by_id'
 	];
 
 	public function role()
