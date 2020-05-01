@@ -17,6 +17,7 @@ Route::middleware([])->group(function () {
     Route::resource('admin', 'AdminController');
     Route::resource('users','UserController');
     Route::get('roles','RoleController@index');
-    Route::post('user/{id}/role','UserController@updateRoleAssign');
+    Route::post('user/{id}/role','UserController@addRoleAssign');
+    Route::put('user/{id}/role','UserController@updateRoleAssign');
     Route::delete('user/{id}/role/{roleId}','UserController@deleteRoleAssign');
 });
