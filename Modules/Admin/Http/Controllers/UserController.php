@@ -21,7 +21,7 @@ class UserController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
-
+    protected $indexWith = ['roles'];
     public function addRoleAssign(Request $request)
     {
         $this->jobMethod = "addRoleAssign";

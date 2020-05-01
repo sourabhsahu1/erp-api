@@ -16,7 +16,8 @@ class UserRepository extends EloquentBaseRepository
     {
         $userRole = UserRole::create([
             'user_id' => $data['data']['id'],
-            'role_id' => $data['data']['role_id']
+            'role_id' => $data['data']['role_id'],
+            'created_by_id' => $data['data']['user_id']
         ]);
 
         $user = User::with('roles')->where('id', $data['data']['id'])->first();
@@ -37,9 +38,10 @@ class UserRepository extends EloquentBaseRepository
 
     public function deleteRoleAssign($data)
     {
-        $userRole = UserRole::where('user_id', $data['data']['id'])->where('role_id', $data['data']['role_id'])->delete();
-
-        $user = User::with('roles')->where('id', $data['data']['id'])->first();
-        return $user;
+        $userRole = UserRole::where('id', $data['data']['id']);
+        if (is_null($userRole->first())) {
+            return ['message' => 'Already Deleted'];
+        }
+        $userRole = $userRole->delete();
     }
 }
