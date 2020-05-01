@@ -42,7 +42,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('grade-levels','GradeLevelController@store');
     Route::put('grade-levels/{id}','GradeLevelController@update');
     Route::delete('grade-levels/{id}','GradeLevelController@destroy');
-
     Route::post('grade-levels-steps','GradeLevelStepController@store');
     Route::put('grade-levels-steps/{id}','GradeLevelStepController@update');
     Route::delete('grade-levels-steps/{id}','GradeLevelStepController@destroy');

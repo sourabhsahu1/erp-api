@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,4 +15,8 @@ use Illuminate\Http\Request;
 Route::post('authenticate', "AuthenticationController@doLogin")->name('authenticate.store');
 Route::middleware([])->group(function () {
     Route::resource('admin', 'AdminController');
+    Route::resource('users','UserController');
+    Route::get('roles','RoleController@index');
+    Route::post('user/{id}/role','UserController@updateRoleAssign');
+    Route::delete('user/{id}/role/{roleId}','UserController@deleteRoleAssign');
 });
