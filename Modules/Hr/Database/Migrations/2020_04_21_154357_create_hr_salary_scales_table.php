@@ -15,7 +15,9 @@ class CreateHrSalaryScalesTable extends Migration
     {
         Schema::create('hr_salary_scales', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title');
+            $table->string('name');
+            $table->boolean('is_automatic_create')->default(1);
+            $table->boolean('is_active')->default(1);
             $table->unsignedInteger('number_of_levels');
             $table->unsignedInteger('number_of_steps');
             $table->softDeletes();

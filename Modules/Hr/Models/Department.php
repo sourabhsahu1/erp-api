@@ -14,6 +14,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * 
  * @property int $id
  * @property string $name
+ * @property boolean $is_active
  * @property int $parent_id
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
@@ -33,12 +34,14 @@ class Department extends Eloquent
     protected $table = "hr_departments";
 
     protected $casts = [
-		'parent_id' => 'int'
+		'parent_id' => 'int',
+		'is_active' => 'bool'
 	];
 
     protected $fillable = [
 		'name',
-		'parent_id'
+		'parent_id',
+        'is_active'
 	];
 
 	public function department()

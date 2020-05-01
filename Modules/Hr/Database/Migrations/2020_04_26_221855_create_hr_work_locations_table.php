@@ -18,6 +18,7 @@ class CreateHrWorkLocationsTable extends Migration
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('name');
             $table->boolean('is_child_enabled')->default(1);
+            $table->boolean('is_active')->default(1);
             $table->foreign('parent_id')->references('id')->on('hr_work_locations');
             $table->softDeletes();
             $table->timestamps();

@@ -37,5 +37,20 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('arm-of-services','ArmOfServiceController');
     Route::resource('memberships','MembershipController');
     Route::resource('work-locations', 'WorkLocationController');
-
+    Route::resource('salary-scales','SalaryScaleController');
+    Route::post('grade-levels','GradeLevelController@store');
+    Route::put('grade-levels/{id}','GradeLevelController@update');
+    Route::delete('grade-levels/{id}','GradeLevelController@delete');
+    Route::get('grade-levels/{id}','GradeLevelController@show');
+    Route::post('grade-levels','GradeLevelController@store');
+    Route::put('grade-levels/{id}','GradeLevelController@update');
+    Route::delete('grade-levels/{id}','GradeLevelController@delete');
+    Route::post('grade-levels-steps','GradeLevelStepController@store');
+    Route::put('grade-levels-steps/{id}','GradeLevelStepController@update');
+    Route::delete('grade-levels-steps/{id}','GradeLevelStepController@delete');
+    Route::get('grade-levels-steps/{id}','GradeLevelStepController@show');
+    Route::resource('job-positions','JobPositionController');
+    Route::resource('leaves','LeaveController');
+    Route::resource('leave-groups','LeaveGroupController');
+    Route::resource('public-holidays','PublicHolidayController');
 });
