@@ -19,5 +19,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('roles','RoleController@index');
     Route::post('user/{id}/role','UserController@addRoleAssign');
     Route::put('user/{id}/role','UserController@updateRoleAssign');
-    Route::delete('user-role/{id}','UserController@deleteRoleAssign');
+    Route::delete('user/{id}/role/{roleId}','UserController@deleteRoleAssign');
 });
