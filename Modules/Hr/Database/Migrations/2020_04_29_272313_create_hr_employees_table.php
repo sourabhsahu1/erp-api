@@ -17,13 +17,13 @@ class CreateHrEmployeesTable extends Migration
         Schema::create('hr_employees', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('created_by_id');
-            $table->unsignedBigInteger('designation_id');
-            $table->unsignedBigInteger('department_id');
-            $table->unsignedBigInteger('country_id');
-            $table->unsignedBigInteger('region_id');
-            $table->unsignedBigInteger('state_id');
-            $table->unsignedBigInteger('lga_id');
-            $table->string('personnel_file_number');
+            $table->unsignedBigInteger('designation_id')->nullable();
+            $table->unsignedBigInteger('department_id')->nullable();
+            $table->unsignedBigInteger('country_id')->nullable();
+            $table->unsignedBigInteger('region_id')->nullable();
+            $table->unsignedBigInteger('state_id')->nullable();
+            $table->unsignedBigInteger('lga_id')->nullable();
+            $table->string('personnel_file_number')->nullable();
             $table->string('first_name');
             $table->string('last_name')->nullable();
             $table->string('title');
@@ -48,7 +48,7 @@ class CreateHrEmployeesTable extends Migration
                 AppConstant::EMPLOYEE_RELIGION_CHRISTIANITY,
                 AppConstant::EMPLOYEE_RELIGION_ISLAM,
                 AppConstant::EMPLOYEE_RELIGION_OTHER
-            ])->nullable();
+            ]);
             $table->string('phone');
             $table->string('email');
             $table->boolean('is_permanent_staff')->nullable();
@@ -64,6 +64,7 @@ class CreateHrEmployeesTable extends Migration
                 AppConstant::EMPLOYEE_TYPE_APPOINTMENT_TEMPORARY,
                 AppConstant::EMPLOYEE_TYPE_APPOINTMENT_VISITING
             ]);
+
             $table->date('appointed_on')->nullable();
             $table->date('assumed_duty')->nullable();
             $table->foreign('designation_id')->references('id')->on('hr_designations');
