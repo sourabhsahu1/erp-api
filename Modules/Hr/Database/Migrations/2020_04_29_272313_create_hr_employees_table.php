@@ -67,6 +67,10 @@ class CreateHrEmployeesTable extends Migration
 
             $table->date('appointed_on')->nullable();
             $table->date('assumed_duty')->nullable();
+            $table->string('address')->nullable();
+            $table->string('street')->nullable();
+            $table->string('city')->nullable();
+            $table->string('zip_code')->nullable();
             $table->foreign('designation_id')->references('id')->on('hr_designations');
             $table->foreign('department_id')->references('id')->on('hr_departments');
             $table->foreign('lga_id')->references('id')->on('lgas');
