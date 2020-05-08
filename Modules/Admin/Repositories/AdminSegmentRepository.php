@@ -38,8 +38,10 @@ class AdminSegmentRepository extends EloquentBaseRepository
 
     public function show($id, $params = null)
     {
-        $query = AdminSegment::with('children')->where('id', $id);
-        return $query->get();
+        $params = [
+            'with' => ['children']
+        ];
+        return parent::show($id, $params);
     }
 
     public function update($data)
