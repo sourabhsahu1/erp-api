@@ -12,10 +12,11 @@ class StateController extends BaseController
 {
 
     protected $repository = StateRepository::class;
-    protected $createJob =  BaseJob::class;
+    protected $createJob = BaseJob::class;
     protected $updateJob = BaseJob::class;
     protected $deleteJob = BaseJob::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
+    protected $indexWith = ['region.country'];
 }
