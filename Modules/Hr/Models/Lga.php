@@ -39,6 +39,15 @@ class Lga extends Eloquent
 		'state_id',
         'is_active'
 	];
+    public function country()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Country::class);
+    }
+
+    public function region()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Region::class);
+    }
 
 	public function state()
 	{
@@ -49,4 +58,6 @@ class Lga extends Eloquent
 	{
 		return $this->hasMany(\Modules\Hr\Models\Employee::class);
 	}
+
+    public $filterable = ['state_id'];
 }
