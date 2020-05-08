@@ -14,14 +14,17 @@ class CountryController extends BaseController
 {
 
     protected $repository = CountryRepository::class;
-    protected $createJob =  BaseJob::class;
+    protected $createJob = BaseJob::class;
     protected $updateJob = BaseJob::class;
     protected $deleteJob = BaseJob::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
 
-    public function getAllLocations(Request $request) {
+    protected $indexCall = "getAll";
+
+    public function getAllLocations(Request $request)
+    {
         $this->jobMethod = "getAllLocations";
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
