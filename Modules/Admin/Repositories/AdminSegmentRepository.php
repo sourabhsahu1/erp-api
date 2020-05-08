@@ -32,8 +32,14 @@ class AdminSegmentRepository extends EloquentBaseRepository
 
     public function getAll($params = [], $query = null)
     {
-        $query = AdminSegment::with('sub_categories')->where('parent_id', null);
+        $query = AdminSegment::where('parent_id', null);
         return parent::getAll($params, $query);
+    }
+
+    public function show($id, $params = null)
+    {
+        $query = AdminSegment::with('children')->where('id', $id);
+        return $query->get();
     }
 
     public function update($data)

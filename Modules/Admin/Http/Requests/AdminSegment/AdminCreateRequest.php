@@ -33,7 +33,8 @@ class AdminCreateRequest extends BaseRequest
                     }
                 }
             }],
-            'parentId' => 'sometimes|required|integer'
+            'parentId' => 'sometimes|required|integer',
+            'isActive' => 'sometimes|required|boolean'
         ];
     }
 }
