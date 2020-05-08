@@ -11,7 +11,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class Region
- * 
+ *
  * @property int $id
  * @property string $name
  * @property int $country_id
@@ -20,7 +20,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * 
+ *
  * @property \Modules\Hr\Models\Country $country
  * @property \Illuminate\Database\Eloquent\Collection $states
  *
@@ -28,28 +28,30 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  */
 class Region extends Eloquent
 {
-	use \Illuminate\Database\Eloquent\SoftDeletes;
+    use \Illuminate\Database\Eloquent\SoftDeletes;
 
     protected $casts = [
-		'country_id' => 'int',
-		'is_child_enabled' => 'bool',
+        'country_id' => 'int',
+        'is_child_enabled' => 'bool',
         'is_active' => 'bool',
-	];
+    ];
 
     protected $fillable = [
-		'name',
-		'country_id',
-		'is_child_enabled',
+        'name',
+        'country_id',
+        'is_child_enabled',
         'is_active'
-	];
+    ];
 
-	public function country()
-	{
-		return $this->belongsTo(\Modules\Hr\Models\Country::class);
-	}
+    public function country()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Country::class);
+    }
 
-	public function states()
-	{
-		return $this->hasMany(\Modules\Hr\Models\State::class);
-	}
+    public function states()
+    {
+        return $this->hasMany(\Modules\Hr\Models\State::class);
+    }
+
+    public $filterable = ['country_id'];
 }

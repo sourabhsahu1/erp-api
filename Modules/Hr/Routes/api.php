@@ -50,4 +50,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('leaves','LeaveController');
     Route::resource('leave-groups','LeaveGroupController');
     Route::resource('public-holidays','PublicHolidayController');
+    Route::post('employees','EmployeeController@store');
+//    Route::post('employees/job-profile','EmployeeController@storeJobProfile');
+    Route::post('employees/job-profile','EmployeeController@storeJobProfile');
+    Route::post('employees/location','EmployeeController@storeLocation');
 });

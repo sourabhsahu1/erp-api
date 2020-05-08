@@ -11,7 +11,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class State
- * 
+ *
  * @property int $id
  * @property string $name
  * @property int $region_id
@@ -20,7 +20,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * 
+ *
  * @property \Modules\Hr\Models\Region $region
  * @property \Illuminate\Database\Eloquent\Collection $lgas
  *
@@ -28,28 +28,30 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  */
 class State extends Eloquent
 {
-	use \Illuminate\Database\Eloquent\SoftDeletes;
+    use \Illuminate\Database\Eloquent\SoftDeletes;
 
-	protected $casts = [
-		'region_id' => 'int',
-		'is_child_enabled' => 'bool',
+    protected $casts = [
+        'region_id' => 'int',
+        'is_child_enabled' => 'bool',
         'is_active' => 'bool'
-	];
+    ];
 
-	protected $fillable = [
-		'name',
-		'region_id',
-		'is_child_enabled',
+    protected $fillable = [
+        'name',
+        'region_id',
+        'is_child_enabled',
         'is_active'
-	];
+    ];
 
-	public function region()
-	{
-		return $this->belongsTo(\Modules\Hr\Models\Region::class);
-	}
+    public function region()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Region::class);
+    }
 
-	public function lgas()
-	{
-		return $this->hasMany(\Modules\Hr\Models\Lga::class);
-	}
+    public function lgas()
+    {
+        return $this->hasMany(\Modules\Hr\Models\Lga::class);
+    }
+
+    public $filterable = ['region_id'];
 }
