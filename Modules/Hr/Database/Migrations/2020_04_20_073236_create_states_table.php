@@ -18,6 +18,7 @@ class CreateStatesTable extends Migration
             $table->string('name');
             $table->unsignedBigInteger('region_id');
             $table->boolean('is_child_enabled')->default(1);
+            $table->boolean('is_active')->default(1);
             $table->foreign('region_id')->references('id')->on('regions');
             $table->softDeletes();
             $table->timestamps();

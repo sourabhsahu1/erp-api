@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHrOrganisationStructureTable extends Migration
+class CreateHrLeavesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,15 @@ class CreateHrOrganisationStructureTable extends Migration
      */
     public function up()
     {
-        Schema::create('hr_organisation_structure', function (Blueprint $table) {
+        Schema::create('hr_leaves', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('parent_id');
-            $table->foreign('parent_id')->references('id')->on('hr_organisation_structure');
             $table->string('name');
+            $table->string('short_name');
+            $table->boolean('is_carry_over_unused_leave');
+            $table->boolean('is_paid_leave');
+            $table->boolean('is_calender_days');
+            $table->boolean('is_active')->default(1);
+            $table->boolean('auto_create')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -30,6 +34,6 @@ class CreateHrOrganisationStructureTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('hr_organisation_structure');
+        Schema::dropIfExists('hr_leaves');
     }
 }

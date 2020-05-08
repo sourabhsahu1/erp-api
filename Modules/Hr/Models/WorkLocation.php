@@ -15,6 +15,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $id
  * @property int $parent_id
  * @property string $name
+ * @property boolean $is_active
  * @property boolean $is_child_enabled
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
@@ -33,13 +34,15 @@ class WorkLocation extends Eloquent
 
     protected $casts = [
         'parent_id' => 'int',
-        'is_child_enabled' => 'bool'
+        'is_child_enabled' => 'bool',
+        'is_active' => 'bool'
     ];
 
     protected $fillable = [
         'parent_id',
         'name',
-        'is_child_enabled'
+        'is_child_enabled',
+        'is_active'
     ];
 
 	public function hr_work_location()

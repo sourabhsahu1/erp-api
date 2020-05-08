@@ -16,6 +16,7 @@ class CreateHrRelationshipsTable extends Migration
         Schema::create('hr_relationships', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
+            $table->boolean('is_active')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });

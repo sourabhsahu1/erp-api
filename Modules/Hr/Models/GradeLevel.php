@@ -14,7 +14,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * 
  * @property int $id
  * @property int $salary_scale_id
- * @property string $level
+ * @property string $name
  * @property int $increment_due
  * @property int $promotion_due
  * @property int $confirm_after
@@ -44,7 +44,7 @@ class GradeLevel extends Eloquent
 
 	protected $fillable = [
 		'salary_scale_id',
-		'level',
+		'name',
 		'increment_due',
 		'promotion_due',
 		'confirm_after',

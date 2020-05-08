@@ -15,6 +15,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $id
  * @property string $name
  * @property int $state_id
+ * @property boolean $is_active
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -29,12 +30,14 @@ class Lga extends Eloquent
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
 	protected $casts = [
-		'state_id' => 'int'
+		'state_id' => 'int',
+		'is_active' => 'bool'
 	];
 
 	protected $fillable = [
 		'name',
-		'state_id'
+		'state_id',
+        'is_active'
 	];
 
 	public function state()

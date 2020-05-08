@@ -16,6 +16,7 @@ class CreateHrStatusTable extends Migration
         Schema::create('hr_status', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
+            $table->boolean('is_active')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });

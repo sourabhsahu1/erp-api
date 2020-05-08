@@ -15,6 +15,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $id
  * @property string $name
  * @property int $region_id
+ * @property boolean $is_active
  * @property bool $is_child_enabled
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
@@ -31,13 +32,15 @@ class State extends Eloquent
 
 	protected $casts = [
 		'region_id' => 'int',
-		'is_child_enabled' => 'bool'
+		'is_child_enabled' => 'bool',
+        'is_active' => 'bool'
 	];
 
 	protected $fillable = [
 		'name',
 		'region_id',
-		'is_child_enabled'
+		'is_child_enabled',
+        'is_active'
 	];
 
 	public function region()
