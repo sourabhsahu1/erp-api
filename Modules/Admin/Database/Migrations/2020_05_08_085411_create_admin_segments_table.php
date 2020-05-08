@@ -14,14 +14,15 @@ class CreateAdminSegmentsTable extends Migration
     public function up()
     {
         Schema::create('admin_segments', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->string('name');
             $table->string('character_count');
-            $table->number('max_level');
+            $table->smallInteger('max_level');
             $table->string('individual_code');
             $table->string('combined_code');
             $table->boolean('is_active');
-            $table->number('parent_id');
+            $table->unsignedInteger('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('admin_segments');
             $table->timestamps();
         });
     }
