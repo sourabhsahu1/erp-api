@@ -46,7 +46,6 @@ class AdminSegmentRepository extends EloquentBaseRepository
 
     public function update($data)
     {
-        dd($data);
         $keysToUpdate = ['name'];
         $data['data'] = Arr::only($data['data'], $keysToUpdate);
 

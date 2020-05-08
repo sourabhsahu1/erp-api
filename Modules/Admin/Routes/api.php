@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::post('authenticate', "AuthenticationController@doLogin")->name('authenticate.store');
-Route::middleware(['auth:api'])->group(function () {
+Route::middleware([])->group(function () {
     Route::resource('admin', 'AdminController');
     Route::resource('users','UserController');
     Route::get('roles','RoleController@index');
