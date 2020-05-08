@@ -17,6 +17,7 @@ class CreateCountriesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->boolean('is_child_enabled')->default(1);
+            $table->boolean('is_active')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });

@@ -15,6 +15,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $id
  * @property string $name
  * @property int $country_id
+ * @property boolean $is_active
  * @property bool $is_child_enabled
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
@@ -29,15 +30,17 @@ class Region extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
-	protected $casts = [
+    protected $casts = [
 		'country_id' => 'int',
-		'is_child_enabled' => 'bool'
+		'is_child_enabled' => 'bool',
+        'is_active' => 'bool',
 	];
 
-	protected $fillable = [
+    protected $fillable = [
 		'name',
 		'country_id',
-		'is_child_enabled'
+		'is_child_enabled',
+        'is_active'
 	];
 
 	public function country()

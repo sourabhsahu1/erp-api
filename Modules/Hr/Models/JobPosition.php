@@ -13,11 +13,14 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * Class JobPosition
  * 
  * @property int $id
- * @property int $organisation_structure_id
+ * @property int $parent_id
  * @property int $department_id
  * @property int $designation_id
+ * @property int $salary_scale_id
+ * @property int $grade_level_id
  * @property int $grade_level_step_id
  * @property int $skill_id
+ * @property string $name
  * @property string $cost_center
  * @property string $job_family
  * @property bool $is_approved_position
@@ -34,7 +37,6 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Modules\Hr\Models\Department $department
  * @property \Modules\Hr\Models\Designation $designation
  * @property \Modules\Hr\Models\GradeLevelStep $grade_level_step
- * @property \Modules\Hr\Models\OrganisationStructure $organisation_structure
  * @property \Modules\Hr\Models\Skill $skill
  *
  * @package Modules\Hr\Models
@@ -45,9 +47,11 @@ class JobPosition extends Eloquent
 
     protected $table = "hr_job_positions";
 	protected $casts = [
-		'organisation_structure_id' => 'int',
+		'parent_id' => 'int',
 		'department_id' => 'int',
 		'designation_id' => 'int',
+		'salary_scale_id' => 'int',
+		'grade_level_id' => 'int',
 		'grade_level_step_id' => 'int',
 		'skill_id' => 'int',
 		'is_approved_position' => 'bool',
@@ -55,9 +59,12 @@ class JobPosition extends Eloquent
 	];
 
 	protected $fillable = [
-		'organisation_structure_id',
+	    'name',
+	    'parent_id',
 		'department_id',
 		'designation_id',
+        'salary_scale_id',
+        'grade_level_id',
 		'grade_level_step_id',
 		'skill_id',
 		'cost_center',
@@ -86,13 +93,28 @@ class JobPosition extends Eloquent
 		return $this->belongsTo(\Modules\Hr\Models\GradeLevelStep::class);
 	}
 
-	public function organisation_structure()
-	{
-		return $this->belongsTo(\Modules\Hr\Models\OrganisationStructure::class);
-	}
+    public function job_positions()
+    {
+        return $this->hasMany(\Modules\Hr\Models\JobPosition::class, 'parent_id');
+    }
+
+    public function job_position()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\JobPosition::class, 'parent_id');
+    }
 
 	public function skill()
 	{
 		return $this->belongsTo(\Modules\Hr\Models\Skill::class);
 	}
+
+    public function sub_categories()
+    {
+        return $this->children()->with('sub_categories');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(JobPosition::class, 'parent_id');
+    }
 }
