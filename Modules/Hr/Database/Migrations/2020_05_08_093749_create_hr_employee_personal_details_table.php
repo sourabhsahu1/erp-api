@@ -53,7 +53,7 @@ class CreateHrEmployeePersonalDetailsTable extends Migration
             ]);
             $table->date('appointed_on')->nullable();
             $table->date('assumed_duty_on')->nullable();
-            $table->foreign('employee_id')->references('id')->on('employees');
+            $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -17,8 +17,8 @@ class CreateHrEmployeePensionsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('employee_id');
             $table->boolean('is_pension_started')->default(false);
-            $table->enum('type', []);
-            $table->foreign('employee_id')->references('id')->on('employees');
+//            $table->enum('type', []);
+            $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -21,7 +21,7 @@ class CreateHrEmployeeJobProfilesTable extends Migration
             $table->unsignedBigInteger('department_id')->nullable();
             $table->unsignedBigInteger('work_location_id')->nullable();
             $table->date('current_appointment')->nullable();
-            $table->foreign('employee_id')->references('id')->on('employees');
+            $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->foreign('job_position_id')->references('id')->on('hr_job_positions');
             $table->foreign('work_location_id')->references('id')->on('hr_work_locations');
             $table->softDeletes();

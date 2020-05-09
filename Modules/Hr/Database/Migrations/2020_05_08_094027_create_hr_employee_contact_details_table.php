@@ -37,7 +37,7 @@ class CreateHrEmployeeContactDetailsTable extends Migration
             $table->foreign('other_region_id')->references('id')->on('lgas');
             $table->foreign('other_state_id')->references('id')->on('lgas');
             $table->foreign('other_lga_id')->references('id')->on('lgas');
-            $table->foreign('employee_id')->references('id')->on('employees');
+            $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->softDeletes();
             $table->timestamps();
         });
