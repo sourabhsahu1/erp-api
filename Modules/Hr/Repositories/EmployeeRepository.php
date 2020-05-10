@@ -128,4 +128,9 @@ class EmployeeRepository extends EloquentBaseRepository
         }
         return EmployeeContactDetail::where('employee_id', $data['data']['id'])->first();;
     }
+
+
+    public function employeeProgression($data) {
+        dd($data);
+    }
 }

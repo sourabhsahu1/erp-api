@@ -45,4 +45,9 @@ class EmployeeController extends BaseController
         $this->jobMethod = "location";
         return $this->handleCustomEndPoint(BaseJob::class , $request);
     }
+
+    public function employeeProgression(Request $request) {
+        $this->jobMethod = "employeeProgression";
+        return $this->handleCustomEndPoint(BaseJob::class , $request);
+    }
 }
