@@ -14,7 +14,7 @@ class JobPositionRepository extends EloquentBaseRepository
 
     public function getAll($params = [], $query = null)
     {
-        $query = JobPosition::with('sub_categories')->where('parent_id', null);
-        return $query->get();
+        $query = JobPosition::with('department','designation','grade_level_step','skill', 'sub_categories')->where('parent_id', null)->get();
+        return $query;
     }
 }

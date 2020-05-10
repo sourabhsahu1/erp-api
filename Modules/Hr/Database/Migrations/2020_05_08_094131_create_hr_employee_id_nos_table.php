@@ -16,7 +16,7 @@ class CreateHrEmployeeIdNosTable extends Migration
         Schema::create('hr_employee_id_nos', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('employee_id');
-            $table->foreign('employee_id')->references('id')->on('employees');
+            $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->softDeletes();
             $table->timestamps();
         });

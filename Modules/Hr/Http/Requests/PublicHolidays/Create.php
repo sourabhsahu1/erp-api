@@ -14,8 +14,8 @@ class Create extends BaseRequest
         return [
             'name' => 'required',
             'date'=> 'required|date',
-            'is_repeat_yearly'=> 'required|boolean',
-            'is_one_time'=> 'required|boolean'
+            'isRepeatYearly'=> 'required|boolean',
+            'isOneTime'=> 'required|boolean'
         ];
     }
 }

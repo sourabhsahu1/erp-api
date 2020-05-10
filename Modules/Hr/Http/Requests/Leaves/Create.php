@@ -13,12 +13,12 @@ class Create extends BaseRequest
     {
         return [
             'name' => 'required',
-            'short_name'=> 'required',
-            'is_carry_over_unused_leave'=> 'required|boolean',
-            'is_paid_leave'=> 'required|boolean',
-            'is_calender_days'=> 'required|boolean',
-            'is_active'=> 'required|boolean',
-            'auto_create'=> 'required|boolean'
+            'shortName'=> 'required',
+            'isCarryOverUnusedLeave'=> 'required|boolean',
+            'isPaidLeave'=> 'required|boolean',
+            'isCalenderDays'=> 'required|boolean',
+            'isActive'=> 'required|boolean',
+            'autoCreate'=> 'required|boolean'
         ];
     }
 }

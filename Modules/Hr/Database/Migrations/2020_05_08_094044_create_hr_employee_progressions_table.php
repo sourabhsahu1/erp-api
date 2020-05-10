@@ -16,7 +16,9 @@ class CreateHrEmployeeProgressionsTable extends Migration
         Schema::create('hr_employee_progressions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('employee_id');
-            $table->foreign('employee_id')->references('id')->on('employees');
+            $table->
+
+            $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->timestamps();
         });
     }

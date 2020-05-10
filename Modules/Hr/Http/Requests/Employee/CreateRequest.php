@@ -13,23 +13,13 @@ class CreateRequest extends BaseRequest
     function rules()
     {
         return [
-
-            "firstName" => "required",
-            "lastName" => "sometimes",
-            "dateOfBirth" => "required|date",
-            "maritalStatus" => "required",
-            "gender" => "required",
-            "religion" => "required",
-            "phone" => "required|digits:10",
-            "email" => "required|email",
-            "isPermanentStaff" => "required|boolean",
-            "typeOfAppointment" => "required",
-            "appointedOn" => "required|date",
-            "assumedDuty" => "required",
-            "jobPosition" => "required",
-            "adminUnit" => "required",
-            "workLocation" => "required",
-            "designation" => "required",
+            'personnel_file_number' => 'required',
+            'last_name' => 'required',
+            'first_name' => 'required',
+            'other_name' => 'sometimes',
+            'title' => 'sometimes',
+            'profile_image_id' => "sometimes",
+            'maiden_name' => "sometimes"
         ];
     }
 }
