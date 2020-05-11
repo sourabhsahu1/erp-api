@@ -20,6 +20,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('user/{id}/role','UserController@addRoleAssign');
     Route::put('user/{id}/role','UserController@updateRoleAssign');
     Route::delete('user/{id}/role/{roleId}','UserController@deleteRoleAssign');
-    Route::post('files', '\Luezoid\Laravelcore\Http\Controllers\FileController@store')
-        ->name('files.store');
+
 });
