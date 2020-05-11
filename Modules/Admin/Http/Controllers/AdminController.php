@@ -13,8 +13,10 @@ class AdminController extends BaseController
    protected $repository = AdminSegmentRepository::class;
    protected $createJob =  BaseJob::class;
    protected $updateJob = BaseJob::class;
+   protected $deleteJob = BaseJob::class;
    protected $storeJobMethod = "create";
    protected $updateJobMethod = "update";
+   protected $deleteJobMethod = "delete";
    protected $storeRequest = AdminCreateRequest::class;
    protected $updateRequest = AdminUpdateRequest::class;
 }
