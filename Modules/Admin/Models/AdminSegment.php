@@ -45,16 +45,18 @@ class AdminSegment extends Eloquent
 		'individual_code',
 		'max_level',
 		'parent_id',
-		'character_count'
+		'character_count',
+        'is_active'
 	];
-
-    public function sub_categories()
-    {
-        return $this->children()->with('sub_categories');
-    }
 
     public function children()
     {
+        return $this->getChildes()->with('children');
+    }
+
+    public function getChildes()
+    {
         return $this->hasMany(AdminSegment::class, 'parent_id');
     }
+
 }

@@ -90,7 +90,6 @@ abstract class ApiController extends BaseController
      */
     public function index(Request $request)
     {
-
         $userId = $this->getLoggedInUserId();
 
         $inputs = array_replace_recursive(
