@@ -4,6 +4,7 @@
 namespace Modules\Admin\Repositories;
 
 
+use Illuminate\Support\Facades\Hash;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Hr\Models\User;
 use Modules\Hr\Models\UserRole;
@@ -11,6 +12,19 @@ use Modules\Hr\Models\UserRole;
 class UserRepository extends EloquentBaseRepository
 {
     public $model = User::class;
+
+
+    public function create($data)
+    {
+        $data['data']['password'] = Hash::make($data['data']['password']);
+        return parent::create($data);
+    }
+
+    public function update($data)
+    {
+        $data['data']['password'] = Hash::make($data['data']['password']);
+        return parent::update($data);
+    }
 
     public function addRoleAssign($data)
     {
