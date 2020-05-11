@@ -4,9 +4,11 @@
 namespace Modules\Admin\Repositories;
 
 
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\AdminSegment;
 use Illuminate\Support\Arr;
+
 
 class AdminSegmentRepository extends EloquentBaseRepository
 {
@@ -50,5 +52,20 @@ class AdminSegmentRepository extends EloquentBaseRepository
         $data['data'] = Arr::only($data['data'], $keysToUpdate);
 
         return parent::update($data);
+    }
+
+    public function delete($data)
+    {
+        $params = [
+            'with' => ['children']
+        ];
+        $node = parent::show($data['id'], $params);
+        $isChildPresent = count($node->children);
+
+        if (!$isChildPresent) {
+            return parent::delete($data);
+        } else {
+            throw new AppException('Can not delete child');
+        }
     }
 }
