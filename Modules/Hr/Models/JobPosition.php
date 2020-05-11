@@ -36,6 +36,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * 
  * @property \Modules\Hr\Models\Department $department
  * @property \Modules\Hr\Models\Designation $designation
+ * @property \Modules\Hr\Models\SalaryScale $hr_salary_scale
+ * @property \Modules\Hr\Models\GradeLevel $hr_grade_level
  * @property \Modules\Hr\Models\GradeLevelStep $grade_level_step
  * @property \Modules\Hr\Models\Skill $skill
  *
@@ -87,6 +89,16 @@ class JobPosition extends Eloquent
 	{
 		return $this->belongsTo(\Modules\Hr\Models\Designation::class);
 	}
+
+    public function hr_salary_scale()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\SalaryScale::class, 'salary_scale_id');
+    }
+
+	public function hr_grade_level()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\GradeLevel::class, 'grade_level_id');
+    }
 
 	public function grade_level_step()
 	{

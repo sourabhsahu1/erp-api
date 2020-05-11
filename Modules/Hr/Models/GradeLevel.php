@@ -18,6 +18,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $increment_due
  * @property int $promotion_due
  * @property int $confirm_after
+ * @property string $retire_type
  * @property int $retire_after
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
@@ -48,6 +49,7 @@ class GradeLevel extends Eloquent
 		'increment_due',
 		'promotion_due',
 		'confirm_after',
+        'retire_type',
 		'retire_after'
 	];
 

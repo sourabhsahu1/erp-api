@@ -4,11 +4,15 @@
 namespace Modules\Hr\Repositories;
 
 
+use App\Constants\AppConstant;
+use Illuminate\Support\Carbon;
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Hr\Models\Employee;
 use Modules\Hr\Models\EmployeeContactDetail;
 use Modules\Hr\Models\EmployeeJobProfile;
 use Modules\Hr\Models\EmployeePersonalDetail;
+use Modules\Hr\Models\EmployeeProgression;
 
 
 class EmployeeRepository extends EloquentBaseRepository
@@ -76,7 +80,7 @@ class EmployeeRepository extends EloquentBaseRepository
                 'work_location_id' => $data['data']['work_location_id'],
                 'current_appointment' => $data['data']['current_appointment']
             ]);
-        }else {
+        } else {
             $employeeJobProfile = EmployeeJobProfile::where('employee_id', $data['data']['id'])
                 ->update([
                     'job_position_id' => $data['data']['job_position_id'],
@@ -92,7 +96,7 @@ class EmployeeRepository extends EloquentBaseRepository
 
     public function location($data)
     {
-        $employeeLocations  = EmployeeContactDetail::where('employee_id', $data['data']['id'])->first();
+        $employeeLocations = EmployeeContactDetail::where('employee_id', $data['data']['id'])->first();
         if (is_null($employeeLocations)) {
             $employeeLocations = EmployeeContactDetail::create([
                 'employee_id' => $data['data']['id'],
@@ -109,7 +113,7 @@ class EmployeeRepository extends EloquentBaseRepository
                 'other_state_id' => $data['data']['other_state_id'],
                 'other_lga_id' => $data['data']['other_lga_id']
             ]);
-        }else {
+        } else {
             $employeeLocations = EmployeeContactDetail::where('employee_id', $data['data']['id'])
                 ->update([
                     'country_id' => $data['data']['country_id'],
@@ -130,7 +134,43 @@ class EmployeeRepository extends EloquentBaseRepository
     }
 
 
-    public function employeeProgression($data) {
-        dd($data);
+    public function employeeProgression($data)
+    {
+
+        $employee = Employee::find($data['data']['id']);
+        if (is_null($employee)) {
+            throw new  AppException('Employee not Exists');
+        }
+
+        /** @var EmployeeJobProfile $employeeJob */
+        $employeeJob = EmployeeJobProfile::with('hr_job_position.hr_grade_level')->where('employee_id', $data['data']['id'])->first();
+
+        $gradeLevel = $employeeJob->hr_job_position->hr_grade_level;
+        /** @var EmployeePersonalDetail $employeeProfile */
+        $employeeProfile = EmployeePersonalDetail::where('employee_id', $data['data']['id'])->first();
+
+        $exitDate = null;
+        if ($gradeLevel->retire_type == AppConstant::RETIRE_TYPE_FIRST_APPOINTMENT) {
+            $exitDate = Carbon::parse($employeeProfile->appointed_on)->addYears($gradeLevel->retire_after);
+        } elseif ($gradeLevel->retire_type == AppConstant::RETIRE_TYPE_DATE_OF_BIRTH) {
+            $exitDate = Carbon::parse($employeeProfile->date_of_birth)->addYears($gradeLevel->retire_after);
+        } elseif ($gradeLevel->retire_type == AppConstant::RETIRE_TYPE_CURRENT_APPOINTMENT) {
+            $exitDate = Carbon::parse($employeeJob->current_appointment)->addYears($gradeLevel->retire_after);
+        }
+
+
+        $progression = EmployeeProgression::where('employee_id', $data['data']['id'])->first();
+        if (is_null($progression)) {
+            $progression = EmployeeProgression::create([
+                'status' => AppConstant::PROGRESSION_STATUS_NEW,
+                'employee_id' => $data['data']['id'],
+                'confirmation_due_date' => Carbon::parse($data['data']['confirmation_due_date'])->toDateString(),
+                'next_increment_due_date' => Carbon::parse($employeeJob->current_appointment)->addMonths($data['data']['next_increment'])->toDateString(),
+                'expected_exit_date' => $exitDate->toDateString(),
+                'next_promotion_due_date' => Carbon::parse($employeeJob->current_appointment)->addMonths($data['data']['next_promotion'])->toDateString()
+            ]);
+        }
+
+        return $progression;
     }
 }
