@@ -16,8 +16,9 @@ class CreateFilesTable extends Migration
         Schema::create('files', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->string('local_path');
-            $table->string('type');
+            $table->string('s3_key')->nullable();
+            $table->string('local_path')->nullable();
+            $table->string('type')->index();
             $table->softDeletes();
             $table->timestamps();
         });
