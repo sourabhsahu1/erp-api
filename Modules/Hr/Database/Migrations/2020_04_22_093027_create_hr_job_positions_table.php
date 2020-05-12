@@ -27,6 +27,7 @@ class CreateHrJobPositionsTable extends Migration
             $table->string('job_family')->nullable();
             $table->boolean('is_approved_position')->default(1);
             $table->boolean('is_active')->default(1);
+            $table->boolean('is_child_enabled')->default(1);
             $table->string('activities')->nullable();
             $table->string('competences')->nullable();
             $table->string('job_description_summary')->nullable();

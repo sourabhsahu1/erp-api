@@ -20,6 +20,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $grade_level_id
  * @property int $grade_level_step_id
  * @property int $skill_id
+ * @property boolean $is_child_enabled
  * @property string $name
  * @property string $cost_center
  * @property string $job_family
@@ -36,6 +37,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * 
  * @property \Modules\Hr\Models\Department $department
  * @property \Modules\Hr\Models\Designation $designation
+ * @property \Modules\Hr\Models\SalaryScale $hr_salary_scale
+ * @property \Modules\Hr\Models\GradeLevel $hr_grade_level
  * @property \Modules\Hr\Models\GradeLevelStep $grade_level_step
  * @property \Modules\Hr\Models\Skill $skill
  *
@@ -54,6 +57,7 @@ class JobPosition extends Eloquent
 		'grade_level_id' => 'int',
 		'grade_level_step_id' => 'int',
 		'skill_id' => 'int',
+        'is_child_enabled' => 'bool',
 		'is_approved_position' => 'bool',
 		'is_active' => 'bool'
 	];
@@ -66,6 +70,7 @@ class JobPosition extends Eloquent
         'salary_scale_id',
         'grade_level_id',
 		'grade_level_step_id',
+        'is_child_enabled',
 		'skill_id',
 		'cost_center',
 		'job_family',
@@ -87,6 +92,16 @@ class JobPosition extends Eloquent
 	{
 		return $this->belongsTo(\Modules\Hr\Models\Designation::class);
 	}
+
+    public function hr_salary_scale()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\SalaryScale::class, 'salary_scale_id');
+    }
+
+	public function hr_grade_level()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\GradeLevel::class, 'grade_level_id');
+    }
 
 	public function grade_level_step()
 	{

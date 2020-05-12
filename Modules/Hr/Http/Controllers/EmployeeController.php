@@ -12,6 +12,7 @@ use Modules\Hr\Http\Requests\Employee\UpdateRequest;
 use Modules\Hr\Http\Requests\EmployeeJobProfile\Create as CreateJobProfile;
 use Modules\Hr\Http\Requests\EmployeePersonalDetail\Create as CreatePersonalDetail;
 use Modules\Hr\Http\Requests\EmployeeContactDetail\Create as CreateContactDetail;
+use Modules\Hr\Http\Requests\EmployeeProgression\EmployeeProgressionCreate;
 use Modules\Hr\Repositories\EmployeeRepository;
 
 class EmployeeController extends BaseController
@@ -47,6 +48,7 @@ class EmployeeController extends BaseController
     }
 
     public function employeeProgression(Request $request) {
+        $this->customRequest = EmployeeProgressionCreate::class;
         $this->jobMethod = "employeeProgression";
         return $this->handleCustomEndPoint(BaseJob::class , $request);
     }
