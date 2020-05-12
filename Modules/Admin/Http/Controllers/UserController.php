@@ -43,4 +43,9 @@ class UserController extends BaseController
         $this->jobMethod = "deleteRoleAssign";
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
+
+    public function userProfileUpdate(Request $request) {
+        $this->jobMethod = "userProfileUpdate";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
 }
