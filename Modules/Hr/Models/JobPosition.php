@@ -20,6 +20,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $grade_level_id
  * @property int $grade_level_step_id
  * @property int $skill_id
+ * @property boolean $is_child_enabled
  * @property string $name
  * @property string $cost_center
  * @property string $job_family
@@ -56,6 +57,7 @@ class JobPosition extends Eloquent
 		'grade_level_id' => 'int',
 		'grade_level_step_id' => 'int',
 		'skill_id' => 'int',
+        'is_child_enabled' => 'bool',
 		'is_approved_position' => 'bool',
 		'is_active' => 'bool'
 	];
@@ -68,6 +70,7 @@ class JobPosition extends Eloquent
         'salary_scale_id',
         'grade_level_id',
 		'grade_level_step_id',
+        'is_child_enabled',
 		'skill_id',
 		'cost_center',
 		'job_family',

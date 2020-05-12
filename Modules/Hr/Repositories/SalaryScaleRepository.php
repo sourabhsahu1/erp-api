@@ -42,7 +42,7 @@ class SalaryScaleRepository extends EloquentBaseRepository
             $gradeLevelIds = GradeLevel::where('salary_scale_id', $salaryScale->id)->pluck('id')->all();
 
             foreach ($gradeLevelIds as $key => $gradeLevelId) {
-                for ($j = 1; $j <= $data['data']['number_of_levels']; $j++) {
+                for ($j = 1; $j <= $data['data']['number_of_steps']; $j++) {
                     $glStepName = 'GL-';
                     $glStepName.= str_pad($key+1, 2, '0', STR_PAD_LEFT).'-'. str_pad($j, 2, '0', STR_PAD_LEFT);;
                     $glSteps[] = [

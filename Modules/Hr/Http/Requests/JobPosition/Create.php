@@ -5,6 +5,7 @@ namespace Modules\Hr\Http\Requests\JobPosition;
 
 
 use Luezoid\Laravelcore\Requests\BaseRequest;
+use Modules\Hr\Models\JobPosition;
 
 class Create extends BaseRequest
 {
@@ -28,7 +29,19 @@ class Create extends BaseRequest
             'competences'=> 'sometimes',
             'jobDescriptionSummary'=> 'sometimes',
             'experience'=> 'sometimes',
-            'education'=> 'sometimes'
+            'education'=> 'sometimes',
+            "isChildEnabled" => ['sometimes', 'boolean', function($a, $v, $f) {
+                $parentId = $this->get('parentId');
+                if (!is_null($parentId)) {
+                    /** @var JobPosition $workLocation */
+                    $jobPosition = JobPosition::find($parentId);
+
+                    if ($jobPosition->is_child_enabled === false) {
+                        return $f('Cannot Add sub-levels');
+                    }
+
+                }
+            }]
         ];
     }
 }
