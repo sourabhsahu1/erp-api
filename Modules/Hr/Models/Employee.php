@@ -27,13 +27,13 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * 
  * @property \Modules\Hr\Models\User $user
  * @property \Modules\Hr\Models\File $file
- * @property \Illuminate\Database\Eloquent\Collection $hr_employee_contact_details
- * @property \Illuminate\Database\Eloquent\Collection $hr_employee_id_nos
- * @property \Illuminate\Database\Eloquent\Collection $hr_employee_international_passports
- * @property \Illuminate\Database\Eloquent\Collection $hr_employee_job_profiles
- * @property \Illuminate\Database\Eloquent\Collection $hr_employee_pensions
- * @property \Illuminate\Database\Eloquent\Collection $hr_employee_personal_details
- * @property \Illuminate\Database\Eloquent\Collection $hr_employee_progressions
+ * @property \Illuminate\Database\Eloquent\Collection $employee_contact_details
+ * @property \Illuminate\Database\Eloquent\Collection $employee_id_nos
+ * @property \Illuminate\Database\Eloquent\Collection $employee_international_passports
+ * @property \Illuminate\Database\Eloquent\Collection $employee_job_profiles
+ * @property \Illuminate\Database\Eloquent\Collection $employee_pensions
+ * @property \Illuminate\Database\Eloquent\Collection $employee_personal_details
+ * @property \Illuminate\Database\Eloquent\Collection $employee_progressions
  *
  * @package Modules\Hr\Models
  */
@@ -68,38 +68,38 @@ class Employee extends Eloquent
 		return $this->belongsTo(\Modules\Hr\Models\File::class, 'profile_image_id');
 	}
 
-	public function hr_employee_contact_details()
+	public function employee_contact_details()
 	{
-		return $this->hasMany(\Modules\Hr\Models\EmployeeContactDetail::class, 'employee_id');
+		return $this->hasOne(\Modules\Hr\Models\EmployeeContactDetail::class, 'employee_id');
 	}
 
-	public function hr_employee_id_nos()
+	public function employee_id_nos()
 	{
-		return $this->hasMany(\Modules\Hr\Models\EmployeeIdNo::class, 'employee_id');
+		return $this->hasOne(\Modules\Hr\Models\EmployeeIdNo::class, 'employee_id');
 	}
 
-	public function hr_employee_international_passports()
+	public function employee_international_passports()
 	{
-		return $this->hasMany(\Modules\Hr\Models\EmployeeInternationalPassport::class, 'employee_id');
+		return $this->hasOne(\Modules\Hr\Models\EmployeeInternationalPassport::class, 'employee_id');
 	}
 
-	public function hr_employee_job_profiles()
+	public function employee_job_profiles()
 	{
-		return $this->hasMany(\Modules\Hr\Models\EmployeeJobProfile::class, 'employee_id');
+		return $this->hasOne(\Modules\Hr\Models\EmployeeJobProfile::class, 'employee_id');
 	}
 
-	public function hr_employee_pensions()
+	public function employee_pensions()
 	{
-		return $this->hasMany(\Modules\Hr\Models\EmployeePension::class, 'employee_id');
+		return $this->hasOne(\Modules\Hr\Models\EmployeePension::class, 'employee_id');
 	}
 
-	public function hr_employee_personal_details()
+	public function employee_personal_details()
 	{
-		return $this->hasMany(\Modules\Hr\Models\EmployeePersonalDetail::class, 'employee_id');
+		return $this->hasOne(\Modules\Hr\Models\EmployeePersonalDetail::class, 'employee_id');
 	}
 
-	public function hr_employee_progressions()
+	public function employee_progressions()
 	{
-		return $this->hasMany(\Modules\Hr\Models\EmployeeProgression::class, 'employee_id');
+		return $this->hasOne(\Modules\Hr\Models\EmployeeProgression::class, 'employee_id');
 	}
 }

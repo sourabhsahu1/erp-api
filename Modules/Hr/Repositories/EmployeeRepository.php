@@ -34,7 +34,8 @@ class EmployeeRepository extends EloquentBaseRepository
 
     public function employeeDetails($data)
     {
-        $employeeDetails = EmployeePersonalDetail::where('employee_id', $data['data']['id'])->get();
+        $employeeDetails = EmployeePersonalDetail::where('employee_id', $data['data']['id'])->first();
+
         if (is_null($employeeDetails)) {
             $employee = EmployeePersonalDetail::create([
                 'employee_id' => $data['data']['id'],
@@ -173,4 +174,57 @@ class EmployeeRepository extends EloquentBaseRepository
 
         return $progression;
     }
+
+
+
+    public function setStatusForEmployee($data) {
+
+        if ($data['data']['status'] == 'ACTIVE'){
+            foreach ($data['data']['employee_ids'] as $employee_id) {
+                $employee = EmployeeProgression::where('employee_id', $employee_id)
+                    ->update(['status' => AppConstant::PROGRESSION_STATUS_ACTIVE]);
+            }
+        }elseif ($data['data']['status'] == 'CONFIRMED') {
+            foreach ($data['data']['employee_ids'] as $employee_id) {
+                $employee = EmployeeProgression::where('employee_id', $employee_id)
+                    ->update([
+                        'status' => AppConstant::PROGRESSION_STATUS_ACTIVE,
+                        'confirmed_date' => Carbon::now()->toDateString()
+                    ]);
+            }
+        }elseif ($data['data']['status'] == 'INCREMENT') {
+            foreach ($data['data']['employee_ids'] as $employee_id) {
+                $employee = EmployeeProgression::where('employee_id', $employee_id)
+                    ->update([
+                        'last_increment' => Carbon::now()->toDateString()
+                    ]);
+            }
+        }elseif ($data['data']['status'] == 'PROMOTION') {
+            foreach ($data['data']['employee_ids'] as $employee_id) {
+                $employee = EmployeeProgression::where('employee_id', $employee_id)
+                    ->update([
+                        'last_promoted' => Carbon::now()->toDateString()
+                    ]);
+            }
+        }elseif ($data['data']['status'] == 'RETIRE') {
+            foreach ($data['data']['employee_ids'] as $employee_id) {
+                $employee = EmployeeProgression::where('employee_id', $employee_id)
+                    ->update([
+                        'actual_exit_date' => Carbon::now()->toDateString()
+                    ]);
+            }
+        }
+    }
+
+
+
+    public function getStatusEmployee($params) {
+
+        $employees = Employee::whereHas('employee_progressions', function ($query){
+            $query->whereDate('confirmation_due_date', '>', Carbon::now()->toDateTimeString());
+        })->get();
+
+        dd($employees);
+    }
+
 }

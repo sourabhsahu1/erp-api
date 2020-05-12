@@ -13,13 +13,13 @@ class CreateRequest extends BaseRequest
     function rules()
     {
         return [
-            'personnel_file_number' => 'required',
-            'last_name' => 'required',
-            'first_name' => 'required',
-            'other_name' => 'sometimes',
+            'personnelFileNumber' => 'required',
+            'lastName' => 'required',
+            'firstName' => 'required',
+            'otherName' => 'sometimes',
             'title' => 'sometimes',
-            'profile_image_id' => "sometimes",
-            'maiden_name' => "sometimes"
+            'profileImageId' => "sometimes",
+            'maidenName' => "sometimes"
         ];
     }
 }
