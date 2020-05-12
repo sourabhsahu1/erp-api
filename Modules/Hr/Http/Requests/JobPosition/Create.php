@@ -33,7 +33,7 @@ class Create extends BaseRequest
             "isChildEnabled" => ['sometimes', 'boolean', function($a, $v, $f) {
                 $parentId = $this->get('parentId');
                 if (!is_null($parentId)) {
-                    /** @var JobPosition $workLocation */
+                    /** @var JobPosition $jobPosition */
                     $jobPosition = JobPosition::find($parentId);
 
                     if ($jobPosition->is_child_enabled === false) {
