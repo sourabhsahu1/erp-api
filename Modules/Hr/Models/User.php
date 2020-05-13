@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Thu, 23 Apr 2020 12:36:33 +0000.
+ * Date: Mon, 11 May 2020 12:53:03 +0000.
  */
 
 namespace Modules\Hr\Models;
@@ -19,10 +19,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string $email
  * @property string $username
  * @property string $password
+ * @property int $file_id
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- *
+ * 
+ * @property \Modules\Hr\Models\File $file
  * @property \Illuminate\Database\Eloquent\Collection $employees
  * @property \Illuminate\Database\Eloquent\Collection $roles
  *
@@ -32,6 +34,10 @@ class User extends Authenticatable
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
     use HasApiTokens, Notifiable;
+	protected $casts = [
+		'file_id' => 'int'
+	];
+
 	protected $hidden = [
 		'password'
 	];
@@ -40,8 +46,14 @@ class User extends Authenticatable
 		'name',
 		'email',
 		'username',
-		'password'
+		'password',
+		'file_id'
 	];
+
+	public function file()
+	{
+		return $this->belongsTo(\Modules\Hr\Models\File::class);
+	}
 
 	public function employees()
 	{
@@ -51,7 +63,7 @@ class User extends Authenticatable
 	public function roles()
 	{
 		return $this->belongsToMany(\Modules\Hr\Models\Role::class, 'user_roles')
-					->withPivot('id')
+					->withPivot('id', 'created_by_id', 'deleted_at')
 					->withTimestamps();
 	}
 }
