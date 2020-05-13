@@ -24,6 +24,7 @@ class UserController extends BaseController
     protected $storeRequest = \Modules\Admin\Http\Requests\User\Create::class;
     protected $updateRequest = \Modules\Admin\Http\Requests\User\Update::class;
     protected $indexWith = ['roles'];
+
     public function addRoleAssign(Request $request)
     {
         $this->jobMethod = "addRoleAssign";
@@ -44,7 +45,8 @@ class UserController extends BaseController
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 
-    public function userProfileUpdate(Request $request) {
+    public function userProfileUpdate(Request $request)
+    {
         $this->jobMethod = "userProfileUpdate";
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }

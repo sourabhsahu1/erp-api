@@ -76,23 +76,22 @@ class UserRepository extends EloquentBaseRepository
 
     public function userProfileUpdate($data)
     {
-//        dd(Hash::make('asdf'));
 
         /** @var User $user */
         $user = User::find($data['data']['id']);
 
-        if (!Hash::check($data['data']['old_password'], $user->password)) {
-            throw new ValidationException('Incorrect Password');
+        if (isset($data['data']['old_password']) && $data['data']['new_password']) {
 
+            if (!Hash::check($data['data']['old_password'], $user->password)) {
+                throw new ValidationException('Incorrect Password');
+            }
+
+            $data['data']['password'] = Hash::make($data['data']['new_password']);
         }
 
-        if ($data['data']['new_password'] != $data['data']['confirm_password']) {
-            throw new ValidationException('New and Confirm Password do not match');
-
-        }
 
         $data['id'] = $data['data']['id'];
-        $data['data']['password'] = Hash::make($data['data']['new_password']);
+
         return parent::update($data);
     }
 }
