@@ -37,6 +37,6 @@ class CreateHrEmployeesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('hr_employee_details');
+        Schema::dropIfExists('hr_employees');
     }
 }

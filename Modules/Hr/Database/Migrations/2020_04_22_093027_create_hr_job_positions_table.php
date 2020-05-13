@@ -17,7 +17,7 @@ class CreateHrJobPositionsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('name');
-            $table->unsignedBigInteger('department_id');
+            $table->unsignedInteger('department_id');
             $table->unsignedBigInteger('designation_id');
             $table->unsignedBigInteger('salary_scale_id');
             $table->unsignedBigInteger('grade_level_id');
@@ -35,7 +35,7 @@ class CreateHrJobPositionsTable extends Migration
             $table->string('education')->nullable();
             $table->foreign('skill_id')->references('id')->on('hr_skills');
             $table->foreign('parent_id')->references('id')->on('hr_job_positions');
-            $table->foreign('department_id')->references('id')->on('hr_departments');
+            $table->foreign('department_id')->references('id')->on('admin_segments');
             $table->foreign('designation_id')->references('id')->on('hr_designations');
             $table->foreign('salary_scale_id')->references('id')->on('hr_salary_scales');
             $table->foreign('grade_level_id')->references('id')->on('hr_grade_levels');

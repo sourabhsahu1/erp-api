@@ -7,6 +7,7 @@
 
 namespace Modules\Hr\Models;
 
+use Modules\Admin\Models\AdminSegment;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -85,7 +86,7 @@ class JobPosition extends Eloquent
 
 	public function department()
 	{
-		return $this->belongsTo(\Modules\Hr\Models\Department::class);
+		return $this->belongsTo(AdminSegment::class);
 	}
 
 	public function designation()

@@ -56,6 +56,13 @@ class EmployeeJobProfile extends Eloquent
 		'current_appointment'
 	];
 
+	public $filterable = [
+        'job_position_id',
+        'designation_id',
+        'department_id',
+        'work_location_id',
+    ];
+
 	public function hr_employee()
 	{
 		return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'employee_id');

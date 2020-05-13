@@ -58,6 +58,19 @@ class Employee extends Eloquent
 		'created_by_id'
 	];
 
+    public $filterable = [
+        'id',
+        'personnel_file_number',
+    ];
+    public $searchable = [
+        'last_name',
+        'first_name',
+        'other_name',
+        'title',
+        'maiden_name'
+    ];
+
+
 	public function user()
 	{
 		return $this->belongsTo(\Modules\Hr\Models\User::class, 'created_by_id');
@@ -102,4 +115,6 @@ class Employee extends Eloquent
 	{
 		return $this->hasOne(\Modules\Hr\Models\EmployeeProgression::class, 'employee_id');
 	}
+
+
 }

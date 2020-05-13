@@ -10,7 +10,10 @@ use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Hr\Models\Employee;
 use Modules\Hr\Models\EmployeeContactDetail;
+use Modules\Hr\Models\EmployeeIdNo;
+use Modules\Hr\Models\EmployeeInternationalPassport;
 use Modules\Hr\Models\EmployeeJobProfile;
+use Modules\Hr\Models\EmployeePension;
 use Modules\Hr\Models\EmployeePersonalDetail;
 use Modules\Hr\Models\EmployeeProgression;
 
@@ -23,6 +26,9 @@ class EmployeeRepository extends EloquentBaseRepository
 
     public function create($data)
     {
+        if (isset($data['data']['file_id'])) {
+            $data['data']['profile_image_id'] = $data['data']['file_id'];
+        }
         $data['data']['created_by_id'] = $data['data']['user_id'];
         return parent::create($data);
     }
@@ -176,15 +182,14 @@ class EmployeeRepository extends EloquentBaseRepository
     }
 
 
-
-    public function setStatusForEmployee($data) {
-
-        if ($data['data']['status'] == 'ACTIVE'){
+    public function setStatusForEmployee($data)
+    {
+        if ($data['data']['status'] == 'ACTIVE') {
             foreach ($data['data']['employee_ids'] as $employee_id) {
                 $employee = EmployeeProgression::where('employee_id', $employee_id)
                     ->update(['status' => AppConstant::PROGRESSION_STATUS_ACTIVE]);
             }
-        }elseif ($data['data']['status'] == 'CONFIRMED') {
+        } elseif ($data['data']['status'] == 'CONFIRMED') {
             foreach ($data['data']['employee_ids'] as $employee_id) {
                 $employee = EmployeeProgression::where('employee_id', $employee_id)
                     ->update([
@@ -192,21 +197,21 @@ class EmployeeRepository extends EloquentBaseRepository
                         'confirmed_date' => Carbon::now()->toDateString()
                     ]);
             }
-        }elseif ($data['data']['status'] == 'INCREMENT') {
+        } elseif ($data['data']['status'] == 'INCREMENT') {
             foreach ($data['data']['employee_ids'] as $employee_id) {
                 $employee = EmployeeProgression::where('employee_id', $employee_id)
                     ->update([
                         'last_increment' => Carbon::now()->toDateString()
                     ]);
             }
-        }elseif ($data['data']['status'] == 'PROMOTION') {
+        } elseif ($data['data']['status'] == 'PROMOTION') {
             foreach ($data['data']['employee_ids'] as $employee_id) {
                 $employee = EmployeeProgression::where('employee_id', $employee_id)
                     ->update([
                         'last_promoted' => Carbon::now()->toDateString()
                     ]);
             }
-        }elseif ($data['data']['status'] == 'RETIRE') {
+        } elseif ($data['data']['status'] == 'RETIRE') {
             foreach ($data['data']['employee_ids'] as $employee_id) {
                 $employee = EmployeeProgression::where('employee_id', $employee_id)
                     ->update([
@@ -216,15 +221,78 @@ class EmployeeRepository extends EloquentBaseRepository
         }
     }
 
-
-
-    public function getStatusEmployee($params) {
-
-        $employees = Employee::whereHas('employee_progressions', function ($query){
-            $query->whereDate('confirmation_due_date', '>', Carbon::now()->toDateTimeString());
-        })->get();
-
-        dd($employees);
+    public function getAll($params = [], $query = null)
+    {
+        $query = Employee::query();
+        if (isset($params['inputs']['status'])) {
+            if ($params['inputs']['status'] = AppConstant::PROGRESSION_STATUS_NEW) {
+                $query->whereHas('employee_progressions', function ($query) {
+                    $query->where('status', AppConstant::PROGRESSION_STATUS_NEW);
+                });
+            } elseif ($params['inputs']['status'] = AppConstant::PROGRESSION_STATUS_ACTIVE) {
+                $query->whereHas('employee_progressions', function ($query) {
+                    $query->where('status', AppConstant::PROGRESSION_STATUS_ACTIVE);
+                });
+            } elseif ($params['inputs']['status'] = AppConstant::PROGRESSION_STATUS_CONFIRMED) {
+                $query->whereHas('employee_progressions', function ($query) {
+                    $query->whereNotNull('confirmed_date');
+                });
+            } elseif ($params['inputs']['status'] = AppConstant::PROGRESSION_STATUS_CONFIRMATION_DUE) {
+                $query->whereHas('employee_progressions', function ($query) {
+                    $query->whereDate('confirmation_due_date', '>', Carbon::now()->toDateTimeString());
+                });
+            } elseif ($params['inputs']['status'] = AppConstant::PROGRESSION_STATUS_RETIREMENT_DUE) {
+                $query->whereHas('employee_progressions', function ($query) {
+                    $query->whereDate('expected_exit_date', '>', Carbon::now()->toDateTimeString());
+                });
+            } elseif ($params['inputs']['status'] = AppConstant::PROGRESSION_STATUS_INCREMENT_DUE) {
+                $query->whereHas('employee_progressions', function ($query) {
+                    $query->whereDate('next_increment_due_date', '>', Carbon::now()->toDateTimeString());
+                });
+            } elseif ($params['inputs']['status'] = AppConstant::PROGRESSION_STATUS_PROMOTION_DUE) {
+                $query->whereHas('employee_progressions', function ($query) {
+                    $query->whereDate('next_promotion_due_date', '>', Carbon::now()->toDateTimeString());
+                });
+            }
+        }
+        return parent::getAll($params, $query); // TODO: Change the autogenerated stub
     }
 
+
+    public function show($id, $params = null)
+    {
+        $params['with'] = [
+            'employee_contact_details',
+            'employee_job_profiles',
+            'employee_personal_details',
+            'employee_progressions',
+            'employee_id_nos',
+            'employee_international_passports',
+            'employee_pensions',
+            'file'
+        ];
+        return parent::show($id, $params); // TODO: Change the autogenerated stub
+    }
+
+
+    public function employeePension($data)
+    {
+        $this->model = EmployeePension::class;
+        $data['data']['employee_id'] = $data['data']['id'];
+        return parent::create($data);
+    }
+
+    public function employeeIdNos($data)
+    {
+        $this->model = EmployeeIdNo::class;
+        $data['data']['employee_id'] = $data['data']['id'];
+        return parent::create($data);
+    }
+
+    public function employeePassport($data)
+    {
+        $this->model = EmployeeInternationalPassport::class;
+        $data['data']['employee_id'] = $data['data']['id'];
+        return parent::create($data);
+    }
 }

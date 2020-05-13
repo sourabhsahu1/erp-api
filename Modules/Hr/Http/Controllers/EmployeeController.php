@@ -28,37 +28,71 @@ class EmployeeController extends BaseController
     protected $updateJobMethod = "update";
     protected $updateJob = BaseJob::class;
     protected $updateRequest = UpdateRequest::class;
-
-
-    public function employeeDetails(Request $request) {
+    protected $indexWith = [
+        'employee_contact_details',
+        'employee_job_profiles',
+        'employee_personal_details',
+        'employee_progressions',
+        'employee_id_nos',
+        'employee_international_passports',
+        'employee_pensions',
+        'file'
+    ];
+    
+    public function employeeDetails(Request $request)
+    {
         $this->customRequest = CreatePersonalDetail::class;
         $this->jobMethod = "employeeDetails";
-        return $this->handleCustomEndPoint(BaseJob::class , $request);
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 
-    public function jobProfile(Request $request) {
+    public function jobProfile(Request $request)
+    {
         $this->customRequest = CreateJobProfile::class;
         $this->jobMethod = "jobProfile";
-        return $this->handleCustomEndPoint(BaseJob::class , $request);
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 
-    public function location(Request $request) {
+    public function location(Request $request)
+    {
         $this->customRequest = CreateContactDetail::class;
         $this->jobMethod = "location";
-        return $this->handleCustomEndPoint(BaseJob::class , $request);
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 
-    public function employeeProgression(Request $request) {
+    public function employeeProgression(Request $request)
+    {
         $this->customRequest = EmployeeProgressionCreate::class;
         $this->jobMethod = "employeeProgression";
-        return $this->handleCustomEndPoint(BaseJob::class , $request);
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 
-    public function setStatusForEmployee(Request $request) {
+    public function setStatusForEmployee(Request $request)
+    {
         $this->customRequest = EmployeeStatusUpdate::class;
         $this->jobMethod = "setStatusForEmployee";
-        return $this->handleCustomEndPoint(BaseJob::class , $request);
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
+
+    public function employeePension(Request $request)
+    {
+
+        $this->jobMethod = "employeePension";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
+    public function employeeIdNos(Request $request)
+    {
+        $this->jobMethod = "employeeIdNos";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
+    public function employeePassport(Request $request)
+    {
+        $this->jobMethod = "employeePassport";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
 
 
 }

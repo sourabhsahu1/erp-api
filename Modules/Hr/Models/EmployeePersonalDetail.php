@@ -43,6 +43,17 @@ class EmployeePersonalDetail extends Eloquent
 		'is_permanent_staff' => 'bool'
 	];
 
+    public $filterable = [
+        'date_of_birth',
+        'appointed_on',
+        'date_of_birth',
+        'gender',
+        'religion',
+    ];
+    public $searchable =[
+
+    ];
+
 	protected $dates = [
 		'date_of_birth',
 		'appointed_on',
