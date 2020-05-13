@@ -16,6 +16,7 @@ class AdminSegmentRepository extends EloquentBaseRepository
 
     public function create($data)
     {
+        try {
         $arrayToMerge = ['combined_code' => $data['data']['individual_code']];
         $parentId = Arr::get($data, 'data.parent_id');
 
@@ -30,6 +31,15 @@ class AdminSegmentRepository extends EloquentBaseRepository
 
         $data['data'] = array_merge($data['data'],$arrayToMerge);
         return parent::create($data);
+
+        } catch (\Exception $exception) {
+            $response = response()->json([
+                'error' => 'Record already present with provided segment code, please try other segment code.',
+                'type' => 'BAD REQUEST',
+                'errorDetails' => 'BAD REQUEST'
+            ], 401);
+            return $response;
+        }
     }
 
     public function getAll($params = [], $query = null)
@@ -52,20 +62,5 @@ class AdminSegmentRepository extends EloquentBaseRepository
         $data['data'] = Arr::only($data['data'], $keysToUpdate);
 
         return parent::update($data);
-    }
-
-    public function delete($data)
-    {
-        $params = [
-            'with' => ['children']
-        ];
-        $node = parent::show($data['id'], $params);
-        $isChildPresent = count($node->children);
-
-        if (!$isChildPresent) {
-            return parent::delete($data);
-        } else {
-            throw new AppException('Can not delete child');
-        }
     }
 }
