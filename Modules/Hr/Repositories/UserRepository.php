@@ -46,7 +46,7 @@ class UserRepository extends EloquentBaseRepository
     {
         $userId = $params['data']['user_id'];
 
-        $selfData = User::find($userId);
+        $selfData = User::with(['file','roles'])->find($userId);
 
         return $selfData;
     }
