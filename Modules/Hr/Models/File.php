@@ -34,6 +34,13 @@ class File extends Eloquent
         'type'
     ];
 
+    protected $appends = ['file_url'];
+
+    public function getFileUrlAttribute() {
+//        dd(env('DB_PASSWORD'));
+        return env('APP_URL').$this->local_path;
+    }
+
     const  FILE_USER_IMAGE = 'USER_IMAGE';
 
     public function employees()
