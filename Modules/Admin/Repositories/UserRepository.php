@@ -77,9 +77,8 @@ class UserRepository extends EloquentBaseRepository
 
     public function userProfileUpdate($data)
     {
-
         /** @var User $user */
-        $user = User::find($data['data']['id']);
+        $user = User::find($data['data']['user_id']);
 
         if (isset($data['data']['old_password']) && $data['data']['new_password']) {
 
@@ -91,7 +90,7 @@ class UserRepository extends EloquentBaseRepository
         }
 
 
-        $data['id'] = $data['data']['id'];
+        $data['id'] = $data['data']['user_id'];
 
         return parent::update($data);
     }
