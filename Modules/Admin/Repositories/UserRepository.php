@@ -25,7 +25,8 @@ class UserRepository extends EloquentBaseRepository
 
     public function update($data)
     {
-        $data['data']['password'] = Hash::make($data['data']['password']);
+        if (isset($data['data']['password']))
+            $data['data']['password'] = Hash::make($data['data']['password']);
         return parent::update($data);
     }
 
