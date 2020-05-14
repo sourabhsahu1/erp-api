@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::post('authenticate', "AuthenticationController@doLogin")->name('authenticate.store');
 Route::middleware(['auth:api'])->group(function () {
-    Route::resource('admin', 'AdminController');
+    Route::resource('admin', 'AdminController', ['parameters' => ['admin' => 'id']]);
     Route::resource('users','UserController');
     Route::get('roles','RoleController@index');
     Route::post('user/{id}/role','UserController@addRoleAssign');

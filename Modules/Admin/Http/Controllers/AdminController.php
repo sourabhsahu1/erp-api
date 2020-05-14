@@ -4,6 +4,7 @@ namespace Modules\Admin\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
 use Luezoid\Laravelcore\Jobs\BaseJob;
+use Modules\Admin\Http\Requests\AdminSegment\AdminDeleteRequest;
 use Modules\Admin\Repositories\AdminSegmentRepository;
 use Modules\Admin\Http\Requests\AdminSegment\AdminCreateRequest;
 use Modules\Admin\Http\Requests\AdminSegment\AdminUpdateRequest;
@@ -19,4 +20,5 @@ class AdminController extends BaseController
    protected $deleteJobMethod = "delete";
    protected $storeRequest = AdminCreateRequest::class;
    protected $updateRequest = AdminUpdateRequest::class;
+   protected $deleteRequest = AdminDeleteRequest::class;
 }
