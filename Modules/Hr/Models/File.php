@@ -34,10 +34,9 @@ class File extends Eloquent
         'type'
     ];
 
-    protected $appends = ['file_url'];
+    protected $appends = ['url'];
 
-    public function getFileUrlAttribute() {
-//        dd(env('DB_PASSWORD'));
+    public function getUrlAttribute() {
         return env('APP_URL').$this->local_path;
     }
 
