@@ -32,12 +32,19 @@ class UserRepository extends EloquentBaseRepository
 
     public function addRoleAssign($data)
     {
-
-        $userRole = UserRole::create([
+        $userRole = UserRole::where([
             'user_id' => $data['data']['id'],
-            'role_id' => $data['data']['role_id'],
-            'created_by_id' => $data['data']['user_id']
-        ]);
+            'role_id' => $data['data']['role_id']
+        ])->orderBy('id', 'desc')->first();
+
+        if (is_null($userRole)) {
+            $userRole = UserRole::create([
+                'user_id' => $data['data']['id'],
+                'role_id' => $data['data']['role_id'],
+                'created_by_id' => $data['data']['user_id']
+            ]);
+        }
+
 
         $user = User::with('roles')->where('id', $data['data']['id'])->first();
         return $user;
@@ -73,6 +80,8 @@ class UserRepository extends EloquentBaseRepository
             return ['message' => 'Already Deleted'];
         }
         $userRole = $userRole->forceDelete();
+
+        return ['message' => 'Deleted Successfully'];
     }
 
     public function userProfileUpdate($data)
