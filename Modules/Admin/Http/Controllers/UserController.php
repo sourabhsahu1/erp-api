@@ -24,6 +24,7 @@ class UserController extends BaseController
     protected $storeRequest = \Modules\Admin\Http\Requests\User\Create::class;
     protected $updateRequest = \Modules\Admin\Http\Requests\User\Update::class;
     protected $indexWith = ['roles'];
+    protected $showWith = ['roles'];
 
     public function addRoleAssign(Request $request)
     {
