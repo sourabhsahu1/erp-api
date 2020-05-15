@@ -94,12 +94,12 @@ class JobPosition extends Eloquent
         return $this->belongsTo(\Modules\Hr\Models\Designation::class);
     }
 
-    public function hr_salary_scale()
+    public function salary_scale()
     {
         return $this->belongsTo(\Modules\Hr\Models\SalaryScale::class, 'salary_scale_id');
     }
 
-    public function hr_grade_level()
+    public function grade_level()
     {
         return $this->belongsTo(\Modules\Hr\Models\GradeLevel::class, 'grade_level_id');
     }
