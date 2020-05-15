@@ -126,7 +126,7 @@ class JobPosition extends Eloquent
 
     public function sub_categories()
     {
-        return $this->children()->with('department', 'sub_categories');
+        return $this->children()->with('department','designation','salary_scale','grade_level','grade_level_step','skill', 'sub_categories');
     }
 
     public function children()
