@@ -62,4 +62,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('employees/{id}/job-profile','EmployeeController@jobProfile');
     Route::post('employees/{id}/location','EmployeeController@location');
     Route::post('employees/{id}/progression','EmployeeController@employeeProgression');
+    Route::post('employees/status','EmployeeController@setStatusForEmployee');
+    Route::get('employees','EmployeeController@index');
+    Route::get('employees/{id}','EmployeeController@show');
+    Route::post('employees/{id}/pension','EmployeeController@employeePension');
+    Route::post('employees/{id}/id-nos','EmployeeController@employeeIdNos');
+    Route::post('employees/{id}/passport','EmployeeController@employeePassport');
+
 });

@@ -11,9 +11,16 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class EmployeeIdNo
- * 
+ *
  * @property int $id
  * @property int $employee_id
+ * @property string $nhf_number
+ * @property string $tin_number
+ * @property string $driver_license_number
+ * @property string $bank_version_number
+ * @property string $pension_fund_administration
+ * @property string $company_name
+ * @property string $pfa_number
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -26,12 +33,21 @@ class EmployeeIdNo extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
+    protected $table = 'hr_employee_id_nos';
+
 	protected $casts = [
 		'employee_id' => 'int'
 	];
 
 	protected $fillable = [
-		'employee_id'
+        'employee_id',
+        'nhf_number',
+        'tin_number',
+        'driver_license_number',
+        'bank_version_number',
+        'pension_fund_administration',
+        'company_name',
+        'pfa_number'
 	];
 
 	public function hr_employee()

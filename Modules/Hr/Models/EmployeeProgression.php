@@ -7,6 +7,7 @@
 
 namespace Modules\Hr\Models;
 
+use Illuminate\Support\Carbon;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -48,6 +49,8 @@ class EmployeeProgression extends Eloquent
 	];
 	protected $table = "hr_employee_progressions";
 
+	protected $appends = ['is_confirmed','next_promotion','is_exited','next_increment'];
+
 	protected $fillable = [
 		'employee_id',
 		'status',
@@ -61,8 +64,44 @@ class EmployeeProgression extends Eloquent
 		'actual_exit_date'
 	];
 
+    public function getIsConfirmedAttribute(){
+        if (is_null($this->confirmed_date)) {
+            return false;
+        }
+        return true;
+    }
+
+    public function getNextPromotionAttribute(){
+
+        if (!is_null($this->last_promoted)) {
+                $start = Carbon::parse($this->last_promoted);
+                $end = Carbon::parse($this->next_promotion_due_date);
+                return $start->diffInMonths($end);
+        }
+        return null;
+    }
+    public function getIsExitedAttribute(){
+        if (is_null($this->actual_exit_date)) {
+            return false;
+        }
+        return true;
+    }
+
+    public function getNextIncrementAttribute(){
+        if (!is_null($this->last_increment)) {
+            $start = Carbon::parse($this->last_increment);
+            $end = Carbon::parse($this->next_increment_due_date);
+            return $start->diffInMonths($end);
+        }
+        return null;
+    }
+
+
 	public function hr_employee()
 	{
 		return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'employee_id');
 	}
+
+
+
 }

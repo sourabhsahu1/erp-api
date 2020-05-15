@@ -68,6 +68,18 @@ class EmployeeContactDetail extends Eloquent
         'other_lga_id'
     ];
 
+    public $filterable = [
+        'employee_id',
+        'country_id',
+        'region_id',
+        'state_id',
+        'lga_id',
+    ];
+
+    public $searchable = [
+        'zip_code'
+    ];
+
     public function lga()
     {
         return $this->belongsTo(\Modules\Hr\Models\Lga::class, 'state_id');

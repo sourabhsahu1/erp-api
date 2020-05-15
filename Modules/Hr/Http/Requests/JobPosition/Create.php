@@ -15,7 +15,7 @@ class Create extends BaseRequest
         return [
             'parentId' => 'sometimes|exists:hr_job_positions,id',
             'name' => 'required',
-            'departmentId'=> 'required|exists:hr_departments,id',
+            'departmentId'=> 'required|exists:admin_segments,id',
             'designationId'=> 'sometimes|exists:hr_designations,id',
             'salaryScaleId'=> 'required|exists:hr_salary_scales,id',
             'gradeLevelId'=> 'required|exists:hr_grade_levels,id',

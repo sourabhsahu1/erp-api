@@ -22,4 +22,6 @@ class JobPositionController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
+    protected $indexWith = ['department','designation','grade_level_step','skill'];
+    protected $showWith = ['department'];
 }

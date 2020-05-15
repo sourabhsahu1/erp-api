@@ -11,10 +11,14 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class EmployeePension
- * 
+ *
  * @property int $id
  * @property int $employee_id
  * @property bool $is_pension_started
+ * @property \Carbon\Carbon $date_started
+ * @property float $gratuity
+ * @property int $monthly_pension
+ * @property int $other_pension
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -27,15 +31,27 @@ class EmployeePension extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
-	protected $casts = [
-		'employee_id' => 'int',
-		'is_pension_started' => 'bool'
-	];
+    protected $table = 'hr_employee_pensions';
+    protected $casts = [
+        'employee_id' => 'int',
+        'is_pension_started' => 'bool',
+        'gratuity' => 'float',
+        'monthly_pension' => 'int',
+        'other_pension' => 'int'
+    ];
 
-	protected $fillable = [
-		'employee_id',
-		'is_pension_started'
-	];
+    protected $dates = [
+        'date_started'
+    ];
+
+    protected $fillable = [
+        'employee_id',
+        'is_pension_started',
+        'date_started',
+        'gratuity',
+        'monthly_pension',
+        'other_pension'
+    ];
 
 	public function hr_employee()
 	{
