@@ -28,14 +28,14 @@ class CreateHrEmployeeContactDetailsTable extends Migration
             $table->unsignedBigInteger('other_region_id');
             $table->unsignedBigInteger('other_state_id');
             $table->unsignedBigInteger('other_lga_id');
-            $table->foreign('country_id')->references('id')->on('lgas');
-            $table->foreign('region_id')->references('id')->on('lgas');
-            $table->foreign('state_id')->references('id')->on('lgas');
+            $table->foreign('country_id')->references('id')->on('countries');
+            $table->foreign('region_id')->references('id')->on('regions');
+            $table->foreign('state_id')->references('id')->on('states');
             $table->foreign('lga_id')->references('id')->on('lgas');
 
-            $table->foreign('other_country_id')->references('id')->on('lgas');
-            $table->foreign('other_region_id')->references('id')->on('lgas');
-            $table->foreign('other_state_id')->references('id')->on('lgas');
+            $table->foreign('other_country_id')->references('id')->on('countries');
+            $table->foreign('other_region_id')->references('id')->on('regions');
+            $table->foreign('other_state_id')->references('id')->on('states');
             $table->foreign('other_lga_id')->references('id')->on('lgas');
             $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->softDeletes();

@@ -82,11 +82,47 @@ class EmployeeContactDetail extends Eloquent
 
     public function lga()
     {
-        return $this->belongsTo(\Modules\Hr\Models\Lga::class, 'state_id');
+        return $this->belongsTo(\Modules\Hr\Models\Lga::class);
     }
 
     public function hr_employee()
     {
         return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'employee_id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Country::class);
+    }
+
+    public function region()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Region::class);
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\State::class);
+    }
+
+
+    public function other_country()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Country::class ,'other_country_id');
+    }
+
+    public function other_region()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Region::class,'other_region_id');
+    }
+
+    public function other_state()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\State::class,'other_state_id');
+    }
+
+    public function other_lga()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Lga::class ,'other_lga_id');
     }
 }

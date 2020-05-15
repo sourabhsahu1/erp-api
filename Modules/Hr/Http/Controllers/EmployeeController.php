@@ -29,8 +29,18 @@ class EmployeeController extends BaseController
     protected $updateJob = BaseJob::class;
     protected $updateRequest = UpdateRequest::class;
     protected $indexWith = [
-        'employee_contact_details',
-        'employee_job_profiles',
+        'employee_contact_details.country',
+        'employee_contact_details.region',
+        'employee_contact_details.state',
+        'employee_contact_details.lga',
+        'employee_contact_details.other_country',
+        'employee_contact_details.other_region',
+        'employee_contact_details.other_state',
+        'employee_contact_details.other_lga',
+        'employee_job_profiles.department',
+        'employee_job_profiles.designation',
+        'employee_job_profiles.hr_job_position',
+        'employee_job_profiles.work_location',
         'employee_personal_details',
         'employee_progressions',
         'employee_id_nos',
