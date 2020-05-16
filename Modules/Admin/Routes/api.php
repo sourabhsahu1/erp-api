@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,10 +16,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('authenticate', "AuthenticationController@doLogin")->name('authenticate.store');
 Route::middleware(['auth:api'])->group(function () {
     Route::resource('admin', 'AdminController', ['parameters' => ['admin' => 'id']]);
-    Route::resource('users','UserController');
-    Route::get('roles','RoleController@index');
-    Route::post('user/{id}/role','UserController@addRoleAssign');
-    Route::put('user/{id}/role','UserController@updateRoleAssign');
-    Route::delete('user/{id}/role/{roleId}','UserController@deleteRoleAssign');
+    Route::resource('users', 'UserController');
+    Route::get('roles', 'RoleController@index');
+    Route::post('user/{id}/role', 'UserController@addRoleAssign');
+    Route::put('user/{id}/role', 'UserController@updateRoleAssign');
+    Route::delete('user/{id}/role/{roleId}', 'UserController@deleteRoleAssign');
     Route::put('profile', 'UserController@userProfileUpdate');
 });
