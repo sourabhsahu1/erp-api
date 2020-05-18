@@ -22,22 +22,16 @@ class CreateHrEmployeeProgressionsTable extends Migration
                 AppConstant::PROGRESSION_STATUS_NEW,
                 AppConstant::PROGRESSION_STATUS_RETIRE
             ]);
-
             $table->date('confirmation_due_date')->nullable();
             $table->date('confirmed_date')->nullable();
-            //todo check is_confirmed manage from logic
-
             $table->date('last_increment')->nullable();
             $table->date('next_increment_due_date')->nullable();
-
+            $table->integer('month_increment');
+            $table->integer('month_promotion');
             $table->date('last_promoted')->nullable();
             $table->date('next_promotion_due_date')->nullable();
-
-
             $table->date('expected_exit_date')->nullable();
             $table->date('actual_exit_date')->nullable();
-            //todo check is_exited managed from logic
-
             $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->timestamps();
         });

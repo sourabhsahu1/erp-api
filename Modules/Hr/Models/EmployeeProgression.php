@@ -19,6 +19,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $confirmation_due_date
  * @property \Carbon\Carbon $confirmed_date
  * @property \Carbon\Carbon $last_increment
+ * @property int $month_increment
+ * @property int $month_promotion
  * @property \Carbon\Carbon $next_increment_due_date
  * @property \Carbon\Carbon $last_promoted
  * @property \Carbon\Carbon $next_promotion_due_date
@@ -34,7 +36,9 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 class EmployeeProgression extends Eloquent
 {
 	protected $casts = [
-		'employee_id' => 'int'
+		'employee_id' => 'int',
+        'month_increment' => 'int',
+        'month_promotion' => 'int'
 	];
 
 	protected $dates = [
@@ -57,6 +61,8 @@ class EmployeeProgression extends Eloquent
 		'confirmation_due_date',
 		'confirmed_date',
 		'last_increment',
+        'month_increment',
+        'month_promotion',
 		'next_increment_due_date',
 		'last_promoted',
 		'next_promotion_due_date',

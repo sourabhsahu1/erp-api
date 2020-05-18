@@ -183,12 +183,15 @@ class EmployeeRepository extends EloquentBaseRepository
         $data['data']['next_promotion_due_date'] = Carbon::parse($employeeJob->current_appointment)->addMonths($data['data']['next_promotion'])->toDateString();
         $progression = EmployeeProgression::where('employee_id', $data['data']['id'])->first();
         DB::beginTransaction();
+
         try {
             if (is_null($progression)) {
                 $progression = EmployeeProgression::create([
                     'status' => $data['data']['status'],
                     'employee_id' => $data['data']['id'],
                     'confirmation_due_date' => $data['data']['confirmation_due_date'],
+                    'month_increment' => $data['data']['next_increment'],
+                    'month_promotion' => $data['data']['next_promotion'],
                     'confirmed_date' => $data['data']['confirmed_date'] ?? null,
                     'next_increment_due_date' => $data['data']['next_increment_due_date'],
                     'last_increment' => $data['data']['last_increment'],
@@ -208,7 +211,7 @@ class EmployeeRepository extends EloquentBaseRepository
                 'other_pension' => $data['data']['other_pension'] ?? null,
             ]);
             DB::commit();
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
         }
@@ -218,34 +221,32 @@ class EmployeeRepository extends EloquentBaseRepository
 
     public function setStatusForEmployee($data)
     {
-        if ($data['data']['status'] == 'ACTIVE') {
-            foreach ($data['data']['employee_ids'] as $employee_id) {
+
+        $emp = EmployeeProgression::whereIn('id', $data['data']['employee_ids'])->get();
+        foreach ($data['data']['employee_ids'] as $employee_id) {
+            /** @var EmployeeProgression $employeeProgression */
+            $employeeProgression = EmployeeProgression::where('employee_id', $employee_id)->first();
+            if ($data['data']['status'] == 'ACTIVE') {
                 $employee = EmployeeProgression::where('employee_id', $employee_id)
                     ->update(['status' => AppConstant::PROGRESSION_STATUS_ACTIVE]);
-            }
-        } elseif ($data['data']['status'] == 'CONFIRMED') {
-            foreach ($data['data']['employee_ids'] as $employee_id) {
+            } elseif ($data['data']['status'] == 'CONFIRMED') {
                 $employee = EmployeeProgression::where('employee_id', $employee_id)
                     ->update([
                         'confirmed_date' => Carbon::now()->toDateString()
                     ]);
-            }
-        } elseif ($data['data']['status'] == 'INCREMENT') {
-            foreach ($data['data']['employee_ids'] as $employee_id) {
+            } elseif ($data['data']['status'] == 'INCREMENT') {
                 $employee = EmployeeProgression::where('employee_id', $employee_id)
                     ->update([
-                        'last_increment' => Carbon::now()->toDateString()
+                        'last_increment' => Carbon::now()->toDateString(),
+                        'next_increment_due_date' => Carbon::parse($employeeProgression->next_increment_due_date)->addMonths($employeeProgression->month_increment)->toDateString()
                     ]);
-            }
-        } elseif ($data['data']['status'] == 'PROMOTION') {
-            foreach ($data['data']['employee_ids'] as $employee_id) {
+            } elseif ($data['data']['status'] == 'PROMOTION') {
                 $employee = EmployeeProgression::where('employee_id', $employee_id)
                     ->update([
-                        'last_promoted' => Carbon::now()->toDateString()
+                        'last_promoted' => Carbon::now()->toDateString(),
+                        'next_promotion_due_date' => Carbon::parse($employeeProgression->next_promotion_due_date)->addMonths($employeeProgression->month_promotion)->toDateString()
                     ]);
-            }
-        } elseif ($data['data']['status'] == 'RETIRE') {
-            foreach ($data['data']['employee_ids'] as $employee_id) {
+            } elseif ($data['data']['status'] == 'RETIRE') {
                 $employee = EmployeeProgression::where('employee_id', $employee_id)
                     ->update([
                         'status' => AppConstant::PROGRESSION_STATUS_RETIRE,
@@ -253,6 +254,7 @@ class EmployeeRepository extends EloquentBaseRepository
                     ]);
             }
         }
+
     }
 
     public function getAll($params = [], $query = null)
@@ -262,6 +264,7 @@ class EmployeeRepository extends EloquentBaseRepository
             if ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_NEW) {
                 $query->whereHas('employee_progressions', function ($query) {
                     $query->where('status', AppConstant::PROGRESSION_STATUS_NEW);
+                    $query->whereNull('confirmed_date');
                 });
             } elseif ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_ACTIVE) {
                 $query->whereHas('employee_progressions', function ($query) {
@@ -273,20 +276,20 @@ class EmployeeRepository extends EloquentBaseRepository
                 });
             } elseif ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_CONFIRMATION_DUE) {
                 $query->whereHas('employee_progressions', function ($query) {
-                    $query->whereDate('confirmation_due_date', '>', Carbon::now()->toDateTimeString());
+                    $query->whereNull('confirmed_date');
+                    $query->whereDate('confirmation_due_date', '<', Carbon::now()->toDateTimeString());
                 });
             } elseif ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_RETIREMENT_DUE) {
-//                dd(4);
                 $query->whereHas('employee_progressions', function ($query) {
-                    $query->whereDate('expected_exit_date', '<=', Carbon::now()->toDateTimeString());
+                    $query->whereDate('expected_exit_date', '<', Carbon::now()->toDateTimeString());
                 });
             } elseif ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_INCREMENT_DUE) {
                 $query->whereHas('employee_progressions', function ($query) {
-                    $query->whereDate('next_increment_due_date', '>', Carbon::now()->toDateTimeString());
+                    $query->whereDate('next_increment_due_date', '<', Carbon::now()->toDateTimeString());
                 });
             } elseif ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_PROMOTION_DUE) {
                 $query->whereHas('employee_progressions', function ($query) {
-                    $query->whereDate('next_promotion_due_date', '>', Carbon::now()->toDateTimeString());
+                    $query->whereDate('next_promotion_due_date', '<', Carbon::now()->toDateTimeString());
                 });
             }
         }
@@ -326,8 +329,8 @@ class EmployeeRepository extends EloquentBaseRepository
         $data['data']['employee_id'] = $data['data']['id'];
         $employeeIdno = EmployeeIdNo::where('employee_id', $data['data']['id'])->first();
         if (is_null($employeeIdno)) {
-           $employeeIdno =  parent::create($data);
-        }else {
+            $employeeIdno = parent::create($data);
+        } else {
             $data['id'] = $data['data']['id'];
             parent::update($data);
         }
@@ -335,13 +338,13 @@ class EmployeeRepository extends EloquentBaseRepository
         $this->model = EmployeeInternationalPassport::class;
         $employeePassport = EmployeeInternationalPassport::where('employee_id', $data['data']['id'])->first();
         if (is_null($employeePassport)) {
-            $employeePassport =  parent::create($data);
-        }else {
+            $employeePassport = parent::create($data);
+        } else {
             $data['id'] = $data['data']['id'];
             parent::update($data);
         }
 
 
-        return array_merge($employeeIdno->toArray(),$employeePassport->toArray());
+        return array_merge($employeeIdno->toArray(), $employeePassport->toArray());
     }
 }
