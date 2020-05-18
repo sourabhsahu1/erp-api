@@ -176,9 +176,9 @@ class EmployeeRepository extends EloquentBaseRepository
             $data['data']['status'] = AppConstant::PROGRESSION_STATUS_RETIRE;
         }
 
-        $data['data']['confirmation_due_date'] = isset($data['data']['confirmation_due_date']) ? $data['data']['confirmation_due_date'] : null;
-        $data['data']['last_increment'] = isset($data['data']['last_increment']) ? $data['data']['last_increment'] : null;
-        $data['data']['last_promoted'] = isset($data['data']['last_promoted']) ? $data['data']['last_promoted'] : null;
+        $data['data']['confirmation_due_date'] = isset($data['data']['confirmation_due_date']) ? Carbon::now($data['data']['confirmation_due_date'])->toDateString() : null;
+        $data['data']['last_increment'] = isset($data['data']['last_increment']) ? Carbon::now($data['data']['last_increment'])->toDateString() : null;
+        $data['data']['last_promoted'] = isset($data['data']['last_promoted']) ? Carbon::now($data['data']['last_promoted'])->toDateString() : null;
         $data['data']['next_increment_due_date'] = Carbon::parse($employeeJob->current_appointment)->addMonths($data['data']['next_increment'])->toDateString();
         $data['data']['next_promotion_due_date'] = Carbon::parse($employeeJob->current_appointment)->addMonths($data['data']['next_promotion'])->toDateString();
         $progression = EmployeeProgression::where('employee_id', $data['data']['id'])->first();
