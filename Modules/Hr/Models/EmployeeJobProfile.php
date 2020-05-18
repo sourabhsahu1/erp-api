@@ -25,7 +25,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $updated_at
  *
  * @property \Modules\Hr\Models\Employee $hr_employee
- * @property \Modules\Hr\Models\JobPosition $hr_job_position
+ * @property \Modules\Hr\Models\JobPosition $job_position
  * @property \Modules\Hr\Models\WorkLocation $hr_work_location
  *
  * @package Modules\Hr\Models
@@ -69,15 +69,10 @@ class EmployeeJobProfile extends Eloquent
         return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'employee_id');
     }
 
-    public function hr_job_position()
+    public function job_position()
     {
         return $this->belongsTo(\Modules\Hr\Models\JobPosition::class, 'job_position_id');
     }
-
-//    public function hr_work_location()
-//    {
-//        return $this->belongsTo(\Modules\Hr\Models\WorkLocation::class, 'work_location_id');
-//    }
 
     public function department()
     {

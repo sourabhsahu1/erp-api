@@ -151,9 +151,9 @@ class EmployeeRepository extends EloquentBaseRepository
         }
 
         /** @var EmployeeJobProfile $employeeJob */
-        $employeeJob = EmployeeJobProfile::with('hr_job_position.grade_level')->where('employee_id', $data['data']['id'])->first();
+        $employeeJob = EmployeeJobProfile::with('job_position.grade_level')->where('employee_id', $data['data']['id'])->first();
         $data['data']['status'] = AppConstant::PROGRESSION_STATUS_NEW;
-        $gradeLevel = $employeeJob->hr_job_position->grade_level;
+        $gradeLevel = $employeeJob->job_position->grade_level;
         /** @var EmployeePersonalDetail $employeeProfile */
         $employeeProfile = EmployeePersonalDetail::where('employee_id', $data['data']['id'])->first();
 
@@ -259,31 +259,32 @@ class EmployeeRepository extends EloquentBaseRepository
     {
         $query = Employee::query();
         if (isset($params['inputs']['status'])) {
-            if ($params['inputs']['status'] = AppConstant::PROGRESSION_STATUS_NEW) {
+            if ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_NEW) {
                 $query->whereHas('employee_progressions', function ($query) {
                     $query->where('status', AppConstant::PROGRESSION_STATUS_NEW);
                 });
-            } elseif ($params['inputs']['status'] = AppConstant::PROGRESSION_STATUS_ACTIVE) {
+            } elseif ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_ACTIVE) {
                 $query->whereHas('employee_progressions', function ($query) {
                     $query->where('status', AppConstant::PROGRESSION_STATUS_ACTIVE);
                 });
-            } elseif ($params['inputs']['status'] = AppConstant::PROGRESSION_STATUS_CONFIRMED) {
+            } elseif ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_CONFIRMED) {
                 $query->whereHas('employee_progressions', function ($query) {
                     $query->whereNotNull('confirmed_date');
                 });
-            } elseif ($params['inputs']['status'] = AppConstant::PROGRESSION_STATUS_CONFIRMATION_DUE) {
+            } elseif ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_CONFIRMATION_DUE) {
                 $query->whereHas('employee_progressions', function ($query) {
                     $query->whereDate('confirmation_due_date', '>', Carbon::now()->toDateTimeString());
                 });
-            } elseif ($params['inputs']['status'] = AppConstant::PROGRESSION_STATUS_RETIREMENT_DUE) {
+            } elseif ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_RETIREMENT_DUE) {
+//                dd(4);
                 $query->whereHas('employee_progressions', function ($query) {
-                    $query->whereDate('expected_exit_date', '>', Carbon::now()->toDateTimeString());
+                    $query->whereDate('expected_exit_date', '<=', Carbon::now()->toDateTimeString());
                 });
-            } elseif ($params['inputs']['status'] = AppConstant::PROGRESSION_STATUS_INCREMENT_DUE) {
+            } elseif ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_INCREMENT_DUE) {
                 $query->whereHas('employee_progressions', function ($query) {
                     $query->whereDate('next_increment_due_date', '>', Carbon::now()->toDateTimeString());
                 });
-            } elseif ($params['inputs']['status'] = AppConstant::PROGRESSION_STATUS_PROMOTION_DUE) {
+            } elseif ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_PROMOTION_DUE) {
                 $query->whereHas('employee_progressions', function ($query) {
                     $query->whereDate('next_promotion_due_date', '>', Carbon::now()->toDateTimeString());
                 });
