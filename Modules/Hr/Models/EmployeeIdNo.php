@@ -19,7 +19,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $driver_license_number
  * @property string $bank_version_number
  * @property string $pension_fund_administration
- * @property string $company_name
+ * @property string $national_id_number
  * @property string $pfa_number
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
@@ -46,7 +46,7 @@ class EmployeeIdNo extends Eloquent
         'driver_license_number',
         'bank_version_number',
         'pension_fund_administration',
-        'company_name',
+        'national_id_number',
         'pfa_number'
 	];
 

@@ -6,6 +6,7 @@ namespace Modules\Hr\Repositories;
 
 use App\Constants\AppConstant;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Hr\Models\Employee;
@@ -150,34 +151,67 @@ class EmployeeRepository extends EloquentBaseRepository
         }
 
         /** @var EmployeeJobProfile $employeeJob */
-        $employeeJob = EmployeeJobProfile::with('hr_job_position.hr_grade_level')->where('employee_id', $data['data']['id'])->first();
-
-        $gradeLevel = $employeeJob->hr_job_position->hr_grade_level;
+        $employeeJob = EmployeeJobProfile::with('hr_job_position.grade_level')->where('employee_id', $data['data']['id'])->first();
+        $data['data']['status'] = AppConstant::PROGRESSION_STATUS_NEW;
+        $gradeLevel = $employeeJob->hr_job_position->grade_level;
         /** @var EmployeePersonalDetail $employeeProfile */
         $employeeProfile = EmployeePersonalDetail::where('employee_id', $data['data']['id'])->first();
 
-        $exitDate = null;
-        if ($gradeLevel->retire_type == AppConstant::RETIRE_TYPE_FIRST_APPOINTMENT) {
-            $exitDate = Carbon::parse($employeeProfile->appointed_on)->addYears($gradeLevel->retire_after);
-        } elseif ($gradeLevel->retire_type == AppConstant::RETIRE_TYPE_DATE_OF_BIRTH) {
-            $exitDate = Carbon::parse($employeeProfile->date_of_birth)->addYears($gradeLevel->retire_after);
-        } elseif ($gradeLevel->retire_type == AppConstant::RETIRE_TYPE_CURRENT_APPOINTMENT) {
-            $exitDate = Carbon::parse($employeeJob->current_appointment)->addYears($gradeLevel->retire_after);
+        if (!isset($data['data']['expected_exit_date'])) {
+            $data['data']['expected_exit_date'] = null;
+            if ($gradeLevel->retire_type == AppConstant::RETIRE_TYPE_FIRST_APPOINTMENT) {
+                $data['data']['expected_exit_date'] = Carbon::parse($employeeProfile->appointed_on)->addYears($gradeLevel->retire_after)->toDateString();
+            } elseif ($gradeLevel->retire_type == AppConstant::RETIRE_TYPE_DATE_OF_BIRTH) {
+                $data['data']['expected_exit_date'] = Carbon::parse($employeeProfile->date_of_birth)->addYears($gradeLevel->retire_after)->toDateString();
+            } elseif ($gradeLevel->retire_type == AppConstant::RETIRE_TYPE_CURRENT_APPOINTMENT) {
+                $data['data']['expected_exit_date'] = Carbon::parse($employeeJob->current_appointment)->addYears($gradeLevel->retire_after)->toDateString();
+            }
         }
 
+        if ($data['data']['is_confirmed'] == true) {
+            $data['data']['confirmed_date'] = Carbon::now()->toDateString();
+        }
+        if ($data['data']['is_exited'] == true) {
+            $data['data']['actual_exit_date'] = Carbon::now()->toDateString();
+            $data['data']['status'] = AppConstant::PROGRESSION_STATUS_RETIRE;
+        }
 
+        $data['data']['confirmation_due_date'] = isset($data['data']['confirmation_due_date']) ? $data['data']['confirmation_due_date'] : null;
+        $data['data']['last_increment'] = isset($data['data']['last_increment']) ? $data['data']['last_increment'] : null;
+        $data['data']['last_promoted'] = isset($data['data']['last_promoted']) ? $data['data']['last_promoted'] : null;
+        $data['data']['next_increment_due_date'] = Carbon::parse($employeeJob->current_appointment)->addMonths($data['data']['next_increment'])->toDateString();
+        $data['data']['next_promotion_due_date'] = Carbon::parse($employeeJob->current_appointment)->addMonths($data['data']['next_promotion'])->toDateString();
         $progression = EmployeeProgression::where('employee_id', $data['data']['id'])->first();
-        if (is_null($progression)) {
-            $progression = EmployeeProgression::create([
-                'status' => AppConstant::PROGRESSION_STATUS_NEW,
-                'employee_id' => $data['data']['id'],
-                'confirmation_due_date' => Carbon::parse($data['data']['confirmation_due_date'])->toDateString(),
-                'next_increment_due_date' => Carbon::parse($employeeJob->current_appointment)->addMonths($data['data']['next_increment'])->toDateString(),
-                'expected_exit_date' => $exitDate->toDateString(),
-                'next_promotion_due_date' => Carbon::parse($employeeJob->current_appointment)->addMonths($data['data']['next_promotion'])->toDateString()
-            ]);
-        }
+        DB::beginTransaction();
+        try {
+            if (is_null($progression)) {
+                $progression = EmployeeProgression::create([
+                    'status' => $data['data']['status'],
+                    'employee_id' => $data['data']['id'],
+                    'confirmation_due_date' => $data['data']['confirmation_due_date'],
+                    'confirmed_date' => $data['data']['confirmed_date'] ?? null,
+                    'next_increment_due_date' => $data['data']['next_increment_due_date'],
+                    'last_increment' => $data['data']['last_increment'],
+                    'expected_exit_date' => $data['data']['expected_exit_date'],
+                    'actual_exit_date' => $data['data']['actual_exit_date'] ?? null,
+                    'next_promotion_due_date' => $data['data']['next_promotion_due_date'],
+                    'last_promoted' => $data['data']['last_promoted'],
+                ]);
+            }
 
+            $employeeJob = EmployeePension::create([
+                'is_pension_started' => $data['data']['is_pension_started'],
+                'employee_id' => $data['data']['id'],
+                'date_started' => $data['data']['date_started'] ?? null,
+                'gratuity' => $data['data']['gratuity'] ?? null,
+                'monthly_pension' => $data['data']['monthly_pension'] ?? null,
+                'other_pension' => $data['data']['other_pension'] ?? null,
+            ]);
+            DB::commit();
+        }catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
         return $progression;
     }
 
@@ -193,7 +227,6 @@ class EmployeeRepository extends EloquentBaseRepository
             foreach ($data['data']['employee_ids'] as $employee_id) {
                 $employee = EmployeeProgression::where('employee_id', $employee_id)
                     ->update([
-                        'status' => AppConstant::PROGRESSION_STATUS_ACTIVE,
                         'confirmed_date' => Carbon::now()->toDateString()
                     ]);
             }
@@ -262,8 +295,18 @@ class EmployeeRepository extends EloquentBaseRepository
     public function show($id, $params = null)
     {
         $params['with'] = [
-            'employee_contact_details',
-            'employee_job_profiles',
+            'employee_contact_details.country',
+            'employee_contact_details.region',
+            'employee_contact_details.state',
+            'employee_contact_details.lga',
+            'employee_contact_details.other_country',
+            'employee_contact_details.other_region',
+            'employee_contact_details.other_state',
+            'employee_contact_details.other_lga',
+            'employee_job_profiles.department',
+            'employee_job_profiles.designation',
+            'employee_job_profiles.hr_job_position',
+            'employee_job_profiles.work_location',
             'employee_personal_details',
             'employee_progressions',
             'employee_id_nos',
@@ -275,24 +318,28 @@ class EmployeeRepository extends EloquentBaseRepository
     }
 
 
-    public function employeePension($data)
-    {
-        $this->model = EmployeePension::class;
-        $data['data']['employee_id'] = $data['data']['id'];
-        return parent::create($data);
-    }
-
     public function employeeIdNos($data)
     {
         $this->model = EmployeeIdNo::class;
         $data['data']['employee_id'] = $data['data']['id'];
-        return parent::create($data);
-    }
+        $employeeIdno = EmployeeIdNo::where('employee_id', $data['data']['id'])->first();
+        if (is_null($employeeIdno)) {
+           $employeeIdno =  parent::create($data);
+        }else {
+            $data['id'] = $data['data']['id'];
+            parent::update($data);
+        }
 
-    public function employeePassport($data)
-    {
         $this->model = EmployeeInternationalPassport::class;
-        $data['data']['employee_id'] = $data['data']['id'];
-        return parent::create($data);
+        $employeePassport = EmployeeInternationalPassport::where('employee_id', $data['data']['id'])->first();
+        if (is_null($employeePassport)) {
+            $employeePassport =  parent::create($data);
+        }else {
+            $data['id'] = $data['data']['id'];
+            parent::update($data);
+        }
+
+
+        return array_merge($employeeIdno->toArray(),$employeePassport->toArray());
     }
 }

@@ -15,7 +15,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $id
  * @property int $employee_id
  * @property string $passport_number
- * @property string $issued_at
+ * @property int $issued_at
  * @property \Carbon\Carbon $issued_date
  * @property \Carbon\Carbon $expiry_date
  * @property string $work_permit_number
@@ -24,6 +24,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $updated_at
  * 
  * @property \Modules\Hr\Models\Employee $hr_employee
+ * @property \Modules\Hr\Models\Country $country
  *
  * @package Modules\Hr\Models
  */
@@ -33,7 +34,8 @@ class EmployeeInternationalPassport extends Eloquent
 	protected $table = 'hr_employee_international_passport';
 
     protected $casts = [
-        'employee_id' => 'int'
+        'employee_id' => 'int',
+        'issued_at' => 'int'
     ];
 
     protected $dates = [
@@ -54,4 +56,9 @@ class EmployeeInternationalPassport extends Eloquent
 	{
 		return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'employee_id');
 	}
+
+    public function country()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Country::class, 'issued_at');
+    }
 }

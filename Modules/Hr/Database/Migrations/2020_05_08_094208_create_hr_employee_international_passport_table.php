@@ -17,10 +17,11 @@ class CreateHrEmployeeInternationalPassportTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('employee_id');
             $table->string('passport_number')->nullable();
-            $table->string('issued_at')->nullable();
+            $table->unsignedBigInteger('issued_at')->nullable();
             $table->date('issued_date')->nullable();
             $table->date('expiry_date')->nullable();
             $table->string('work_permit_number')->nullable();
+            $table->foreign('issued_at')->references('id')->on('countries');
             $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->softDeletes();
             $table->timestamps();

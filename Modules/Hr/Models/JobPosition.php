@@ -38,8 +38,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  *
  * @property \Modules\Hr\Models\Department $department
  * @property \Modules\Hr\Models\Designation $designation
- * @property \Modules\Hr\Models\SalaryScale $hr_salary_scale
- * @property \Modules\Hr\Models\GradeLevel $hr_grade_level
+ * @property \Modules\Hr\Models\SalaryScale $salary_scale
+ * @property \Modules\Hr\Models\GradeLevel $grade_level
  * @property \Modules\Hr\Models\GradeLevelStep $grade_level_step
  * @property \Modules\Hr\Models\Skill $skill
  *
