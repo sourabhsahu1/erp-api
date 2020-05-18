@@ -248,6 +248,7 @@ class EmployeeRepository extends EloquentBaseRepository
             foreach ($data['data']['employee_ids'] as $employee_id) {
                 $employee = EmployeeProgression::where('employee_id', $employee_id)
                     ->update([
+                        'status' => AppConstant::PROGRESSION_STATUS_RETIRE,
                         'actual_exit_date' => Carbon::now()->toDateString()
                     ]);
             }
