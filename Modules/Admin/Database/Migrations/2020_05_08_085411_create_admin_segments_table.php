@@ -21,6 +21,8 @@ class CreateAdminSegmentsTable extends Migration
             $table->string('individual_code');
             $table->string('combined_code')->unique();
             $table->boolean('is_active');
+            $table->unsignedInteger('top_level_id')->nullable();
+            $table->smallInteger('top_level_child_count')->default(0);
             $table->unsignedInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('admin_segments');
             $table->timestamps();

@@ -6,16 +6,31 @@
 
 namespace Modules\Admin\Http\Requests\AdminSegment;
 
+use Luezoid\Laravelcore\Exceptions\ValidationException;
 use Luezoid\Laravelcore\Requests\BaseRequest;
+use Modules\Admin\Models\AdminSegment;
 
 class AdminUpdateRequest extends BaseRequest
 {
 
     function rules()
     {
-        return [
+        /** @var AdminSegment $adminSegment */
+        $adminSegment = AdminSegment::find($this->route('id'));
+        if (!$adminSegment) {
+            throw new ValidationException("Admin Segment not found");
+        }
 
-            'name' => 'required|string|min:3'
+        if ($adminSegment->parent_id) {
+            throw new ValidationException("Only root node segments can be edited");
+        }
+        return [
+            'name' => 'required|string|min:3',
+            'maxLevel' => ['required', function ($a, $v, $f) use ($adminSegment) {
+                if ($adminSegment->top_level_child_count > $v) {
+                    return $f($adminSegment->top_level_child_count . " child already created, level should be greater than or equals to ".$adminSegment->top_level_child_count);
+                }
+            }]
         ];
     }
 }
