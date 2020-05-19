@@ -22,4 +22,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('user/{id}/role', 'UserController@updateRoleAssign');
     Route::delete('user/{id}/role/{roleId}', 'UserController@deleteRoleAssign');
     Route::put('profile', 'UserController@userProfileUpdate');
+    Route::post('admin-segments/{id}/levels', 'AdminController@levels');
+
 });
+
