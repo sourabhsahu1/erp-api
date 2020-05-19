@@ -89,7 +89,6 @@ class EmployeeController extends BaseController
 
     public function employeePension(Request $request)
     {
-
         $this->jobMethod = "employeePension";
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
@@ -107,8 +106,8 @@ class EmployeeController extends BaseController
     }
 
     public function downloadReport(Request $request) {
+
         $this->jobMethod = "downloadReport";
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
-
 }

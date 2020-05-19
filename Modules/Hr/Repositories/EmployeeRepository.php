@@ -268,6 +268,11 @@ class EmployeeRepository extends EloquentBaseRepository
     public function getAll($params = [], $query = null)
     {
         $query = Employee::query();
+        if (isset($params['inputs']['department_id'])) {
+            $query->whereHas('employee_job_profiles', function ($query) use ($params){
+                $query->where('department_id', $params['inputs']['department_id']);
+            });
+        }
         if (isset($params['inputs']['status'])) {
             if ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_NEW) {
                 $query->whereHas('employee_progressions', function ($query) {
@@ -357,5 +362,34 @@ class EmployeeRepository extends EloquentBaseRepository
         return array_merge($employeeIdno->first()->toArray(), $employeePassport->first()->toArray());
     }
 
+    public function downloadReport($params) {
+        $employees = $this->getAll($params)['items'];
+        $headers = ['s.no','title', 'employee name', 'file number', 'staff', 'gender', 'marital status', 'department'];
+        $data = null;
+        foreach ($employees as $key => $employee) {
+            $employee = $employee->toArray();
+            $employeeData = [
+                'serial_no' => $key+1,
+                'title' => $employee['title'],
+                'employee_name' => $employee['first_name'] . ' ' . $employee['last_name'],
+                'file_number' => $employee['personnel_file_number'],
+                'staff_id' => $employee['id'],
+                'gender' => $employee['employee_personal_details']['gender'],
+                'marital_status' => $employee['employee_personal_details']['marital_status'],
+                'department' => $employee['employee_job_profiles']['department']['name']
+            ];
+            $data['employees'][] = $employeeData;
+        }
 
+        $filePath = 'csv/employee_report_' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.csv';
+        $file = fopen(public_path($filePath), 'w');
+
+        fputcsv($file, $headers, ';');
+        foreach ($data['employees'] as $emp) {
+            fputcsv($file, $emp);
+        }
+        fclose($file);
+
+        return ['url' => url($filePath)];
+    }
 }
