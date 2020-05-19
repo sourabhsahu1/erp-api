@@ -85,7 +85,7 @@ class AdminSegmentRepository extends EloquentBaseRepository
         if ($data['data']['max_level'] > $existingSegment->max_level) {
 
             for ($i = 0; $i < ($data['data']['max_level'] - $existingSegment->max_level); ++$i) {
-                AdminSegmentLevelConfig::create(['level' => ($existingSegment->max_level + $i),
+                AdminSegmentLevelConfig::create(['level' => ($existingSegment->max_level + ($i + 1)),
                     'count' => AppConstant::ADMIN_SEGMENT_CHARACTER_COUNT,
                     'admin_segment_id' => $existingSegment->id
                 ]);
