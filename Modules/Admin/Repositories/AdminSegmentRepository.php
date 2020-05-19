@@ -4,6 +4,7 @@
 namespace Modules\Admin\Repositories;
 
 
+use App\Constants\AppConstant;
 use App\Services\UtilityService;
 use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
@@ -36,7 +37,7 @@ class AdminSegmentRepository extends EloquentBaseRepository
 
             $data['data'] = array_merge($data['data'], $arrayToMerge);
 
-
+            $data['data']['character_count'] = 2;
             DB::beginTransaction();
             $adminSegment = parent::create($data);
             $topLevelId = $adminSegment->id;
@@ -44,8 +45,14 @@ class AdminSegmentRepository extends EloquentBaseRepository
                 $topLevelId = $parent->top_level_id;
                 $parentCount = 0;
                 UtilityService::recurseAndIncrementParentCount(AdminSegment::with('admin_segment_parent')->find($adminSegment->id), 'admin_segment_parent', $parentCount);
+
+                $segmentLevel = AdminSegmentLevelConfig::where('admin_segment_id', $adminSegment->top_level_id)->where('level', $parentCount)->first();
+
+                $adminSegment->character_count = $segmentLevel->count;
+                $adminSegment->save();
                 AdminSegment::where('id', $topLevelId)->update(['top_level_child_count' => $parentCount]);
             } else {
+
                 $adminSegment->top_level_id = $topLevelId;
                 $adminSegment->save();
             }
@@ -74,6 +81,17 @@ class AdminSegmentRepository extends EloquentBaseRepository
     public function update($data)
     {
         $keysToUpdate = ['name', 'max_level'];
+        $existingSegment = AdminSegment::find($data['id']);
+        if ($data['data']['max_level'] > $existingSegment->max_level) {
+
+            for ($i = 0; $i < ($data['data']['max_level'] - $existingSegment->max_level); ++$i) {
+                AdminSegmentLevelConfig::create(['level' => ($existingSegment->max_level + $i),
+                    'count' => AppConstant::ADMIN_SEGMENT_CHARACTER_COUNT,
+                    'admin_segment_id' => $existingSegment->id
+                ]);
+            }
+        }
+
         $data['data'] = Arr::only($data['data'], $keysToUpdate);
 
         return parent::update($data);
