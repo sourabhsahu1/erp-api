@@ -12,9 +12,9 @@ class EmployeeProgressionCreate extends BaseRequest
     public function rules()
     {
         return [
-            'confirmationDueDate' => 'sometimes',
-            'nextIncrement' => 'sometimes|integer',
-            'nextPromotion' => 'sometimes|integer'
+            'confirmationDueDate' => 'sometimes|date',
+            'nextIncrement' => 'required|integer',
+            'nextPromotion' => 'required|integer'
         ];
     }
 }
