@@ -10,6 +10,7 @@ use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\AdminSegment;
 use Illuminate\Support\Arr;
+use Modules\Admin\Models\AdminSegmentLevelConfig;
 
 
 class AdminSegmentRepository extends EloquentBaseRepository
@@ -65,7 +66,7 @@ class AdminSegmentRepository extends EloquentBaseRepository
     public function show($id, $params = null)
     {
         $params = [
-            'with' => ['children']
+            'with' => ['children', 'level_config']
         ];
         return parent::show($id, $params);
     }
@@ -76,5 +77,19 @@ class AdminSegmentRepository extends EloquentBaseRepository
         $data['data'] = Arr::only($data['data'], $keysToUpdate);
 
         return parent::update($data);
+    }
+
+    public function levels($data)
+    {
+
+        $adminSegment = AdminSegment::find($data['data']['id']);
+        AdminSegmentLevelConfig::where('admin_segment_id', $data['data']['id'])->delete();
+        foreach ($data['data']['levels'] as $key => $levelObject) {
+            AdminSegmentLevelConfig::create(['level' => $levelObject['level'],
+                'count' => $levelObject['value'],
+                'admin_segment_id' => $adminSegment->id
+            ]);
+        }
+        return $adminSegment;
     }
 }

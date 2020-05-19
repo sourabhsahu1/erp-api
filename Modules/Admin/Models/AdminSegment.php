@@ -74,5 +74,9 @@ class AdminSegment extends Eloquent
         return $this->admin_segment()->with('admin_segment_parent');
     }
 
+    public function level_config()
+    {
+        return $this->hasMany(\Modules\Admin\Models\AdminSegmentLevelConfig::class);
+    }
 
 }
