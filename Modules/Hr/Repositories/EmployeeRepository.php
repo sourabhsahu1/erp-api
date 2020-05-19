@@ -144,7 +144,6 @@ class EmployeeRepository extends EloquentBaseRepository
 
     public function employeeProgression($data)
     {
-
         $employee = Employee::find($data['data']['id']);
         if (is_null($employee)) {
             throw new  AppException('Employee not Exists');
@@ -183,7 +182,6 @@ class EmployeeRepository extends EloquentBaseRepository
         $data['data']['next_increment_due_date'] = Carbon::parse($employeeJob->current_appointment)->addMonths($data['data']['next_increment'])->toDateString();
         $data['data']['next_promotion_due_date'] = Carbon::parse($employeeJob->current_appointment)->addMonths($data['data']['next_promotion'])->toDateString();
         DB::beginTransaction();
-
         try {
             $progression = EmployeeProgression::where('employee_id', $data['data']['id'])->first();
             if (is_null($progression)) {
@@ -201,21 +199,22 @@ class EmployeeRepository extends EloquentBaseRepository
                     'next_promotion_due_date' => $data['data']['next_promotion_due_date'],
                     'last_promoted' => $data['data']['last_promoted'],
                 ]);
-            }else {
+            } else {
                 $this->model = EmployeeProgression::class;
-                $data['data']['month_promotion']  = $data['data']['next_promotion'];
+                $data['data']['month_promotion'] = $data['data']['next_promotion'];
                 $data['data']['month_increment'] = $data['data']['next_increment'];
-                $data['id'] = $data['data']['id'];
-                parent::update($data);
+                $data['id'] = $progression->id;
+                $progression = parent::update($data);
             }
 
+            $data['data']['employee_id'] = $data['data']['id'];
             $this->model = EmployeePension::class;
             $employeePension = EmployeePension::where('employee_id', $data['data']['id']);
-            if (is_null($employeePension)) {
+            if (is_null($employeePension->first())) {
                 $employeePension = parent::create($data);
-            }else {
-                $data['id'] = $data['data']['id'];
-                parent::update($data);
+            } else {
+                $data['id'] = $employeePension->first()->id;
+               $employeePension = parent::update($data);
             }
 
             DB::commit();
@@ -223,7 +222,7 @@ class EmployeeRepository extends EloquentBaseRepository
             DB::rollBack();
             throw $e;
         }
-        return $progression;
+        return  array_merge($progression->toArray(), $employeePension->toArray());
     }
 
 
@@ -269,7 +268,7 @@ class EmployeeRepository extends EloquentBaseRepository
     {
         $query = Employee::query();
         if (isset($params['inputs']['department_id'])) {
-            $query->whereHas('employee_job_profiles', function ($query) use ($params){
+            $query->whereHas('employee_job_profiles', function ($query) use ($params) {
                 $query->where('department_id', $params['inputs']['department_id']);
             });
         }
@@ -347,7 +346,7 @@ class EmployeeRepository extends EloquentBaseRepository
         if (is_null($employeeIdno->first())) {
             $employeeIdno = parent::create($data);
         } else {
-            $data['id'] = $data['data']['id'];
+            $data['id'] = $employeeIdno->first()->id;
             parent::update($data);
         }
 
@@ -356,20 +355,22 @@ class EmployeeRepository extends EloquentBaseRepository
         if (is_null($employeePassport->first())) {
             $employeePassport = parent::create($data);
         } else {
-            $data['id'] = $data['data']['id'];
+            $data['id'] = $employeePassport->first()->id;
             parent::update($data);
         }
         return array_merge($employeeIdno->first()->toArray(), $employeePassport->first()->toArray());
     }
 
-    public function downloadReport($params) {
+    public function downloadReport($params)
+    {
         $employees = $this->getAll($params)['items'];
-        $headers = ['s.no','title', 'employee name', 'file number', 'staff', 'gender', 'marital status', 'department'];
+        $headers = ['s.no', 'title', 'employee name', 'file number', 'staff', 'gender', 'marital status', 'department'];
         $data = null;
+
         foreach ($employees as $key => $employee) {
             $employee = $employee->toArray();
             $employeeData = [
-                'serial_no' => $key+1,
+                'serial_no' => $key + 1,
                 'title' => $employee['title'],
                 'employee_name' => $employee['first_name'] . ' ' . $employee['last_name'],
                 'file_number' => $employee['personnel_file_number'],
@@ -389,7 +390,6 @@ class EmployeeRepository extends EloquentBaseRepository
             fputcsv($file, $emp);
         }
         fclose($file);
-
         return ['url' => url($filePath)];
     }
 }
