@@ -68,5 +68,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('employees/{id}/pension','EmployeeController@employeePension');
     Route::post('employees/{id}/id-nos','EmployeeController@employeeIdNos');
     Route::post('employees/{id}/passport','EmployeeController@employeePassport');
+    Route::get('employees/{id}/download','EmployeeController@downloadReport');
 
 });

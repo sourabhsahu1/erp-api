@@ -169,6 +169,7 @@ class EmployeeRepository extends EloquentBaseRepository
         }
 
         if ($data['data']['is_confirmed'] == true) {
+            $data['data']['status'] = AppConstant::PROGRESSION_STATUS_ACTIVE;
             $data['data']['confirmed_date'] = Carbon::now()->toDateString();
         }
         if ($data['data']['is_exited'] == true) {
@@ -181,10 +182,10 @@ class EmployeeRepository extends EloquentBaseRepository
         $data['data']['last_promoted'] = isset($data['data']['last_promoted']) ? Carbon::parse($data['data']['last_promoted'])->toDateString() : null;
         $data['data']['next_increment_due_date'] = Carbon::parse($employeeJob->current_appointment)->addMonths($data['data']['next_increment'])->toDateString();
         $data['data']['next_promotion_due_date'] = Carbon::parse($employeeJob->current_appointment)->addMonths($data['data']['next_promotion'])->toDateString();
-        $progression = EmployeeProgression::where('employee_id', $data['data']['id'])->first();
         DB::beginTransaction();
 
         try {
+            $progression = EmployeeProgression::where('employee_id', $data['data']['id'])->first();
             if (is_null($progression)) {
                 $progression = EmployeeProgression::create([
                     'status' => $data['data']['status'],
@@ -200,16 +201,23 @@ class EmployeeRepository extends EloquentBaseRepository
                     'next_promotion_due_date' => $data['data']['next_promotion_due_date'],
                     'last_promoted' => $data['data']['last_promoted'],
                 ]);
+            }else {
+                $this->model = EmployeeProgression::class;
+                $data['data']['month_promotion']  = $data['data']['next_promotion'];
+                $data['data']['month_increment'] = $data['data']['next_increment'];
+                $data['id'] = $data['data']['id'];
+                parent::update($data);
             }
 
-            $employeeJob = EmployeePension::create([
-                'is_pension_started' => $data['data']['is_pension_started'],
-                'employee_id' => $data['data']['id'],
-                'date_started' => $data['data']['date_started'] ?? null,
-                'gratuity' => $data['data']['gratuity'] ?? null,
-                'monthly_pension' => $data['data']['monthly_pension'] ?? null,
-                'other_pension' => $data['data']['other_pension'] ?? null,
-            ]);
+            $this->model = EmployeePension::class;
+            $employeePension = EmployeePension::where('employee_id', $data['data']['id']);
+            if (is_null($employeePension)) {
+                $employeePension = parent::create($data);
+            }else {
+                $data['id'] = $data['data']['id'];
+                parent::update($data);
+            }
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -330,8 +338,8 @@ class EmployeeRepository extends EloquentBaseRepository
     {
         $this->model = EmployeeIdNo::class;
         $data['data']['employee_id'] = $data['data']['id'];
-        $employeeIdno = EmployeeIdNo::where('employee_id', $data['data']['id'])->first();
-        if (is_null($employeeIdno)) {
+        $employeeIdno = EmployeeIdNo::where('employee_id', $data['data']['id']);
+        if (is_null($employeeIdno->first())) {
             $employeeIdno = parent::create($data);
         } else {
             $data['id'] = $data['data']['id'];
@@ -339,15 +347,15 @@ class EmployeeRepository extends EloquentBaseRepository
         }
 
         $this->model = EmployeeInternationalPassport::class;
-        $employeePassport = EmployeeInternationalPassport::where('employee_id', $data['data']['id'])->first();
-        if (is_null($employeePassport)) {
+        $employeePassport = EmployeeInternationalPassport::where('employee_id', $data['data']['id']);
+        if (is_null($employeePassport->first())) {
             $employeePassport = parent::create($data);
         } else {
             $data['id'] = $data['data']['id'];
             parent::update($data);
         }
-
-
-        return array_merge($employeeIdno->toArray(), $employeePassport->toArray());
+        return array_merge($employeeIdno->first()->toArray(), $employeePassport->first()->toArray());
     }
+
+
 }
