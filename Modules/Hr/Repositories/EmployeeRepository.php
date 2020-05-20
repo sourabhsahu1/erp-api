@@ -46,7 +46,7 @@ class EmployeeRepository extends EloquentBaseRepository
         if (is_null($employeeDetails)) {
             $employee = EmployeePersonalDetail::create([
                 'employee_id' => $data['data']['id'],
-                'date_of_birth' => $data['data']['date_of_birth'],
+                'date_of_birth' => Carbon::parse($data['data']['date_of_birth'])->toDateString(),
                 'marital_status' => $data['data']['marital_status'],
                 'gender' => $data['data']['gender'],
                 'religion' => $data['data']['religion'],
@@ -54,13 +54,13 @@ class EmployeeRepository extends EloquentBaseRepository
                 'email' => $data['data']['email'],
                 'is_permanent_staff' => $data['data']['is_permanent_staff'],
                 'type_of_appointment' => $data['data']['type_of_appointment'],
-                'appointed_on' => $data['data']['appointed_on'],
-                'assumed_duty_on' => $data['data']['assumed_duty_on']
+                'appointed_on' => Carbon::parse($data['data']['appointed_on'])->toDateString(),
+                'assumed_duty_on' => Carbon::parse($data['data']['assumed_duty_on'])->toDateString()
             ]);
         } else {
             $employee = EmployeePersonalDetail::where('employee_id', $data['data']['id'])
                 ->update([
-                    'date_of_birth' => $data['data']['date_of_birth'],
+                    'date_of_birth' => Carbon::parse($data['data']['date_of_birth'])->toDateString(),
                     'marital_status' => $data['data']['marital_status'],
                     'gender' => $data['data']['gender'],
                     'religion' => $data['data']['religion'],
@@ -68,8 +68,8 @@ class EmployeeRepository extends EloquentBaseRepository
                     'email' => $data['data']['email'],
                     'is_permanent_staff' => $data['data']['is_permanent_staff'],
                     'type_of_appointment' => $data['data']['type_of_appointment'],
-                    'appointed_on' => $data['data']['appointed_on'],
-                    'assumed_duty_on' => $data['data']['assumed_duty_on']
+                    'appointed_on' => Carbon::parse($data['data']['appointed_on'])->toDateString(),
+                    'assumed_duty_on' => Carbon::parse($data['data']['assumed_duty_on'])->toDateString()
                 ]);
         }
         return EmployeePersonalDetail::where('employee_id', $data['data']['id'])->first();
@@ -86,7 +86,7 @@ class EmployeeRepository extends EloquentBaseRepository
                 'designation_id' => $data['data']['designation_id'],
                 'department_id' => $data['data']['department_id'],
                 'work_location_id' => $data['data']['work_location_id'],
-                'current_appointment' => $data['data']['current_appointment']
+                'current_appointment' => Carbon::parse($data['data']['current_appointment'])->toDateString()
             ]);
         } else {
             $employeeJobProfile = EmployeeJobProfile::where('employee_id', $data['data']['id'])
@@ -95,7 +95,7 @@ class EmployeeRepository extends EloquentBaseRepository
                     'designation_id' => $data['data']['designation_id'],
                     'department_id' => $data['data']['department_id'],
                     'work_location_id' => $data['data']['work_location_id'],
-                    'current_appointment' => $data['data']['current_appointment']
+                    'current_appointment' => Carbon::parse($data['data']['current_appointment'])->toDateString()
                 ]);
         }
         return EmployeeJobProfile::where('employee_id', $data['data']['id'])->first();
