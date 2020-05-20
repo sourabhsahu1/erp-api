@@ -342,6 +342,12 @@ class EmployeeRepository extends EloquentBaseRepository
     {
         $this->model = EmployeeIdNo::class;
         $data['data']['employee_id'] = $data['data']['id'];
+        if (isset($data['data']['issued_date'])){
+            $data['data']['issued_date'] = Carbon::parse($data['data']['issued_date'])->toDateString();
+        }
+        if (isset($data['data']['expiry_date'])){
+            $data['data']['expiry_date'] = Carbon::parse($data['data']['expiry_date'])->toDateString();
+        }
         $employeeIdno = EmployeeIdNo::where('employee_id', $data['data']['id']);
         if (is_null($employeeIdno->first())) {
             $employeeIdno = parent::create($data);
