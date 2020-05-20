@@ -214,7 +214,7 @@ class EmployeeRepository extends EloquentBaseRepository
                 $employeePension = parent::create($data);
             } else {
                 $data['id'] = $employeePension->first()->id;
-               $employeePension = parent::update($data);
+                $employeePension = parent::update($data);
             }
 
             DB::commit();
@@ -222,7 +222,7 @@ class EmployeeRepository extends EloquentBaseRepository
             DB::rollBack();
             throw $e;
         }
-        return  array_merge($progression->toArray(), $employeePension->toArray());
+        return array_merge($progression->toArray(), $employeePension->toArray());
     }
 
 
@@ -375,10 +375,11 @@ class EmployeeRepository extends EloquentBaseRepository
                 'employee_name' => $employee['first_name'] . ' ' . $employee['last_name'],
                 'file_number' => $employee['personnel_file_number'],
                 'staff_id' => $employee['id'],
-                'gender' => $employee['employee_personal_details']['gender'],
-                'marital_status' => $employee['employee_personal_details']['marital_status'],
-                'department' => $employee['employee_job_profiles']['department']['name']
-            ];
+                'gender' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['gender'] : "-",
+                'marital_status' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['marital_status'] : '-',
+                'department' => $employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['department'] ?
+                    $employee['employee_job_profiles']['department']['name'] : '-'
+                ) : '-'];
             $data['employees'][] = $employeeData;
         }
 
