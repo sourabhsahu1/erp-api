@@ -377,8 +377,9 @@ class EmployeeRepository extends EloquentBaseRepository
                 'staff_id' => $employee['id'],
                 'gender' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['gender'] : "-",
                 'marital_status' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['marital_status'] : '-',
-                'department' => $employee['employee_job_profiles']['department'] ? $employee['employee_job_profiles']['department']['name'] : '-'
-            ];
+                'department' => $employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['department'] ?
+                    $employee['employee_job_profiles']['department']['name'] : '-'
+                ) : '-'];
             $data['employees'][] = $employeeData;
         }
 
