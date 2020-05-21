@@ -373,7 +373,7 @@ class EmployeeRepository extends EloquentBaseRepository
         $headers = ['s.no', 'title', 'employee name', 'file number', 'staff', 'gender', 'marital status', 'department'];
         $data = null;
 
-        if (!isset($params['inputs']['columns'])) {
+//        if (!isset($params['inputs']['columns'])) {
             foreach ($employees as $key => $employee) {
                 $employee = $employee->toArray();
                 $employeeData = [
@@ -389,11 +389,10 @@ class EmployeeRepository extends EloquentBaseRepository
                     ) : '-'];
                 $data['employees'][] = $employeeData;
             }
-        } else {
-            $headers = json_decode($params['inputs']['columns'], true);
-dd(3);
-        }
-
+//        } else {
+//            $headers = json_decode($params['inputs']['columns'], true);
+//dd(3);
+//        }
 
         $filePath = 'csv/employee_report_' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.csv';
         $file = fopen(public_path($filePath), 'w');
