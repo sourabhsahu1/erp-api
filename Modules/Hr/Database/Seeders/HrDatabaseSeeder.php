@@ -16,6 +16,8 @@ class HrDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        // $this->call("OthersTableSeeder");
+        $this->call(HrReligionsTableSeeder::class);
+        $this->call(HrTypeOfAppointmentsTableSeeder::class);
+        $this->call(HrMarriageTableSeeder::class);
     }
 }

@@ -342,10 +342,10 @@ class EmployeeRepository extends EloquentBaseRepository
     {
         $this->model = EmployeeIdNo::class;
         $data['data']['employee_id'] = $data['data']['id'];
-        if (isset($data['data']['issued_date'])){
+        if (isset($data['data']['issued_date'])) {
             $data['data']['issued_date'] = Carbon::parse($data['data']['issued_date'])->toDateString();
         }
-        if (isset($data['data']['expiry_date'])){
+        if (isset($data['data']['expiry_date'])) {
             $data['data']['expiry_date'] = Carbon::parse($data['data']['expiry_date'])->toDateString();
         }
         $employeeIdno = EmployeeIdNo::where('employee_id', $data['data']['id']);
@@ -373,30 +373,39 @@ class EmployeeRepository extends EloquentBaseRepository
         $headers = ['s.no', 'title', 'employee name', 'file number', 'staff', 'gender', 'marital status', 'department'];
         $data = null;
 
-        foreach ($employees as $key => $employee) {
-            $employee = $employee->toArray();
-            $employeeData = [
-                'serial_no' => $key + 1,
-                'title' => $employee['title'],
-                'employee_name' => $employee['first_name'] . ' ' . $employee['last_name'],
-                'file_number' => $employee['personnel_file_number'],
-                'staff_id' => $employee['id'],
-                'gender' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['gender'] : "-",
-                'marital_status' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['marital_status'] : '-',
-                'department' => $employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['department'] ?
-                    $employee['employee_job_profiles']['department']['name'] : '-'
-                ) : '-'];
-            $data['employees'][] = $employeeData;
+        if (!isset($params['inputs']['columns'])) {
+            foreach ($employees as $key => $employee) {
+                $employee = $employee->toArray();
+                $employeeData = [
+                    'serial_no' => $key + 1,
+                    'title' => $employee['title'],
+                    'employee_name' => $employee['first_name'] . ' ' . $employee['last_name'],
+                    'file_number' => $employee['personnel_file_number'],
+                    'staff_id' => $employee['id'],
+                    'gender' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['gender'] : "-",
+                    'marital_status' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['marital_status'] : '-',
+                    'department' => $employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['department'] ?
+                        $employee['employee_job_profiles']['department']['name'] : '-'
+                    ) : '-'];
+                $data['employees'][] = $employeeData;
+            }
+        } else {
+            $headers = json_decode($params['inputs']['columns'], true);
+dd(3);
         }
+
 
         $filePath = 'csv/employee_report_' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.csv';
         $file = fopen(public_path($filePath), 'w');
 
-        fputcsv($file, $headers, ';');
+        fputcsv($file, $headers);
         foreach ($data['employees'] as $emp) {
             fputcsv($file, $emp);
         }
         fclose($file);
         return ['url' => url($filePath)];
     }
+
+
+
 }
