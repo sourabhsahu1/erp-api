@@ -5,6 +5,7 @@ namespace Modules\Hr\Http\Requests\EmployeePersonalDetail;
 
 
 use App\Constants\AppConstant;
+use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Luezoid\Laravelcore\Requests\BaseRequest;
 
@@ -14,7 +15,12 @@ class Create extends BaseRequest
     public function rules()
     {
         return [
-            'dateOfBirth' => "date",
+            'dateOfBirth' => ["required","date", function($a,$v, $f) {
+                $dOB = Carbon::parse($v)->toDateString();
+                if ($dOB > Carbon::now()->toDateString()) {
+                    return $f('Date of birth cannot lies in Future');
+                }
+            }],
             'maritalStatus' => [
                 "required",
                 Rule::in([
@@ -57,8 +63,22 @@ class Create extends BaseRequest
                     AppConstant::EMPLOYEE_TYPE_APPOINTMENT_TENURED,
                 ])
             ],
-            'appointedOn' => "required|date",
-            'assumedDutyOn' => "required|date"
+            'appointedOn' => ["required", "date", function ($a, $v, $f) {
+                $date = Carbon::parse($v)->toDateString();
+                if ($date > Carbon::now()->toDateString()) {
+                    return $f('Future date not allowed');
+                }
+            }],
+            'assumedDutyOn' => ["required","date", function($a,$v, $f) {
+               $appointedOn = Carbon::parse($this->get('appointedOn'))->toDateString();
+               $assumedDutyOn = Carbon::parse($v)->toDateString();
+               if ($appointedOn > $assumedDutyOn) {
+                    return $f('Assumed Duty On date cannot be earlier than Appointed Date');
+               }
+                if ($assumedDutyOn > Carbon::now()->toDateString()) {
+                    return $f('Future date not allowed');
+                }
+            }]
         ];
     }
 }
