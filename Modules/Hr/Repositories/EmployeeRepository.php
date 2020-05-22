@@ -79,6 +79,7 @@ class EmployeeRepository extends EloquentBaseRepository
     public function jobProfile($data)
     {
         $employeeJob = EmployeeJobProfile::where('employee_id', $data['data']['id'])->first();
+
         if (is_null($employeeJob)) {
             $employeeJobProfile = EmployeeJobProfile::create([
                 'employee_id' => $data['data']['id'],
@@ -86,6 +87,9 @@ class EmployeeRepository extends EloquentBaseRepository
                 'designation_id' => $data['data']['designation_id'],
                 'department_id' => $data['data']['department_id'],
                 'work_location_id' => $data['data']['work_location_id'],
+                'salary_scale_id' => $data['data']['salary_scale_id'],
+                'grade_level_id' => $data['data']['grade_level_id'],
+                'grade_level_step_id' => $data['data']['grade_level_step_id'],
                 'current_appointment' => Carbon::parse($data['data']['current_appointment'])->toDateString()
             ]);
         } else {
@@ -95,6 +99,9 @@ class EmployeeRepository extends EloquentBaseRepository
                     'designation_id' => $data['data']['designation_id'],
                     'department_id' => $data['data']['department_id'],
                     'work_location_id' => $data['data']['work_location_id'],
+                    'salary_scale_id' => $data['data']['salary_scale_id'],
+                    'grade_level_id' => $data['data']['grade_level_id'],
+                    'grade_level_step_id' => $data['data']['grade_level_step_id'],
                     'current_appointment' => Carbon::parse($data['data']['current_appointment'])->toDateString()
                 ]);
         }
@@ -113,7 +120,7 @@ class EmployeeRepository extends EloquentBaseRepository
                 'state_id' => $data['data']['state_id'],
                 'lga_id' => $data['data']['lga_id'],
                 'address_line_1' => $data['data']['address_line1'],
-                'address_line_2' => $data['data']['address_line2'],
+                'address_line_2' => $data['data']['address_line2'] ?? null,
                 'city' => $data['data']['city'],
                 'zip_code' => $data['data']['zip_code'],
                 'other_country_id' => $data['data']['other_country_id'],
@@ -129,7 +136,7 @@ class EmployeeRepository extends EloquentBaseRepository
                     'state_id' => $data['data']['state_id'],
                     'lga_id' => $data['data']['lga_id'],
                     'address_line_1' => $data['data']['address_line1'],
-                    'address_line_2' => $data['data']['address_line2'],
+                    'address_line_2' => $data['data']['address_line2'] ?? null,
                     'city' => $data['data']['city'],
                     'zip_code' => $data['data']['zip_code'],
                     'other_country_id' => $data['data']['other_country_id'],
@@ -272,6 +279,13 @@ class EmployeeRepository extends EloquentBaseRepository
                 $query->where('department_id', $params['inputs']['department_id']);
             });
         }
+
+        if (isset($params['inputs']['search'])) {
+            $query->where('personnel_file_number', 'like', '%' . $params['inputs']['search'] . '%')
+                ->orWhere('last_name', 'like', '%' . $params['inputs']['search'] . '%')
+                ->orWhere('first_name', 'like', '%' . $params['inputs']['search'] . '%')
+                ->orWhere('id', 'like', '%' . $params['inputs']['search'] . '%');
+        }
         if (isset($params['inputs']['status'])) {
             if ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_NEW) {
                 $query->whereHas('employee_progressions', function ($query) {
@@ -322,6 +336,9 @@ class EmployeeRepository extends EloquentBaseRepository
             'employee_contact_details.other_lga',
             'employee_job_profiles.department',
             'employee_job_profiles.designation',
+            'employee_job_profiles.emp_salary_scale',
+            'employee_job_profiles.emp_grade_level',
+            'employee_job_profiles.emp_grade_level_step',
             'employee_job_profiles.job_position',
             'employee_job_profiles.job_position.salary_scale',
             'employee_job_profiles.job_position.grade_level',
@@ -374,21 +391,21 @@ class EmployeeRepository extends EloquentBaseRepository
         $data = null;
 
 //        if (!isset($params['inputs']['columns'])) {
-            foreach ($employees as $key => $employee) {
-                $employee = $employee->toArray();
-                $employeeData = [
-                    'serial_no' => $key + 1,
-                    'title' => $employee['title'],
-                    'employee_name' => $employee['first_name'] . ' ' . $employee['last_name'],
-                    'file_number' => $employee['personnel_file_number'],
-                    'staff_id' => $employee['id'],
-                    'gender' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['gender'] : "-",
-                    'marital_status' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['marital_status'] : '-',
-                    'department' => $employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['department'] ?
-                        $employee['employee_job_profiles']['department']['name'] : '-'
-                    ) : '-'];
-                $data['employees'][] = $employeeData;
-            }
+        foreach ($employees as $key => $employee) {
+            $employee = $employee->toArray();
+            $employeeData = [
+                'serial_no' => $key + 1,
+                'title' => $employee['title'],
+                'employee_name' => $employee['first_name'] . ' ' . $employee['last_name'],
+                'file_number' => $employee['personnel_file_number'],
+                'staff_id' => $employee['id'],
+                'gender' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['gender'] : "-",
+                'marital_status' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['marital_status'] : '-',
+                'department' => $employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['department'] ?
+                    $employee['employee_job_profiles']['department']['name'] : '-'
+                ) : '-'];
+            $data['employees'][] = $employeeData;
+        }
 //        } else {
 //            $headers = json_decode($params['inputs']['columns'], true);
 //dd(3);
@@ -404,7 +421,6 @@ class EmployeeRepository extends EloquentBaseRepository
         fclose($file);
         return ['url' => url($filePath)];
     }
-
 
 
 }

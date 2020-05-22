@@ -10,8 +10,9 @@ class Create extends BaseRequest
 {
     public function rules()
     {
+
         return [
-            "name" => "required",
+            "name" => "required|unique:hr_memberships",
             "isActive" => "required|boolean"
         ];
     }

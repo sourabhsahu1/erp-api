@@ -11,8 +11,9 @@ class Create extends BaseRequest
 
     public function rules()
     {
+
         return [
-            'name' => 'required',
+            'name' => 'required|unique:hr_leaves',
             'shortName'=> 'required',
             'isCarryOverUnusedLeave'=> 'required|boolean',
             'isPaidLeave'=> 'required|boolean',

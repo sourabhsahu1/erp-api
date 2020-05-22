@@ -20,7 +20,13 @@ class CreateHrEmployeeJobProfilesTable extends Migration
             $table->unsignedBigInteger('designation_id')->nullable();
             $table->unsignedBigInteger('department_id')->nullable();
             $table->unsignedBigInteger('work_location_id')->nullable();
+            $table->unsignedBigInteger('salary_scale_id');
+            $table->unsignedBigInteger('grade_level_id');
+            $table->unsignedBigInteger('grade_level_step_id');
             $table->date('current_appointment')->nullable();
+            $table->foreign('salary_scale_id')->references('id')->on('hr_salary_scales');
+            $table->foreign('grade_level_id')->references('id')->on('hr_grade_levels');
+            $table->foreign('grade_level_step_id')->references('id')->on('hr_grade_level_steps');
             $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->foreign('job_position_id')->references('id')->on('hr_job_positions');
             $table->foreign('work_location_id')->references('id')->on('hr_work_locations');

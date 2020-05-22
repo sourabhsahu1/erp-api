@@ -19,6 +19,9 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $designation_id
  * @property int $department_id
  * @property int $work_location_id
+ * @property int $salary_scale_id
+ * @property int $grade_level_id
+ * @property int $grade_level_step_id
  * @property \Carbon\Carbon $current_appointment
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
@@ -39,7 +42,10 @@ class EmployeeJobProfile extends Eloquent
         'job_position_id' => 'int',
         'designation_id' => 'int',
         'department_id' => 'int',
-        'work_location_id' => 'int'
+        'work_location_id' => 'int',
+        'salary_scale_id' => 'int',
+        'grade_level_id' => 'int',
+        'grade_level_step_id' => 'int'
     ];
 
     protected $dates = [
@@ -54,6 +60,9 @@ class EmployeeJobProfile extends Eloquent
         'designation_id',
         'department_id',
         'work_location_id',
+        'salary_scale_id',
+        'grade_level_id',
+        'grade_level_step_id',
         'current_appointment'
     ];
 
@@ -88,6 +97,21 @@ class EmployeeJobProfile extends Eloquent
     public function work_location()
     {
         return $this->belongsTo(WorkLocation::class, 'work_location_id');
+    }
+
+    public function emp_salary_scale()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\SalaryScale::class, 'salary_scale_id');
+    }
+
+    public function emp_grade_level()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\GradeLevel::class, 'grade_level_id');
+    }
+
+    public function emp_grade_level_step()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\GradeLevelStep::class, 'grade_level_step_id');
     }
 
 }

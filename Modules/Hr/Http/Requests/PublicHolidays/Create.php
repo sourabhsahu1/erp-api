@@ -12,7 +12,7 @@ class Create extends BaseRequest
     public function rules()
     {
         return [
-            'name' => 'required',
+            'name' => 'required|unique:hr_public_holidays',
             'date'=> 'required|date',
             'isRepeatYearly'=> 'required|boolean',
             'isOneTime'=> 'required|boolean'
