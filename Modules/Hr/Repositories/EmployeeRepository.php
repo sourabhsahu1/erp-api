@@ -174,9 +174,15 @@ class EmployeeRepository extends EloquentBaseRepository
             }
         }
 
+        if (!isset($data['data']['is_confirmed'])) {
+            $data['data']['is_confirmed'] = false;
+        }
         if ($data['data']['is_confirmed'] == true) {
             $data['data']['status'] = AppConstant::PROGRESSION_STATUS_ACTIVE;
             $data['data']['confirmed_date'] = Carbon::now()->toDateString();
+        }
+        if (!isset($data['data']['is_exited'])) {
+            $data['data']['is_exited'] = false;
         }
         if ($data['data']['is_exited'] == true) {
             $data['data']['actual_exit_date'] = Carbon::now()->toDateString();
@@ -217,6 +223,7 @@ class EmployeeRepository extends EloquentBaseRepository
             $data['data']['employee_id'] = $data['data']['id'];
             $this->model = EmployeePension::class;
             $employeePension = EmployeePension::where('employee_id', $data['data']['id']);
+            $data['data']['date_started'] = Carbon::parse($data['data']['date_started'])->toDateString();
             if (is_null($employeePension->first())) {
                 $employeePension = parent::create($data);
             } else {
