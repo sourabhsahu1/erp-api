@@ -52,7 +52,7 @@ class EmployeeRepository extends EloquentBaseRepository
                 'religion' => $data['data']['religion'],
                 'phone' => $data['data']['phone'],
                 'email' => $data['data']['email'],
-                'is_permanent_staff' => $data['data']['is_permanent_staff'],
+                'is_permanent_staff' => $data['data']['is_permanent_staff'] ?? false,
                 'type_of_appointment' => $data['data']['type_of_appointment'],
                 'appointed_on' => Carbon::parse($data['data']['appointed_on'])->toDateString(),
                 'assumed_duty_on' => Carbon::parse($data['data']['assumed_duty_on'])->toDateString()
@@ -66,7 +66,7 @@ class EmployeeRepository extends EloquentBaseRepository
                     'religion' => $data['data']['religion'],
                     'phone' => $data['data']['phone'],
                     'email' => $data['data']['email'],
-                    'is_permanent_staff' => $data['data']['is_permanent_staff'],
+                    'is_permanent_staff' => $data['data']['is_permanent_staff'] ?? false,
                     'type_of_appointment' => $data['data']['type_of_appointment'],
                     'appointed_on' => Carbon::parse($data['data']['appointed_on'])->toDateString(),
                     'assumed_duty_on' => Carbon::parse($data['data']['assumed_duty_on'])->toDateString()
