@@ -223,7 +223,7 @@ class EmployeeRepository extends EloquentBaseRepository
             $data['data']['employee_id'] = $data['data']['id'];
             $this->model = EmployeePension::class;
             $employeePension = EmployeePension::where('employee_id', $data['data']['id']);
-            $data['data']['date_started'] = Carbon::parse($data['data']['date_started'])->toDateString();
+            $data['data']['date_started'] = isset($data['data']['date_started']) ? Carbon::parse($data['data']['date_started'])->toDateString() : null;
             if (is_null($employeePension->first())) {
                 $employeePension = parent::create($data);
             } else {
