@@ -27,7 +27,8 @@ class Create extends BaseRequest
                     AppConstant::EMPLOYEE_MARITAL_STATUS_WIDOWED,
                     AppConstant::EMPLOYEE_MARITAL_STATUS_DIVORCED,
                     AppConstant::EMPLOYEE_MARITAL_STATUS_SINGLE,
-                    AppConstant::EMPLOYEE_MARITAL_STATUS_MARRIED
+                    AppConstant::EMPLOYEE_MARITAL_STATUS_MARRIED,
+                    AppConstant::EMPLOYEE_MARITAL_STATUS_OTHER
                 ])
             ],
             'gender' => [
