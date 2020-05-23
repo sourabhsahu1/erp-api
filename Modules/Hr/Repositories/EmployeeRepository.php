@@ -172,6 +172,8 @@ class EmployeeRepository extends EloquentBaseRepository
             } elseif ($gradeLevel->retire_type == AppConstant::RETIRE_TYPE_CURRENT_APPOINTMENT) {
                 $data['data']['expected_exit_date'] = Carbon::parse($employeeJob->current_appointment)->addYears($gradeLevel->retire_after)->toDateString();
             }
+        }else {
+            $data['data']['expected_exit_date'] = Carbon::parse($data['data']['expected_exit_date'])->toDateString();
         }
 
         if (!isset($data['data']['is_confirmed'])) {
