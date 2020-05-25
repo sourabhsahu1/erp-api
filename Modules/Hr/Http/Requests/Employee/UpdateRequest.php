@@ -13,9 +13,9 @@ class UpdateRequest extends BaseRequest
     function rules()
     {
         return [
-            'personnelFileNumber' => 'required',
-            'lastName' => 'required',
-            'firstName' => 'required',
+            'personnelFileNumber' => 'sometimes',
+            'lastName' => 'sometimes',
+            'firstName' => 'sometimes',
             'otherName' => 'sometimes',
             'title' => 'sometimes',
             'profileImageId' => "sometimes",
