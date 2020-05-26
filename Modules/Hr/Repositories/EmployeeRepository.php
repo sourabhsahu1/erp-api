@@ -172,7 +172,7 @@ class EmployeeRepository extends EloquentBaseRepository
             } elseif ($gradeLevel->retire_type == AppConstant::RETIRE_TYPE_CURRENT_APPOINTMENT) {
                 $data['data']['expected_exit_date'] = Carbon::parse($employeeJob->current_appointment)->addYears($gradeLevel->retire_after)->toDateString();
             }
-        }else {
+        } else {
             $data['data']['expected_exit_date'] = Carbon::parse($data['data']['expected_exit_date'])->toDateString();
         }
 
@@ -396,29 +396,90 @@ class EmployeeRepository extends EloquentBaseRepository
     public function downloadReport($params)
     {
         $employees = $this->getAll($params)['items'];
-        $headers = ['s.no', 'title', 'employee name', 'file number', 'staff', 'gender', 'marital status', 'department'];
+        $headers = [
+            'SN' => 's.no',
+            'title' => 'title',
+            'fName' => 'employee name',
+            'fileId' => 'file number',
+            'id' => 'staff',
+            'gender' => 'gender',
+            'marital_status' => 'marital status',
+            'phone' => 'phone',
+            'department' => 'department',
+            'designation' => 'designation'
+        ];
         $data = null;
 
-//        if (!isset($params['inputs']['columns'])) {
-        foreach ($employees as $key => $employee) {
-            $employee = $employee->toArray();
-            $employeeData = [
-                'serial_no' => $key + 1,
-                'title' => $employee['title'],
-                'employee_name' => $employee['first_name'] . ' ' . $employee['last_name'],
-                'file_number' => $employee['personnel_file_number'],
-                'staff_id' => $employee['id'],
-                'gender' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['gender'] : "-",
-                'marital_status' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['marital_status'] : '-',
-                'department' => $employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['department'] ?
-                    $employee['employee_job_profiles']['department']['name'] : '-'
-                ) : '-'];
-            $data['employees'][] = $employeeData;
+
+
+        if (!isset($params['inputs']['columns'])) {
+            foreach ($employees as $key => $employee) {
+                $employee = $employee->toArray();
+                $employeeData = [
+                    'serial_no' => $key + 1,
+                    'title' => $employee['title'],
+                    'employee_name' => $employee['first_name'] . ' ' . $employee['last_name'],
+                    'file_number' => $employee['personnel_file_number'],
+                    'staff_id' => $employee['id'],
+                    'gender' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['gender'] : "-",
+                    'marital_status' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['marital_status'] : '-',
+                    'phone' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['phone'] : '-',
+                    'department' => $employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['department'] ?
+                        $employee['employee_job_profiles']['department']['name'] : '-'
+                    ) : '-',
+                    'designation' => $employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['department'] ?
+                        $employee['employee_job_profiles']['designation']['name'] : '-'
+                    ) : '-',
+                ];
+                $data['employees'][] = $employeeData;
+            }
+        } else {
+            $iHeader = json_decode($params['inputs']['columns'], true);
+            $iHeader = array_combine($iHeader, $iHeader);
+            $headers = array_intersect_key($headers, $iHeader);
+            foreach ($employees as $key => $employee) {
+                $employee = $employee->toArray();
+
+                $employeeData = [];
+                if (isset($headers['SN'])){
+                    $employeeData =  array_merge($employeeData, ['serial_no' => $key + 1]);
+                }
+                if (isset($headers['title'])){
+                    $employeeData =   array_merge($employeeData, ['title' => $employee['title']]);
+                }
+
+                if (isset($headers['fName'])){
+                    $employeeData =   array_merge($employeeData, ['employee_name' => $employee['first_name'] . ' ' . $employee['last_name']]);
+                }
+                if (isset($headers['fileId'])){
+                    $employeeData =    array_merge($employeeData, ['file_number' => $employee['personnel_file_number']]);
+                }
+                if (isset($headers['id'])){
+                    $employeeData =   array_merge($employeeData, ['staff_id' => $employee['id']]);
+                }
+                if (isset($headers['gender'])){
+                    $employeeData =   $employeeData =   array_merge($employeeData, [$employee['employee_personal_details'] ? $employee['employee_personal_details']['gender'] : "-"]);
+                }
+                if (isset($headers['marital_status'])){
+                    $employeeData =   array_merge($employeeData, [$employee['employee_personal_details'] ? $employee['employee_personal_details']['marital_status'] : '-']);
+                }
+                if (isset($headers['phone'])){
+                    $employeeData =   array_merge($employeeData, [$employee['employee_personal_details'] ? $employee['employee_personal_details']['phone'] : '-']);
+                }
+                if (isset($headers['department'])){
+                    $employeeData =   array_merge($employeeData, [$employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['department'] ?
+                        $employee['employee_job_profiles']['department']['name'] : '-'
+                    ) : '-']);
+                }
+                if (isset($headers['designation'])){
+                    $employeeData =   array_merge($employeeData, [$employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['designation'] ?
+                        $employee['employee_job_profiles']['designation']['name'] : '-'
+                    ) : '-']);
+                }
+                $data['employees'][] = $employeeData;
+            }
+
         }
-//        } else {
-//            $headers = json_decode($params['inputs']['columns'], true);
-//dd(3);
-//        }
 
         $filePath = 'csv/employee_report_' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.csv';
         $file = fopen(public_path($filePath), 'w');
