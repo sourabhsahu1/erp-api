@@ -12,156 +12,163 @@ class AdminSegmentsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('admin_segments')->delete();
-        
+
         \DB::table('admin_segments')->insert(array (
-            0 => 
+            0 =>
             array (
-                'id' => 1,
+                'character_count' => '2',
                 'combined_code' => '01',
                 'created_at' => NULL,
-                'updated_at' => NULL,
-                'name' => 'Administrative Segment',
-                'character_count' => '2',
-                'max_level' => 5,
+                'id' => 1,
                 'individual_code' => '01',
                 'is_active' => 1,
+                'max_level' => 5,
+                'name' => 'Administrative Segment',
                 'parent_id' => NULL,
+                'top_level_child_count' => 0,
+                'top_level_id' => 1,
+                'updated_at' => NULL,
             ),
-            1 => 
+            1 =>
             array (
-                'id' => 2,
+                'character_count' => '2',
                 'combined_code' => '02',
                 'created_at' => NULL,
-                'updated_at' => NULL,
-                'name' => 'Economic Segment',
-                'character_count' => '2',
-                'max_level' => 5,
+                'id' => 2,
                 'individual_code' => '02',
                 'is_active' => 1,
+                'max_level' => 5,
+                'name' => 'Economic Segment',
                 'parent_id' => NULL,
+                'top_level_child_count' => 1,
+                'top_level_id' => 2,
+                'updated_at' => NULL,
             ),
-            2 => 
+            2 =>
             array (
-                'id' => 3,
+                'character_count' => '2',
                 'combined_code' => '03',
                 'created_at' => NULL,
-                'updated_at' => NULL,
-                'name' => 'Functional Segment',
-                'character_count' => '2',
-                'max_level' => 5,
+                'id' => 3,
                 'individual_code' => '03',
                 'is_active' => 1,
+                'max_level' => 5,
+                'name' => 'Functional Segment',
                 'parent_id' => NULL,
+                'top_level_child_count' => 0,
+                'top_level_id' => 3,
+                'updated_at' => NULL,
             ),
-            3 => 
+            3 =>
             array (
-                'id' => 4,
+                'character_count' => '2',
                 'combined_code' => '04',
                 'created_at' => NULL,
-                'updated_at' => NULL,
-                'name' => 'Programme Segment',
-                'character_count' => '2',
-                'max_level' => 5,
+                'id' => 4,
                 'individual_code' => '04',
                 'is_active' => 1,
+                'max_level' => 5,
+                'name' => 'Programme Segment',
                 'parent_id' => NULL,
+                'top_level_child_count' => 0,
+                'top_level_id' => 4,
+                'updated_at' => NULL,
             ),
-            4 => 
+            4 =>
             array (
-                'id' => 5,
+                'character_count' => '2',
                 'combined_code' => '05',
                 'created_at' => NULL,
-                'updated_at' => NULL,
-                'name' => 'Fund Segment',
-                'character_count' => '2',
-                'max_level' => 5,
+                'id' => 5,
                 'individual_code' => '05',
                 'is_active' => 1,
+                'max_level' => 5,
+                'name' => 'Fund Segment',
                 'parent_id' => NULL,
+                'top_level_child_count' => 0,
+                'top_level_id' => 5,
+                'updated_at' => NULL,
             ),
-            5 => 
+            5 =>
             array (
-                'id' => 6,
+                'character_count' => '2',
                 'combined_code' => '06',
                 'created_at' => NULL,
-                'updated_at' => NULL,
-                'name' => 'Geo Code',
-                'character_count' => '2',
-                'max_level' => 5,
+                'id' => 6,
                 'individual_code' => '06',
                 'is_active' => 1,
+                'max_level' => 5,
+                'name' => 'Geo Code',
                 'parent_id' => NULL,
+                'top_level_child_count' => 0,
+                'top_level_id' => 6,
+                'updated_at' => NULL,
             ),
-            6 => 
+            6 =>
             array (
+                'character_count' => '1',
+                'combined_code' => '02-1',
+                'created_at' => NULL,
                 'id' => 7,
-                'combined_code' => '0201',
-                'created_at' => NULL,
-                'updated_at' => NULL,
+                'individual_code' => '1',
+                'is_active' => 1,
+                'max_level' => 4,
                 'name' => 'Revenue',
-                'character_count' => '4',
-                'max_level' => 9,
-                'individual_code' => '01',
-                'is_active' => 1,
                 'parent_id' => 2,
+                'top_level_child_count' => 1,
+                'top_level_id' => 2,
+                'updated_at' => NULL,
             ),
-            7 => 
+            7 =>
             array (
+                'character_count' => '1',
+                'combined_code' => '02-2',
+                'created_at' => NULL,
                 'id' => 8,
-                'combined_code' => '0202',
-                'created_at' => NULL,
-                'updated_at' => NULL,
+                'individual_code' => '2',
+                'is_active' => 1,
+                'max_level' => 4,
                 'name' => 'Expenditure',
-                'character_count' => '4',
-                'max_level' => 9,
-                'individual_code' => '02',
-                'is_active' => 1,
                 'parent_id' => 2,
+                'top_level_child_count' => 1,
+                'top_level_id' => 2,
+                'updated_at' => NULL,
             ),
-            8 => 
+            8 =>
             array (
+                'character_count' => '1',
+                'combined_code' => '02-3',
+                'created_at' => NULL,
                 'id' => 9,
-                'combined_code' => '0203',
-                'created_at' => NULL,
-                'updated_at' => NULL,
+                'individual_code' => '3',
+                'is_active' => 1,
+                'max_level' => 4,
                 'name' => 'Asset',
-                'character_count' => '4',
-                'max_level' => 9,
-                'individual_code' => '03',
-                'is_active' => 1,
                 'parent_id' => 2,
-            ),
-            9 => 
-            array (
-                'id' => 18,
-                'combined_code' => '020301',
-                'created_at' => NULL,
+                'top_level_child_count' => 1,
+                'top_level_id' => 2,
                 'updated_at' => NULL,
-                'name' => 'tesst',
-                'character_count' => '2',
-                'max_level' => 8,
-                'individual_code' => '01',
-                'is_active' => 1,
-                'parent_id' => 9,
             ),
-            10 => 
+            9 =>
             array (
-                'id' => 20,
-                'combined_code' => '020302',
+                'character_count' => '1',
+                'combined_code' => '02-4',
                 'created_at' => NULL,
-                'updated_at' => NULL,
-                'name' => 'asdad',
-                'character_count' => '2',
-                'max_level' => 8,
-                'individual_code' => '02',
+                'id' => 10,
+                'individual_code' => '4',
                 'is_active' => 1,
-                'parent_id' => 9,
+                'max_level' => 4,
+                'name' => 'Liabilities',
+                'parent_id' => 2,
+                'top_level_child_count' => 1,
+                'top_level_id' => 2,
+                'updated_at' => NULL,
             ),
         ));
-        
-        
+
+
     }
 }

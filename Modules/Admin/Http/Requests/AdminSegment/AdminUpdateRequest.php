@@ -21,9 +21,7 @@ class AdminUpdateRequest extends BaseRequest
             throw new ValidationException("Admin Segment not found");
         }
 
-        if ($adminSegment->parent_id) {
-            throw new ValidationException("Only root node segments can be edited");
-        }
+
         return [
             'name' => 'required|string|min:3',
             'maxLevel' => ['required', function ($a, $v, $f) use ($adminSegment) {

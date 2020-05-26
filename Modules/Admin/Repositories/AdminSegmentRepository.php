@@ -26,10 +26,9 @@ class AdminSegmentRepository extends EloquentBaseRepository
             $parent = null;
             if ($parentId) {
                 $parent = $this->find($parentId);
-
                 $arrayToMerge = [
                     'max_level' => $parent->max_level - 1,
-                    'combined_code' => $parent["combined_code"] . $data['data']['individual_code'],
+                    'combined_code' => $parent["combined_code"] . '-' . $data['data']['individual_code'],
                     'top_level_id' => $parent->top_level_id
                 ];
             }
@@ -43,24 +42,32 @@ class AdminSegmentRepository extends EloquentBaseRepository
             $topLevelId = $adminSegment->id;
             if ($parentId) {
                 $topLevelId = $parent->top_level_id;
-                $parentCount = 0;
+                $parentCount = 1;
                 UtilityService::recurseAndIncrementParentCount(AdminSegment::with('admin_segment_parent')->find($adminSegment->id), 'admin_segment_parent', $parentCount);
 
                 $segmentLevel = AdminSegmentLevelConfig::where('admin_segment_id', $adminSegment->top_level_id)->where('level', $parentCount)->first();
 
                 $adminSegment->character_count = $segmentLevel->count;
+                if (strlen($data['data']['individual_code']) !== $segmentLevel->count) {
+                    throw new AppException("segment code should be equals to level char count");
+                }
                 $adminSegment->save();
-                AdminSegment::where('id', $topLevelId)->update(['top_level_child_count' => $parentCount]);
+                /** @var AdminSegment $topLevelSegment */
+                $topLevelSegment = AdminSegment::find($adminSegment->top_level_id);
+                if ($parentCount > $topLevelSegment->top_level_child_count) {
+                    $topLevelSegment->top_level_child_count = $parentCount;
+                    $topLevelSegment->save();
+                }
             } else {
-
                 $adminSegment->top_level_id = $topLevelId;
                 $adminSegment->save();
             }
             DB::commit();
             return $adminSegment;
         } catch (\Exception $exception) {
+
             DB::rollBack();
-            throw new AppException("Record already present with provided segment code, please try other segment code.");
+            throw $exception;
         }
     }
 
@@ -81,15 +88,21 @@ class AdminSegmentRepository extends EloquentBaseRepository
     public function update($data)
     {
         $keysToUpdate = ['name', 'max_level'];
+        /** @var AdminSegment $existingSegment */
         $existingSegment = AdminSegment::find($data['id']);
-        if ($data['data']['max_level'] > $existingSegment->max_level) {
+        if (isset($data['data']['max_level']) && $data['data']['max_level'] > $existingSegment->max_level) {
 
-            for ($i = 0; $i < ($data['data']['max_level'] - $existingSegment->max_level); ++$i) {
-                AdminSegmentLevelConfig::create(['level' => ($existingSegment->max_level + ($i + 1)),
+            for ($i = $existingSegment->max_level; $i < $data['data']['max_level']; ++$i) {
+                AdminSegmentLevelConfig::create(['level' => $i + 1,
                     'count' => AppConstant::ADMIN_SEGMENT_CHARACTER_COUNT,
                     'admin_segment_id' => $existingSegment->id
                 ]);
             }
+        } else if (isset($data['data']['max_level']) && $data['data']['max_level'] < $existingSegment->max_level) {
+            if ($existingSegment->top_level_child_count > $data['data']['max_level']) {
+                throw new AppException("Child Level exceeded");
+            }
+            AdminSegmentLevelConfig::where('level', '>', $data['data']['max_level'])->where('admin_segment_id', $existingSegment->id)->delete();
         }
 
         $data['data'] = Arr::only($data['data'], $keysToUpdate);
