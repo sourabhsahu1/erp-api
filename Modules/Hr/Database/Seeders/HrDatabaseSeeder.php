@@ -19,5 +19,7 @@ class HrDatabaseSeeder extends Seeder
         $this->call(HrReligionsTableSeeder::class);
         $this->call(HrTypeOfAppointmentsTableSeeder::class);
         $this->call(HrMarriageTableSeeder::class);
+        $this->call(HrBanksTableSeeder::class);
+        $this->call(HrBankBranchesTableSeeder::class);
     }
 }

@@ -70,8 +70,23 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('employees/{id}/id-nos', 'EmployeeController@employeeIdNos');
     Route::post('employees/{id}/passport', 'EmployeeController@employeePassport');
 
-    Route::get('marriages','ConstantApiController@getMarriageData');
-    Route::get('religions','ConstantApiController@getReligions');
-    Route::get('type-of-appointments','ConstantApiController@getTypeOfAppointments');
+    Route::get('marriages', 'ConstantApiController@getMarriageData');
+    Route::get('religions', 'ConstantApiController@getReligions');
+    Route::get('type-of-appointments', 'ConstantApiController@getTypeOfAppointments');
+    Route::get('banks', 'ConstantApiController@getBanks');
+    Route::get('bank/{id}/branches', 'ConstantApiController@getBranches');
+
+    Route::resource('address-type', 'AddressTypeController');
+    Route::resource('phone-type', 'PhoneNumberTypeController');
+
+
+    Route::get('employee/{employeeId}/banks', 'EmployeeBankDetailController@index');
+    Route::get('employee/{employeeId}/banks/{id}', 'EmployeeBankDetailController@show');
+    Route::post('employee/{employeeId}/banks', 'EmployeeBankDetailController@store');
+    Route::put('employee/{employeeId}/banks/{id}', 'EmployeeBankDetailController@update');
+    Route::delete('employee/{employeeId}/banks/{id}', 'EmployeeBankDetailController@destroy');
+
+
+    Route::resource('employee/{id}/addresses', 'EmployeeAddressController');
 
 });
