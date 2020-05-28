@@ -32,7 +32,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 class EmployeeMilitaryService extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
-    protected $table = '';
+    protected $table = 'hr_employee_military_services';
 	protected $casts = [
 		'employee_id' => 'int',
 		'arm_of_service_id' => 'int'

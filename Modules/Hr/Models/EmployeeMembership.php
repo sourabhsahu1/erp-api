@@ -31,7 +31,7 @@ class EmployeeMembership extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
-    protected $table = '';
+    protected $table = 'hr_employee_memberships';
 	protected $casts = [
 		'employee_id' => 'int',
 		'membership_id' => 'int'

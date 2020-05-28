@@ -33,7 +33,7 @@ class EmployeeQualification extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
-    protected $table = '_hr_employee_qualifications';
+    protected $table = 'hr_employee_qualifications';
 	protected $casts = [
 		'employee_id' => 'int',
 		'qualification_id' => 'int',

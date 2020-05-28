@@ -55,11 +55,11 @@ class EmployeeBankDetail extends Eloquent
 
 	public function bank()
 	{
-		return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'bank_id');
+		return $this->belongsTo(\Modules\Hr\Models\Bank::class, 'bank_id');
 	}
 
 	public function branches()
 	{
-		return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'bank_branch_id');
+		return $this->belongsTo(\Modules\Hr\Models\BankBranch::class, 'bank_branch_id');
 	}
 }

@@ -5,15 +5,13 @@ namespace Modules\Hr\Http\Controllers;
 
 
 use App\Http\Controllers\BaseController;
-use Illuminate\Http\Request;
 use Luezoid\Laravelcore\Jobs\BaseJob;
-use Modules\Hr\Repositories\EmployeeBankDetailsRepository;
+use Modules\Hr\Repositories\EmployeeBackgroundRepository;
 
-class EmployeeBankDetailController extends BaseController
+class EmployeeBackGroundController extends BaseController
 {
-
-    protected $repository = EmployeeBankDetailsRepository::class;
-    protected $createJob = BaseJob::class;
+    protected $repository = EmployeeBackgroundRepository::class;
+    protected $createJob =  BaseJob::class;
     protected $updateJob = BaseJob::class;
     protected $deleteJob = BaseJob::class;
     protected $storeJobMethod = "create";

@@ -98,7 +98,7 @@ class EmployeeRelation extends Eloquent
 		return $this->belongsTo(\Modules\Hr\Models\Lga::class);
 	}
 
-	public function region()
+        public function region()
 	{
 		return $this->belongsTo(\Modules\Hr\Models\Region::class);
 	}

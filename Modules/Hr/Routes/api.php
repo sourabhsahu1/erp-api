@@ -80,13 +80,89 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('phone-type', 'PhoneNumberTypeController');
 
 
+    /*employee bank details*/
     Route::get('employee/{employeeId}/banks', 'EmployeeBankDetailController@index');
     Route::get('employee/{employeeId}/banks/{id}', 'EmployeeBankDetailController@show');
     Route::post('employee/{employeeId}/banks', 'EmployeeBankDetailController@store');
     Route::put('employee/{employeeId}/banks/{id}', 'EmployeeBankDetailController@update');
-    Route::delete('employee/{employeeId}/banks/{id}', 'EmployeeBankDetailController@destroy');
+    Route::delete('employee-banks/{id}', 'EmployeeBankDetailController@destroy');
+
+    /*employee addresses*/
+    Route::get('employee/{employeeId}/addresses', 'EmployeeAddressController@index');
+    Route::get('employee/{employeeId}/addresses/{id}', 'EmployeeAddressController@show');
+    Route::post('employee/{employeeId}/addresses', 'EmployeeAddressController@store');
+    Route::put('employee/{employeeId}/addresses/{id}', 'EmployeeAddressController@update');
+    Route::delete('employee-addresses/{id}', 'EmployeeAddressController@destroy');
+
+    /*employee background*/
+    Route::get('employee/{employeeId}/background', 'EmployeeBackGroundController@index');
+    Route::get('employee/{employeeId}/background/{id}', 'EmployeeBackGroundController@show');
+    Route::post('employee/{employeeId}/background', 'EmployeeBackGroundController@store');
+    Route::put('employee/{employeeId}/background/{id}', 'EmployeeBackGroundController@update');
+    Route::delete('employee-background/{id}', 'EmployeeBackGroundController@destroy');
+
+    /*employee censure*/
+    Route::get('employee/{employeeId}/censures', 'EmployeeCensureController@index');
+    Route::get('employee/{employeeId}/censures/{id}', 'EmployeeCensureController@show');
+    Route::post('employee/{employeeId}/censures', 'EmployeeCensureController@store');
+    Route::put('employee/{employeeId}/censures/{id}', 'EmployeeCensureController@update');
+    Route::delete('employee-censures/{id}', 'EmployeeCensureController@destroy');
+
+    /*employee language*/
+    Route::get('employee/{employeeId}/languages', 'EmployeeLanguageController@index');
+    Route::get('employee/{employeeId}/languages/{id}', 'EmployeeLanguageController@show');
+    Route::post('employee/{employeeId}/languages', 'EmployeeLanguageController@store');
+    Route::put('employee/{employeeId}/languages/{id}', 'EmployeeLanguageController@update');
+    Route::delete('employee-languages/{id}', 'EmployeeLanguageController@destroy');
+
+    /*employee membership*/
+    Route::get('employee/{employeeId}/memberships', 'EmployeeMembershipController@index');
+    Route::get('employee/{employeeId}/memberships/{id}', 'EmployeeMembershipController@show');
+    Route::post('employee/{employeeId}/memberships', 'EmployeeMembershipController@store');
+    Route::put('employee/{employeeId}/memberships/{id}', 'EmployeeMembershipController@update');
+    Route::delete('employee-memberships/{id}', 'EmployeeMembershipController@destroy');
 
 
-    Route::resource('employee/{id}/addresses', 'EmployeeAddressController');
+    /*employee military*/
+    Route::get('employee/{employeeId}/military', 'EmployeeMilitaryServiceController@index');
+    Route::get('employee/{employeeId}/military/{id}', 'EmployeeMilitaryServiceController@show');
+    Route::post('employee/{employeeId}/military', 'EmployeeMilitaryServiceController@store');
+    Route::put('employee/{employeeId}/military/{id}', 'EmployeeMilitaryServiceController@update');
+    Route::delete('employee-military/{id}', 'EmployeeMilitaryServiceController@destroy');
+
+    /*employee phones*/
+    Route::get('employee/{employeeId}/phones', 'EmployeePhoneController@index');
+    Route::get('employee/{employeeId}/phones/{id}', 'EmployeePhoneController@show');
+    Route::post('employee/{employeeId}/phones', 'EmployeePhoneController@store');
+    Route::put('employee/{employeeId}/phones/{id}', 'EmployeePhoneController@update');
+    Route::delete('employee-phones/{id}', 'EmployeePhoneController@destroy');
+
+    /*employee qualifications*/
+    Route::get('employee/{employeeId}/qualifications', 'EmployeeQualificationController@index');
+    Route::get('employee/{employeeId}/qualifications/{id}', 'EmployeeQualificationController@show');
+    Route::post('employee/{employeeId}/qualifications', 'EmployeeQualificationController@store');
+    Route::put('employee/{employeeId}/qualifications/{id}', 'EmployeeQualificationController@update');
+    Route::delete('employee-qualifications/{id}', 'EmployEmployeeQualificationControllereePhoneController@destroy');
+
+    /*employee relations*/
+    Route::get('employee/{employeeId}/relations', 'EmployeeRelationController@index');
+    Route::get('employee/{employeeId}/relations/{id}', 'EmployeeRelationController@show');
+    Route::post('employee/{employeeId}/relations', 'EmployeeRelationController@store');
+    Route::put('employee/{employeeId}/relations/{id}', 'EmployeeRelationController@update');
+    Route::delete('employee-relations/{id}', 'EmployeeRelationController@destroy');
+
+    /*employee schools*/
+    Route::get('employee/{employeeId}/schools', 'EmployeeSchoolController@index');
+    Route::get('employee/{employeeId}/schools/{id}', 'EmployeeSchoolController@show');
+    Route::post('employee/{employeeId}/schools', 'EmployeeSchoolController@store');
+    Route::put('employee/{employeeId}/schools/{id}', 'EmployeeSchoolController@update');
+    Route::delete('employee-phones/{id}', 'EmployeeSchoolController@destroy');
+
+    /*employee histories*/
+    Route::get('employee/{employeeId}/histories', 'EmploymentHistoryController@index');
+    Route::get('employee/{employeeId}/histories/{id}', 'EmploymentHistoryController@show');
+    Route::post('employee/{employeeId}/histories', 'EmploymentHistoryController@store');
+    Route::put('employee/{employeeId}/histories/{id}', 'EmploymentHistoryController@update');
+    Route::delete('employee-histories/{id}', 'EmploymentHistoryController@destroy');
 
 });

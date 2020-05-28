@@ -16,7 +16,7 @@ class CreateHrEmployeeBackgroundTable extends Migration
         Schema::create('hr_employee_background', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('employee_id');
-            $table->string('details')->nullable();
+            $table->longText('details')->nullable();
             $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->softDeletes();
             $table->timestamps();

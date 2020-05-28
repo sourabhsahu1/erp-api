@@ -29,7 +29,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 class EmployeePhoneNumber extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
-    protected $table = '';
+    protected $table = 'hr_employee_phone_numbers';
 	protected $casts = [
 		'employee_id' => 'int',
 		'phone_number_type_id' => 'int'
@@ -42,12 +42,12 @@ class EmployeePhoneNumber extends Eloquent
 		'extension'
 	];
 
-	public function hr_employee()
+	public function employee()
 	{
 		return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'employee_id');
 	}
 
-	public function hr_phone_number_type()
+	public function phone_number_type()
 	{
 		return $this->belongsTo(\Modules\Hr\Models\PhoneNumberType::class, 'phone_number_type_id');
 	}

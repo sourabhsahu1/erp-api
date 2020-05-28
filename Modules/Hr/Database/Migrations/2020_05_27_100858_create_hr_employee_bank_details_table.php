@@ -22,8 +22,8 @@ class CreateHrEmployeeBankDetailsTable extends Migration
             $table->string('number');
             $table->string('type');
             $table->foreign('employee_id')->references('id')->on('hr_employees');
-            $table->foreign('bank_id')->references('id')->on('hr_employees');
-            $table->foreign('bank_branch_id')->references('id')->on('hr_employees');
+            $table->foreign('bank_id')->references('id')->on('hr_banks');
+            $table->foreign('bank_branch_id')->references('id')->on('hr_bank_branches');
             $table->softDeletes();
             $table->timestamps();
         });

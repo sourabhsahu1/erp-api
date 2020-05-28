@@ -36,7 +36,7 @@ class EmployeeCensure extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
-    protected $table = '';
+    protected $table = 'hr_employee_censures';
 	protected $casts = [
 		'employee_id' => 'int',
 		'issued_by_id' => 'int',

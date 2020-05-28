@@ -17,7 +17,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $employer
  * @property \Carbon\Carbon $engaged
  * @property \Carbon\Carbon $disengaged
- * @property \Carbon\Carbon $total_remuneration
+ * @property string $total_remuneration
  * @property string $file_page
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
@@ -38,8 +38,7 @@ class EmployeeEmploymentHistory extends Eloquent
 
 	protected $dates = [
 		'engaged',
-		'disengaged',
-		'total_remuneration'
+		'disengaged'
 	];
 
 	protected $fillable = [

@@ -19,9 +19,9 @@ class CreateHrEmployeeEmploymentHistoryTable extends Migration
             $table->string('employer');
             $table->date('engaged');
             $table->date('disengaged');
-            $table->date('total_remuneration');
+            $table->string('total_remuneration');
             $table->string('file_page');
-            $table->foreign('employee_id')->references('id')->on('hr_employees');
+            $table->foreign('employee_id')->references( 'id')->on('hr_employees');
             $table->softDeletes();
             $table->timestamps();
         });
