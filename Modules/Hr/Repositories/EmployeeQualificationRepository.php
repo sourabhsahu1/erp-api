@@ -21,4 +21,16 @@ class EmployeeQualificationRepository extends EloquentBaseRepository
             ->where('employee_id', $params['inputs']['employee_id']);
         return parent::getAll($params, $query);
     }
+
+    public function show($id, $params = null)
+    {
+        $data = EmployeeQualification::with([
+            'academic',
+            'employee',
+            'country',
+            'qualification'
+        ])
+            ->where('employee_id', $id['employeeId'])->where('id', $id['id'])->first();
+        return $data;
+    }
 }

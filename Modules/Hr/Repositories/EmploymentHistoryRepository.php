@@ -36,4 +36,13 @@ class EmploymentHistoryRepository extends EloquentBaseRepository
         $data['data']['disengaged'] = Carbon::parse($data['data']['disengaged'])->toDateString();
         return parent::update($data);
     }
+
+    public function show($id, $params = null)
+    {
+        $data = EmployeeEmploymentHistory::with([
+            'employee'
+        ])
+            ->where('employee_id', $id['employeeId'])->where('id', $id['id'])->first();
+        return $data;
+    }
 }

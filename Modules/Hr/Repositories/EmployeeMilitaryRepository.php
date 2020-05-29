@@ -36,4 +36,14 @@ class EmployeeMilitaryRepository extends EloquentBaseRepository
         $data['data']['discharged_at'] = Carbon::parse($data['data']['discharged_at'])->toDateString();
         return parent::update($data);
     }
+
+    public function show($id, $params = null)
+    {
+        $data = EmployeeMilitaryService::with([
+            'arm_of_service',
+            'employee'
+        ])
+            ->where('employee_id', $id['employeeId'])->where('id', $id['id'])->first();
+        return $data;
+    }
 }

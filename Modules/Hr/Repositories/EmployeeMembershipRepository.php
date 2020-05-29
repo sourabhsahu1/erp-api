@@ -35,4 +35,14 @@ class EmployeeMembershipRepository extends EloquentBaseRepository
         $data['data']['join_at'] = Carbon::parse($data['data']['join_at'])->toDateString();
         return parent::update($data);
     }
+
+    public function show($id, $params = null)
+    {
+        $data = EmployeeMembership::with([
+            'membership',
+            'employee'
+        ])
+            ->where('employee_id', $id['employeeId'])->where('id', $id['id'])->first();
+        return $data;
+    }
 }

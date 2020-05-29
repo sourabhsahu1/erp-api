@@ -43,4 +43,18 @@ class EmployeeRelationRepository extends EloquentBaseRepository
         $data['data']['address_line_2'] = $data['data']['address_line2'] ?? null;
         return parent::update($data);
     }
+
+    public function show($id, $params = null)
+    {
+        $data = EmployeeRelation::with([
+            'employee',
+            'country',
+            'region',
+            'state',
+            'lga',
+            'relationship'
+        ])
+            ->where('employee_id', $id['employeeId'])->where('id', $id['id'])->first();
+        return $data;
+    }
 }

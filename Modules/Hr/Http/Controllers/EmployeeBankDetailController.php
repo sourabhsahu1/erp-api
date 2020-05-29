@@ -19,4 +19,11 @@ class EmployeeBankDetailController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
+
+
+    public function show(Request $request, $id)
+    {
+        $id = $request->route()->parameters;
+        return parent::show($request, $id);
+    }
 }

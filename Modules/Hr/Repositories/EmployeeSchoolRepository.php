@@ -38,4 +38,15 @@ class EmployeeSchoolRepository extends EloquentBaseRepository
         $data['data']['exited_at'] = Carbon::parse($data['data']['exited_at'])->toDateString();
         return parent::update($data);
     }
+
+    public function show($id, $params = null)
+    {
+        $data = EmployeeSchool::with([
+            'country',
+            'employee',
+            'schedule'
+        ])
+            ->where('employee_id', $id['employeeId'])->where('id', $id['id'])->first();
+        return $data;
+    }
 }
