@@ -11,7 +11,11 @@ class Create extends BaseRequest
     public function rules()
     {
         return [
-
+            'languageId' => "required|exists:hr_languages,id",
+            'writtenProficiency' => "required",
+            'spokenProficiency' => "required",
+            'certification' => "required",
+            'description' => "required"
         ];
     }
 

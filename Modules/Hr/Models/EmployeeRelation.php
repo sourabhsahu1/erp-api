@@ -90,8 +90,13 @@ class EmployeeRelation extends Eloquent
 
 	public function employee()
 	{
-		return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'relative_id');
+		return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'employee_id');
 	}
+
+    public function relative()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'relative_id');
+    }
 
 	public function lga()
 	{

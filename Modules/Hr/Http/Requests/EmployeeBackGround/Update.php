@@ -11,7 +11,7 @@ class Update extends BaseRequest
     public function rules()
     {
         return [
-
+            "details" => "required"
         ];
     }
 

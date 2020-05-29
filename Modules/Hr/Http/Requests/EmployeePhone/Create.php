@@ -11,7 +11,9 @@ class Create extends BaseRequest
     public function rules()
     {
         return [
-
+            'phoneNumberTypeId' => "required|exists:hr_phone_number_types,id",
+            'phone' => "required|digits:10",
+            'extension' => "required"
         ];
     }
 

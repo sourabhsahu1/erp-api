@@ -18,7 +18,8 @@ class EmployeeCensureController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
-
+    protected $storeRequest = "";
+    protected $updateRequest = "";
     public function show(Request $request, $id)
     {
         $id = $request->route()->parameters;

@@ -11,7 +11,10 @@ class Update extends BaseRequest
     public function rules()
     {
         return [
-
+            'membershipId' => "sometimes|exists:hr_memberships,id",
+            'membershipRegistrationNumber' => "sometimes",
+            'membershipRank' => "sometimes",
+            'joinAt' => "sometimes|date"
         ];
     }
 

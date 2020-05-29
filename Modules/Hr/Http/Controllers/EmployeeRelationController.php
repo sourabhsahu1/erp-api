@@ -7,6 +7,8 @@ namespace Modules\Hr\Http\Controllers;
 use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use Luezoid\Laravelcore\Jobs\BaseJob;
+use Modules\Hr\Http\Requests\EmployeeRelation\Create;
+use Modules\Hr\Http\Requests\EmployeeRelation\Update;
 use Modules\Hr\Repositories\EmployeeRelationRepository;
 
 class EmployeeRelationController extends BaseController
@@ -18,7 +20,8 @@ class EmployeeRelationController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
-
+    protected $storeRequest = Create::class;
+    protected $updateRequest = Update::class;
 
     public function show(Request $request, $id)
     {
