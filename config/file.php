@@ -19,6 +19,13 @@ return [
             'validation' => 'required',
             'valid_file_types' => ['png', 'jpeg', 'jpg'],
             'acl' => 'private'
+        ],
+        'EMPLOYEE_DOCS' => ['type' => 'EMPLOYEE_DOCS',
+            'local_path' => 'images/employee_files',
+            'bucket_name' => '',
+            'validation' => 'required',
+            'valid_file_types' => ['csv', 'xls', 'xlsx', 'pdf'],
+            'acl' => 'private'
         ]
     ]
 ];

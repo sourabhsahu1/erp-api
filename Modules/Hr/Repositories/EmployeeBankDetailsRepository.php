@@ -30,7 +30,7 @@ class EmployeeBankDetailsRepository extends EloquentBaseRepository
 
         $employeeBankDetail = EmployeeBankDetail::where('id', $data['id'])
             ->where('employee_id', $data['data']['employee_id'])->first();
-        if (is_null($employeeBankDetail)) {
+        if (!is_null($employeeBankDetail)) {
             return parent::update($data);
         }else {
             throw new AppException('Invalid or Already deleted');
