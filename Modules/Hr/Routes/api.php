@@ -26,6 +26,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('regions', 'RegionController');
     Route::resource('states', 'StateController');
     Route::resource('lgas', 'LgaController');
+    Route::resource('lgas', 'LgaController');
     Route::get('locations', 'CountryController@getAllLocations');
     Route::resource('languages', 'LanguageController');
     Route::resource('schedules', 'ScheduleController');
@@ -156,7 +157,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('employee/{employeeId}/schools/{id}', 'EmployeeSchoolController@show');
     Route::post('employee/{employeeId}/schools', 'EmployeeSchoolController@store');
     Route::put('employee/{employeeId}/schools/{id}', 'EmployeeSchoolController@update');
-    Route::delete('employee-phones/{id}', 'EmployeeSchoolController@destroy');
+    Route::delete('employee-schools/{id}', 'EmployeeSchoolController@destroy');
 
     /*employee histories*/
     Route::get('employee/{employeeId}/histories', 'EmploymentHistoryController@index');
