@@ -38,14 +38,16 @@ class EmployeeQualification extends Eloquent
 		'employee_id' => 'int',
 		'qualification_id' => 'int',
 		'academic_id' => 'int',
-		'country_id' => 'int'
-	];
+		'country_id' => 'int',
+        'year' => 'int',
+    ];
 
 	protected $fillable = [
 		'employee_id',
 		'qualification_id',
 		'academic_id',
 		'country_id',
+        'year',
 		'institute_name'
 	];
 

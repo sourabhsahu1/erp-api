@@ -20,6 +20,7 @@ class CreateHrEmployeeQualificationsTable extends Migration
             $table->unsignedBigInteger('academic_id');
             $table->unsignedBigInteger('country_id');
             $table->string('institute_name');
+            $table->date('year');
             $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->foreign('country_id')->references('id')->on('countries');
             $table->foreign('qualification_id')->references('id')->on('hr_qualifications');
