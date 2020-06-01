@@ -54,8 +54,8 @@ class WKHTMLPDfConverter
         $this->location = config('file.wkhtml_path');
         try {
             $tmp_path = config('file.pdf_directory') . Carbon::now()->timestamp . '.html';
-            $fp = fopen($tmp_path, "w+");
 
+            $fp = fopen($tmp_path, "w+");
             fclose($fp);
             File::put($tmp_path, $html);
 

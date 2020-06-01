@@ -173,15 +173,15 @@
                     </tr>
                     <tr>
                         <td>Region:</td>
-                        <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['country'])) ? $data['employee_contact_details']['region']['name'] : ''}}</td>
+                        <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['region'])) ? $data['employee_contact_details']['region']['name'] : ''}}</td>
                     </tr>
                     <tr>
                         <td>State:</td>
-                        <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['country'])) ? $data['employee_contact_details']['state']['name'] : ''}}</td>
+                        <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['state'])) ? $data['employee_contact_details']['state']['name'] : ''}}</td>
                     </tr>
                     <tr>
                         <td>LGA</td>
-                        <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['country'])) ? $data['employee_contact_details']['lga']['name'] : ''}}</td>
+                        <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['lga'])) ? $data['employee_contact_details']['lga']['name'] : ''}}</td>
                     </tr>
                     </tbody>
                 </table>
