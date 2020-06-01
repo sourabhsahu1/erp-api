@@ -15,7 +15,7 @@ class Create extends BaseRequest
             'writtenProficiency' => "required",
             'spokenProficiency' => "required",
             'certification' => "required",
-            'description' => "required"
+            'description' => "sometimes"
         ];
     }
 
