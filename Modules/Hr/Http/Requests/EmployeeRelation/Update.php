@@ -26,7 +26,7 @@ class Update extends BaseRequest
             'addressLine1' => "sometimes",
             'addressLine2' => "sometimes",
             'city' => "sometimes",
-            'zip_code' => "sometimes"
+            'zipCode' => "sometimes"
         ];
     }
 
