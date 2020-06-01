@@ -503,7 +503,7 @@ class EmployeeRepository extends EloquentBaseRepository
         $filePath = "pdf/";
         if (strtolower($params['inputs']['type']) == 'short') {
             app()->make(WKHTMLPDfConverter::class)
-                ->convertBrowserShot(view('reports.employee-short-report', ['data' => $data])->render(), $fileName);
+                ->convert(view('reports.employee-short-report', ['data' => $data])->render(), $fileName);
         }
         if (strtolower($params['inputs']['type']) == 'extended') {
             app()->make(WKHTMLPDfConverter::class)
