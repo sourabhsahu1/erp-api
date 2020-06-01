@@ -36,6 +36,8 @@ class CreateHrEmployeeRelationsTable extends Migration
             $table->string('address_line_2')->nullable();
             $table->string('city')->nullable();
             $table->string('zip_code');
+            $table->string('phone')->nullable();
+            $table->string('email')->nullable();
             $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->foreign('relationship_id')->references('id')->on('hr_relationships');
             $table->foreign('relative_id')->references('id')->on('hr_employees');

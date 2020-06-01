@@ -17,6 +17,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $relationship_id
  * @property int $relative_id
  * @property string $last_name
+ * @property string $email
+ * @property string $phone
  * @property string $first_name
  * @property string $national_id
  * @property string $gender
@@ -80,7 +82,9 @@ class EmployeeRelation extends Eloquent
         'address_line_1',
         'address_line_2',
         'city',
-        'zip_code'
+        'zip_code',
+        'phone',
+        'email'
     ];
 
     public function country()
