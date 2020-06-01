@@ -143,7 +143,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('employee/{employeeId}/qualifications/{id}', 'EmployeeQualificationController@show');
     Route::post('employee/{employeeId}/qualifications', 'EmployeeQualificationController@store');
     Route::put('employee/{employeeId}/qualifications/{id}', 'EmployeeQualificationController@update');
-    Route::delete('employee-qualifications/{id}', 'EmployEmployeeQualificationControllereePhoneController@destroy');
+    Route::delete('employee-qualifications/{id}', 'EmployeeQualificationController@destroy');
 
     /*employee relations*/
     Route::get('employee/{employeeId}/relations', 'EmployeeRelationController@index');

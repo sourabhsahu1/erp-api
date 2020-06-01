@@ -14,13 +14,20 @@ class Update extends BaseRequest
     {
         return [
             'languageId' => "sometimes|exists:hr_languages,id",
-            'writtenProficiency' => ["sometimes", Rule::in([
-                AppConstant::LANGUAGE_PROFICIENCY_VERY_GOOD,
-                AppConstant::LANGUAGE_PROFICIENCY_GOOD,
-                AppConstant::LANGUAGE_PROFICIENCY_POOR,
-                AppConstant::LANGUAGE_PROFICIENCY_NO
-            ])],
-            'spokenProficiency' => "sometimes",
+            'writtenProficiency' => ["sometimes",
+                Rule::in([
+                    AppConstant::LANGUAGE_PROFICIENCY_VERY_GOOD,
+                    AppConstant::LANGUAGE_PROFICIENCY_GOOD,
+                    AppConstant::LANGUAGE_PROFICIENCY_POOR,
+                    AppConstant::LANGUAGE_PROFICIENCY_NO
+                ])],
+            'spokenProficiency'  => ["sometimes",
+                Rule::in([
+                    AppConstant::LANGUAGE_PROFICIENCY_VERY_GOOD,
+                    AppConstant::LANGUAGE_PROFICIENCY_GOOD,
+                    AppConstant::LANGUAGE_PROFICIENCY_POOR,
+                    AppConstant::LANGUAGE_PROFICIENCY_NO
+                ])],
             'certification' => "sometimes",
             'description' => "sometimes"
         ];
