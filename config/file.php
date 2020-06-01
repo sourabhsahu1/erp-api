@@ -12,6 +12,8 @@ return [
     'is_local' => true,
     'temp_path' => 'images/temp_path',
     'aws_temp_link_time' => 10,
+    'pdf_directory' => public_path('pdf/'),
+    'wkhtml_path' => resource_path('wkhtml/library/wkhtmltopdf-amd64_1'),
     'types' => [
         'USER_IMAGE' => ['type' => 'USER_IMAGE',
             'local_path' => 'images/user_image',
@@ -20,8 +22,8 @@ return [
             'valid_file_types' => ['png', 'jpeg', 'jpg'],
             'acl' => 'private'
         ],
-        'EMPLOYEE_DOCS' => ['type' => 'EMPLOYEE_DOCS',
-            'local_path' => 'images/employee_files',
+        'EMPLOYEE_FILES' => ['type' => 'EMPLOYEE_FILES',
+            'local_path' => 'images/pdf',
             'bucket_name' => '',
             'validation' => 'required',
             'valid_file_types' => ['csv', 'xls', 'xlsx', 'pdf'],

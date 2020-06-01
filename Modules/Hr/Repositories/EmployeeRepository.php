@@ -4,6 +4,7 @@
 namespace Modules\Hr\Repositories;
 
 
+use App\Services\WKHTMLPDfConverter;
 use App\Constants\AppConstant;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -496,14 +497,20 @@ class EmployeeRepository extends EloquentBaseRepository
     }
 
     public function downloadDetails($params) {
-        $employee = $this->show($params['inputs']['id'])->toArray();
+        $data = $this->show($params['inputs']['id'])->toArray();
 
-
+        $fileName = 'employee-details' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
+        $filePath = "pdf/";
         if (strtolower($params['inputs']['type']) == 'short') {
-
+            app()->make(WKHTMLPDfConverter::class)
+                ->convertBrowserShot(view('reports.employee-short-report', ['data' => $data])->render(), $fileName);
         }
         if (strtolower($params['inputs']['type']) == 'extended') {
-
+            app()->make(WKHTMLPDfConverter::class)
+                ->convertBrowserShot(view('reports.employee-full-report', ['data' => $data])->render(), $fileName);
         }
+
+        return ['url' => url($filePath . $fileName)];
+
     }
 }
