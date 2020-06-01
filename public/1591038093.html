@@ -109,47 +109,47 @@
                 <tbody>
                 <tr>
                     <td>Staff ID:</td>
-                    <td>{{$data['id']}}</td>
+                    <td>1</td>
                 </tr>
                 <tr>
                     <td>Last Name:</td>
-                    <td>{{isset($data['last_name']) ? $data['last_name'] : ''}}</td>
+                    <td>ley</td>
                 </tr>
                 <tr>
                     <td>First Names:</td>
-                    <td>{{isset($data['first_name']) ? $data['first_name'] : ''}}</td>
+                    <td>sam</td>
                 </tr>
                 <tr>
                     <td>Marital Status:</td>
-                    <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['marital_status'])) ? $data['employee_personal_details']['marital_status'] : ''}}</td>
+                    <td>SINGLE</td>
                 </tr>
                 <tr>
                     <td>Religion:</td>
-                    <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['religion'])) ? $data['employee_personal_details']['religion'] : ''}}</td>
+                    <td>CHRISTIANITY</td>
                 </tr>
                 <tr>
                     <td>Birth Date:</td>
-                    <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['date_of_birth'])) ? $data['employee_personal_details']['date_of_birth'] : ''}}</td>
+                    <td>1993-11-11 00:00:00</td>
                 </tr>
                 <tr>
                     <td>Department:</td>
-                    <td>{{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['department'])) ? $data['employee_job_profiles']['department']['name'] : ''}}</td>
+                    <td>Administrative Segment</td>
                 </tr>
                 <tr>
                     <td>Designation:</td>
-                    <td>{{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['designation'])) ? $data['employee_job_profiles']['designation']['name'] : ''}}  </td>
+                    <td>Front End Deva  </td>
                 </tr>
                 <tr>
                     <td>Date Employed:</td>
-                    <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['appointed_on'])) ? $data['employee_personal_details']['appointed_on'] : ''}}</td>
+                    <td>2016-11-14 00:00:00</td>
                 </tr>
                 <tr>
                     <td>Current App Date:</td>
-                    <td>{{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['current_appointment'])) ? $data['employee_job_profiles']['current_appointment'] : ''}}</td>
+                    <td>2020-05-01 00:00:00</td>
                 </tr>
                 <tr>
                     <td>Location:</td>
-                    <td>{{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['work_location'])) ? $data['employee_job_profiles']['work_location']['name'] : ''}}</td>
+                    <td>child 1</td>
                 </tr>
                 </tbody>
             </table>
@@ -168,19 +168,19 @@
                     <tbody>
                     <tr>
                         <td>Country:</td>
-                        <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['country'])) ? $data['employee_contact_details']['country']['name'] : ''}}</td>
+                        <td>child 1</td>
                     </tr>
                     <tr>
                         <td>Region:</td>
-                        <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['country'])) ? $data['employee_contact_details']['region']['name'] : ''}}</td>
+                        <td>child 1</td>
                     </tr>
                     <tr>
                         <td>State:</td>
-                        <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['country'])) ? $data['employee_contact_details']['state']['name'] : ''}}</td>
+                        <td>child 1</td>
                     </tr>
                     <tr>
                         <td>LGA</td>
-                        <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['country'])) ? $data['employee_contact_details']['lga']['name'] : ''}}</td>
+                        <td>child 1</td>
                     </tr>
                     </tbody>
                 </table>
@@ -197,43 +197,43 @@
             <tbody>
             <tr>
                 <td>Address:</td>
-                <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['address_line_1'])) ? $data['employee_contact_details']['address_line_1'] : ''}}</td>
+                <td>child 1</td>
             </tr>
             <tr>
                 <td>Street:</td>
-                <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['address_line_2'])) ? $data['employee_contact_details']['address_line_2'] : ''}}</td>
+                <td></td>
             </tr>
             <tr>
                 <td>City:</td>
-                <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['city'])) ? $data['employee_contact_details']['city'] : ''}}</td>
+                <td>child 1</td>
             </tr>
             <tr>
                 <td>Country:</td>
-                <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['other_country'])) ? $data['employee_contact_details']['other_country']['name'] : ''}}</td>
+                <td>child 1</td>
             </tr>
             <tr>
                 <td>Region:</td>
-                <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['other_region'])) ? $data['employee_contact_details']['other_region']['name'] : ''}}</td>
+                <td>child 1</td>
             </tr>
             <tr>
                 <td>State:</td>
-                <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['other_state'])) ? $data['employee_contact_details']['other_state']['name'] : ''}}</td>
+                <td>child 1</td>
             </tr>
             <tr>
                 <td>LGA:</td>
-                <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['other_lga'])) ? $data['employee_contact_details']['other_lga']['name'] : ''}}</td>
+                <td>child 1</td>
             </tr>
             <tr>
                 <td>Sex:</td>
-                <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['gender'])) ? $data['employee_personal_details']['gender'] : ''}}</td>
+                <td>child 1</td>
             </tr>
             <tr>
                 <td>Phone No.:</td>
-                <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['phone'])) ? $data['employee_personal_details']['phone'] : ''}}</td>
+                <td>child 1</td>
             </tr>
             <tr>
                 <td>Email:</td>
-                <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['email'])) ? $data['employee_personal_details']['email'] : ''}}</td>
+                <td>child 1</td>
             </tr>
             </tbody>
         </table>
