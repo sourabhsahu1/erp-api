@@ -131,6 +131,7 @@
                     <td>Birth Date:</td>
                     <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['date_of_birth'])) ? $data['employee_personal_details']['date_of_birth'] : ''}}</td>
                 </tr>
+
                 <tr>
                     <td>Department:</td>
                     <td>{{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['department'])) ? $data['employee_job_profiles']['department']['name'] : ''}}</td>
@@ -156,7 +157,7 @@
         </div>
         <div class="img-citizenship-details">
             <div>
-                <img src="image.png" class="user-img" />
+                <img src="{{(isset($data['file'])) ? $data['file']['name'] : ''}}" class="user-img" />
             </div>
             <div class="citizenship-details">
                 <table class="citizenship-details-table">
