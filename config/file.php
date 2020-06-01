@@ -23,7 +23,7 @@ return [
             'acl' => 'private'
         ],
         'EMPLOYEE_FILES' => ['type' => 'EMPLOYEE_FILES',
-            'local_path' => 'images/pdf',
+            'local_path' => 'employee_files',
             'bucket_name' => '',
             'validation' => 'required',
             'valid_file_types' => ['csv', 'xls', 'xlsx', 'pdf'],
