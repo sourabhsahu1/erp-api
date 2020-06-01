@@ -507,7 +507,7 @@ class EmployeeRepository extends EloquentBaseRepository
         }
         if (strtolower($params['inputs']['type']) == 'extended') {
             app()->make(WKHTMLPDfConverter::class)
-                ->convertBrowserShot(view('reports.employee-full-report', ['data' => $data])->render(), $fileName);
+                ->convert(view('reports.employee-full-report', ['data' => $data])->render(), $fileName);
         }
 
         return ['url' => url($filePath . $fileName)];
