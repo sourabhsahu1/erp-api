@@ -34,6 +34,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Illuminate\Database\Eloquent\Collection $employee_pensions
  * @property \Illuminate\Database\Eloquent\Collection $employee_personal_details
  * @property \Illuminate\Database\Eloquent\Collection $employee_progressions
+ * @property \Illuminate\Database\Eloquent\Collection $employee_relatives
  *
  * @package Modules\Hr\Models
  */
@@ -116,5 +117,14 @@ class Employee extends Eloquent
 		return $this->hasOne(\Modules\Hr\Models\EmployeeProgression::class, 'employee_id');
 	}
 
+	public function employee_relatives()
+	{
+		return $this->hasMany(\Modules\Hr\Models\EmployeeRelation::class, 'employee_id');
+	}
+
+    public function employee_arm_services()
+    {
+        return $this->hasMany(\Modules\Hr\Models\EmployeeMilitaryService::class, 'employee_id');
+    }
 
 }

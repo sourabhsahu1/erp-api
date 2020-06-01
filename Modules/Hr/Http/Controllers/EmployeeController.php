@@ -113,4 +113,10 @@ class EmployeeController extends BaseController
         $this->jobMethod = "downloadReport";
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
+
+    public function downloadDetails(Request $request) {
+
+        $this->jobMethod = "downloadDetails";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
 }

@@ -166,4 +166,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('employee/{employeeId}/histories/{id}', 'EmploymentHistoryController@update');
     Route::delete('employee-histories/{id}', 'EmploymentHistoryController@destroy');
 
+
+    Route::get('employee/{id}/details-download', 'EmployeeController@downloadDetails');
 });
