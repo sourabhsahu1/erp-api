@@ -26,7 +26,9 @@ class Create extends BaseRequest
             'addressLine1' => "required",
             'addressLine2' => "sometimes",
             'city' => "required",
-            'zipCode' => "required"
+            'zipCode' => "required",
+            'phone' => "required|digits:10",
+            'email' => "required|email"
         ];
     }
 
