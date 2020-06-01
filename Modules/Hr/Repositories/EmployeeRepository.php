@@ -498,7 +498,6 @@ class EmployeeRepository extends EloquentBaseRepository
     public function downloadDetails($params) {
         $employee = $this->show($params['inputs']['id'])->toArray();
 
-        dd($employee);
 
         if (strtolower($params['inputs']['type']) == 'short') {
 
