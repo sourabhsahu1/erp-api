@@ -507,7 +507,11 @@ class EmployeeRepository extends EloquentBaseRepository
         $parentGradeLevel = null;
         if (isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['department']) && isset($data['employee_job_profiles']['department']['parent_id'])) {
             $parentDepartmentId = $data['employee_job_profiles']['department']['parent_id'];
-           $parentDepartment = Department::find($parentDepartmentId)->name;
+
+           $parentDepartment = Department::find($parentDepartmentId);
+           if (!is_null($parentDepartment)) {
+               $parentDepartment = $parentDepartment->name;
+           }
         }
 
         if (isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['parent_id'])) {
