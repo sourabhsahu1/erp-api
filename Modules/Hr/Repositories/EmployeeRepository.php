@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Hr\Models\Department;
 use Modules\Hr\Models\Employee;
 use Modules\Hr\Models\EmployeeContactDetail;
 use Modules\Hr\Models\EmployeeIdNo;
@@ -415,7 +416,6 @@ class EmployeeRepository extends EloquentBaseRepository
         $data = null;
 
 
-
         if (!isset($params['inputs']['columns'])) {
             foreach ($employees as $key => $employee) {
                 $employee = $employee->toArray();
@@ -445,38 +445,38 @@ class EmployeeRepository extends EloquentBaseRepository
                 $employee = $employee->toArray();
 
                 $employeeData = [];
-                if (isset($headers['SN'])){
-                    $employeeData =  array_merge($employeeData, ['serial_no' => $key + 1]);
+                if (isset($headers['SN'])) {
+                    $employeeData = array_merge($employeeData, ['serial_no' => $key + 1]);
                 }
-                if (isset($headers['title'])){
-                    $employeeData =   array_merge($employeeData, ['title' => $employee['title']]);
+                if (isset($headers['title'])) {
+                    $employeeData = array_merge($employeeData, ['title' => $employee['title']]);
                 }
 
-                if (isset($headers['fName'])){
-                    $employeeData =   array_merge($employeeData, ['employee_name' => $employee['first_name'] . ' ' . $employee['last_name']]);
+                if (isset($headers['fName'])) {
+                    $employeeData = array_merge($employeeData, ['employee_name' => $employee['first_name'] . ' ' . $employee['last_name']]);
                 }
-                if (isset($headers['fileId'])){
-                    $employeeData =    array_merge($employeeData, ['file_number' => $employee['personnel_file_number']]);
+                if (isset($headers['fileId'])) {
+                    $employeeData = array_merge($employeeData, ['file_number' => $employee['personnel_file_number']]);
                 }
-                if (isset($headers['id'])){
-                    $employeeData =   array_merge($employeeData, ['staff_id' => $employee['id']]);
+                if (isset($headers['id'])) {
+                    $employeeData = array_merge($employeeData, ['staff_id' => $employee['id']]);
                 }
-                if (isset($headers['gender'])){
-                    $employeeData =   $employeeData =   array_merge($employeeData, [$employee['employee_personal_details'] ? $employee['employee_personal_details']['gender'] : "-"]);
+                if (isset($headers['gender'])) {
+                    $employeeData = $employeeData = array_merge($employeeData, [$employee['employee_personal_details'] ? $employee['employee_personal_details']['gender'] : "-"]);
                 }
-                if (isset($headers['marital_status'])){
-                    $employeeData =   array_merge($employeeData, [$employee['employee_personal_details'] ? $employee['employee_personal_details']['marital_status'] : '-']);
+                if (isset($headers['marital_status'])) {
+                    $employeeData = array_merge($employeeData, [$employee['employee_personal_details'] ? $employee['employee_personal_details']['marital_status'] : '-']);
                 }
-                if (isset($headers['phone'])){
-                    $employeeData =   array_merge($employeeData, [$employee['employee_personal_details'] ? $employee['employee_personal_details']['phone'] : '-']);
+                if (isset($headers['phone'])) {
+                    $employeeData = array_merge($employeeData, [$employee['employee_personal_details'] ? $employee['employee_personal_details']['phone'] : '-']);
                 }
-                if (isset($headers['department'])){
-                    $employeeData =   array_merge($employeeData, [$employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['department'] ?
+                if (isset($headers['department'])) {
+                    $employeeData = array_merge($employeeData, [$employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['department'] ?
                         $employee['employee_job_profiles']['department']['name'] : '-'
                     ) : '-']);
                 }
-                if (isset($headers['designation'])){
-                    $employeeData =   array_merge($employeeData, [$employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['designation'] ?
+                if (isset($headers['designation'])) {
+                    $employeeData = array_merge($employeeData, [$employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['designation'] ?
                         $employee['employee_job_profiles']['designation']['name'] : '-'
                     ) : '-']);
                 }
@@ -496,8 +496,18 @@ class EmployeeRepository extends EloquentBaseRepository
         return ['url' => url($filePath)];
     }
 
-    public function downloadDetails($params) {
+    public function downloadDetails($params)
+    {
         $data = $this->show($params['inputs']['id'])->toArray();
+        $parentDepartment = null;
+        if (isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['department']) && isset($data['employee_job_profiles']['department']['parent_id'])) {
+            $parentDepartmentId = $data['employee_job_profiles']['department']['parent_id'];
+           $parentDepartment = Department::find($parentDepartmentId)->name;
+        }
+        $data['parent_details'] = [
+            'parent_department' => $parentDepartment,
+
+        ];
 
         $fileName = 'employee-details' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
         $filePath = "pdf/";

@@ -167,5 +167,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('employee-histories/{id}', 'EmploymentHistoryController@destroy');
 
 
-    Route::get('employee/{id}/details-download', 'EmployeeController@downloadDetails');
 });
+Route::get('employee/{id}/details-download', 'EmployeeController@downloadDetails');

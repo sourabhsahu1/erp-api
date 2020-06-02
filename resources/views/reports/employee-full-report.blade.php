@@ -110,32 +110,32 @@
             <tbody>
             <tr>
                 <td colspan="2">
-                    <b>Surname:</b> Mishra
+                    <b>Surname:</b> {{isset($data['last_name']) ? $data['last_name'] : ''}}
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <b>Other Names:</b> Abhishek
+                    <b>Other Names:</b> {{isset($data['first_name']) ? $data['first_name'] : ''}}
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <b>ID Number:</b> 1234
+                    <b>ID Number:</b> {{$data['id']}}
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <b>Date of Birth:</b> 05-Dec-1994
+                    <b>Date of Birth:</b> {{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['date_of_birth'])) ? $data['employee_personal_details']['date_of_birth'] : ''}}
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <b>Martial Status:</b> Single
+                    <b>Martial Status:</b> {{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['marital_status'])) ? $data['employee_personal_details']['marital_status'] : ''}}
                 </td>
             </tr>
             <tr>
                 <td>
-                    <b>Date of 1st Appt:</b> 16-Feb-2020
+                    <b>Date of 1st Appt:</b> {{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['appointed_on'])) ? $data['employee_personal_details']['appointed_on'] : ''}}
                 </td>
                 <td>
                     <b>Length of Service:</b> 0 Years
@@ -152,17 +152,17 @@
             <tbody>
             <tr>
                 <td>
-                    <img src="image.png" class="user-img" />
+                    <img src="{{(isset($data['file'])) ? $data['file']['name'] : ''}}" class="user-img" />
                 </td>
             </tr>
             <tr class="shadow">
                 <td>
-                    <b>Email:</b> mishrawp@gmail.com
+                    <b>Email:</b> {{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['email'])) ? $data['employee_personal_details']['email'] : ''}}
                 </td>
             </tr>
             <tr class="shadow">
                 <td>
-                    <b>Phone No:</b> 9545685952
+                    <b>Phone No:</b> {{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['phone'])) ? $data['employee_personal_details']['phone'] : ''}}
                 </td>
             </tr>
             </tbody>
@@ -171,15 +171,15 @@
             <tbody>
             <tr>
                 <td colspan="3">
-                    <b>Sector/Sub-Sector/Division:</b> 2424
+                    <b>Sector/Sub-Sector/Division:</b> {{isset($data['parent_details']['parent_department']) ? $data['parent_details']['parent_department'] : '' }}
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <b>Department/Section:</b> Operations
+                    <b>Department/Section:</b> {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['department'])) ? $data['employee_job_profiles']['department']['name'] : ''}}
                 </td>
                 <td>
-                    <b>Geographic Location:</b> Noida, India
+                    <b>Geographic Location:</b>
                 </td>
             </tr>
             <tr>
@@ -216,17 +216,7 @@
                 <table class="competencies-table">
                     <tr>
                         <td>
-                            2efc
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            defcc
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            wsdcef
+                                {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['competences'])) ? $data['employee_job_profiles']['job_position']['competences'] : ''}}
                         </td>
                     </tr>
                 </table>
@@ -237,35 +227,7 @@
             <table class="competencies-table">
                 <tr>
                     <td>
-                        2efc
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        defcc
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        wsdcef
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>
-                        2efc
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        defcc
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        wsdcef
+                        {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['activities'])) ? $data['employee_job_profiles']['job_position']['activities'] : ''}}
                     </td>
                 </tr>
             </table>
@@ -297,33 +259,16 @@
                         1.
                     </td>
                     <td class="text-center">
-                        2/2020
+                        {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['current_appointment'])) ? \Illuminate\Support\Carbon::parse($data['employee_job_profiles']['current_appointment'])->format('m/Y') : ''}}
                     </td>
                     <td class="text-center">
-                        Front End Developer
+                        {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['grade_level'])) ? $data['employee_job_profiles']['job_position']['grade_level']['name'] : ''}}
                     </td>
                     <td class="text-center">
-                        VP Sales
+                        {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position'])) ? $data['employee_job_profiles']['job_position']['name'] : ''}}
                     </td>
                     <td class="text-center">
-                        Noida, IND
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-center">
-                        2.
-                    </td>
-                    <td class="text-center">
-                        2/2020
-                    </td>
-                    <td class="text-center">
-                        Front End Developer
-                    </td>
-                    <td class="text-center">
-                        VP Sales
-                    </td>
-                    <td class="text-center">
-                        Noida, IND
+                        {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['work_location'])) ? $data['employee_job_profiles']['work_location']['name'] : ''}}
                     </td>
                 </tr>
                 </tbody>
