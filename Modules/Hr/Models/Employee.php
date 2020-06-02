@@ -35,6 +35,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Illuminate\Database\Eloquent\Collection $employee_personal_details
  * @property \Illuminate\Database\Eloquent\Collection $employee_progressions
  * @property \Illuminate\Database\Eloquent\Collection $employee_relatives
+ * @property \Illuminate\Database\Eloquent\Collection $employee_languages
+ * @property \Illuminate\Database\Eloquent\Collection $employee_arm_services
  *
  * @package Modules\Hr\Models
  */
@@ -122,9 +124,13 @@ class Employee extends Eloquent
 		return $this->hasMany(\Modules\Hr\Models\EmployeeRelation::class, 'employee_id');
 	}
 
-    public function employee_arm_services()
-    {
-        return $this->hasMany(\Modules\Hr\Models\EmployeeMilitaryService::class, 'employee_id');
+
+    public function employee_languages() {
+        return $this->hasMany(\Modules\Hr\Models\EmployeeLanguage::class, 'employee_id');
+    }
+
+    public function employee_academics() {
+        return $this->hasMany(\Modules\Hr\Models\EmployeeQualification::class, 'employee_id');
     }
 
 }

@@ -122,7 +122,7 @@ class EmployeeRelation extends Eloquent
         return $this->belongsTo(\Modules\Hr\Models\State::class);
     }
 
-    public function relative_arm_services(){
-        return $this->belongsTo(\Modules\Hr\Models\EmployeeMilitaryService::class,'relative_id');
+    public function relative_job_profile(){
+        return $this->belongsTo(\Modules\Hr\Models\EmployeeJobProfile::class,'relative_id');
     }
 }
