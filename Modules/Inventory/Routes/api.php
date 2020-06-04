@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:api'])->group(function () {
    Route::resource('stores', 'StoreController');
    Route::resource('measurements', 'MeasurementController');
-   Route::resource('categories', 'CategoryController');
-   Route::resource('items', 'ItemController');
+   Route::resource('inventory-categories', 'CategoryController');
+   Route::resource('inventory-items', 'ItemController');
 });
-
