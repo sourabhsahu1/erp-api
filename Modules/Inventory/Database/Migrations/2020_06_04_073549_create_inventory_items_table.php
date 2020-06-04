@@ -31,7 +31,7 @@ class CreateInventoryItemsTable extends Migration
             $table->softDeletes();
 
 
-            $table->foreign('category_id')->references('id')->on('inventory_items');
+            $table->foreign('category_id')->references('id')->on('inventory_categories');
             $table->foreign('measurement_id')->references('id')->on('inventory_measurements');
             $table->timestamps();
         });

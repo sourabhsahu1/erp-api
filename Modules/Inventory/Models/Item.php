@@ -71,9 +71,9 @@ class Item extends Eloquent
 		'maximum_quantity'
 	];
 
-	public function inventory_item()
+	public function inventory_category()
 	{
-		return $this->belongsTo(\Modules\Inventory\Models\Item::class, 'category_id');
+		return $this->belongsTo(\Modules\Inventory\Models\Category::class, 'category_id');
 	}
 
 	public function inventory_measurement()
@@ -81,8 +81,4 @@ class Item extends Eloquent
 		return $this->belongsTo(\Modules\Inventory\Models\Measurement::class, 'measurement_id');
 	}
 
-	public function inventory_items()
-	{
-		return $this->hasMany(\Modules\Inventory\Models\Item::class, 'category_id');
-	}
 }
