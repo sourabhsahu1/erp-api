@@ -14,15 +14,7 @@ class Create extends BaseRequest
     {
         return [
             'categoryId' => 'required|exists:inventory_categories,id',
-            'measurementId' => [
-                'exists:inventory_measurements,id',
-                function ($a, $v, $f) {
-                    if ($this->get('isPhysicalQuantity') == true){
-                        return $f('Measurement id not required');
-                    }
-
-                }
-            ],
+            'measurementId' => "required_if:isPhysicalQuantity,0",
             'description' => 'required',
             'partNumber' => 'required',
             'isPhysicalQuantity' => 'required|boolean',
