@@ -18,6 +18,11 @@ class CreateAdminCompaniesTable extends Migration
             $table->string('name');
             $table->boolean('is_customer')->default(0);
             $table->boolean('is_supplier')->default(0);
+            $table->string('address');
+            $table->string('phone');
+            $table->string('email');
+            $table->string('tax_id');
+            $table->string('bank_account');
             $table->softDeletes();
             $table->timestamps();
         });

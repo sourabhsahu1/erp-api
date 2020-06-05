@@ -71,6 +71,16 @@ class Item extends Eloquent
 		'maximum_quantity'
 	];
 
+    public $filterable = [
+        'category_id'
+    ];
+
+    public $searchable = [
+        'id',
+        'description',
+        'unit_price'
+    ];
+
 	public function inventory_category()
 	{
 		return $this->belongsTo(\Modules\Inventory\Models\Category::class, 'category_id');
