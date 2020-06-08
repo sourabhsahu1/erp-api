@@ -21,8 +21,8 @@ class CreateAdminCompaniesTable extends Migration
             $table->string('address');
             $table->string('phone');
             $table->string('email');
-            $table->string('tax_id');
-            $table->string('bank_account');
+            $table->string('tax_id')->nullable();
+            $table->string('bank_account')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

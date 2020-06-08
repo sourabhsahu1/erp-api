@@ -16,7 +16,7 @@ class CreateAdminTaxesTable extends Migration
         Schema::create('admin_taxes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->integer('tax');
+            $table->float('tax',4,2);
             $table->boolean('is_active')->default(1);
             $table->softDeletes();
             $table->timestamps();
