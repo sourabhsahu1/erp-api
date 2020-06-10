@@ -19,10 +19,18 @@ class CreateInventoryInvoiceItemsTable extends Migration
             $table->unsignedBigInteger('item_id');
             $table->unsignedBigInteger('invoice_id');
             $table->unsignedBigInteger('measurement_id');
+            $table->string('description')->nullable();
+            $table->string('unit_price')->nullable();
+            $table->string('unit_cost')->nullable();
+            $table->string('quantity');
+            $table->string('account_code')->nullable();
+            $table->string('on_order')->nullable();
+            $table->string('re_order_quantity')->nullable();
             $table->foreign('store_id')->references('id')->on('inventory_stores');
             $table->foreign('item_id')->references('id')->on('inventory_items');
             $table->foreign('invoice_id')->references('id')->on('inventory_invoice_details');
             $table->foreign('measurement_id')->references('id')->on('inventory_measurements');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

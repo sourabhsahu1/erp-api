@@ -17,6 +17,14 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $item_id
  * @property int $invoice_id
  * @property int $measurement_id
+ * @property string $description
+ * @property string $unit_price
+ * @property string $unit_cost
+ * @property string $quantity
+ * @property string $account_code
+ * @property string $on_order
+ * @property string $re_order_quantity
+ * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
@@ -37,10 +45,17 @@ class InvoiceItem extends Eloquent
 	];
 
 	protected $fillable = [
-		'store_id',
-		'item_id',
-		'invoice_id',
-		'measurement_id'
+        'store_id',
+        'item_id',
+        'invoice_id',
+        'measurement_id',
+        'description',
+        'unit_price',
+        'unit_cost',
+        'quantity',
+        'account_code',
+        'on_order',
+        're_order_quantity'
 	];
 
 	public function invoice_detail()

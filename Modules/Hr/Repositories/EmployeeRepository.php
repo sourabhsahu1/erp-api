@@ -548,4 +548,55 @@ class EmployeeRepository extends EloquentBaseRepository
         return ['url' => url($filePath . $fileName)];
 
     }
+
+
+    public function downloadEmpDetails($params)
+    {
+        $data = $this->show($params['inputs']['id'])->toArray();
+        $parentDepartment = null;
+        $jobPositionName = null;
+        $parentGradeLevel = null;
+        if (isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['department']) && isset($data['employee_job_profiles']['department']['parent_id'])) {
+            $parentDepartmentId = $data['employee_job_profiles']['department']['parent_id'];
+
+           $parentDepartment = Department::find($parentDepartmentId);
+           if (!is_null($parentDepartment)) {
+               $parentDepartment = $parentDepartment->name;
+           }
+        }
+
+        if (isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['parent_id'])) {
+            $parentJobPositionId = $data['employee_job_profiles']['job_position']['parent_id'];
+           $jobPosition = JobPosition::with('grade_level')->find($parentJobPositionId);
+           $jobPositionName = $jobPosition->name;
+           $parentGradeLevel = $jobPosition->grade_level->name;
+        }
+
+
+        if (isset($data['employee_personal_details'])) {
+            $data['yearsOfWork'] = Carbon::parse($data['employee_personal_details']['appointed_on'])->diffInYears(Carbon::now());
+        }
+
+        $data['parent_details'] = [
+            'parent_department' => $parentDepartment,
+            'parent_job_position' => $jobPositionName,
+            'parent_grade_level' => $parentGradeLevel
+            ];
+
+
+
+        $fileName = 'employee-details' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
+        $filePath = "pdf/";
+        if (strtolower($params['inputs']['type']) == 'short') {
+            app()->make(WKHTMLPDfConverter::class)
+                ->convertBrowserShot(view('reports.employee-short-report', ['data' => $data])->render(), $fileName);
+        }
+        if (strtolower($params['inputs']['type']) == 'extended') {
+            app()->make(WKHTMLPDfConverter::class)
+                ->convertBrowserShot(view('reports.employee-full-report', ['data' => $data])->render(), $fileName);
+        }
+
+        return ['url' => url($filePath . $fileName)];
+
+    }
 }

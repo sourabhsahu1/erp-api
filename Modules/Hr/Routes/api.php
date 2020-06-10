@@ -169,3 +169,4 @@ Route::middleware(['auth:api'])->group(function () {
 
 });
 Route::get('employee/{id}/details-download', 'EmployeeController@downloadDetails');
+Route::get('employee/{id}/emp-details-download', 'EmployeeController@downloadEmpDetails');
