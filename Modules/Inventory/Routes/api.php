@@ -18,4 +18,6 @@ Route::middleware(['auth:api'])->group(function () {
    Route::resource('measurements', 'MeasurementController');
    Route::resource('inventory-categories', 'CategoryController');
    Route::resource('inventory-items', 'ItemController');
+   Route::post('srv-purchase', 'InvoiceController@srvPurchase');
+   Route::post('srv-return', 'InvoiceController@srvReturn');
 });

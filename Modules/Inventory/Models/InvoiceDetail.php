@@ -10,7 +10,7 @@ namespace Modules\Inventory\Models;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class Category
+ * Class InventoryCategory
  * 
  * @property int $id
  * @property string $name
@@ -26,7 +26,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  *
  * @package Modules\Hr\Models
  */
-class Category extends Eloquent
+class InvoiceDetail extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -44,24 +44,4 @@ class Category extends Eloquent
         'is_active',
         'is_child_enabled'
 	];
-
-	public function inventory_category()
-	{
-		return $this->belongsTo(\Modules\Inventory\Models\Category::class,'parent_id');
-	}
-
-	public function inventory_categories()
-	{
-		return $this->hasMany(\Modules\Inventory\Models\Category::class, 'parent_id');
-	}
-
-    public function sub_categories()
-    {
-        return $this->children()->with('sub_categories');
-    }
-
-    public function children()
-    {
-        return $this->hasMany(Category::class, 'parent_id');
-    }
 }
