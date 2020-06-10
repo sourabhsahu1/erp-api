@@ -40,6 +40,7 @@ class InvoiceDetail extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
+	protected $table = "inventory_invoice_details";
 	protected $casts = [
 		'company_id' => 'int',
 		'department_id' => 'int',
