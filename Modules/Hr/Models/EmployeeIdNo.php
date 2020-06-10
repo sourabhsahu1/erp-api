@@ -21,6 +21,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $pension_fund_administration
  * @property string $national_id_number
  * @property string $pfa_number
+ * @property string $payroll_pin
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -47,6 +48,7 @@ class EmployeeIdNo extends Eloquent
         'bank_version_number',
         'pension_fund_administration',
         'national_id_number',
+        'payroll_pin',
         'pfa_number'
 	];
 

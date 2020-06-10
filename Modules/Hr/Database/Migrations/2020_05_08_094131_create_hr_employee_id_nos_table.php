@@ -21,6 +21,7 @@ class CreateHrEmployeeIdNosTable extends Migration
             $table->string('driver_license_number')->nullable();
             $table->string('bank_version_number')->nullable();
             $table->string('national_id_number')->nullable();
+            $table->string('payroll_pin')->nullable();
             //todo treasury module
             $table->string('pension_fund_administration')->nullable();
             //todo administration segment
