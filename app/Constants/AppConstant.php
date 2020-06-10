@@ -59,4 +59,10 @@ class AppConstant
 
 //    Admin segment Constants
     const ADMIN_SEGMENT_CHARACTER_COUNT = 2;
+
+    const COMPANY_TYPE_SUPPLIER = 'SUPPLIER';
+    const COMPANY_TYPE_DEPARTMENT = 'DEPARTMENT';
+    const COMPANY_TYPE_CUSTOMER = 'CUSTOMER';
+    const TYPE_IN = 'IN';
+    const TYPE_OUT = 'OUT';
 }

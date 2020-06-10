@@ -11,10 +11,11 @@ class InvoiceRepository extends EloquentBaseRepository
 {
     public $model = InvoiceDetail::class;
 
-    public function create($data)
+    public function srvPurchase($data)
     {
-//        InvoiceDetail::create([]);
+        $srvPurchase = InvoiceDetail::create([
 
+        ]);
         return parent::create($data);
     }
 }
