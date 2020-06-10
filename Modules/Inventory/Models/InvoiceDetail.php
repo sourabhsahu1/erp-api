@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Thu, 04 Jun 2020 08:35:31 +0000.
+ * Date: Wed, 10 Jun 2020 09:24:36 +0000.
  */
 
 namespace Modules\Inventory\Models;
@@ -10,38 +10,83 @@ namespace Modules\Inventory\Models;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class InventoryCategory
+ * Class InventoryInvoiceDetail
  * 
  * @property int $id
- * @property string $name
- * @property int $parent_id
- * @property bool $is_active
- * @property bool $is_child_enabled
+ * @property int $company_id
+ * @property int $department_id
+ * @property int $store_id
+ * @property int $total_items
+ * @property \Carbon\Carbon $date
+ * @property string $reference_number
+ * @property string $po_number
+ * @property string $source_doc_reference_number
+ * @property string $memo
+ * @property string $company_type
+ * @property string $type
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property \Modules\Inventory\Models\Category $inventory_category
- * @property \Illuminate\Database\Eloquent\Collection $inventory_categories
+ * @property \Modules\Admin\Models\Company $company
+ * @property \Modules\Admin\Models\AdminSegment $admin_segment
+ * @property \Modules\Inventory\Models\Store $store
+ * @property \Illuminate\Database\Eloquent\Collection $invoice_items
+ * @property \Illuminate\Database\Eloquent\Collection $invoice_taxes
  *
- * @package Modules\Hr\Models
+ * @package Modules\Inventory\Models
  */
 class InvoiceDetail extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
-    protected $table = "inventory_categories";
-
 	protected $casts = [
-        'parent_id' => 'int',
-        'is_active' => 'bool',
-        'is_child_enabled' => 'bool'
+		'company_id' => 'int',
+		'department_id' => 'int',
+		'store_id' => 'int',
+		'total_items' => 'int'
+	];
+
+	protected $dates = [
+		'date'
 	];
 
 	protected $fillable = [
-        'name',
-        'parent_id',
-        'is_active',
-        'is_child_enabled'
+		'company_id',
+		'department_id',
+		'store_id',
+		'total_items',
+		'date',
+		'reference_number',
+		'po_number',
+		'source_doc_reference_number',
+		'memo',
+		'company_type',
+		'type'
 	];
+
+	public function company()
+	{
+		return $this->belongsTo(\Modules\Admin\Models\Company::class, 'company_id');
+	}
+
+	public function admin_segment()
+	{
+		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'department_id');
+	}
+
+	public function store()
+	{
+		return $this->belongsTo(\Modules\Inventory\Models\Store::class, 'store_id');
+	}
+
+	public function invoice_items()
+	{
+		return $this->hasMany(\Modules\Inventory\Models\InvoiceItem::class, 'invoice_id');
+	}
+
+	public function invoice_taxes()
+	{
+		return $this->hasMany(\Modules\Inventory\Models\InvoiceTax::class, 'invoice_id');
+	}
 }

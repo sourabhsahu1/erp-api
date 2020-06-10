@@ -21,10 +21,6 @@
             border-radius: 10px;
         }
 
-        .d-flex {
-            display: flex !important
-        }
-
         .staff-details {
             width: 45%
         }
@@ -45,8 +41,7 @@
         }
 
         .img-citizenship-details {
-            margin-left: 10%;
-            width: 45%;
+            width: 50%;
             font-size: 24px;
         }
 
@@ -98,96 +93,103 @@
 </head>
 <body>
 <div class="main-container">
-    <div class="d-flex">
-        <div class="staff-details">
-            <table class="staff-details-table">
-                <thead class="staff-header">
-                <tr>
-                    <th colspan="2">Staff Details</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Staff ID:</td>
-                    <td>{{$data['id']}}</td>
-                </tr>
-                <tr>
-                    <td>Last Name:</td>
-                    <td>{{isset($data['last_name']) ? $data['last_name'] : ''}}</td>
-                </tr>
-                <tr>
-                    <td>First Names:</td>
-                    <td>{{isset($data['first_name']) ? $data['first_name'] : ''}}</td>
-                </tr>
-                <tr>
-                    <td>Marital Status:</td>
-                    <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['marital_status'])) ? $data['employee_personal_details']['marital_status'] : ''}}</td>
-                </tr>
-                <tr>
-                    <td>Religion:</td>
-                    <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['religion'])) ? $data['employee_personal_details']['religion'] : ''}}</td>
-                </tr>
-                <tr>
-                    <td>Birth Date:</td>
-                    <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['date_of_birth'])) ? $data['employee_personal_details']['date_of_birth'] : ''}}</td>
-                </tr>
-
-                <tr>
-                    <td>Department:</td>
-                    <td>{{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['department'])) ? $data['employee_job_profiles']['department']['name'] : ''}}</td>
-                </tr>
-                <tr>
-                    <td>Designation:</td>
-                    <td>{{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['designation'])) ? $data['employee_job_profiles']['designation']['name'] : ''}}  </td>
-                </tr>
-                <tr>
-                    <td>Date Employed:</td>
-                    <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['appointed_on'])) ? $data['employee_personal_details']['appointed_on'] : ''}}</td>
-                </tr>
-                <tr>
-                    <td>Current App Date:</td>
-                    <td>{{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['current_appointment'])) ? $data['employee_job_profiles']['current_appointment'] : ''}}</td>
-                </tr>
-                <tr>
-                    <td>Location:</td>
-                    <td>{{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['work_location'])) ? $data['employee_job_profiles']['work_location']['name'] : ''}}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="img-citizenship-details">
-            <div>
-                <img src="{{(isset($data['file'])) ? $data['file']['name'] : ''}}" class="user-img" />
-            </div>
-            <div class="citizenship-details">
-                <table class="citizenship-details-table">
-                    <thead class="citizenship-details-header">
+    <table style="width: 100%">
+        <tr>
+            <td style="width: 50%">
+                <table class="staff-details-table">
+                    <thead class="staff-header">
                     <tr>
-                        <th colspan="2">Citizenship Details</th>
+                        <th colspan="2">Staff Details</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td>Country:</td>
-                        <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['country'])) ? $data['employee_contact_details']['country']['name'] : ''}}</td>
+                        <td>Staff ID:</td>
+                        <td>1234</td>
                     </tr>
                     <tr>
-                        <td>Region:</td>
-                        <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['region'])) ? $data['employee_contact_details']['region']['name'] : ''}}</td>
+                        <td>Last Name:</td>
+                        <td>Mishra</td>
                     </tr>
                     <tr>
-                        <td>State:</td>
-                        <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['state'])) ? $data['employee_contact_details']['state']['name'] : ''}}</td>
+                        <td>Other Names:</td>
+                        <td>Abhishek</td>
                     </tr>
                     <tr>
-                        <td>LGA</td>
-                        <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['lga'])) ? $data['employee_contact_details']['lga']['name'] : ''}}</td>
+                        <td>Marital Status:</td>
+                        <td>S</td>
+                    </tr>
+                    <tr>
+                        <td>Religion:</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>Birth Date:</td>
+                        <td>05-Dec-94</td>
+                    </tr>
+                    <tr>
+                        <td>Department:</td>
+                        <td>05-Dec-94</td>
+                    </tr>
+                    <tr>
+                        <td>Designation:</td>
+                        <td>Front-End-Developer</td>
+                    </tr>
+                    <tr>
+                        <td>Date Employed:</td>
+                        <td>16-Feb-20</td>
+                    </tr>
+                    <tr>
+                        <td>Current App Date:</td>
+                        <td>16-Feb-20</td>
+                    </tr>
+                    <tr>
+                        <td>Location:</td>
+                        <td>Noida India</td>
                     </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
-    </div>
+            </td>
+            <td class="img-citizenship-details">
+                <table style="width: 100%">
+                    <tr>
+                        <td>
+                            <img src="image.png" class="user-img" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table class="citizenship-details-table">
+                                <thead class="citizenship-details-header">
+                                <tr>
+                                    <th colspan="2">Citizenship Details</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Country:</td>
+                                    <td>India</td>
+                                </tr>
+                                <tr>
+                                    <td>Region:</td>
+                                    <td>#Error</td>
+                                </tr>
+                                <tr>
+                                    <td>State:</td>
+                                    <td>Abia</td>
+                                </tr>
+                                <tr>
+                                    <td>LGA</td>
+                                    <td>#Error</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
     <div class="contact-address-details">
         <table class="contact-address-table">
             <thead class="contact-address-header">
@@ -198,43 +200,43 @@
             <tbody>
             <tr>
                 <td>Address:</td>
-                <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['address_line_1'])) ? $data['employee_contact_details']['address_line_1'] : ''}}</td>
+                <td>IND</td>
             </tr>
             <tr>
                 <td>Street:</td>
-                <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['address_line_2'])) ? $data['employee_contact_details']['address_line_2'] : ''}}</td>
+                <td></td>
             </tr>
             <tr>
                 <td>City:</td>
-                <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['city'])) ? $data['employee_contact_details']['city'] : ''}}</td>
+                <td></td>
             </tr>
             <tr>
                 <td>Country:</td>
-                <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['other_country'])) ? $data['employee_contact_details']['other_country']['name'] : ''}}</td>
+                <td>IND</td>
             </tr>
             <tr>
                 <td>Region:</td>
-                <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['other_region'])) ? $data['employee_contact_details']['other_region']['name'] : ''}}</td>
+                <td>#Error</td>
             </tr>
             <tr>
                 <td>State:</td>
-                <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['other_state'])) ? $data['employee_contact_details']['other_state']['name'] : ''}}</td>
+                <td>Abia</td>
             </tr>
             <tr>
                 <td>LGA:</td>
-                <td>{{(isset($data['employee_contact_details']) && isset($data['employee_contact_details']['other_lga'])) ? $data['employee_contact_details']['other_lga']['name'] : ''}}</td>
+                <td>#Error</td>
             </tr>
             <tr>
                 <td>Sex:</td>
-                <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['gender'])) ? $data['employee_personal_details']['gender'] : ''}}</td>
+                <td>M</td>
             </tr>
             <tr>
                 <td>Phone No.:</td>
-                <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['phone'])) ? $data['employee_personal_details']['phone'] : ''}}</td>
+                <td>9545685952</td>
             </tr>
             <tr>
                 <td>Email:</td>
-                <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['email'])) ? $data['employee_personal_details']['email'] : ''}}</td>
+                <td>mishrawp@gmail.com</td>
             </tr>
             </tbody>
         </table>
