@@ -22,6 +22,7 @@ class CreateInventoryInvoiceItemsTable extends Migration
             $table->string('description')->nullable();
             $table->string('unit_price')->nullable();
             $table->string('unit_cost')->nullable();
+            $table->string('selling_price')->nullable();
             $table->string('quantity');
             $table->string('account_code')->nullable();
             $table->string('on_order')->nullable();

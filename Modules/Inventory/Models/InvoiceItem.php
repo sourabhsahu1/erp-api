@@ -20,6 +20,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $description
  * @property string $unit_price
  * @property string $unit_cost
+ * @property string $selling_price
  * @property string $quantity
  * @property string $account_code
  * @property string $on_order
@@ -44,6 +45,8 @@ class InvoiceItem extends Eloquent
 		'measurement_id' => 'int'
 	];
 
+	protected $table = "inventory_invoice_items";
+
 	protected $fillable = [
         'store_id',
         'item_id',
@@ -52,6 +55,7 @@ class InvoiceItem extends Eloquent
         'description',
         'unit_price',
         'unit_cost',
+        'selling_price',
         'quantity',
         'account_code',
         'on_order',

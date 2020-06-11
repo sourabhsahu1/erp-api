@@ -12,17 +12,45 @@ use Modules\Inventory\Repositories\InvoiceRepository;
 class InvoiceController extends BaseController
 {
     protected $repository = InvoiceRepository::class;
-    protected $createJob = BaseJob::class;
-    protected $updateJob = BaseJob::class;
-    protected $deleteJob = BaseJob::class;
-    protected $storeJobMethod = "create";
-    protected $updateJobMethod = "update";
-    protected $deleteJobMethod = "delete";
-
 
     public function srvPurchase(Request $request)
     {
         $this->jobMethod = "srvPurchase";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
+    public function srvReturn(Request $request)
+    {
+        $this->jobMethod = "srvReturn";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+    public function salesInwards(Request $request)
+    {
+        $this->jobMethod = "salesInwards";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
+    public function salesOutwards(Request $request)
+    {
+        $this->jobMethod = "salesOutwards";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
+    public function storeInwards(Request $request)
+    {
+        $this->jobMethod = "storeIssueInwards";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
+    public function storeOutwards(Request $request)
+    {
+        $this->jobMethod = "storeIssueOutwards";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
+    public function srvDonation(Request $request)
+    {
+        $this->jobMethod = "srvDonation";
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 }

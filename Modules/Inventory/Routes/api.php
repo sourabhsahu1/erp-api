@@ -20,4 +20,9 @@ Route::middleware(['auth:api'])->group(function () {
    Route::resource('inventory-items', 'ItemController');
    Route::post('srv-purchase', 'InvoiceController@srvPurchase');
    Route::post('srv-return', 'InvoiceController@srvReturn');
+   Route::post('sale-inwards', 'InvoiceController@salesInwards');
+   Route::post('sale-outwards', 'InvoiceController@salesOutwards');
+   Route::post('store-inwards', 'InvoiceController@storeInwards');
+   Route::post('store-outwards', 'InvoiceController@storeOutwards');
+   Route::post('srv-donation', 'InvoiceController@srvDonation');
 });

@@ -41,6 +41,15 @@ class Item extends Eloquent
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
     protected $table = "inventory_items";
+
+    protected $appends = ['quantityAvailable'];
+
+
+    //todo static for now will make functional later on
+    public function getQuantityAvailableAttribute() {
+        return 5;
+    }
+
 	protected $casts = [
 		'category_id' => 'int',
 		'measurement_id' => 'int',

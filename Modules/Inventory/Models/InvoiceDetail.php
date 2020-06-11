@@ -22,6 +22,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $po_number
  * @property string $source_doc_reference_number
  * @property string $memo
+ * @property string $tax
  * @property string $company_type
  * @property string $type
  * @property string $deleted_at
@@ -62,6 +63,7 @@ class InvoiceDetail extends Eloquent
 		'po_number',
 		'source_doc_reference_number',
 		'memo',
+		'tax',
 		'company_type',
 		'type'
 	];
