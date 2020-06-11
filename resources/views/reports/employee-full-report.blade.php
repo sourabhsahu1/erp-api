@@ -113,7 +113,7 @@
                 <h2>Profile</h2>
             </td>
             <td class="text-center" style="width: 33.33%">
-                <h2>Mishra Abhishek, Abia State, India</h2>
+                <h2>{{isset($data['last_name']) ? $data['last_name']. ' '. $data['first_name'] : ''}}</h2>
             </td>
             <td class="text-center" style="width: 33.33%">
             </td>
@@ -127,40 +127,52 @@
                     <tbody>
                     <tr>
                         <td colspan="2">
-                            <b>Surname:</b> Mishra
+                            <b>Surname:</b> {{isset($data['last_name']) ? $data['last_name'] : ''}}
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <b>Other Names:</b> Abhishek
+                            <b>Other Names:</b> {{isset($data['first_name']) ? $data['first_name'] : ''}}
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <b>ID Number:</b> 1234
+                            <b>ID Number:</b> {{$data['id']}}
+                        </td>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <b>Date of Birth:</b> 05-Dec-1994
+                            <b>Date of
+                                Birth:</b> {{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['date_of_birth'])) ? \Illuminate\Support\Carbon::parse($data['employee_personal_details']['date_of_birth'])->toDateString() : ''}}
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <b>Martial Status:</b> Single
+                            <b>Martial
+                                Status:</b> {{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['marital_status'])) ? $data['employee_personal_details']['marital_status'] : ''}}
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <b>Date of 1st Appt:</b> 16-Feb-2020
+                            <b>Date of 1st
+                                Appt:</b> {{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['appointed_on'])) ? \Illuminate\Support\Carbon::parse($data['employee_personal_details']['appointed_on'])->toDateString() : ''}}
                         </td>
                         <td>
-                            <b>Length of Service:</b> 0 Years
+                            <b>Length of Service:</b>
+                            {{isset($data['yearsOfWork']) ? $data['yearsOfWork']. 'Years' : ''}}
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2">
                             <b>Relatives (Staff) / Time of Service:</b>
+                            @if(isset($data['employee_relatives']))
+                                @foreach($data['employee_relatives'] as $emp)
+                                    <p>
+                                        {{$emp['last_name'] .' '.$emp['first_name'] .' '. \Illuminate\Support\Carbon::parse($emp['relative_job_profile']['current_appointment'])->diffInYears(\Illuminate\Support\Carbon::now()) . ' Years'}}
+                                    </p>
+                                @endforeach
+                            @endif
                         </td>
                     </tr>
                     </tbody>
@@ -171,17 +183,18 @@
                     <tbody>
                     <tr>
                         <td>
-                            <img src="image.png" class="user-img" />
+                            <img src="{{(isset($data['file'])) ? $data['file']['url'] : ''}}" class="user-img"/>
                         </td>
                     </tr>
                     <tr class="shadow">
                         <td>
-                            <b>Email:</b> mishrawp@gmail.com
+                            <b>Email:</b> {{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['email'])) ? $data['employee_personal_details']['email'] : ''}}
                         </td>
                     </tr>
                     <tr class="shadow">
                         <td>
-                            <b>Phone No:</b> 9545685952
+                            <b>Phone
+                                No:</b> {{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['phone'])) ? $data['employee_personal_details']['phone'] : ''}}
                         </td>
                     </tr>
                     </tbody>
@@ -192,36 +205,46 @@
                     <tbody>
                     <tr>
                         <td colspan="3">
-                            <b>Sector/Sub-Sector/Division:</b> 2424
+                            <b>Sector/Sub-Sector/Division:</b> {{isset($data['parent_details']['parent_department']) ? $data['parent_details']['parent_department'] : '' }}
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <b>Department/Section:</b> Operations
+                            <b>Department/Section:</b> {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['department'])) ? $data['employee_job_profiles']['department']['name'] : ''}}
                         </td>
                         <td>
-                            <b>Geographic Location:</b> Noida, India
+                            <b>Geographic Location:</b> {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['work_location'])) ? $data['employee_job_profiles']['work_location']['name'] : ''}}
                         </td>
                     </tr>
                     <tr>
                         <td colspan="3">
-                            <b>Position:</b> VP Sales
+                            <b>Position:</b> {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['name'])) ? $data['employee_job_profiles']['job_position']['name'] : ''}}
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <b>Supervisor:</b> 05-Dec-1994
+                            <b>Supervisor:</b> {{isset($data['parent_details']['parent_job_position']) ? $data['parent_details']['parent_job_position'] : '' }}
                         </td>
                         <td>
-                            <b>Level No:</b> 1
+                            <b>Level No:</b> {{isset($data['parent_details']['parent_grade_level']) ? $data['parent_details']['parent_grade_level'] : '' }}
                         </td>
                         <td>
-                            <b>Other Language:</b> 1
+                            <b>Other Language:</b>
+                            @if(isset($data['employee_languages']))
+                                @foreach($data['employee_languages'] as $empLanguage)
+                                    {{$empLanguage['language']['name']}}
+                                @endforeach
+                            @endif
                         </td>
                     </tr>
                     <tr>
                         <td colspan="3">
-                            <b>Degree (Master or Specialization):</b> Single
+                            <b>Degree (Master or Specialization):</b>
+                            @if(isset($data['employee_academics']))
+                                @foreach($data['employee_academics'] as $empLanguage)
+                                    {{$empLanguage['qualification']['name']. ' '. $empLanguage['academic']['name']}}
+                                @endforeach
+                            @endif
                         </td>
                     </tr>
                     </tbody>
@@ -248,17 +271,7 @@
                 <table class="competencies-table">
                     <tr>
                         <td>
-                            2efc
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            defcc
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            wsdcef
+                            {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['competences'])) ? $data['employee_job_profiles']['job_position']['competences'] : ''}}
                         </td>
                     </tr>
                 </table>
@@ -290,35 +303,19 @@
                             1.
                         </td>
                         <td class="text-center">
-                            2/2020
+                            {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['current_appointment'])) ? \Illuminate\Support\Carbon::parse($data['employee_job_profiles']['current_appointment'])->format('m/Y') : ''}}
                         </td>
                         <td class="text-center">
-                            Front End Developer
+                            {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['grade_level'])) ? $data['employee_job_profiles']['job_position']['grade_level']['name'] : ''}}
                         </td>
                         <td class="text-center">
-                            VP Sales
+                            {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position'])) ? $data['employee_job_profiles']['job_position']['name'] : ''}}
                         </td>
                         <td class="text-center">
-                            Noida, IND
+                            {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['work_location'])) ? $data['employee_job_profiles']['work_location']['name'] : ''}}
                         </td>
                     </tr>
-                    <tr>
-                        <td class="text-center">
-                            2.
-                        </td>
-                        <td class="text-center">
-                            2/2020
-                        </td>
-                        <td class="text-center">
-                            Front End Developer
-                        </td>
-                        <td class="text-center">
-                            VP Sales
-                        </td>
-                        <td class="text-center">
-                            Noida, IND
-                        </td>
-                    </tr>
+
                     </tbody>
                 </table>
             </td>
@@ -333,35 +330,7 @@
                 <table class="activity-table">
                     <tr>
                         <td>
-                            2efc
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            defcc
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            wsdcef
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            2efc
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            defcc
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            wsdcef
+                            {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['activities'])) ? $data['employee_job_profiles']['job_position']['activities'] : ''}}
                         </td>
                     </tr>
                 </table>

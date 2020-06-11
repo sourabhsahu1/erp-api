@@ -532,8 +532,6 @@ class EmployeeRepository extends EloquentBaseRepository
             'parent_grade_level' => $parentGradeLevel
             ];
 
-
-
         $fileName = 'employee-details' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
         $filePath = "pdf/";
         if (strtolower($params['inputs']['type']) == 'short') {

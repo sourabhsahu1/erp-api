@@ -155,7 +155,7 @@
                 <table style="width: 100%">
                     <tr>
                         <td>
-                            <img src="{{(isset($data['file'])) ? $data['file']['name'] : ''}}" class="user-img" />
+                            <img src="{{(isset($data['file'])) ? $data['file']['url'] : ''}}" class="user-img" />
                         </td>
                     </tr>
                     <tr>
