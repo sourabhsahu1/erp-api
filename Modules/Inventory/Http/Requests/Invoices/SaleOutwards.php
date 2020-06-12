@@ -12,6 +12,7 @@ class SaleOutwards extends BaseRequest
 {
     public function rules()
     {
+        $regex =  "/^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/";
         return [
             "companyId" => "required|exists:admin_companies,id",
             "storeId" => "required|exists:admin_companies,id",
@@ -43,7 +44,7 @@ class SaleOutwards extends BaseRequest
             "items.*.measurementId" => "exists:inventory_measurements,id",
             "items.*.quantity" => "required|integer",
             "items.*.taxes.*.id" => "exists:admin_taxes,id",
-            "items.*.taxes.*.tax" => "required|integer"
+            "items.*.taxes.*.tax" => ["required", "regex:".$regex]
         ];
     }
 
