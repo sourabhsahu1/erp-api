@@ -17,9 +17,7 @@ class InvoiceRepository extends EloquentBaseRepository
 
     public function srvPurchase($data)
     {
-
         DB::beginTransaction();
-
         try {
             $invoiceDetail = parent::create($data);
             $items = null;
@@ -224,7 +222,6 @@ class InvoiceRepository extends EloquentBaseRepository
                 $data['items'][] = $items;
             }
             InvoiceItem::insert($data['items']);
-            InvoiceTax::insert($data['taxes']);
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;

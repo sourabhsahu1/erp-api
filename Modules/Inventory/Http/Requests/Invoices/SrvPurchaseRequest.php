@@ -16,32 +16,30 @@ class SrvPurchaseRequest extends BaseRequest
             "companyId" => "required|exists:admin_companies,id",
             "storeId" => "required|exists:admin_companies,id",
             "date" => "required|date",
-            "referenceNumber" => "required",
             "poNumber" => "required",
+            "detail" => "required",
             "sourceDocReferenceNumber" => "required",
             "companyType" => [
                 'required',
                 Rule::in([
-                    AppConstant::COMPANY_TYPE_STORE,
-                    AppConstant::COMPANY_TYPE_SUPPLIER,
-                    AppConstant::COMPANY_TYPE_DEPARTMENT,
-                    AppConstant::COMPANY_TYPE_CUSTOMER
+                    AppConstant::COMPANY_TYPE_SUPPLIER
                 ])],
             "type" => [
                 "required",
                 Rule::in([
-                    AppConstant::TYPE_OUT,
                     AppConstant::TYPE_IN
                 ])
             ],
             "totalTax" => "required",
-            "totalValue" => "required",
+            "subTotal" => "required",
             "items" => "required|array",
             "items.*.itemId" => "exists:inventory_items,id",
             "items.*.description" => "required",
-            "items.*.unitPrice" => "required|integer",
             "items.*.unitCost" => "required|integer",
             "items.*.measurementId" => "exists:inventory_measurements,id",
+            "items.*.quantity" => "required|integer",
+            "items.*.taxes.*.id" => "exists:admin_taxes,id",
+            "items.*.taxes.*.tax" => "required|integer"
         ];
     }
 
