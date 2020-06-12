@@ -24,9 +24,11 @@ class CreateInventoryInvoiceDetailsTable extends Migration
             $table->date('date');
             $table->string('reference_number')->nullable();
             $table->string('po_number')->nullable();
+            $table->string('details')->nullable();
             $table->string('source_doc_reference_number');
             $table->string('memo')->nullable();
             $table->string('total_tax')->nullable();
+            $table->string('sub_total')->nullable();
             $table->enum('company_type',[
                 AppConstant::COMPANY_TYPE_CUSTOMER,
                 AppConstant::COMPANY_TYPE_DEPARTMENT,

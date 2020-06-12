@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Modules\Inventory\Http\Requests\SrvPurchase;
+namespace Modules\Inventory\Http\Requests\Invoices;
 
 
 use Luezoid\Laravelcore\Requests\BaseRequest;
 
-class SrvPurchaseRequest extends BaseRequest
+class StoreAdjustment extends BaseRequest
 {
     public function rules()
     {

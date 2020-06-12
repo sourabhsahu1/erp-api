@@ -7,6 +7,7 @@ namespace Modules\Inventory\Http\Controllers;
 use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use Luezoid\Laravelcore\Jobs\BaseJob;
+use Modules\Inventory\Http\Requests\Invoices\SrvPurchaseRequest;
 use Modules\Inventory\Repositories\InvoiceRepository;
 
 class InvoiceController extends BaseController
@@ -16,6 +17,7 @@ class InvoiceController extends BaseController
     public function srvPurchase(Request $request)
     {
         $this->jobMethod = "srvPurchase";
+//        $this->customRequest = SrvPurchaseRequest::class;
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 
