@@ -55,6 +55,8 @@ class InvoiceRepository extends EloquentBaseRepository
             throw $e;
         }
         DB::commit();
+
+        return $invoiceDetail;
     }
 
     public function srvReturn($data)
@@ -86,6 +88,8 @@ class InvoiceRepository extends EloquentBaseRepository
             throw $e;
         }
         DB::commit();
+
+        return $invoiceDetail;
     }
 
     public function salesInwards($data)
@@ -118,6 +122,7 @@ class InvoiceRepository extends EloquentBaseRepository
             throw $e;
         }
         DB::commit();
+        return $invoiceDetail;
     }
 
     public function salesOutwards($data)
@@ -162,6 +167,7 @@ class InvoiceRepository extends EloquentBaseRepository
             throw $e;
         }
         DB::commit();
+        return $invoiceDetail;
     }
 
     public function storeInwards($data)
@@ -192,6 +198,7 @@ class InvoiceRepository extends EloquentBaseRepository
             throw $e;
         }
         DB::commit();
+        return $invoiceDetail;
     }
 
     public function storeOutwards($data)
@@ -223,6 +230,7 @@ class InvoiceRepository extends EloquentBaseRepository
             throw $e;
         }
         DB::commit();
+        return $invoiceDetail;
     }
 
     public function srvDonation($data)
@@ -253,6 +261,7 @@ class InvoiceRepository extends EloquentBaseRepository
             throw $e;
         }
         DB::commit();
+        return $invoiceDetail;
     }
 
     public function storeAdjustment($data)
@@ -283,6 +292,7 @@ class InvoiceRepository extends EloquentBaseRepository
             throw $e;
         }
         DB::commit();
+        return $invoiceDetail;
     }
 
     public function storeTransfer($data)
@@ -313,5 +323,6 @@ class InvoiceRepository extends EloquentBaseRepository
             throw $e;
         }
         DB::commit();
+        return $invoiceDetail;
     }
 }
