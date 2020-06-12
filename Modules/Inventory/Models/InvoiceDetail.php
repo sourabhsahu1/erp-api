@@ -16,13 +16,14 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $company_id
  * @property int $department_id
  * @property int $store_id
+ * @property int $receive_store_id
  * @property int $total_items
  * @property \Carbon\Carbon $date
  * @property string $reference_number
  * @property string $po_number
  * @property string $source_doc_reference_number
  * @property string $memo
- * @property string $tax
+ * @property string $total_tax
  * @property string $company_type
  * @property string $type
  * @property string $deleted_at
@@ -46,6 +47,7 @@ class InvoiceDetail extends Eloquent
 		'company_id' => 'int',
 		'department_id' => 'int',
 		'store_id' => 'int',
+		'receive_store_id' => 'int',
 		'total_items' => 'int'
 	];
 
@@ -57,13 +59,14 @@ class InvoiceDetail extends Eloquent
 		'company_id',
 		'department_id',
 		'store_id',
+		'receive_store_id',
 		'total_items',
 		'date',
 		'reference_number',
 		'po_number',
 		'source_doc_reference_number',
 		'memo',
-		'tax',
+		'total_tax',
 		'company_type',
 		'type'
 	];
@@ -81,6 +84,11 @@ class InvoiceDetail extends Eloquent
 	public function store()
 	{
 		return $this->belongsTo(\Modules\Inventory\Models\Store::class, 'store_id');
+	}
+
+	public function receiving_store()
+	{
+		return $this->belongsTo(\Modules\Inventory\Models\Store::class, 'receive_store_id');
 	}
 
 	public function invoice_items()

@@ -25,4 +25,6 @@ Route::middleware(['auth:api'])->group(function () {
    Route::post('store-inwards', 'InvoiceController@storeInwards');
    Route::post('store-outwards', 'InvoiceController@storeOutwards');
    Route::post('srv-donation', 'InvoiceController@srvDonation');
+   Route::post('store-adjustment', 'InvoiceController@storeAdjustment');
+   Route::post('store-transfer', 'InvoiceController@storeTransfer');
 });

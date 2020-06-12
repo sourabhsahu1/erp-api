@@ -38,19 +38,31 @@ class InvoiceController extends BaseController
 
     public function storeInwards(Request $request)
     {
-        $this->jobMethod = "storeIssueInwards";
+        $this->jobMethod = "storeInwards";
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 
     public function storeOutwards(Request $request)
     {
-        $this->jobMethod = "storeIssueOutwards";
+        $this->jobMethod = "storeOutwards";
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 
     public function srvDonation(Request $request)
     {
         $this->jobMethod = "srvDonation";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
+    public function storeAdjustment(Request $request)
+    {
+        $this->jobMethod = "storeAdjustment";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
+    public function storeTransfer(Request $request)
+    {
+        $this->jobMethod = "storeTransfer";
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 }

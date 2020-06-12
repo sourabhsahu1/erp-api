@@ -63,6 +63,7 @@ class AppConstant
     const COMPANY_TYPE_SUPPLIER = 'SUPPLIER';
     const COMPANY_TYPE_DEPARTMENT = 'DEPARTMENT';
     const COMPANY_TYPE_CUSTOMER = 'CUSTOMER';
+    const COMPANY_TYPE_STORE = 'STORE';
     const TYPE_IN = 'IN';
     const TYPE_OUT = 'OUT';
 }

@@ -19,17 +19,19 @@ class CreateInventoryInvoiceDetailsTable extends Migration
             $table->unsignedBigInteger('company_id')->nullable();
             $table->unsignedInteger('department_id')->nullable();
             $table->unsignedBigInteger('store_id');
+            $table->unsignedBigInteger('receive_store_id')->nullable();
             $table->integer('total_items')->nullable();
             $table->date('date');
-            $table->string('reference_number');
+            $table->string('reference_number')->nullable();
             $table->string('po_number')->nullable();
             $table->string('source_doc_reference_number');
             $table->string('memo')->nullable();
-            $table->string('tax')->nullable();
+            $table->string('total_tax')->nullable();
             $table->enum('company_type',[
                 AppConstant::COMPANY_TYPE_CUSTOMER,
                 AppConstant::COMPANY_TYPE_DEPARTMENT,
-                AppConstant::COMPANY_TYPE_SUPPLIER
+                AppConstant::COMPANY_TYPE_SUPPLIER,
+                AppConstant::COMPANY_TYPE_STORE
             ]);
             $table->enum('type',[
                 AppConstant::TYPE_IN,
@@ -39,6 +41,7 @@ class CreateInventoryInvoiceDetailsTable extends Migration
             $table->foreign('company_id')->references('id')->on('admin_companies');
             $table->foreign('department_id')->references('id')->on('admin_segments');
             $table->foreign('store_id')->references('id')->on('inventory_stores');
+            $table->foreign('receive_store_id')->references('id')->on('inventory_stores');
 
             $table->softDeletes();
             $table->timestamps();
