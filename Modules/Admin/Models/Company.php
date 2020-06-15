@@ -68,6 +68,6 @@ class Company extends Eloquent
 
     public function company_banks()
     {
-        return $this->hasMany(\Modules\Admin\Models\CompanyBank::class, 'id','company_id');
+        return $this->hasMany(\Modules\Admin\Models\CompanyBank::class, 'company_id','id');
     }
 }
