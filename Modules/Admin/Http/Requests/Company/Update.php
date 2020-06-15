@@ -27,7 +27,7 @@ class Update extends BaseRequest
             "email" => [
                 'sometimes',
                 'email',
-                Rule::unique('companies')->ignore($this->route('company'))
+                Rule::unique('admin_companies')->ignore($this->route('company'))
             ],
             "website" => "sometimes"
         ];
