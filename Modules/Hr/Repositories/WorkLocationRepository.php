@@ -4,7 +4,9 @@
 namespace Modules\Hr\Repositories;
 
 
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Hr\Models\EmployeeJobProfile;
 use Modules\Hr\Models\WorkLocation;
 
 class WorkLocationRepository extends EloquentBaseRepository
@@ -18,5 +20,13 @@ class WorkLocationRepository extends EloquentBaseRepository
         return $query->get();
     }
 
-
+    public function delete($data)
+    {
+        $data = EmployeeJobProfile::where('work_location_id', $data['id'])->first();
+        if (is_null($data)) {
+            return parent::delete($data);
+        }else {
+            throw new AppException('Already in use');
+        }
+    }
 }

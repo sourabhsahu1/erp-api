@@ -21,5 +21,6 @@ class CompanyBankRepository extends EloquentBaseRepository
         return parent::getAll($params, $query);
     }
 
+
 }
 

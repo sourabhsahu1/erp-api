@@ -4,7 +4,9 @@
 namespace Modules\Hr\Repositories;
 
 
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Hr\Models\EmployeeAddress;
 use Modules\Hr\Models\Lga;
 
 class LgaRepository extends EloquentBaseRepository
@@ -18,5 +20,15 @@ class LgaRepository extends EloquentBaseRepository
         $items = collect($data['items'])->sortBy('name')->sortBy('state.name')->sortBy('region.country.state.name')->all();
         $data['items'] = array_values($items);
         return $data;
+    }
+
+    public function delete($data)
+    {
+        $data = EmployeeAddress::where('lga_id', $data['id'])->first();
+        if (is_null($data)) {
+            return parent::delete($data);
+        }else {
+            throw new AppException('Already in use');
+        }
     }
 }

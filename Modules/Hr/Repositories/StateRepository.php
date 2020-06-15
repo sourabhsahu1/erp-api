@@ -4,7 +4,9 @@
 namespace Modules\Hr\Repositories;
 
 
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Hr\Models\Lga;
 use Modules\Hr\Models\State;
 
 class StateRepository extends EloquentBaseRepository
@@ -19,5 +21,15 @@ class StateRepository extends EloquentBaseRepository
         $items = collect($data['items'])->sortBy('name')->sortBy('region.name')->sortBy('region.country.name')->all();
         $data['items'] = array_values($items);
         return $data;
+    }
+
+    public function delete($data)
+    {
+        $data = Lga::where('state_id', $data['id'])->first();
+        if (is_null($data)) {
+            return parent::delete($data);
+        }else {
+            throw new AppException('Already in use');
+        }
     }
 }

@@ -5,7 +5,9 @@ namespace Modules\Hr\Repositories;
 
 
 use Carbon\Carbon;
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Hr\Models\EmployeeJobProfile;
 use Modules\Hr\Models\GradeLevel;
 use Modules\Hr\Models\GradeLevelStep;
 use Modules\Hr\Models\SalaryScale;
@@ -60,5 +62,15 @@ class SalaryScaleRepository extends EloquentBaseRepository
     {
         SalaryScale::where('id', $data['id'])->update(['name' => $data['data']['name']]);
         return SalaryScale::with('grade_levels.grade_level_steps')->find($data['id']);
+    }
+
+    public function delete($data)
+    {
+        $data = GradeLevel::where('salary_scale_id', $data['id'])->first();
+        if (is_null($data)) {
+            return parent::delete($data);
+        }else {
+            throw new AppException('Already in use');
+        }
     }
 }

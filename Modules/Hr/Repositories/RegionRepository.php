@@ -4,8 +4,10 @@
 namespace Modules\Hr\Repositories;
 
 
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Hr\Models\Region;
+use Modules\Hr\Models\State;
 
 class RegionRepository extends EloquentBaseRepository
 {
@@ -18,5 +20,15 @@ class RegionRepository extends EloquentBaseRepository
         $items = collect($data['items'])->sortBy('name')->sortBy('country.name')->all();
         $data['items'] = array_values($items);
         return $data;
+    }
+
+    public function delete($data)
+    {
+        $data = State::where('region_id', $data['id'])->first();
+        if (is_null($data)) {
+            return parent::delete($data);
+        }else {
+            throw new AppException('Already in use');
+        }
     }
 }
