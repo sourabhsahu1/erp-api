@@ -6,21 +6,19 @@ namespace Modules\Admin\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
 use Luezoid\Laravelcore\Jobs\BaseJob;
-use Modules\Admin\Http\Requests\Company\Create;
-use Modules\Admin\Http\Requests\Company\Update;
-use Modules\Admin\Repositories\CompanyRepository;
+use Modules\Admin\Http\Requests\CompanyBank\Create;
+use Modules\Admin\Http\Requests\CompanyBank\Update;
+use Modules\Admin\Repositories\CompanyBankRepository;
 
-class CompanyController extends BaseController
+class CompanyBankController extends BaseController
 {
-
-    protected $repository = CompanyRepository::class;
+    protected $repository = CompanyBankRepository::class;
     protected $createJob = BaseJob::class;
     protected $updateJob = BaseJob::class;
     protected $deleteJob = BaseJob::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
-    protected $indexWith = ['company_banks'];
     protected $storeRequest = Create::class;
     protected $updateRequest = Update::class;
 }

@@ -24,6 +24,12 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('profile', 'UserController@userProfileUpdate');
     Route::post('admin-segments/{id}/levels', 'AdminController@levels');
     Route::resource('companies','CompanyController');
+
+    Route::get('company/{companyId}/bank','CompanyBankController@index');
+    Route::post('company/{companyId}/bank','CompanyBankController@store');
+    Route::put('company/{companyId}/bank/{id}','CompanyBankController@update');
+    Route::delete('company/{companyId}/bank/{id}','CompanyBankController@destroy');
+
     Route::resource('taxes','TaxController');
 });
 
