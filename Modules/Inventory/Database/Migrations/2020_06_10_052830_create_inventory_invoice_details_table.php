@@ -24,7 +24,7 @@ class CreateInventoryInvoiceDetailsTable extends Migration
             $table->date('date');
             $table->string('reference_number')->nullable();
             $table->string('po_number')->nullable();
-            $table->string('details')->nullable();
+            $table->string('detail')->nullable();
             $table->string('source_doc_reference_number');
             $table->string('memo')->nullable();
             $table->string('total_tax')->nullable();

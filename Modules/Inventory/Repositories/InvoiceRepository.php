@@ -23,12 +23,16 @@ class InvoiceRepository extends EloquentBaseRepository
             $items = null;
             $taxes = null;
             foreach ($data['data']['items'] as $item) {
+                /** @var InvoiceItem $availableQuantity */
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
+//                dd($availableQuantity);
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
                     'invoice_id' => $invoiceDetail->id,
                     'measurement_id' => $item['measurement_id'],
                     'description' => $item['description'],
+                    'available_balance' => $item['quantity'] + (!is_null($availableQuantity) ? $availableQuantity->available_balance : 0),
                     'unit_cost' => $item['unit_cost'],
                     'quantity' => $item['quantity'],
                     'created_at' => Carbon::now()->toDateString(),
@@ -66,6 +70,8 @@ class InvoiceRepository extends EloquentBaseRepository
             $invoiceDetail = parent::create($data);
             $items = null;
             foreach ($data['data']['items'] as $item) {
+                /** @var InvoiceItem $availableQuantity */
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -75,6 +81,7 @@ class InvoiceRepository extends EloquentBaseRepository
                     'unit_cost' => $item['unit_cost'],
                     'unit_price' => $item['unit_price'],
                     'quantity' => $item['quantity'],
+                    'available_balance' => $availableQuantity->available_balance - $item['quantity'],
                     'created_at' => Carbon::now()->toDateString(),
                     'updated_at' => Carbon::now()->toDateString()
                 ];
@@ -99,6 +106,8 @@ class InvoiceRepository extends EloquentBaseRepository
             $invoiceDetail = parent::create($data);
             $items = null;
             foreach ($data['data']['items'] as $item) {
+                /** @var InvoiceItem $availableQuantity */
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -108,6 +117,7 @@ class InvoiceRepository extends EloquentBaseRepository
                     'unit_price' => $item['unit_price'],
                     'unit_cost' => $item['unit_cost'],
                     'quantity' => $item['quantity'],
+                    'available_balance' => $item['quantity'] + $availableQuantity->available_balance,
                     'created_at' => Carbon::now()->toDateString(),
                     'updated_at' => Carbon::now()->toDateString()
                 ];
@@ -132,6 +142,8 @@ class InvoiceRepository extends EloquentBaseRepository
             $invoiceDetail = parent::create($data);
             $items = null;
             foreach ($data['data']['items'] as $item) {
+                /** @var InvoiceItem $availableQuantity */
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -139,6 +151,7 @@ class InvoiceRepository extends EloquentBaseRepository
                     'measurement_id' => $item['measurement_id'],
                     'description' => $item['description'],
                     'selling_price' => $item['selling_price'],
+                    'available_balance' => $availableQuantity->available_balance - $item['quantity'],
                     'quantity' => $item['quantity'],
                     'created_at' => Carbon::now()->toDateString(),
                     'updated_at' => Carbon::now()->toDateString()
@@ -177,6 +190,8 @@ class InvoiceRepository extends EloquentBaseRepository
             $invoiceDetail = parent::create($data);
             $items = null;
             foreach ($data['data']['items'] as $item) {
+                /** @var InvoiceItem $availableQuantity */
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -185,6 +200,7 @@ class InvoiceRepository extends EloquentBaseRepository
                     'measurement_id' => $item['measurement_id'],
                     'account_code' => $item['account_code'],
                     'quantity' => $item['quantity'],
+                    'available_balance' => $item['quantity'] + $availableQuantity->available_balance,
                     'created_at' => Carbon::now()->toDateString(),
                     'updated_at' => Carbon::now()->toDateString()
                 ];
@@ -208,6 +224,8 @@ class InvoiceRepository extends EloquentBaseRepository
             $invoiceDetail = parent::create($data);
             $items = null;
             foreach ($data['data']['items'] as $item) {
+                /** @var InvoiceItem $availableQuantity */
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -216,6 +234,7 @@ class InvoiceRepository extends EloquentBaseRepository
                     'description' => $item['description'],
                     'account_code' => $item['account_code'],
                     'quantity' => $item['quantity'],
+                    'available_balance' => $availableQuantity->available_balance - $item['quantity'],
                     'created_at' => Carbon::now()->toDateString(),
                     'updated_at' => Carbon::now()->toDateString()
                 ];
@@ -239,6 +258,8 @@ class InvoiceRepository extends EloquentBaseRepository
             $invoiceDetail = parent::create($data);
             $items = null;
             foreach ($data['data']['items'] as $item) {
+                /** @var InvoiceItem $availableQuantity */
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -247,6 +268,7 @@ class InvoiceRepository extends EloquentBaseRepository
                     'description' => $item['description'],
                     'unit_cost' => $item['unit_cost'],
                     'quantity' => $item['quantity'],
+                    'available_balance' => $item['quantity'] + $availableQuantity->available_balance,
                     'created_at' => Carbon::now()->toDateString(),
                     'updated_at' => Carbon::now()->toDateString()
                 ];
@@ -270,6 +292,8 @@ class InvoiceRepository extends EloquentBaseRepository
             $invoiceDetail = parent::create($data);
             $items = null;
             foreach ($data['data']['items'] as $item) {
+                /** @var InvoiceItem $availableQuantity */
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -278,6 +302,7 @@ class InvoiceRepository extends EloquentBaseRepository
                     'description' => $item['description'],
                     'unit_cost' => $item['unit_cost'],
                     'quantity' => $item['quantity'],
+                    'available_balance' => $item['quantity'] + $availableQuantity->available_balance,
                     'created_at' => Carbon::now()->toDateString(),
                     'updated_at' => Carbon::now()->toDateString()
                 ];
@@ -301,6 +326,8 @@ class InvoiceRepository extends EloquentBaseRepository
             $invoiceDetail = parent::create($data);
             $items = null;
             foreach ($data['data']['items'] as $item) {
+                /** @var InvoiceItem $availableQuantity */
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'measurement_id' => $item['measurement_id'],
@@ -309,6 +336,7 @@ class InvoiceRepository extends EloquentBaseRepository
                     'description' => $item['description'],
                     'account_code' => $item['account_code'],
                     'quantity' => $item['quantity'],
+                    'available_balance' => $availableQuantity->available_balance - $item['quantity'],
                     'created_at' => Carbon::now()->toDateString(),
                     'updated_at' => Carbon::now()->toDateString()
                 ];
