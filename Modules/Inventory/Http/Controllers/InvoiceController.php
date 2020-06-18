@@ -85,4 +85,16 @@ class InvoiceController extends BaseController
         $this->jobMethod = "storeTransfer";
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
+
+    public function inventoryLedgerReport(Request $request)
+    {
+        $this->jobMethod = "inventoryLedgerReport";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
+    public function inventoryQualityBalance(Request $request)
+    {
+        $this->jobMethod = "inventoryQualityBalance";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
 }

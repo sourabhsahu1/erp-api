@@ -24,7 +24,7 @@ class InvoiceRepository extends EloquentBaseRepository
             $taxes = null;
             foreach ($data['data']['items'] as $item) {
                 /** @var InvoiceItem $availableQuantity */
-                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
 //                dd($availableQuantity);
                 $items = [
                     'store_id' => $data['data']['store_id'],
@@ -71,7 +71,7 @@ class InvoiceRepository extends EloquentBaseRepository
             $items = null;
             foreach ($data['data']['items'] as $item) {
                 /** @var InvoiceItem $availableQuantity */
-                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -107,7 +107,7 @@ class InvoiceRepository extends EloquentBaseRepository
             $items = null;
             foreach ($data['data']['items'] as $item) {
                 /** @var InvoiceItem $availableQuantity */
-                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -143,7 +143,7 @@ class InvoiceRepository extends EloquentBaseRepository
             $items = null;
             foreach ($data['data']['items'] as $item) {
                 /** @var InvoiceItem $availableQuantity */
-                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -191,7 +191,7 @@ class InvoiceRepository extends EloquentBaseRepository
             $items = null;
             foreach ($data['data']['items'] as $item) {
                 /** @var InvoiceItem $availableQuantity */
-                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -225,7 +225,7 @@ class InvoiceRepository extends EloquentBaseRepository
             $items = null;
             foreach ($data['data']['items'] as $item) {
                 /** @var InvoiceItem $availableQuantity */
-                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -259,7 +259,7 @@ class InvoiceRepository extends EloquentBaseRepository
             $items = null;
             foreach ($data['data']['items'] as $item) {
                 /** @var InvoiceItem $availableQuantity */
-                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -293,7 +293,7 @@ class InvoiceRepository extends EloquentBaseRepository
             $items = null;
             foreach ($data['data']['items'] as $item) {
                 /** @var InvoiceItem $availableQuantity */
-                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -327,7 +327,7 @@ class InvoiceRepository extends EloquentBaseRepository
             $items = null;
             foreach ($data['data']['items'] as $item) {
                 /** @var InvoiceItem $availableQuantity */
-                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id','desc')->first();
+                $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'measurement_id' => $item['measurement_id'],
@@ -349,5 +349,95 @@ class InvoiceRepository extends EloquentBaseRepository
         }
         DB::commit();
         return $invoiceDetail;
+    }
+
+
+    public function inventoryLedgerReport($params)
+    {
+
+        $query = DB::table('inventory_invoice_details as iid')
+            ->join('inventory_invoice_items as iii', 'iid.id', '=', 'iii.invoice_id')
+            ->join('inventory_items as ii', 'ii.id', '=', 'iii.item_id')
+            ->select('iid.date', 'ii.description as item_description', 'iii.item_id as item_id', 'iii.available_balance', 'iii.unit_price', 'iii.unit_cost', 'iid.type', 'iii.store_id');
+
+
+        if (isset($params['inputs']['store_id'])) {
+            $query->where('iii.store_id', $params['inputs']['store_id']);
+        }
+
+        if (isset($params['inputs']['item_id'])) {
+            $query->where('iii.item_id', $params['inputs']['item_id']);
+        }
+
+        if (isset($params['inputs']['from_date']) && isset($params['inputs']['to_date'])) {
+            $fromDate = Carbon::parse($params['inputs']['from_date'])->toDateTimeString();
+            $toDate = Carbon::parse($params['inputs']['to_date'])->toDateString() . ' 23:59:59';
+
+            $query->whereDate('iid.date', '>=', $fromDate)
+                ->whereDate('iid.date', '<=', $toDate);
+        }
+
+        $costingQuery = clone $query;
+
+
+        if (isset($params['inputs']['preferred_costing'])) {
+            if ($params['inputs']['preferred_costing'] == 'FIFO') {
+
+                foreach ($costingQuery as $item) {
+
+                }
+            } elseif ($params['inputs']['preferred_costing'] == 'LIFO') {
+
+            } elseif ($params['inputs']['preferred_costing'] == 'AVG') {
+
+            }
+
+        }
+
+    }
+
+    public function inventoryQualityBalance($params)
+    {
+        // apply limit  or offset in this query
+        $items = DB::table('inventory_invoice_items')
+            ->selectRaw('item_id, MAX(id) as id')
+            ->groupBy('item_id')
+            ->pluck('id')->toArray();
+
+
+        // Get full details
+//        $query = DB::table('inventory_invoice_details as iid')
+//            ->join('inventory_invoice_items as iii', 'iid.id', '=', 'iii.invoice_id')
+////            ->join('inventory_items as ii', 'ii.id', '=', 'iii.item_id')
+////            ->join('inventory_measurements as im', 'im.id', '=', 'iii.measurement_id')
+//            ->selectRaw('ii.description as item_description, iii.item_id as item_id, iii.available_balance, iii.measurement_id, im.name as measurement_name, iii.unit_price, iii.unit_cost, iid.type, iii.store_id')
+//            ->whereIn('iii.item_id', $items);
+//
+//        dd($items, $query->get());
+
+
+        $query = DB::table('inventory_invoice_details as iid')
+            ->join('inventory_invoice_items as iii', 'iid.id', '=', 'iii.invoice_id')
+            ->join('inventory_items as ii', 'ii.id', '=', 'iii.item_id')
+            ->join('inventory_measurements as im', 'im.id', '=', 'iii.measurement_id')
+            ->selectRaw('ii.description as item_description, iii.item_id as item_id, iii.available_balance, iii.measurement_id, im.name as measurement_name, iii.unit_price, iii.unit_cost, iid.type, iii.store_id')
+            ->whereIn('iii.item_id', $items);
+
+        dd($query->get());
+
+
+        if (isset($params['inputs']['store_id'])) {
+            $query->where('iii.store_id', $params['inputs']['store_id']);
+        }
+
+        if (isset($params['inputs']['from_date']) && isset($params['inputs']['to_date'])) {
+            $fromDate = Carbon::parse($params['inputs']['from_date'])->toDateTimeString();
+            $toDate = Carbon::parse($params['inputs']['to_date'])->toDateString() . ' 23:59:59';
+
+            $query->whereDate('iid.date', '>=', $fromDate)
+                ->whereDate('iid.date', '<=', $toDate);
+        }
+
+        dd($query->toSql());
     }
 }
