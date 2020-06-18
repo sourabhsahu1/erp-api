@@ -15,8 +15,8 @@ class Update extends BaseRequest
             "branchId"=> "sometimes|exists:hr_bank_branches,id",
             "bankAccountNumber"=> "sometimes",
             "typeOfBankAccount"=> "sometimes",
-            "isAuthorised"=> "sometimes|boolean",
-            "date"=> "sometimes|date"
+            "isAuthorised"=> "sometimes|boolean"
+//            "date"=> "sometimes|date"
         ];
     }
 

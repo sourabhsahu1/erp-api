@@ -21,7 +21,7 @@ class CreateAdminCompanyBanksTable extends Migration
             $table->string('bank_account_number');
             $table->string('type_of_bank_account');
             $table->boolean('is_authorised')->default(1);
-            $table->date('date');
+            $table->date('date')->nullable();
             $table->foreign('company_id')->references('id')->on('admin_companies');
             $table->foreign('bank_id')->references('id')->on('hr_banks');
             $table->foreign('branch_id')->references('id')->on('hr_bank_branches');

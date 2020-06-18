@@ -103,4 +103,10 @@ class InvoiceController extends BaseController
         $this->jobMethod = "binCardReport";
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
+
+    public function offLevelReport(Request $request){
+        $this->jobMethod = "offLevelReport";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
 }
