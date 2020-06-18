@@ -97,4 +97,10 @@ class InvoiceController extends BaseController
         $this->jobMethod = "inventoryQualityBalance";
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
+
+    public function binCardReport(Request $request)
+    {
+        $this->jobMethod = "binCardReport";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
 }

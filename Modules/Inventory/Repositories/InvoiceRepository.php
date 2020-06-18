@@ -440,4 +440,35 @@ class InvoiceRepository extends EloquentBaseRepository
 
         dd($query->toSql());
     }
+
+    public function binCardReport($params = [], $query = null)
+    {
+        $query=DB::table('inventory_invoice_details')
+            ->join('inventory_invoice_items','inventory_invoice_details.id','=','inventory_invoice_items.invoice_id')
+            ->join('inventory_items','inventory_items.id','=','inventory_invoice_items.item_id')
+            ->select(
+                'inventory_invoice_details.id',
+                'inventory_invoice_details.date',
+                'inventory_invoice_details.type',
+                'inventory_invoice_items.unit_cost',
+                'inventory_items.description as desc',
+                'inventory_invoice_items.available_balance as balance'
+            )
+            // ->where('inventory_invoice_details.store_id','=',$params['inputs']['store_id'])
+            // ->orWhere('inventory_invoice_items.item_id','=',$params['inputs']['item_id'])
+            //->orWhereBetween('inventory_invoice_details.date',[$params['inputs']['from_date'],$params['inputs']['to_date']]);
+        ;
+        if(isset($params['inputs']['store_id'])) {
+            $query->where('inventory_invoice_details.store_id','=',$params['inputs']['store_id']);
+        }
+
+        if(isset($params['inputs']['item_id'])) {
+            $query->where('inventory_invoice_items.item_id','=',$params['inputs']['item_id']);
+        }
+
+        if(isset($params['inputs']['from_date']) && isset($params['inputs']['to_date'])) {
+            $query->whereBetween('inventory_invoice_details.date',[$params['inputs']['from_date'],$params['inputs']['to_date']]);
+        }
+        return $query->get();
+    }
 }

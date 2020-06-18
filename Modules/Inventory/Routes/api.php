@@ -30,4 +30,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('store-transfer', 'InvoiceController@storeTransfer');
     Route::get('inventory-ledger-report', 'InvoiceController@inventoryLedgerReport');
     Route::get('inventory-quality-balance', 'InvoiceController@inventoryQualityBalance');
+    Route::get('bin-card/report','InvoiceController@binCardReport');
 });
