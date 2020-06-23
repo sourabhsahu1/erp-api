@@ -288,7 +288,10 @@ class EmployeeRepository extends EloquentBaseRepository
         $query = Employee::query();
         if (isset($params['inputs']['department_id'])) {
             $query->whereHas('employee_job_profiles', function ($query) use ($params) {
-                $query->where('department_id', $params['inputs']['department_id']);
+                $query->whereHas('department', function ($query) use ($params) {
+                    $query->where('id', $params['inputs']['department_id'])
+                        ->orWhere('parent_id', $params['inputs']['department_id']);
+                });
             });
         }
 
@@ -406,15 +409,54 @@ class EmployeeRepository extends EloquentBaseRepository
         $employees = $this->getAll($params)['items'];
         $headers = [
             'SN' => 's.no',
-            'title' => 'title',
-            'fName' => 'employee name',
-            'fileId' => 'file number',
-            'id' => 'staff',
-            'gender' => 'gender',
-            'marital_status' => 'marital status',
-            'phone' => 'phone',
-            'department' => 'department',
-            'designation' => 'designation'
+            'Title' => 'Title',
+            'File No' => 'File number',
+            'Staff ID' => 'Staff Id',
+            'Gender' => 'Gender',
+            'Marital Status' => 'Marital Status',
+            'Emp. Photo' => 'Emp. Photo',
+            'Expected Exit Date' => 'Expected Exit Date',
+            'Exited' => 'Exited',
+            'First Name' => 'First Name',
+            'Last Name' => 'Last Name',
+            'Type of Appointment' => 'Type of Appointment',
+            'TIN No' => 'TIN No',
+            'State' => 'State',
+            'PFA No' => 'PFA No',
+            'Salary Scale' => 'Salary Scale',
+            'Qualifications' => 'Qualifications',
+            'Permanent Staff' => 'Permanent Staff',
+            'Pension Started' => "Pension Started",
+            'Passport No' => "Passport No",
+            'Passport Issued on' => "Passport Issued on",
+            'Passport Issued at' => "Passport Issued at",
+            'Passport Expires on' => "Passport Expires on",
+            'NHF No' => "NHF No",
+            'National ID No' => "National ID No",
+            'Mobile Phone' => "Mobile Phone",
+            'Maiden Name' => "Maiden Name",
+            'Job Position' => "Job Position",
+            'Grade Level Step' => "Grade Level Step",
+            'Department' => "Department",
+            'Address' => "Address",
+            'Address Country' => "Address Country",
+            'Email' => "Email",
+            'Drivers Licence No' => "Drivers Licence No",
+            'Designation' => "Designation",
+            'Date Last Increment' => "Date Last Increment",
+            'Date Pension Started' => "Date Pension Started",
+            'Date of Birth' => "Date of Birth",
+            'Date Last Promoted' => "Date Last Promoted",
+            'Date Current Appt' => "Date Current Appt",
+            'Date Assumed Duty' => "Date Assumed Duty",
+            'Confirmed' => "Confirmed",
+            'City' => "City",
+            'Address State' => "Address State",
+            'Citizen Country' => "Citizen Country",
+            'Citizen LGA' => "Citizen LGA",
+            'Citizen Region' => "Citizen Region",
+            'Citizen State' => "Citizen State",
+            'Confirmation Due Date' => "Confirmation Due Date"
         ];
         $data = null;
 
@@ -451,37 +493,152 @@ class EmployeeRepository extends EloquentBaseRepository
                 if (isset($headers['SN'])) {
                     $employeeData = array_merge($employeeData, ['serial_no' => $key + 1]);
                 }
-                if (isset($headers['title'])) {
+                if (isset($headers['Title'])) {
                     $employeeData = array_merge($employeeData, ['title' => $employee['title']]);
                 }
-
-                if (isset($headers['fName'])) {
-                    $employeeData = array_merge($employeeData, ['employee_name' => $employee['first_name'] . ' ' . $employee['last_name']]);
-                }
-                if (isset($headers['fileId'])) {
+                if (isset($headers['File No'])) {
                     $employeeData = array_merge($employeeData, ['file_number' => $employee['personnel_file_number']]);
                 }
-                if (isset($headers['id'])) {
+                if (isset($headers['Staff ID'])) {
                     $employeeData = array_merge($employeeData, ['staff_id' => $employee['id']]);
                 }
-                if (isset($headers['gender'])) {
+                if (isset($headers['Gender'])) {
                     $employeeData = $employeeData = array_merge($employeeData, [$employee['employee_personal_details'] ? $employee['employee_personal_details']['gender'] : "-"]);
                 }
-                if (isset($headers['marital_status'])) {
+                if (isset($headers['Marital Status'])) {
                     $employeeData = array_merge($employeeData, [$employee['employee_personal_details'] ? $employee['employee_personal_details']['marital_status'] : '-']);
                 }
-                if (isset($headers['phone'])) {
-                    $employeeData = array_merge($employeeData, [$employee['employee_personal_details'] ? $employee['employee_personal_details']['phone'] : '-']);
+                if (isset($headers['Emp. Photo'])) {
+                    $employeeData = array_merge($employeeData, [$employee['file'] ? $employee['file']['url'] : '-']);
                 }
-                if (isset($headers['department'])) {
-                    $employeeData = array_merge($employeeData, [$employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['department'] ?
-                        $employee['employee_job_profiles']['department']['name'] : '-'
-                    ) : '-']);
+                if (isset($headers['Expected Exit Date'])) {
+                    $employeeData = array_merge($employeeData, ['Expected Exit Date' => $employee['employee_progressions']['expected_exit_date']]);
                 }
-                if (isset($headers['designation'])) {
-                    $employeeData = array_merge($employeeData, [$employee['employee_job_profiles'] ? ($employee['employee_job_profiles']['designation'] ?
-                        $employee['employee_job_profiles']['designation']['name'] : '-'
-                    ) : '-']);
+                if (isset($headers['Exited'])) {
+                    $employeeData = array_merge($employeeData, ['Exited' => $employee['employee_progressions']['is_exited']]);
+                }
+                if (isset($headers['First Name'])) {
+                    $employeeData = array_merge($employeeData, ['First Name' => $employee['first_name']]);
+                }
+                if (isset($headers['Last Name'])) {
+                    $employeeData = array_merge($employeeData, ['Last Name' => $employee['last_name']]);
+                }
+                if (isset($headers['Type of Appointment'])) {
+                    $employeeData = array_merge($employeeData, ['Type of Appointment' => $employee['employee_personal_details']['type_of_appointment']]);
+                }
+                if (isset($headers['TIN No'])) {
+                    $employeeData = array_merge($employeeData, ['TIN No' => $employee['employee_id_nos']['tin_number']]);
+                }
+                if (isset($headers['State'])) {
+                    $employeeData = array_merge($employeeData, ['State' => $employee['employee_contact_details']['state']['name']]);
+                }
+                if (isset($headers['PFA No'])) {
+                    $employeeData = array_merge($employeeData, ['PFA No' => $employee['employee_id_nos']['pfa_number']]);
+                }
+                if (isset($headers['Salary Scale'])) {
+                    $employeeData = array_merge($employeeData, ['Salary Scale' => $employee['employee_job_profiles']['emp_salary_scale']['name']]);
+                }
+                //todo
+                if (isset($headers['Qualifications'])) {
+                    $employeeData = array_merge($employeeData, ['Qualifications' => $employee['firsdt_name'] ?? null]);
+                }
+                if (isset($headers['Permanent Staff'])) {
+                    $employeeData = array_merge($employeeData, ['Permanent Staff' => $employee['employee_personal_details']['is_permanent_staff']]);
+                }
+                if (isset($headers['Pension Started'])) {
+                    $employeeData = array_merge($employeeData, ['Pension Started' => $employee['employee_pensions']['is_pension_started']]);
+                }
+
+                if (isset($headers['Passport No'])) {
+                    $employeeData = array_merge($employeeData, ['Passport No' => $employee['employee_international_passports']['passport_number']]);
+                }
+                if (isset($headers['Passport Issued on'])) {
+                    $employeeData = array_merge($employeeData, ['Passport Issued on' => $employee['employee_international_passports']['issued_date']]);
+                }
+                if (isset($headers['Passport Issued at'])) {
+                    $employeeData = array_merge($employeeData, ['Passport Issued at' => $employee['employee_international_passports']['issued_at']]);
+                }
+                if (isset($headers['Passport Expires on'])) {
+                    $employeeData = array_merge($employeeData, ['Passport Expires on' => $employee['employee_international_passports']['expiry_date']]);
+                }
+                if (isset($headers['NHF No'])) {
+                    $employeeData = array_merge($employeeData, ['NHF No' => $employee['employee_id_nos']['nhf_number']]);
+                }
+                if (isset($headers['National ID No'])) {
+                    $employeeData = array_merge($employeeData, ['National ID No' => $employee['employee_id_nos']['nhf_number']]);
+                }
+                if (isset($headers['Mobile Phone'])) {
+                    $employeeData = array_merge($employeeData, ['Mobile Phone' => $employee['employee_personal_details']['phone']]);
+                }
+                if (isset($headers['Maiden Name'])) {
+                    $employeeData = array_merge($employeeData, ['Maiden Name' => $employee['maiden_name']]);
+                }
+                if (isset($headers['Job Position'])) {
+                    $employeeData = array_merge($employeeData, ['Job Position' => $employee['employee_job_profiles']['job_position']['name']]);
+                }
+                if (isset($headers['Grade Level Step'])) {
+                    $employeeData = array_merge($employeeData, ['Grade Level Step' => $employee['employee_job_profiles']['job_position']['grade_level_step']['name']]);
+                }
+                if (isset($headers['Department'])) {
+                    $employeeData = array_merge($employeeData, ['Department' => $employee['employee_job_profiles']['department']['name']]);
+                }
+                if (isset($headers['Address'])) {
+                    $employeeData = array_merge($employeeData, ['Address' => $employee['employee_contact_details']['address_line_1']]);
+                }
+                if (isset($headers['Address Country'])) {
+                    $employeeData = array_merge($employeeData, ['Address Country' => $employee['employee_contact_details']['country']['name']]);
+                }
+                if (isset($headers['Email'])) {
+                    $employeeData = array_merge($employeeData, ['Email' => $employee['employee_personal_details']['email']]);
+                }
+                if (isset($headers['Drivers Licence No'])) {
+                    $employeeData = array_merge($employeeData, ['Drivers Licence No' => $employee['employee_id_nos']['driver_license_number']]);
+                }
+                if (isset($headers['Designation'])) {
+                    $employeeData = array_merge($employeeData, ['Designation' => $employee['employee_job_profiles']['designation']['name']]);
+                }
+                if (isset($headers['Date Last Increment'])) {
+                    $employeeData = array_merge($employeeData, ['Date Last Increment' => $employee['employee_progressions']['last_increment']]);
+                }
+                if (isset($headers['Date Pension Started'])) {
+                    $employeeData = array_merge($employeeData, ['Date Pension Started' => $employee['employee_pensions']['date_started']]);
+                }
+                if (isset($headers['Date of Birth'])) {
+                    $employeeData = array_merge($employeeData, ['Date of Birth' => $employee['employee_personal_details']['date_of_birth']]);
+                }
+                if (isset($headers['Date Last Promoted'])) {
+                    $employeeData = array_merge($employeeData, ['Date Last Promoted' => $employee['employee_progressions']['last_promoted']]);
+                }
+                if (isset($headers['Date Current Appt'])) {
+                    $employeeData = array_merge($employeeData, ['Date Current Appt' => $employee['employee_job_profiles']['current_appointment']]);
+                }
+                if (isset($headers['Date Assumed Duty'])) {
+                    $employeeData = array_merge($employeeData, ['Date Assumed Duty' => $employee['employee_personal_details']['assumed_duty_on']]);
+                }
+                if (isset($headers['Confirmed'])) {
+                    $employeeData = array_merge($employeeData, ['Confirmed' => $employee['employee_progressions']['is_confirmed']]);
+                }
+                //todo
+                if (isset($headers['City'])) {
+                    $employeeData = array_merge($employeeData, ['City' => $employee['employee_contact_details']['address_line_2']]);
+                }
+                if (isset($headers['Address State'])) {
+                    $employeeData = array_merge($employeeData, ['Address State' => $employee['employee_contact_details']['state']['name']]);
+                }
+                if (isset($headers['Citizen Country'])) {
+                    $employeeData = array_merge($employeeData, ['Citizen Country' => $employee['employee_contact_details']['other_country']['name']]);
+                }
+                if (isset($headers['Citizen LGA'])) {
+                    $employeeData = array_merge($employeeData, ['Citizen LGA' => $employee['employee_contact_details']['other_lga']['name']]);
+                }
+                if (isset($headers['Citizen Region'])) {
+                    $employeeData = array_merge($employeeData, ['Citizen Region' => $employee['employee_contact_details']['other_region']['name']]);
+                }
+                if (isset($headers['Citizen State'])) {
+                    $employeeData = array_merge($employeeData, ['Citizen State' => $employee['employee_contact_details']['other_state']['name']]);
+                }
+                if (isset($headers['Confirmation Due Date'])) {
+                    $employeeData = array_merge($employeeData, ['Confirmation Due Date' => $employee['employee_progressions']['confirmation_due_date']]);
                 }
                 $data['employees'][] = $employeeData;
             }
@@ -508,17 +665,17 @@ class EmployeeRepository extends EloquentBaseRepository
         if (isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['department']) && isset($data['employee_job_profiles']['department']['parent_id'])) {
             $parentDepartmentId = $data['employee_job_profiles']['department']['parent_id'];
 
-           $parentDepartment = Department::find($parentDepartmentId);
-           if (!is_null($parentDepartment)) {
-               $parentDepartment = $parentDepartment->name;
-           }
+            $parentDepartment = Department::find($parentDepartmentId);
+            if (!is_null($parentDepartment)) {
+                $parentDepartment = $parentDepartment->name;
+            }
         }
 
         if (isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['parent_id'])) {
             $parentJobPositionId = $data['employee_job_profiles']['job_position']['parent_id'];
-           $jobPosition = JobPosition::with('grade_level')->find($parentJobPositionId);
-           $jobPositionName = $jobPosition->name;
-           $parentGradeLevel = $jobPosition->grade_level->name;
+            $jobPosition = JobPosition::with('grade_level')->find($parentJobPositionId);
+            $jobPositionName = $jobPosition->name;
+            $parentGradeLevel = $jobPosition->grade_level->name;
         }
 
 
@@ -530,7 +687,7 @@ class EmployeeRepository extends EloquentBaseRepository
             'parent_department' => $parentDepartment,
             'parent_job_position' => $jobPositionName,
             'parent_grade_level' => $parentGradeLevel
-            ];
+        ];
 
         $fileName = 'employee-details' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
         $filePath = "pdf/";
@@ -557,17 +714,17 @@ class EmployeeRepository extends EloquentBaseRepository
         if (isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['department']) && isset($data['employee_job_profiles']['department']['parent_id'])) {
             $parentDepartmentId = $data['employee_job_profiles']['department']['parent_id'];
 
-           $parentDepartment = Department::find($parentDepartmentId);
-           if (!is_null($parentDepartment)) {
-               $parentDepartment = $parentDepartment->name;
-           }
+            $parentDepartment = Department::find($parentDepartmentId);
+            if (!is_null($parentDepartment)) {
+                $parentDepartment = $parentDepartment->name;
+            }
         }
 
         if (isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['parent_id'])) {
             $parentJobPositionId = $data['employee_job_profiles']['job_position']['parent_id'];
-           $jobPosition = JobPosition::with('grade_level')->find($parentJobPositionId);
-           $jobPositionName = $jobPosition->name;
-           $parentGradeLevel = $jobPosition->grade_level->name;
+            $jobPosition = JobPosition::with('grade_level')->find($parentJobPositionId);
+            $jobPositionName = $jobPosition->name;
+            $parentGradeLevel = $jobPosition->grade_level->name;
         }
 
 
@@ -579,8 +736,7 @@ class EmployeeRepository extends EloquentBaseRepository
             'parent_department' => $parentDepartment,
             'parent_job_position' => $jobPositionName,
             'parent_grade_level' => $parentGradeLevel
-            ];
-
+        ];
 
 
         $fileName = 'employee-details' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
