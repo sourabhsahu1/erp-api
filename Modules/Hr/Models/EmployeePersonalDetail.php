@@ -19,6 +19,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $gender
  * @property string $religion
  * @property string $phone
+ * @property string $country_code
  * @property string $email
  * @property bool $is_permanent_staff
  * @property string $type_of_appointment
@@ -67,6 +68,7 @@ class EmployeePersonalDetail extends Eloquent
 		'gender',
 		'religion',
 		'phone',
+		'country_code',
 		'email',
 		'is_permanent_staff',
 		'type_of_appointment',

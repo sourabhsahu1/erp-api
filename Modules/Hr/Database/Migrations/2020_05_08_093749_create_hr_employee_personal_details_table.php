@@ -36,7 +36,8 @@ class CreateHrEmployeePersonalDetailsTable extends Migration
                 AppConstant::EMPLOYEE_RELIGION_ISLAM,
                 AppConstant::EMPLOYEE_RELIGION_OTHER
             ]);
-            $table->string('phone');
+            $table->integer('phone');
+            $table->string('country_code');
             $table->string('email');
             $table->boolean('is_permanent_staff')->nullable();
             $table->enum('type_of_appointment', [

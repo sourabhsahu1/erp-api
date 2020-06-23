@@ -46,7 +46,8 @@ class Create extends BaseRequest
                     AppConstant::EMPLOYEE_RELIGION_OTHER
                 ])
             ],
-            'phone' => "required|digits:10",
+            'phone' => "required|min:5|max:10",
+            'countryCode' => "required|min:3|max:5",
             'email' => "required|email",
             'isPermanentStaff' => "required|boolean",
             'typeOfAppointment' => [

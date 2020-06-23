@@ -54,6 +54,7 @@ class EmployeeRepository extends EloquentBaseRepository
                 'gender' => $data['data']['gender'],
                 'religion' => $data['data']['religion'],
                 'phone' => $data['data']['phone'],
+                'country_code' => $data['data']['country_code'],
                 'email' => $data['data']['email'],
                 'is_permanent_staff' => $data['data']['is_permanent_staff'] ?? false,
                 'type_of_appointment' => $data['data']['type_of_appointment'],
@@ -68,6 +69,7 @@ class EmployeeRepository extends EloquentBaseRepository
                     'gender' => $data['data']['gender'],
                     'religion' => $data['data']['religion'],
                     'phone' => $data['data']['phone'],
+                    'country_code' => $data['data']['country_code'],
                     'email' => $data['data']['email'],
                     'is_permanent_staff' => $data['data']['is_permanent_staff'] ?? false,
                     'type_of_appointment' => $data['data']['type_of_appointment'],
@@ -294,7 +296,13 @@ class EmployeeRepository extends EloquentBaseRepository
                 });
             });
         }
-
+        if (isset($params['inputs']['department_ids'])) {
+            $query->whereHas('employee_job_profiles', function ($query) use ($params) {
+                $query->whereHas('department', function ($query) use ($params) {
+                    $query->whereIn('id', $params['inputs']['department_id']);
+                });
+            });
+        }
         if (isset($params['inputs']['search'])) {
             $query->where('personnel_file_number', 'like', '%' . $params['inputs']['search'] . '%')
                 ->orWhere('last_name', 'like', '%' . $params['inputs']['search'] . '%')
