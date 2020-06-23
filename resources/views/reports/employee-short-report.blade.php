@@ -112,7 +112,7 @@
                         <td>{{isset($data['last_name']) ? $data['last_name'] : ''}}</td>
                     </tr>
                     <tr>
-                        <td>First Names:</td>
+                        <td>First Name:</td>
                         <td>{{isset($data['first_name']) ? $data['first_name'] : ''}}</td>
                     </tr>
                     <tr>
@@ -125,7 +125,7 @@
                     </tr>
                     <tr>
                         <td>Birth Date:</td>
-                        <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['date_of_birth'])) ? $data['employee_personal_details']['date_of_birth'] : ''}}</td>
+                        <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['date_of_birth'])) ? \Illuminate\Support\Carbon::parse($data['employee_personal_details']['date_of_birth'])->toDateString() : ''}}</td>
                     </tr>
 
                     <tr>
@@ -138,11 +138,12 @@
                     </tr>
                     <tr>
                         <td>Date Employed:</td>
-                        <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['appointed_on'])) ? $data['employee_personal_details']['appointed_on'] : ''}}</td>
+                        <td>{{(isset($data['employee_personal_details']) && isset($data['employee_personal_details']['appointed_on'])) ?\Illuminate\Support\Carbon::parse($data['employee_personal_details']['appointed_on'])->toDateString()  : ''}}</td>
+
                     </tr>
                     <tr>
                         <td>Current App Date:</td>
-                        <td>{{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['current_appointment'])) ? $data['employee_job_profiles']['current_appointment'] : ''}}</td>
+                        <td>{{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['current_appointment'])) ?  \Illuminate\Support\Carbon::parse($data['employee_job_profiles']['current_appointment'])->toDateString(): ''}}</td>
                     </tr>
                     <tr>
                         <td>Location:</td>
