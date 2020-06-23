@@ -598,7 +598,7 @@ class EmployeeRepository extends EloquentBaseRepository
                     $employeeData = array_merge($employeeData, ['Drivers Licence No' => $employee['employee_id_nos']['driver_license_number'] ?? null ]);
                 }
                 if (isset($headers['Designation'])) {
-                    $employeeData = array_merge($employeeData, ['Designation' => $employee['employee_job_profiles']['designation']['name']]);
+                    $employeeData = array_merge($employeeData, ['Designation' => $employee['employee_job_profiles']['designation']['name'] ?? null]);
                 }
                 if (isset($headers['Date Last Increment'])) {
                     $employeeData = array_merge($employeeData, ['Date Last Increment' => $employee['employee_progressions']['last_increment'] ?? null ]);
