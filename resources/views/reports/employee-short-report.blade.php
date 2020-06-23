@@ -8,16 +8,16 @@
         }
 
         table td {
-            padding: 18px;
+            padding: 10px;
         }
 
         table th {
-            padding: 18px;
+            padding: 10px;
         }
 
         .main-container {
             box-shadow: 0 0 1px 2px #000;
-            padding: 50px;
+            padding: 20px;
             border-radius: 10px;
         }
 
@@ -27,7 +27,7 @@
 
         .staff-details-table {
             width: 100%;
-            font-size: 24px;
+            font-size: 15px;
             border: 1px solid #e0e0e0;
         }
 
@@ -42,7 +42,7 @@
 
         .img-citizenship-details {
             width: 50%;
-            font-size: 24px;
+            font-size: 15px;
         }
 
         .citizenship-details {
@@ -77,7 +77,7 @@
         .contact-address-table {
             width: 100%;
             margin-top: 70px;
-            font-size: 24px;
+            font-size: 15px;
             border: 1px solid #e0e0e0;
         }
 

@@ -18,7 +18,7 @@
         .info-table {
             border: 1px solid #e0e0e0;
             width: 100%;
-            font-size: 24px;
+            font-size: 12px;
         }
 
         .info-table tr:nth-child(even) {
@@ -27,7 +27,7 @@
 
         .image-table {
             width: 100%;
-            font-size: 24px;
+            font-size: 12px;
             margin-left: 6%;
             margin-right: 2%
         }
@@ -35,7 +35,7 @@
         .address-table {
             border: 1px solid #e0e0e0;
             width: 95%;
-            font-size: 24px;
+            font-size: 12px;
             margin-left: 5%
         }
 
@@ -81,13 +81,13 @@
         .activity-table {
             border: 1px solid #e0e0e0;
             width: 75%;
-            font-size: 24px;
+            font-size: 12px;
         }
 
         .background-table {
             border: 1px solid #e0e0e0;
             width: 100%;
-            font-size: 24px;
+            font-size: 12px;
         }
 
         .background-table tr:nth-child(even) {
