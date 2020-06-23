@@ -512,7 +512,7 @@ class EmployeeRepository extends EloquentBaseRepository
                     $employeeData = array_merge($employeeData, [$employee['file'] ? $employee['file']['url'] : '-']);
                 }
                 if (isset($headers['Expected Exit Date'])) {
-                    $employeeData = array_merge($employeeData, ['Expected Exit Date' => $employee['employee_progressions']['expected_exit_date']]);
+                    $employeeData = array_merge($employeeData, ['Expected Exit Date' => $employee['employee_progressions'] ? ($employee['employee_progressions']['expected_exit_date'] ? $employee['employee_progressions']['expected_exit_date'] : null ): null]);
                 }
                 if (isset($headers['Exited'])) {
                     $employeeData = array_merge($employeeData, ['Exited' => $employee['employee_progressions']['is_exited']]);
