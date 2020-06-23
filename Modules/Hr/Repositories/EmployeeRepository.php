@@ -527,121 +527,121 @@ class EmployeeRepository extends EloquentBaseRepository
                     $employeeData = array_merge($employeeData, ['Last Name' => $employee['last_name']]);
                 }
                 if (isset($headers['Type of Appointment'])) {
-                    $employeeData = array_merge($employeeData, ['Type of Appointment' => $employee['employee_personal_details']['type_of_appointment']]);
+                    $employeeData = array_merge($employeeData, ['Type of Appointment' => $employee['employee_personal_details']['type_of_appointment'] ?? null ]);
                 }
                 if (isset($headers['TIN No'])) {
-                    $employeeData = array_merge($employeeData, ['TIN No' => $employee['employee_id_nos']['tin_number']]);
+                    $employeeData = array_merge($employeeData, ['TIN No' => $employee['employee_id_nos']['tin_number'] ?? null ]);
                 }
                 if (isset($headers['State'])) {
-                    $employeeData = array_merge($employeeData, ['State' => $employee['employee_contact_details']['state']['name']]);
+                    $employeeData = array_merge($employeeData, ['State' => $employee['employee_contact_details']['state']['name'] ?? null ]);
                 }
                 if (isset($headers['PFA No'])) {
-                    $employeeData = array_merge($employeeData, ['PFA No' => $employee['employee_id_nos']['pfa_number']]);
+                    $employeeData = array_merge($employeeData, ['PFA No' => $employee['employee_id_nos']['pfa_number'] ?? null ]);
                 }
                 if (isset($headers['Salary Scale'])) {
-                    $employeeData = array_merge($employeeData, ['Salary Scale' => $employee['employee_job_profiles']['emp_salary_scale']['name']]);
+                    $employeeData = array_merge($employeeData, ['Salary Scale' => $employee['employee_job_profiles']['emp_salary_scale']['name'] ?? null ]);
                 }
                 //todo
                 if (isset($headers['Qualifications'])) {
                     $employeeData = array_merge($employeeData, ['Qualifications' => $employee['firsdt_name'] ?? null]);
                 }
                 if (isset($headers['Permanent Staff'])) {
-                    $employeeData = array_merge($employeeData, ['Permanent Staff' => $employee['employee_personal_details']['is_permanent_staff']]);
+                    $employeeData = array_merge($employeeData, ['Permanent Staff' => $employee['employee_personal_details']['is_permanent_staff'] ?? null ]);
                 }
                 if (isset($headers['Pension Started'])) {
-                    $employeeData = array_merge($employeeData, ['Pension Started' => $employee['employee_pensions']['is_pension_started']]);
+                    $employeeData = array_merge($employeeData, ['Pension Started' => $employee['employee_pensions']['is_pension_started'] ?? null ]);
                 }
 
                 if (isset($headers['Passport No'])) {
-                    $employeeData = array_merge($employeeData, ['Passport No' => $employee['employee_international_passports']['passport_number']]);
+                    $employeeData = array_merge($employeeData, ['Passport No' => $employee['employee_international_passports']['passport_number'] ?? null ]);
                 }
                 if (isset($headers['Passport Issued on'])) {
-                    $employeeData = array_merge($employeeData, ['Passport Issued on' => $employee['employee_international_passports']['issued_date']]);
+                    $employeeData = array_merge($employeeData, ['Passport Issued on' => $employee['employee_international_passports']['issued_date'] ?? null ]);
                 }
                 if (isset($headers['Passport Issued at'])) {
-                    $employeeData = array_merge($employeeData, ['Passport Issued at' => $employee['employee_international_passports']['issued_at']]);
+                    $employeeData = array_merge($employeeData, ['Passport Issued at' => $employee['employee_international_passports']['issued_at'] ?? null ]);
                 }
                 if (isset($headers['Passport Expires on'])) {
-                    $employeeData = array_merge($employeeData, ['Passport Expires on' => $employee['employee_international_passports']['expiry_date']]);
+                    $employeeData = array_merge($employeeData, ['Passport Expires on' => $employee['employee_international_passports']['expiry_date'] ?? null ]);
                 }
                 if (isset($headers['NHF No'])) {
-                    $employeeData = array_merge($employeeData, ['NHF No' => $employee['employee_id_nos']['nhf_number']]);
+                    $employeeData = array_merge($employeeData, ['NHF No' => $employee['employee_id_nos']['nhf_number'] ?? null ]);
                 }
                 if (isset($headers['National ID No'])) {
-                    $employeeData = array_merge($employeeData, ['National ID No' => $employee['employee_id_nos']['nhf_number']]);
+                    $employeeData = array_merge($employeeData, ['National ID No' => $employee['employee_id_nos']['nhf_number'] ?? null ]);
                 }
                 if (isset($headers['Mobile Phone'])) {
-                    $employeeData = array_merge($employeeData, ['Mobile Phone' => $employee['employee_personal_details']['phone']]);
+                    $employeeData = array_merge($employeeData, ['Mobile Phone' => $employee['employee_personal_details']['phone'] ?? null ]);
                 }
                 if (isset($headers['Maiden Name'])) {
-                    $employeeData = array_merge($employeeData, ['Maiden Name' => $employee['maiden_name']]);
+                    $employeeData = array_merge($employeeData, ['Maiden Name' => $employee['maiden_name'] ?? null ]);
                 }
                 if (isset($headers['Job Position'])) {
-                    $employeeData = array_merge($employeeData, ['Job Position' => $employee['employee_job_profiles']['job_position']['name']]);
+                    $employeeData = array_merge($employeeData, ['Job Position' => $employee['employee_job_profiles']['job_position']['name'] ?? null ]);
                 }
                 if (isset($headers['Grade Level Step'])) {
-                    $employeeData = array_merge($employeeData, ['Grade Level Step' => $employee['employee_job_profiles']['job_position']['grade_level_step']['name']]);
+                    $employeeData = array_merge($employeeData, ['Grade Level Step' => $employee['employee_job_profiles']['job_position']['grade_level_step']['name'] ?? null ]);
                 }
                 if (isset($headers['Department'])) {
-                    $employeeData = array_merge($employeeData, ['Department' => $employee['employee_job_profiles']['department']['name']]);
+                    $employeeData = array_merge($employeeData, ['Department' => $employee['employee_job_profiles']['department']['name'] ?? null ]);
                 }
                 if (isset($headers['Address'])) {
-                    $employeeData = array_merge($employeeData, ['Address' => $employee['employee_contact_details']['address_line_1']]);
+                    $employeeData = array_merge($employeeData, ['Address' => $employee['employee_contact_details']['address_line_1'] ?? null ]);
                 }
                 if (isset($headers['Address Country'])) {
-                    $employeeData = array_merge($employeeData, ['Address Country' => $employee['employee_contact_details']['country']['name']]);
+                    $employeeData = array_merge($employeeData, ['Address Country' => $employee['employee_contact_details']['country']['name'] ?? null ]);
                 }
                 if (isset($headers['Email'])) {
-                    $employeeData = array_merge($employeeData, ['Email' => $employee['employee_personal_details']['email']]);
+                    $employeeData = array_merge($employeeData, ['Email' => $employee['employee_personal_details']['email'] ?? null ]);
                 }
                 if (isset($headers['Drivers Licence No'])) {
-                    $employeeData = array_merge($employeeData, ['Drivers Licence No' => $employee['employee_id_nos']['driver_license_number']]);
+                    $employeeData = array_merge($employeeData, ['Drivers Licence No' => $employee['employee_id_nos']['driver_license_number'] ?? null ]);
                 }
                 if (isset($headers['Designation'])) {
                     $employeeData = array_merge($employeeData, ['Designation' => $employee['employee_job_profiles']['designation']['name']]);
                 }
                 if (isset($headers['Date Last Increment'])) {
-                    $employeeData = array_merge($employeeData, ['Date Last Increment' => $employee['employee_progressions']['last_increment']]);
+                    $employeeData = array_merge($employeeData, ['Date Last Increment' => $employee['employee_progressions']['last_increment'] ?? null ]);
                 }
                 if (isset($headers['Date Pension Started'])) {
-                    $employeeData = array_merge($employeeData, ['Date Pension Started' => $employee['employee_pensions']['date_started']]);
+                    $employeeData = array_merge($employeeData, ['Date Pension Started' => $employee['employee_pensions']['date_started'] ?? null ]);
                 }
                 if (isset($headers['Date of Birth'])) {
-                    $employeeData = array_merge($employeeData, ['Date of Birth' => $employee['employee_personal_details']['date_of_birth']]);
+                    $employeeData = array_merge($employeeData, ['Date of Birth' => $employee['employee_personal_details']['date_of_birth'] ?? null ]);
                 }
                 if (isset($headers['Date Last Promoted'])) {
-                    $employeeData = array_merge($employeeData, ['Date Last Promoted' => $employee['employee_progressions']['last_promoted']]);
+                    $employeeData = array_merge($employeeData, ['Date Last Promoted' => $employee['employee_progressions']['last_promoted'] ?? null ]);
                 }
                 if (isset($headers['Date Current Appt'])) {
-                    $employeeData = array_merge($employeeData, ['Date Current Appt' => $employee['employee_job_profiles']['current_appointment']]);
+                    $employeeData = array_merge($employeeData, ['Date Current Appt' => $employee['employee_job_profiles']['current_appointment'] ?? null ]);
                 }
                 if (isset($headers['Date Assumed Duty'])) {
-                    $employeeData = array_merge($employeeData, ['Date Assumed Duty' => $employee['employee_personal_details']['assumed_duty_on']]);
+                    $employeeData = array_merge($employeeData, ['Date Assumed Duty' => $employee['employee_personal_details']['assumed_duty_on'] ?? null ]);
                 }
                 if (isset($headers['Confirmed'])) {
-                    $employeeData = array_merge($employeeData, ['Confirmed' => $employee['employee_progressions']['is_confirmed']]);
+                    $employeeData = array_merge($employeeData, ['Confirmed' => $employee['employee_progressions']['is_confirmed'] ?? null ]);
                 }
                 //todo
                 if (isset($headers['City'])) {
-                    $employeeData = array_merge($employeeData, ['City' => $employee['employee_contact_details']['address_line_2']]);
+                    $employeeData = array_merge($employeeData, ['City' => $employee['employee_contact_details']['address_line_2'] ?? null ]);
                 }
                 if (isset($headers['Address State'])) {
-                    $employeeData = array_merge($employeeData, ['Address State' => $employee['employee_contact_details']['state']['name']]);
+                    $employeeData = array_merge($employeeData, ['Address State' => $employee['employee_contact_details']['state']['name'] ?? null ]);
                 }
                 if (isset($headers['Citizen Country'])) {
-                    $employeeData = array_merge($employeeData, ['Citizen Country' => $employee['employee_contact_details']['other_country']['name']]);
+                    $employeeData = array_merge($employeeData, ['Citizen Country' => $employee['employee_contact_details']['other_country']['name'] ?? null ]);
                 }
                 if (isset($headers['Citizen LGA'])) {
-                    $employeeData = array_merge($employeeData, ['Citizen LGA' => $employee['employee_contact_details']['other_lga']['name']]);
+                    $employeeData = array_merge($employeeData, ['Citizen LGA' => $employee['employee_contact_details']['other_lga']['name'] ?? null ]);
                 }
                 if (isset($headers['Citizen Region'])) {
-                    $employeeData = array_merge($employeeData, ['Citizen Region' => $employee['employee_contact_details']['other_region']['name']]);
+                    $employeeData = array_merge($employeeData, ['Citizen Region' => $employee['employee_contact_details']['other_region']['name'] ?? null ]);
                 }
                 if (isset($headers['Citizen State'])) {
-                    $employeeData = array_merge($employeeData, ['Citizen State' => $employee['employee_contact_details']['other_state']['name']]);
+                    $employeeData = array_merge($employeeData, ['Citizen State' => $employee['employee_contact_details']['other_state']['name'] ?? null ]);
                 }
                 if (isset($headers['Confirmation Due Date'])) {
-                    $employeeData = array_merge($employeeData, ['Confirmation Due Date' => $employee['employee_progressions']['confirmation_due_date']]);
+                    $employeeData = array_merge($employeeData, ['Confirmation Due Date' => $employee['employee_progressions']['confirmation_due_date'] ?? null ]);
                 }
                 $data['employees'][] = $employeeData;
             }
