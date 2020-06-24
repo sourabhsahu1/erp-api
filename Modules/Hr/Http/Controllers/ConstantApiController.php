@@ -11,7 +11,7 @@ use Modules\Hr\Models\BankBranch;
 use Modules\Hr\Models\Marriage;
 use Modules\Hr\Models\Religion;
 use Modules\Hr\Models\TypeOfAppointment;
-
+use Illuminate\Support\Facades\DB;
 class ConstantApiController extends BaseController
 {
 
@@ -39,6 +39,10 @@ class ConstantApiController extends BaseController
         $id = $request->route('id');;
 
         $data['data']['items'] = BankBranch::where('bank_id', $id)->get();
+        return $data;
+    }
+    public function getCountryCodes() {
+        $data['data']['items'] = DB::table('country_codes')->get();
         return $data;
     }
 
