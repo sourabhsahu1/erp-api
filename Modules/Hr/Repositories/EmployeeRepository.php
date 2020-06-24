@@ -288,18 +288,18 @@ class EmployeeRepository extends EloquentBaseRepository
     public function getAll($params = [], $query = null)
     {
         $query = Employee::query();
-        if (isset($params['inputs']['department_id'])) {
-            $query->whereHas('employee_job_profiles', function ($query) use ($params) {
-                $query->whereHas('department', function ($query) use ($params) {
-                    $query->where('id', $params['inputs']['department_id'])
-                        ->orWhere('parent_id', $params['inputs']['department_id']);
-                });
-            });
-        }
+//        if (isset($params['inputs']['department_id'])) {
+//            $query->whereHas('employee_job_profiles', function ($query) use ($params) {
+//                $query->whereHas('department', function ($query) use ($params) {
+//                    $query->where('id', $params['inputs']['department_id'])
+//                        ->orWhere('parent_id', $params['inputs']['department_id']);
+//                });
+//            });
+//        }
         if (isset($params['inputs']['department_ids'])) {
             $query->whereHas('employee_job_profiles', function ($query) use ($params) {
                 $query->whereHas('department', function ($query) use ($params) {
-                    $query->whereIn('id', $params['inputs']['department_id']);
+                    $query->whereIn('id', $params['inputs']['department_ids']);
                 });
             });
         }
