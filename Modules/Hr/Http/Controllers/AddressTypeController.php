@@ -18,4 +18,5 @@ class AddressTypeController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
+
 }
