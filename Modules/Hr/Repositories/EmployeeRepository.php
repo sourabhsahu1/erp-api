@@ -296,10 +296,12 @@ class EmployeeRepository extends EloquentBaseRepository
 //                });
 //            });
 //        }
+
+
         if (isset($params['inputs']['department_ids'])) {
             $query->whereHas('employee_job_profiles', function ($query) use ($params) {
                 $query->whereHas('department', function ($query) use ($params) {
-                    $query->whereIn('id', $params['inputs']['department_ids']);
+                    $query->whereIn('id', json_decode($params['inputs']['department_ids'], true));
                 });
             });
         }
