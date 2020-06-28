@@ -13,7 +13,7 @@ class Update  extends BaseRequest
     {
         return [
             'categoryId' => 'required|exists:inventory_categories,id',
-            'measurementId' => 'required|exists:inventory_measurements,id',
+            'measurementId' => 'required_if|exists:inventory_measurements,id',
             'description' => 'required',
             'partNumber' => 'required',
             'isPhysicalQuantity' => 'required|boolean',

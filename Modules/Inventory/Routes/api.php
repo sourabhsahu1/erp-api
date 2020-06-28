@@ -32,4 +32,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('inventory-quality-balance', 'InvoiceController@inventoryQualityBalance');
     Route::get('bin-card/report','InvoiceController@binCardReport');
     Route::get('off-level-report', 'InvoiceController@offLevelReport');
+    Route::get('company-config', 'ConstantApiController@getConfig');
 });

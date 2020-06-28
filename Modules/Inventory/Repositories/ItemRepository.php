@@ -8,10 +8,27 @@ use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Inventory\Models\InvoiceItem;
 use Modules\Inventory\Models\Item;
+use Modules\Inventory\Models\ItemTax;
 
 class ItemRepository extends EloquentBaseRepository
 {
     public $model = Item::class;
+
+    public function create($data)
+    {
+       $item = parent::create($data);
+
+       foreach ($data['data']['tax_ids'] as $taxId) {
+           $taxes = [
+               'tax_id' => $taxId,
+               'item_id' => $item->id
+           ];
+           $data['data']['taxes'][] = $taxes;
+       }
+
+       ItemTax::insert($data['data']['taxes']);
+    }
+
 
     public function getAll($params = [], $query = null)
     {

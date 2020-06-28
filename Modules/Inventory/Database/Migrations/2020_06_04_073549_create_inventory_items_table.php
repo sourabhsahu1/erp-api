@@ -19,7 +19,7 @@ class CreateInventoryItemsTable extends Migration
             $table->unsignedBigInteger('measurement_id')->nullable();
             $table->string('description');
             $table->string('part_number');
-            $table->boolean('is_physical_quantity')->default(0);
+            $table->boolean('is_not_physical_quantity')->default(0);
             $table->boolean('is_charged_vat')->default(0);
             $table->boolean('is_charged_other_tax')->default(0);
             $table->integer('unit_price');

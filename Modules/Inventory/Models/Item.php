@@ -17,7 +17,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $measurement_id
  * @property string $description
  * @property string $part_number
- * @property bool $is_physical_quantity
+ * @property bool $is_not_physical_quantity
  * @property bool $is_charged_vat
  * @property bool $is_charged_other_tax
  * @property int $unit_price
@@ -53,7 +53,7 @@ class Item extends Eloquent
 	protected $casts = [
 		'category_id' => 'int',
 		'measurement_id' => 'int',
-		'is_physical_quantity' => 'bool',
+		'is_not_physical_quantity' => 'bool',
 		'is_charged_vat' => 'bool',
 		'is_charged_other_tax' => 'bool',
 		'unit_price' => 'int',
@@ -69,7 +69,7 @@ class Item extends Eloquent
 		'measurement_id',
 		'description',
 		'part_number',
-		'is_physical_quantity',
+		'is_not_physical_quantity',
 		'is_charged_vat',
 		'is_charged_other_tax',
 		'unit_price',
@@ -100,4 +100,8 @@ class Item extends Eloquent
 		return $this->belongsTo(\Modules\Inventory\Models\Measurement::class, 'measurement_id');
 	}
 
+    public function item_taxes()
+    {
+        return $this->hasMany(\Modules\Inventory\Models\ItemTax::class, 'item_id');
+    }
 }
