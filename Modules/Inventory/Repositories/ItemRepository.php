@@ -18,15 +18,38 @@ class ItemRepository extends EloquentBaseRepository
     {
        $item = parent::create($data);
 
-       foreach ($data['data']['tax_ids'] as $taxId) {
-           $taxes = [
-               'tax_id' => $taxId,
-               'item_id' => $item->id
-           ];
-           $data['data']['taxes'][] = $taxes;
+       if (isset($data['data']['tax_ids'])) {
+           foreach ($data['data']['tax_ids'] as $taxId) {
+               $taxes = [
+                   'tax_id' => $taxId,
+                   'item_id' => $item->id
+               ];
+               $data['data']['taxes'][] = $taxes;
+           }
+           ItemTax::insert($data['data']['taxes']);
        }
 
-       ItemTax::insert($data['data']['taxes']);
+       return $item;
+    }
+
+
+    public function update($data)
+    {
+        $item = parent::update($data);
+
+
+        if (isset($data['data']['tax_ids'])) {
+            ItemTax::where('item_id', $item->id)->delete();
+            foreach ($data['data']['tax_ids'] as $taxId) {
+                $taxes = [
+                    'tax_id' => $taxId,
+                    'item_id' => $item->id
+                ];
+                $data['data']['taxes'][] = $taxes;
+            }
+            ItemTax::insert($data['data']['taxes']);
+        }
+        return $item;
     }
 
 
