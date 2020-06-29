@@ -20,6 +20,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property bool $is_not_physical_quantity
  * @property bool $is_charged_vat
  * @property bool $is_charged_other_tax
+ * @property bool $is_tax_applicable
  * @property int $unit_price
  * @property int $sales_commission
  * @property int $lead_days
@@ -56,6 +57,7 @@ class Item extends Eloquent
 		'is_not_physical_quantity' => 'bool',
 		'is_charged_vat' => 'bool',
 		'is_charged_other_tax' => 'bool',
+		'is_tax_applicable' => 'bool',
 		'unit_price' => 'int',
 		'sales_commission' => 'int',
 		'lead_days' => 'int',
@@ -70,8 +72,7 @@ class Item extends Eloquent
 		'description',
 		'part_number',
 		'is_not_physical_quantity',
-		'is_charged_vat',
-		'is_charged_other_tax',
+        'is_tax_applicable',
 		'unit_price',
 		'sales_commission',
 		'lead_days',

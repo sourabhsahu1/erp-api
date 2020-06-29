@@ -13,12 +13,13 @@ class Update  extends BaseRequest
     {
         return [
             'categoryId' => 'required|exists:inventory_categories,id',
-            'measurementId' => 'required_if:isPhysicalQuantity,0',
+            'measurementId' => 'required_if:isNotPhysicalQuantity,0',
             'description' => 'required',
             'partNumber' => 'required',
             'isPhysicalQuantity' => 'required|boolean',
-            'isChargedVat' => 'required|boolean',
-            'isChargedOtherTax' => 'required|boolean',
+//            'isChargedVat' => 'required|boolean',
+//            'isChargedOtherTax' => 'required|boolean',
+            'isTaxApplicable' => 'required|boolean',
             'unitPrice' => 'required|integer',
             'salesCommission' => 'required|integer',
             'leadDays' => 'required|integer',
