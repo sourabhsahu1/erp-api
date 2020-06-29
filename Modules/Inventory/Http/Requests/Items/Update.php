@@ -16,7 +16,7 @@ class Update  extends BaseRequest
             'measurementId' => 'required_if:isNotPhysicalQuantity,0',
             'description' => 'required',
             'partNumber' => 'required',
-            'isPhysicalQuantity' => 'required|boolean',
+            'isNotPhysicalQuantity' => 'required|boolean',
 //            'isChargedVat' => 'required|boolean',
 //            'isChargedOtherTax' => 'required|boolean',
             'isTaxApplicable' => 'required|boolean',

@@ -67,8 +67,10 @@ class ItemRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = InvoiceItem::where('item_id', $data['id'])->first();
-        if (is_null($data)) {
+        ItemTax::where('item_id', $data['id'])->delete();
+        $itemData = InvoiceItem::where('item_id', $data['id'])->first();
+
+        if (is_null($itemData)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');
