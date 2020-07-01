@@ -47,7 +47,7 @@ class Create extends BaseRequest
                 ])
             ],
             'phone' => "required|min:5|max:10",
-            'countryCode' => "required|min:3|max:5",
+            'countryCode' => "required|min:2|max:5",
             'email' => "required|email",
             'isPermanentStaff' => "required|boolean",
             'typeOfAppointment' => [

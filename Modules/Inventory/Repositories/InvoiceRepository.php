@@ -4,12 +4,16 @@
 namespace Modules\Inventory\Repositories;
 
 
+use App\Constants\AppConstant;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Inventory\Models\InvoiceDetail;
 use Modules\Inventory\Models\InvoiceItem;
 use Modules\Inventory\Models\InvoiceTax;
+use Modules\Inventory\Models\ItemsAvgCost;
+use Modules\Inventory\Models\ItemsFifoCost;
+use Modules\Inventory\Models\ItemsLifoCost;
 
 class InvoiceRepository extends EloquentBaseRepository
 {
@@ -38,6 +42,13 @@ class InvoiceRepository extends EloquentBaseRepository
                     'created_at' => Carbon::now()->toDateString(),
                     'updated_at' => Carbon::now()->toDateString()
                 ];
+                $cost = [
+                    'item_id' => $item['item_id'],
+                    'invoice_id' => $invoiceDetail->id,
+                    'quantity' => $item['quantity'],
+                    'price' => $item['unit_cost'],
+                    'type' => AppConstant::TYPE_OUT
+                ];
                 foreach ($item['taxes'] as $tax) {
                     $taxes = [
                         'invoice_id' => $invoiceDetail->id,
@@ -47,10 +58,15 @@ class InvoiceRepository extends EloquentBaseRepository
                     ];
                     $data['taxes'][] = $taxes;
                 }
+                $data['cost'][] = $cost;
                 $data['items'][] = $items;
             }
             InvoiceItem::insert($data['items']);
             InvoiceTax::insert($data['taxes']);
+//
+//            ItemsAvgCost::insert($data['cost']);
+//            ItemsFifoCost::insert($data['cost']);
+//            ItemsLifoCost::insert($data['cost']);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -85,9 +101,23 @@ class InvoiceRepository extends EloquentBaseRepository
                     'created_at' => Carbon::now()->toDateString(),
                     'updated_at' => Carbon::now()->toDateString()
                 ];
+                $cost = [
+                    'item_id' => $item['item_id'],
+                    'invoice_id' => $invoiceDetail->id,
+                    'quantity' => $item['quantity'],
+                    'selling_price' => $item['unit_cost'],
+                    'type' => AppConstant::TYPE_OUT
+                ];
+                $data['cost'][] = $cost;
                 $data['items'][] = $items;
             }
             InvoiceItem::insert($data['items']);
+
+//            $fifo = $this->fifo($data['cost']);
+//            $lifo = $this->lifo($data['cost']);
+//            $avg = $this->avg($data['cost']);
+
+
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -95,6 +125,60 @@ class InvoiceRepository extends EloquentBaseRepository
         DB::commit();
 
         return $invoiceDetail;
+    }
+
+
+    public function fifo($items)
+    {
+
+        //all items that were out
+        foreach ($items as $item) {
+            //items that are available
+            $fifoItems = ItemsFifoCost::where('item_id', $item['item_id'])
+                ->where('quantity', '>', 0)
+                ->where('is_active', true)
+                ->where('type', AppConstant::TYPE_IN)
+                ->get();
+
+            //items list for fifo calculation
+            foreach ($fifoItems as $fifoItem) {
+
+                $item['quantity'] = $fifoItem->quantity - $item['quantity'];
+                if ($item['quantity'] == 0) {
+                    $update = ItemsFifoCost::where('id', $fifoItem->id)
+                        ->update([
+                            'quantity' => 0,
+                            'is_active' => false
+                        ]);
+                    break;
+                }
+                if ($item['quantity'] > 0) {
+                    $update = ItemsFifoCost::where('id', $fifoItem->id)
+                        ->update([
+                            'quantity' => $item['quantity']
+                        ]);
+                    break;
+                }
+
+                if ($item['quantity'] < 0) {
+                    $update = ItemsFifoCost::where('id', $fifoItem->id)
+                        ->update([
+                            'quantity' => 0,
+                            'is_active' => false
+                        ]);
+                }
+            }
+        }
+    }
+
+    public function lifo($data)
+    {
+
+    }
+
+    public function avg($data)
+    {
+
     }
 
     public function salesInwards($data)
@@ -120,6 +204,12 @@ class InvoiceRepository extends EloquentBaseRepository
                     'available_balance' => $item['quantity'] + $availableQuantity->available_balance,
                     'created_at' => Carbon::now()->toDateString(),
                     'updated_at' => Carbon::now()->toDateString()
+                ];
+                $cost = [
+                    'item_id' => $item['item_id'],
+                    'invoice_id' => $invoiceDetail->id,
+                    'quantity' => $item['quantity'],
+                    'price' => $item['unit_price']
                 ];
                 $data['items'][] = $items;
             }
@@ -167,8 +257,17 @@ class InvoiceRepository extends EloquentBaseRepository
                     ];
                     $data['taxes'][] = $taxes;
                 }
-
                 $data['items'][] = $items;
+
+
+//                $data[''] =
+                //fifo
+
+
+                //lifo
+
+
+                //avg
 
             }
             InvoiceItem::insert($data['items']);
@@ -309,6 +408,7 @@ class InvoiceRepository extends EloquentBaseRepository
                 $data['items'][] = $items;
             }
             InvoiceItem::insert($data['items']);
+
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
