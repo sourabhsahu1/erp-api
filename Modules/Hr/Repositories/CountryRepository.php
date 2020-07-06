@@ -21,8 +21,6 @@ class CountryRepository extends EloquentBaseRepository
 
     public function getAll($params = [], $query = null)
     {
-
-//        dd($params);
         if (isset($params["inputs"]["orderby"])) {
             $params["inputs"]["orderby"] = 'name';
             $params['inputs']['order'] = 'asc';
