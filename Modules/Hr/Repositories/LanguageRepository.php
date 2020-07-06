@@ -16,8 +16,8 @@ class LanguageRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = EmployeeLanguage::where('language_id', $data['id'])->first();
-        if (is_null($data)) {
+        $language = EmployeeLanguage::where('language_id', $data['id'])->first();
+        if (is_null($language)) {
             return parent::delete($data);
         } else {
             throw new AppException('Already in use');

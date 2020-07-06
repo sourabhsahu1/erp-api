@@ -16,8 +16,8 @@ class CensureRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = EmployeeCensure::where('address_type_id', $data['id'])->first();
-        if (is_null($data)) {
+        $empCensure = EmployeeCensure::where('address_type_id', $data['id'])->first();
+        if (is_null($empCensure)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');

@@ -16,8 +16,8 @@ class QualificationRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = EmployeeQualification::where('qualification_id', $data['id'])->first();
-        if (is_null($data)) {
+        $qualification = EmployeeQualification::where('qualification_id', $data['id'])->first();
+        if (is_null($qualification)) {
             return parent::delete($data);
         } else {
             throw new AppException('Already in use');
@@ -26,7 +26,6 @@ class QualificationRepository extends EloquentBaseRepository
 
     public function getAll($params = [], $query = null)
     {
-
         if (isset($params["inputs"]["orderby"])) {
             $params["inputs"]["orderby"] = 'name';
             $params['inputs']['order'] = 'asc';

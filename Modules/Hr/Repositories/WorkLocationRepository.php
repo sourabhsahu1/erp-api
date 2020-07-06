@@ -22,8 +22,8 @@ class WorkLocationRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = EmployeeJobProfile::where('work_location_id', $data['id'])->first();
-        if (is_null($data)) {
+        $employees = EmployeeJobProfile::where('work_location_id', $data['id'])->first();
+        if (is_null($employees)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');

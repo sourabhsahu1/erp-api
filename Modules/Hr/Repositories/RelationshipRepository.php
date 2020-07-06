@@ -16,8 +16,8 @@ class RelationshipRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = EmployeeRelation::where('relationship_id', $data['id'])->first();
-        if (is_null($data)) {
+        $relation = EmployeeRelation::where('relationship_id', $data['id'])->first();
+        if (is_null($relation)) {
             return parent::delete($data);
         } else {
             throw new AppException('Already in use');

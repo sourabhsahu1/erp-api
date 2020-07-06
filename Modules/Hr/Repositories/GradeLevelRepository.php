@@ -15,8 +15,8 @@ class GradeLevelRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = GradeLevelStep::where('grade_level_id', $data['id'])->first();
-        if (is_null($data)) {
+        $grade = GradeLevelStep::where('grade_level_id', $data['id'])->first();
+        if (is_null($grade)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');

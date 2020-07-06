@@ -22,8 +22,8 @@ class DepartmentRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = EmployeeJobProfile::where('department_id', $data['id'])->first();
-        if (is_null($data)) {
+        $employeeJob = EmployeeJobProfile::where('department_id', $data['id'])->first();
+        if (is_null($employeeJob)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');

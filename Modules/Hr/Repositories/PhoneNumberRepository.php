@@ -15,8 +15,8 @@ class PhoneNumberRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = EmployeePhoneNumber::where('phone_number_type_id', $data['id'])->first();
-        if (is_null($data)) {
+        $employeePhone = EmployeePhoneNumber::where('phone_number_type_id', $data['id'])->first();
+        if (is_null($employeePhone)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');

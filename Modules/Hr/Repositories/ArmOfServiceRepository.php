@@ -15,8 +15,8 @@ class ArmOfServiceRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = EmployeeMilitaryService::where('arm_of_service_id', $data['id'])->first();
-        if (is_null($data)) {
+        $empMilitary = EmployeeMilitaryService::where('arm_of_service_id', $data['id'])->first();
+        if (is_null($empMilitary)) {
             return parent::delete($data);
         } else {
             throw new AppException('Already in use');

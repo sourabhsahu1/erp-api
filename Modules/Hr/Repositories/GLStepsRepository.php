@@ -15,8 +15,8 @@ class GLStepsRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = JobPosition::where('grade_level_step_id', $data['id'])->first();
-        if (is_null($data)) {
+        $jobPosition = JobPosition::where('grade_level_step_id', $data['id'])->first();
+        if (is_null($jobPosition)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');

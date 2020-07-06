@@ -16,8 +16,8 @@ class MembershipRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = EmployeeMembership::where('membership_id', $data['id'])->first();
-        if (is_null($data)) {
+        $membership = EmployeeMembership::where('membership_id', $data['id'])->first();
+        if (is_null($membership)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');

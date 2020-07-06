@@ -16,8 +16,8 @@ class ScheduleRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = EmployeeSchool::where('schedule_id', $data['id'])->first();
-        if (is_null($data)) {
+        $employeeSchool = EmployeeSchool::where('schedule_id', $data['id'])->first();
+        if (is_null($employeeSchool)) {
             return parent::delete($data);
         } else {
             throw new AppException('Already in use');

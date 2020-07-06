@@ -24,8 +24,8 @@ class RegionRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = State::where('region_id', $data['id'])->first();
-        if (is_null($data)) {
+        $state = State::where('region_id', $data['id'])->first();
+        if (is_null($state)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');

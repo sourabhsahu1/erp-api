@@ -15,8 +15,8 @@ class AcademicsRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = EmployeeQualification::where('academic_id', $data['id'])->first();
-        if (is_null($data)) {
+        $empQualification = EmployeeQualification::where('academic_id', $data['id'])->first();
+        if (is_null($empQualification)) {
             return parent::delete($data);
         } else {
             throw new AppException('Already in use');

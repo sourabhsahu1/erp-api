@@ -16,8 +16,8 @@ class DesignationRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = JobPosition::where('designation_id', $data['id'])->first();
-        if (is_null($data)) {
+        $jobPosition = JobPosition::where('designation_id', $data['id'])->first();
+        if (is_null($jobPosition)) {
             return parent::delete($data);
         } else {
             throw new AppException('Already in use');

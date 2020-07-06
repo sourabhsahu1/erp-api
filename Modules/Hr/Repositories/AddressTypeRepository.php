@@ -15,8 +15,8 @@ class AddressTypeRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = EmployeeAddress::where('address_type_id', $data['id'])->first();
-        if (is_null($data)) {
+        $empAddress = EmployeeAddress::where('address_type_id', $data['id'])->first();
+        if (is_null($empAddress)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');

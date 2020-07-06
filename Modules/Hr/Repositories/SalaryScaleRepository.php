@@ -66,8 +66,8 @@ class SalaryScaleRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = GradeLevel::where('salary_scale_id', $data['id'])->first();
-        if (is_null($data)) {
+        $grade = GradeLevel::where('salary_scale_id', $data['id'])->first();
+        if (is_null($grade)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');

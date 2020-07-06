@@ -24,8 +24,8 @@ class LgaRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = EmployeeAddress::where('lga_id', $data['id'])->first();
-        if (is_null($data)) {
+        $address = EmployeeAddress::where('lga_id', $data['id'])->first();
+        if (is_null($address)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');

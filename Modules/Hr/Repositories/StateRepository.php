@@ -25,8 +25,8 @@ class StateRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = Lga::where('state_id', $data['id'])->first();
-        if (is_null($data)) {
+        $lga = Lga::where('state_id', $data['id'])->first();
+        if (is_null($lga)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');

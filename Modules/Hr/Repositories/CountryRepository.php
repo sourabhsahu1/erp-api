@@ -22,6 +22,7 @@ class CountryRepository extends EloquentBaseRepository
     public function getAll($params = [], $query = null)
     {
 
+//        dd($params);
         if (isset($params["inputs"]["orderby"])) {
             $params["inputs"]["orderby"] = 'name';
             $params['inputs']['order'] = 'asc';
@@ -32,8 +33,8 @@ class CountryRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = Region::where('country_id', $data['id'])->first();
-        if (is_null($data)) {
+        $region = Region::where('country_id', $data['id'])->first();
+        if (is_null($region)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');
