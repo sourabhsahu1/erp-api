@@ -101,7 +101,7 @@
 
         .user-img {
             box-shadow: 0 0 5px 3px #e0e0e0 !important;
-            margin-left: 10%;
+            /* margin-left: 10%; */
         }
     </style>
 </head>
@@ -271,8 +271,8 @@
             <td style="width: 50%">
                 <table class="competencies-table">
                     <tr>
-                        <td>
-                        <strong style="font-size:20px;"> {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['competences'])) ? $data['employee_job_profiles']['job_position']['competences'] : ''}} </strong>
+                        <td style="font-size:15px;">
+                         {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['competences'])) ? $data['employee_job_profiles']['job_position']['competences'] : ''}} 
                         </td>
                     </tr>
                 </table>
@@ -330,8 +330,8 @@
             <td style="width: 100%">
                 <table class="activity-table">
                     <tr>
-                        <td>
-                        <strong style="font-size:20px;">  {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['activities'])) ? $data['employee_job_profiles']['job_position']['activities'] : ''}} </strong>
+                        <td style="font-size:15px;">
+                        {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['activities'])) ? $data['employee_job_profiles']['job_position']['activities'] : ''}}
                         </td>
                     </tr>
                 </table>
