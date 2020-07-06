@@ -47,6 +47,12 @@ class Company extends Eloquent
         'is_supplier' => 'bool'
     ];
 
+    public $filterable = [
+        'id',
+        'is_customer',
+        'is_supplier'
+    ];
+
     protected $fillable = [
         'name',
         'is_customer',
