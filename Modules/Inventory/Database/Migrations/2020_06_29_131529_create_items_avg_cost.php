@@ -18,7 +18,8 @@ class CreateItemsAvgCost extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('item_id');
             $table->unsignedBigInteger('invoice_id');
-            $table->integer('quantity');
+            $table->integer('quantity')->nullable();
+            $table->integer('available_quantity');
             $table->integer('price');
             $table->float('avg_cost',8,2)->nullable();
             $table->float('selling_price',8,2)->nullable();

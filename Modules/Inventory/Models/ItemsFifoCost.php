@@ -16,6 +16,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $item_id
  * @property int $invoice_id
  * @property int $quantity
+ * @property int $available_quantity
  * @property int $price
  * @property float $fifo_cost
  * @property bool $is_active
@@ -36,6 +37,7 @@ class ItemsFifoCost extends Eloquent
 		'item_id' => 'int',
 		'invoice_id' => 'int',
 		'quantity' => 'int',
+		'available_quantity' => 'int',
 		'price' => 'int',
         'is_active' => 'bool',
 		'fifo_cost' => 'float',
@@ -46,6 +48,7 @@ class ItemsFifoCost extends Eloquent
 		'item_id',
 		'invoice_id',
 		'quantity',
+		'available_quantity',
 		'price',
         'type',
         'is_active',

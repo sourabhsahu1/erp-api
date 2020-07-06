@@ -47,7 +47,7 @@ class InvoiceRepository extends EloquentBaseRepository
                     'invoice_id' => $invoiceDetail->id,
                     'quantity' => $item['quantity'],
                     'price' => $item['unit_cost'],
-                    'type' => AppConstant::TYPE_OUT
+                    'type' => AppConstant::TYPE_IN
                 ];
                 foreach ($item['taxes'] as $tax) {
                     $taxes = [
@@ -63,10 +63,10 @@ class InvoiceRepository extends EloquentBaseRepository
             }
             InvoiceItem::insert($data['items']);
             InvoiceTax::insert($data['taxes']);
-//
-//            ItemsAvgCost::insert($data['cost']);
-//            ItemsFifoCost::insert($data['cost']);
-//            ItemsLifoCost::insert($data['cost']);
+
+            ItemsAvgCost::insert($data['cost']);
+            ItemsFifoCost::insert($data['cost']);
+            ItemsLifoCost::insert($data['cost']);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -115,7 +115,7 @@ class InvoiceRepository extends EloquentBaseRepository
 
 //            $fifo = $this->fifo($data['cost']);
 //            $lifo = $this->lifo($data['cost']);
-//            $avg = $this->avg($data['cost']);
+            $avg = $this->avg($data['cost']);
 
 
         } catch (\Exception $e) {
@@ -142,7 +142,7 @@ class InvoiceRepository extends EloquentBaseRepository
 
             //items list for fifo calculation
             foreach ($fifoItems as $fifoItem) {
-
+                $quantity = $item['quantity'];
                 $item['quantity'] = $fifoItem->quantity - $item['quantity'];
                 if ($item['quantity'] == 0) {
                     $update = ItemsFifoCost::where('id', $fifoItem->id)
@@ -150,17 +150,39 @@ class InvoiceRepository extends EloquentBaseRepository
                             'quantity' => 0,
                             'is_active' => false
                         ]);
+                    $update = ItemsFifoCost::create([
+                        'item_id' => $item['item_id'],
+                        'invoice_id' => $item['invoice_id'],
+                        'quantity' => $quantity,
+                        'price' => $fifoItem->price,
+                        'type' => AppConstant::TYPE_OUT,
+                        'is_active' => false,
+                        'fifo_cost' => $fifoItem->price,
+                        'selling_price' => $item['selling_price']
+                    ]);
                     break;
                 }
+
                 if ($item['quantity'] > 0) {
                     $update = ItemsFifoCost::where('id', $fifoItem->id)
                         ->update([
                             'quantity' => $item['quantity']
                         ]);
+                    $update = ItemsFifoCost::create([
+                        'item_id' => $item['item_id'],
+                        'invoice_id' => $item['invoice_id'],
+                        'quantity' => $quantity,
+                        'price' => $fifoItem->price,
+                        'type' => AppConstant::TYPE_OUT,
+                        'is_active' => false,
+                        'fifo_cost' => $fifoItem->price,
+                        'selling_price' => $item['selling_price']
+                    ]);
                     break;
                 }
 
                 if ($item['quantity'] < 0) {
+                    $item['quantity'] = $item['quantity'] * (-1);
                     $update = ItemsFifoCost::where('id', $fifoItem->id)
                         ->update([
                             'quantity' => 0,
@@ -171,13 +193,89 @@ class InvoiceRepository extends EloquentBaseRepository
         }
     }
 
-    public function lifo($data)
+    public function lifo($items)
     {
 
+        //all items that were out
+        foreach ($items as $item) {
+
+            //items that are available
+            $fifoItems = ItemsLifoCost::where('item_id', $item['item_id'])
+                ->where('quantity', '>', 0)
+                ->where('is_active', true)
+                ->where('type', AppConstant::TYPE_IN)
+                ->orderby('id', 'desc')
+                ->get();
+
+            //items list for fifo calculation
+            foreach ($fifoItems as $fifoItem) {
+                $quantity = $item['quantity'];
+                $item['quantity'] = $fifoItem->quantity - $item['quantity'];
+                if ($item['quantity'] == 0) {
+                    $update = ItemsLifoCost::where('id', $fifoItem->id)
+                        ->update([
+                            'quantity' => 0,
+                            'is_active' => false
+                        ]);
+                    $update = ItemsLifoCost::create([
+                        'item_id' => $item['item_id'],
+                        'invoice_id' => $item['invoice_id'],
+                        'quantity' => $quantity,
+                        'price' => $fifoItem->price,
+                        'type' => AppConstant::TYPE_OUT,
+                        'is_active' => false,
+                        'fifo_cost' => $fifoItem->price,
+                        'selling_price' => $item['selling_price']
+                    ]);
+                    break;
+                }
+                if ($item['quantity'] > 0) {
+                    $update = ItemsLifoCost::where('id', $fifoItem->id)
+                        ->update([
+                            'quantity' => $item['quantity']
+                        ]);
+                    $update = ItemsLifoCost::create([
+                        'item_id' => $item['item_id'],
+                        'invoice_id' => $item['invoice_id'],
+                        'quantity' => $quantity,
+                        'price' => $fifoItem->price,
+                        'type' => AppConstant::TYPE_OUT,
+                        'is_active' => false,
+                        'fifo_cost' => $fifoItem->price,
+                        'selling_price' => $item['selling_price']
+                    ]);
+                    break;
+                }
+                if ($item['quantity'] < 0) {
+                    $item['quantity'] = $item['quantity'] * (-1);
+                    $update = ItemsLifoCost::where('id', $fifoItem->id)
+                        ->update([
+                            'quantity' => 0,
+                            'is_active' => false
+                        ]);
+
+                }
+            }
+        }
     }
 
-    public function avg($data)
+    public function avg($items)
     {
+        //all items that were out
+        foreach ($items as $item) {
+
+            //items that are available
+            $fifoItems = ItemsAvgCost::where('item_id', $item['item_id'])
+                ->where('quantity', '>', 0)
+                ->where('is_active', true)
+                ->where('type', AppConstant::TYPE_IN);
+
+
+
+            $itemCount = $fifoItems->count();
+            $itemSum = $fifoItems->sum('price');
+
+        }
 
     }
 
