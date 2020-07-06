@@ -675,6 +675,7 @@ class EmployeeRepository extends EloquentBaseRepository
     public function downloadDetails($params)
     {
         $data = $this->show($params['inputs']['id'])->toArray();
+        // dd($data);
         $parentDepartment = null;
         $jobPositionName = null;
         $parentGradeLevel = null;
@@ -705,6 +706,7 @@ class EmployeeRepository extends EloquentBaseRepository
             'parent_grade_level' => $parentGradeLevel
         ];
 
+       
         $fileName = 'employee-details' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
         $filePath = "pdf/";
         if (strtolower($params['inputs']['type']) == 'short') {
@@ -715,7 +717,7 @@ class EmployeeRepository extends EloquentBaseRepository
             app()->make(WKHTMLPDfConverter::class)
                 ->convert(view('reports.employee-full-report', ['data' => $data])->render(), $fileName);
         }
-
+        
         return ['url' => url($filePath . $fileName)];
 
     }

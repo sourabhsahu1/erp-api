@@ -64,9 +64,9 @@
 
         .user-img {
             box-shadow: 0 0 5px 3px #e0e0e0 !important;
-            width: 80%;
-            height: 433px !important;
-            margin-left: 10%;
+            width: 30%;
+            height: 230px !important;
+            margin-left: 30%;
             margin-bottom: 20px;
         }
 
