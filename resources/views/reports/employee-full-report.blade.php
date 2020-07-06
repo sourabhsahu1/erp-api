@@ -34,9 +34,10 @@
 
         .address-table {
             border: 1px solid #e0e0e0;
-            width: 95%;
+            width: 90%;
             font-size: 12px;
-            margin-left: 5%
+            margin-left: 5%;
+            height:300px
         }
 
         .address-table tr:nth-child(even) {
@@ -271,7 +272,7 @@
                 <table class="competencies-table">
                     <tr>
                         <td>
-                            {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['competences'])) ? $data['employee_job_profiles']['job_position']['competences'] : ''}}
+                        <strong style="font-size:20px;"> {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['competences'])) ? $data['employee_job_profiles']['job_position']['competences'] : ''}} </strong>
                         </td>
                     </tr>
                 </table>
@@ -330,7 +331,7 @@
                 <table class="activity-table">
                     <tr>
                         <td>
-                            {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['activities'])) ? $data['employee_job_profiles']['job_position']['activities'] : ''}}
+                        <strong style="font-size:20px;">  {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['activities'])) ? $data['employee_job_profiles']['job_position']['activities'] : ''}} </strong>
                         </td>
                     </tr>
                 </table>
