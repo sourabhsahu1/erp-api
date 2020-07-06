@@ -15,7 +15,7 @@ class CreateCompanyConfig extends Migration
     {
         Schema::create('company_config', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('config_name');
+            $table->string('name');
             $table->softDeletes();
             $table->timestamps();
         });

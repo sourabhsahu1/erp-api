@@ -17,4 +17,5 @@ class TaxController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
+    protected $indexWith = ['company', 'admin_segment'];
 }
