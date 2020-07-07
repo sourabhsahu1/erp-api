@@ -19,6 +19,7 @@
             border: 1px solid #e0e0e0;
             width: 100%;
             font-size: 12px;
+            padding: 2px !important;
         }
 
         .info-table tr:nth-child(even) {
@@ -26,18 +27,18 @@
         }
 
         .image-table {
-            width: 100%;
+            width: 127%;
             font-size: 12px;
-            margin-left: 6%;
-            margin-right: 2%
+            margin-left: -10%;
+            /*margin-right: 0.5%*/
         }
 
         .address-table {
             border: 1px solid #e0e0e0;
-            width: 90%;
+            width: 95%;
             font-size: 12px;
             margin-left: 5%;
-            height:300px
+            height: 300px
         }
 
         .address-table tr:nth-child(even) {
@@ -46,9 +47,9 @@
 
         .image-table tr:nth-child(even) {
             background-color: #f2f2f2;
-            margin-right: 5%;
-            padding-right: 10%;
-            padding-left: 10%;
+            margin-right: 1%;
+            padding-right: 3%;
+            padding-left: 3%;
         }
 
         .main-container {
@@ -91,7 +92,7 @@
             background-color: #f2f2f2;
         }
 
-        .text-center{
+        .text-center {
             text-align: center;
         }
 
@@ -136,7 +137,6 @@
                     <tr>
                         <td colspan="2">
                             <b>ID Number:</b> {{$data['id']}}
-                        </td>
                         </td>
                     </tr>
                     <tr>
@@ -211,7 +211,8 @@
                             <b>Department/Section:</b> {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['department'])) ? $data['employee_job_profiles']['department']['name'] : ''}}
                         </td>
                         <td>
-                            <b>Geographic Location:</b> {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['work_location'])) ? $data['employee_job_profiles']['work_location']['name'] : ''}}
+                            <b>Geographic
+                                Location:</b> {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['work_location'])) ? $data['employee_job_profiles']['work_location']['name'] : ''}}
                         </td>
                     </tr>
                     <tr>
@@ -224,7 +225,8 @@
                             <b>Supervisor:</b> {{isset($data['parent_details']['parent_job_position']) ? $data['parent_details']['parent_job_position'] : '' }}
                         </td>
                         <td>
-                            <b>Level No:</b> {{isset($data['parent_details']['parent_grade_level']) ? $data['parent_details']['parent_grade_level'] : '' }}
+                            <b>Level
+                                No:</b> {{isset($data['parent_details']['parent_grade_level']) ? $data['parent_details']['parent_grade_level'] : '' }}
                         </td>
                         <td>
                             <b>Other Language:</b>
@@ -269,7 +271,7 @@
                 <table class="competencies-table">
                     <tr>
                         <td style="font-size:15px;">
-                         {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['competences'])) ? $data['employee_job_profiles']['job_position']['competences'] : ''}}
+                            {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['competences'])) ? $data['employee_job_profiles']['job_position']['competences'] : ''}}
                         </td>
                     </tr>
                 </table>
@@ -328,13 +330,13 @@
                 <table class="activity-table">
                     <tr>
                         <td style="font-size:15px;">
-                        {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['activities'])) ? $data['employee_job_profiles']['job_position']['activities'] : ''}}
+                            {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['activities'])) ? $data['employee_job_profiles']['job_position']['activities'] : ''}}
                         </td>
                     </tr>
                 </table>
             </td>
         </tr>
-</div>
+    </table>
 </div>
 </body>
 </html>
