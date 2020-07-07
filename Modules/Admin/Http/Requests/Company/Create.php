@@ -18,7 +18,7 @@ class Create extends BaseRequest
             "isActive"=> "required|boolean",
             "isCashbookAc"=> "required|boolean",
             "isOnOff"=> "required|boolean",
-            "isPf"=> "required|boolean",
+            "isPfa"=> "required|boolean",
             "city"=> "required",
             "state"=> "required",
             "country"=> "required",

@@ -18,7 +18,7 @@ class Update extends BaseRequest
             "isActive" => "sometimes|boolean",
             "isCashbookAc" => "sometimes|boolean",
             "isOnOff" => "sometimes|boolean",
-            "isPf" => "sometimes|boolean",
+            "isPfa" => "sometimes|boolean",
             "city" => "sometimes",
             "state" => "sometimes",
             "country" => "sometimes",
