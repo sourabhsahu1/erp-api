@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Profile Full</title>
+    <title>{{isset($data['last_name']) ? $data['last_name']. ' '. $data['first_name'] : ''}} - Extended Summary</title>
     <style type="text/css">
         * {
             font-family: 'Noto Sans', sans-serif !important;
@@ -65,23 +65,19 @@
             margin-right: 38%;
         }
 
-        .mt--35px {
-            margin-top: -35px
-        }
-
         .mt-15px {
             margin-top: 15px;
         }
 
         .competencies-table {
             border: 1px solid #e0e0e0;
-            width: 75%;
+            width: 100%;
             font-size: 24px;
         }
 
         .activity-table {
             border: 1px solid #e0e0e0;
-            width: 75%;
+            width: 100%;
             font-size: 12px;
         }
 
@@ -101,7 +97,8 @@
 
         .user-img {
             box-shadow: 0 0 5px 3px #e0e0e0 !important;
-            /* margin-left: 10%; */
+            width: 100%;
+            height: 190px !important;
         }
     </style>
 </head>
@@ -272,7 +269,7 @@
                 <table class="competencies-table">
                     <tr>
                         <td style="font-size:15px;">
-                         {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['competences'])) ? $data['employee_job_profiles']['job_position']['competences'] : ''}} 
+                         {{(isset($data['employee_job_profiles']) && isset($data['employee_job_profiles']['job_position']) && isset($data['employee_job_profiles']['job_position']['competences'])) ? $data['employee_job_profiles']['job_position']['competences'] : ''}}
                         </td>
                     </tr>
                 </table>

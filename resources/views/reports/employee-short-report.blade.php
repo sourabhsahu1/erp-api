@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Staff</title>
+    <title>{{isset($data['last_name']) ? $data['last_name']. ' '. $data['first_name'] : ''}} - Short Summary</title>
     <style type="text/css">
         * {
             font-family: 'Noto Sans', sans-serif !important;
@@ -19,10 +19,6 @@
             box-shadow: 0 0 1px 2px #000;
             padding: 20px;
             border-radius: 10px;
-        }
-
-        .staff-details {
-            width: 45%
         }
 
         .staff-details-table {
@@ -43,10 +39,6 @@
         .img-citizenship-details {
             width: 50%;
             font-size: 15px;
-        }
-
-        .citizenship-details {
-            width: 100%
         }
 
         .citizenship-details-table {
