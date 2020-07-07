@@ -26,8 +26,8 @@ class CompanyRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = InvoiceDetail::where('company_id', $data['id'])->first();
-        if (is_null($data)) {
+        $invoice = InvoiceDetail::where('company_id', $data['id'])->first();
+        if (is_null($invoice)) {
             return parent::delete($data);
         } else {
             throw new AppException('Already in use');
