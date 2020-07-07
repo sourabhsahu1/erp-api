@@ -47,7 +47,9 @@ class InvoiceRepository extends EloquentBaseRepository
                     'invoice_id' => $invoiceDetail->id,
                     'quantity' => $item['quantity'],
                     'price' => $item['unit_cost'],
-                    'type' => AppConstant::TYPE_IN
+                    'available_quantity' => $item['quantity'],
+                    'type' => AppConstant::TYPE_IN,
+
                 ];
                 foreach ($item['taxes'] as $tax) {
                     $taxes = [
@@ -113,8 +115,8 @@ class InvoiceRepository extends EloquentBaseRepository
             }
             InvoiceItem::insert($data['items']);
 
-//            $fifo = $this->fifo($data['cost']);
-//            $lifo = $this->lifo($data['cost']);
+            $fifo = $this->fifo($data['cost']);
+            $lifo = $this->lifo($data['cost']);
             $avg = $this->avg($data['cost']);
 
 
@@ -144,16 +146,19 @@ class InvoiceRepository extends EloquentBaseRepository
             foreach ($fifoItems as $fifoItem) {
                 $quantity = $item['quantity'];
                 $item['quantity'] = $fifoItem->quantity - $item['quantity'];
+
+                //
                 if ($item['quantity'] == 0) {
                     $update = ItemsFifoCost::where('id', $fifoItem->id)
                         ->update([
-                            'quantity' => 0,
+                            'available_quantity' => 0,
                             'is_active' => false
                         ]);
                     $update = ItemsFifoCost::create([
                         'item_id' => $item['item_id'],
                         'invoice_id' => $item['invoice_id'],
                         'quantity' => $quantity,
+                        'available_quantity' => 0,
                         'price' => $fifoItem->price,
                         'type' => AppConstant::TYPE_OUT,
                         'is_active' => false,
@@ -172,6 +177,7 @@ class InvoiceRepository extends EloquentBaseRepository
                         'item_id' => $item['item_id'],
                         'invoice_id' => $item['invoice_id'],
                         'quantity' => $quantity,
+                        'available_quantity' => $item['quantity'],
                         'price' => $fifoItem->price,
                         'type' => AppConstant::TYPE_OUT,
                         'is_active' => false,
@@ -185,7 +191,7 @@ class InvoiceRepository extends EloquentBaseRepository
                     $item['quantity'] = $item['quantity'] * (-1);
                     $update = ItemsFifoCost::where('id', $fifoItem->id)
                         ->update([
-                            'quantity' => 0,
+                            'available_quantity' => 0,
                             'is_active' => false
                         ]);
                 }
@@ -214,13 +220,14 @@ class InvoiceRepository extends EloquentBaseRepository
                 if ($item['quantity'] == 0) {
                     $update = ItemsLifoCost::where('id', $fifoItem->id)
                         ->update([
-                            'quantity' => 0,
+                            'available_quantity' => 0,
                             'is_active' => false
                         ]);
                     $update = ItemsLifoCost::create([
                         'item_id' => $item['item_id'],
                         'invoice_id' => $item['invoice_id'],
                         'quantity' => $quantity,
+                        'available_quantity' => $item['quantity'],
                         'price' => $fifoItem->price,
                         'type' => AppConstant::TYPE_OUT,
                         'is_active' => false,
@@ -232,12 +239,13 @@ class InvoiceRepository extends EloquentBaseRepository
                 if ($item['quantity'] > 0) {
                     $update = ItemsLifoCost::where('id', $fifoItem->id)
                         ->update([
-                            'quantity' => $item['quantity']
+                            'available_quantity' => $item['quantity']
                         ]);
                     $update = ItemsLifoCost::create([
                         'item_id' => $item['item_id'],
                         'invoice_id' => $item['invoice_id'],
                         'quantity' => $quantity,
+                        'available_quantity' => $item['quantity'],
                         'price' => $fifoItem->price,
                         'type' => AppConstant::TYPE_OUT,
                         'is_active' => false,
@@ -250,7 +258,7 @@ class InvoiceRepository extends EloquentBaseRepository
                     $item['quantity'] = $item['quantity'] * (-1);
                     $update = ItemsLifoCost::where('id', $fifoItem->id)
                         ->update([
-                            'quantity' => 0,
+                            'available_quantity' => 0,
                             'is_active' => false
                         ]);
 
