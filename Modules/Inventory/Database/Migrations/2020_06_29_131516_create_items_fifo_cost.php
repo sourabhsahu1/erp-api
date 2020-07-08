@@ -21,12 +21,12 @@ class CreateItemsFifoCost extends Migration
             $table->integer('quantity')->nullable();
             $table->integer('available_quantity');
             $table->integer('price');
-            $table->float('fifo_cost',8,2)->nullable();
-            $table->float('selling_price',8,2)->nullable();
-                $table->boolean('in_active')->default(1);
+            $table->float('fifo_cost', 8, 2)->nullable();
+            $table->float('selling_price', 8, 2)->nullable();
+            $table->boolean('in_active')->default(1);
             $table->timestamps();
             $table->foreign('item_id')->references('id')->on('inventory_items');
-            $table->enum('type',[AppConstant::TYPE_IN, AppConstant::TYPE_OUT]);
+            $table->enum('type', [AppConstant::TYPE_IN, AppConstant::TYPE_OUT]);
             $table->foreign('invoice_id')->references('id')->on('inventory_invoice_details');
         });
     }

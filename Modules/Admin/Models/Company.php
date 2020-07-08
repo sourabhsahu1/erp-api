@@ -60,7 +60,7 @@ class Company extends Eloquent
         'is_active',
         'is_cashbook_ac',
         'is_on_off',
-        'is_pf',
+        'is_pfa',
         'city',
         'state',
         'country',
