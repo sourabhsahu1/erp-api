@@ -29,8 +29,8 @@ class InvoiceRepository extends EloquentBaseRepository
             foreach ($data['data']['items'] as $item) {
                 /** @var InvoiceItem $availableQuantity */
                 $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
-//                dd($availableQuantity);
-                $items = [
+
+                $invoiceItem = InvoiceItem::create([
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
                     'invoice_id' => $invoiceDetail->id,
@@ -41,34 +41,50 @@ class InvoiceRepository extends EloquentBaseRepository
                     'quantity' => $item['quantity'],
                     'created_at' => Carbon::now()->toDateString(),
                     'updated_at' => Carbon::now()->toDateString()
-                ];
-                $cost = [
+                ]);
+
+                ItemsLifoCost::create([
                     'item_id' => $item['item_id'],
+                    'invoice_item_id' => $invoiceItem->id,
                     'invoice_id' => $invoiceDetail->id,
                     'quantity' => $item['quantity'],
                     'price' => $item['unit_cost'],
                     'available_quantity' => $item['quantity'],
                     'type' => AppConstant::TYPE_IN,
 
-                ];
+                ]);
+                ItemsFifoCost::create([
+                    'item_id' => $item['item_id'],
+                    'invoice_item_id' => $invoiceItem->id,
+                    'invoice_id' => $invoiceDetail->id,
+                    'quantity' => $item['quantity'],
+                    'price' => $item['unit_cost'],
+                    'available_quantity' => $item['quantity'],
+                    'type' => AppConstant::TYPE_IN,
+
+                ]);
+
+                ItemsAvgCost::create([
+                    'item_id' => $item['item_id'],
+                    'invoice_item_id' => $invoiceItem->id,
+                    'invoice_id' => $invoiceDetail->id,
+                    'quantity' => $item['quantity'],
+                    'price' => $item['unit_cost'],
+                    'available_quantity' => $item['quantity'],
+                    'type' => AppConstant::TYPE_IN,
+
+                ]);
+
                 foreach ($item['taxes'] as $tax) {
-                    $taxes = [
+                   $itemTaxes =  InvoiceTax::create([
                         'invoice_id' => $invoiceDetail->id,
                         'item_id' => $item['item_id'],
                         'tax' => $tax['tax'],
                         'tax_id' => $tax['id']
-                    ];
-                    $data['taxes'][] = $taxes;
-                }
-                $data['cost'][] = $cost;
-                $data['items'][] = $items;
-            }
-            InvoiceItem::insert($data['items']);
-            InvoiceTax::insert($data['taxes']);
+                    ]);
 
-            ItemsAvgCost::insert($data['cost']);
-            ItemsFifoCost::insert($data['cost']);
-            ItemsLifoCost::insert($data['cost']);
+                }
+            }
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -90,34 +106,34 @@ class InvoiceRepository extends EloquentBaseRepository
             foreach ($data['data']['items'] as $item) {
                 /** @var InvoiceItem $availableQuantity */
                 $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
-                $items = [
+
+                $invoiceItem = InvoiceItem::create([
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
                     'invoice_id' => $invoiceDetail->id,
                     'measurement_id' => $item['measurement_id'],
                     'description' => $item['description'],
+                    'available_balance' => $item['quantity'] + (!is_null($availableQuantity) ? $availableQuantity->available_balance : 0),
                     'unit_cost' => $item['unit_cost'],
-                    'unit_price' => $item['unit_price'],
                     'quantity' => $item['quantity'],
-                    'available_balance' => $availableQuantity->available_balance - $item['quantity'],
                     'created_at' => Carbon::now()->toDateString(),
                     'updated_at' => Carbon::now()->toDateString()
-                ];
+                ]);
+
                 $cost = [
                     'item_id' => $item['item_id'],
                     'invoice_id' => $invoiceDetail->id,
                     'quantity' => $item['quantity'],
+                    'invoice_item_id' => $invoiceItem->id,
                     'selling_price' => $item['unit_cost'],
                     'type' => AppConstant::TYPE_OUT
                 ];
-                $data['cost'][] = $cost;
-                $data['items'][] = $items;
-            }
-            InvoiceItem::insert($data['items']);
 
-            $fifo = $this->fifo($data['cost']);
-            $lifo = $this->lifo($data['cost']);
-            $avg = $this->avg($data['cost']);
+                $fifo = $this->fifo($cost);
+                $lifo = $this->lifo($cost);
+                $avg = $this->avg($cost);
+
+            }
 
 
         } catch (\Exception $e) {
@@ -130,11 +146,11 @@ class InvoiceRepository extends EloquentBaseRepository
     }
 
 
-    public function fifo($items)
+    public function fifo($item)
     {
 
         //all items that were out
-        foreach ($items as $item) {
+//        foreach ($items as $item) {
             //items that are available
             $fifoItems = ItemsFifoCost::where('item_id', $item['item_id'])
                 ->where('quantity', '>', 0)
@@ -196,14 +212,13 @@ class InvoiceRepository extends EloquentBaseRepository
                         ]);
                 }
             }
-        }
     }
 
-    public function lifo($items)
+    public function lifo($item)
     {
 
         //all items that were out
-        foreach ($items as $item) {
+//        foreach ($items as $item) {
 
             //items that are available
             $fifoItems = ItemsLifoCost::where('item_id', $item['item_id'])
@@ -264,13 +279,13 @@ class InvoiceRepository extends EloquentBaseRepository
 
                 }
             }
-        }
+
     }
 
-    public function avg($items)
+    public function avg($item)
     {
         //all items that were out
-        foreach ($items as $item) {
+//        foreach ($items as $item) {
 
             //items that are available
             $fifoItems = ItemsAvgCost::where('item_id', $item['item_id'])
@@ -279,11 +294,10 @@ class InvoiceRepository extends EloquentBaseRepository
                 ->where('type', AppConstant::TYPE_IN);
 
 
-
             $itemCount = $fifoItems->count();
             $itemSum = $fifoItems->sum('price');
 
-        }
+//        }
 
     }
 

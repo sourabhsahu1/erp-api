@@ -14,6 +14,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * 
  * @property int $id
  * @property int $item_id
+ * @property int $invoice_item_id
  * @property int $invoice_id
  * @property int $quantity
  * @property int $available_quantity
@@ -35,6 +36,7 @@ class ItemsLifoCost extends Eloquent
 
 	protected $casts = [
 		'item_id' => 'int',
+		'invoice_item_id' => 'int',
 		'invoice_id' => 'int',
 		'quantity' => 'int',
 		'available_quantity' => 'int',
@@ -46,6 +48,7 @@ class ItemsLifoCost extends Eloquent
 
 	protected $fillable = [
 		'item_id',
+		'invoice_item_id',
 		'invoice_id',
 		'quantity',
 		'available_quantity',

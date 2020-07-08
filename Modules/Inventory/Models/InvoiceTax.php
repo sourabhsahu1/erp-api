@@ -34,12 +34,14 @@ class InvoiceTax extends Eloquent
 	protected $casts = [
 		'invoice_id' => 'int',
         'item_id' => 'int',
+        'tax_id' => 'int',
 		'tax' => 'float'
 	];
 
 	protected $fillable = [
 		'invoice_id',
         'item_id',
+        'tax_id',
 		'tax'
 	];
 

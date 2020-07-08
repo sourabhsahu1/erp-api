@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\AppConstant;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -19,6 +20,7 @@ class CreateInventoryInvoiceItemsTable extends Migration
             $table->unsignedBigInteger('item_id');
             $table->unsignedBigInteger('invoice_id');
             $table->unsignedBigInteger('measurement_id');
+            $table->enum('type',[AppConstant::TYPE_IN, AppConstant::TYPE_OUT]);
             $table->string('description')->nullable();
             $table->integer('unit_price')->nullable();
             $table->integer('unit_cost')->nullable();
