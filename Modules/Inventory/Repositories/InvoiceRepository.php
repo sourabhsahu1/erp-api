@@ -601,24 +601,24 @@ class InvoiceRepository extends EloquentBaseRepository
         $avgFifo = 0;
         $itemCost = 0;
         if (isset($params['inputs']['preferred_costing'])) {
-            if ($params['inputs']['preferred_costing'] == 'FIFO') {
-                foreach ($costingQuery as $item) {
-                    $data = (array)$item;
-                    $itemCost[$item->item_id] = [
-                    ];
-                }
-            } elseif ($params['inputs']['preferred_costing'] == 'LIFO') {
-
-            } elseif ($params['inputs']['preferred_costing'] == 'AVG') {
-                foreach ($costingQuery->get() as $item) {
-                    $data = (array)$item;
-//                    dd($item);
-                    $avgFifo = $avgFifo + $item->unit_cost;
-                    $itemCost[$item->item_id] = [
-                        $avgFifo
-                    ];
-                }
-            }
+//            if ($params['inputs']['preferred_costing'] == 'FIFO') {
+//                foreach ($costingQuery as $item) {
+//                    $data = (array)$item;
+//                    $itemCost[$item->item_id] = [
+//                    ];
+//                }
+//            } elseif ($params['inputs']['preferred_costing'] == 'LIFO') {
+//
+//            } elseif ($params['inputs']['preferred_costing'] == 'AVG') {
+//                foreach ($costingQuery->get() as $item) {
+//                    $data = (array)$item;
+////                    dd($item);
+//                    $avgFifo = $avgFifo + $item->unit_cost;
+//                    $itemCost[$item->item_id] = [
+//                        $avgFifo
+//                    ];
+//                }
+//            }
 
         }
 
@@ -656,19 +656,19 @@ class InvoiceRepository extends EloquentBaseRepository
 
 //        $costingQuery = clone $query;
 
-        if (isset($params['inputs']['preferred_costing'])) {
-            if ($params['inputs']['preferred_costing'] == 'FIFO') {
-                foreach ($query->get() as $item) {
-
-                }
-            } elseif ($params['inputs']['preferred_costing'] == 'LIFO') {
-
-
-            } elseif ($params['inputs']['preferred_costing'] == 'AVG') {
-
-            }
-
-        }
+//        if (isset($params['inputs']['preferred_costing'])) {
+//            if ($params['inputs']['preferred_costing'] == 'FIFO') {
+//                foreach ($query->get() as $item) {
+//
+//                }
+//            } elseif ($params['inputs']['preferred_costing'] == 'LIFO') {
+//
+//
+//            } elseif ($params['inputs']['preferred_costing'] == 'AVG') {
+//
+//            }
+//
+//        }
 
         dd($query->get());
         $query = $query->whereIn('iii.id', $items);
