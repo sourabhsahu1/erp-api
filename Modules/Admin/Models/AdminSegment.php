@@ -41,6 +41,8 @@ class AdminSegment extends Eloquent
         'updated_At'
     ];
 
+    const SEGMENT_ECONOMIC_SEGMENT_ID = 2;
+
     protected $fillable = [
         'name',
         'updated_At',
