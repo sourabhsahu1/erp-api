@@ -782,7 +782,7 @@ class EmployeeRepository extends EloquentBaseRepository
                     $employeeData = array_merge($employeeData, ['marital_status' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['marital_status'] : '-']);
                 }
                 if (isset($headers['Emp. Photo'])) {
-                    $employeeData = array_merge($employeeData, ['photo' =>$employee['file'] ? $employee['file']['url'] : '-']);
+                    $employeeData = array_merge($employeeData, ['photo' =>$employee['file'] ? $employee['file']['local_path'] : '-']);
                 }
                 if (isset($headers['Expected Exit Date'])) {
                     $employeeData = array_merge($employeeData, [
