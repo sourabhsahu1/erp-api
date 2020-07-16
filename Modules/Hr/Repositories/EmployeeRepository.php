@@ -938,7 +938,7 @@ class EmployeeRepository extends EloquentBaseRepository
             }
             foreach (array_values($employee) as $index => $item) {
                 $cellVal = self::toAlphabet($index) . ($index1+2);
-                if (!is_null($keyId)) {
+                if (!is_null($keyId) && ($index == $keyId)) {
                     $drawing = new Drawing();
                     $drawing->setPath(public_path($item));
                     $drawing->setCoordinates($cellVal);
@@ -979,7 +979,6 @@ class EmployeeRepository extends EloquentBaseRepository
     public function downloadDetails($params)
     {
         $data = $this->show($params['inputs']['id'])->toArray();
-        // dd($data);
         $parentDepartment = null;
         $jobPositionName = null;
         $parentGradeLevel = null;
