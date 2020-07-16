@@ -946,8 +946,8 @@ class EmployeeRepository extends EloquentBaseRepository
                     $drawing->setWidth(80);
                     $drawing->setHeight(80);
                     $drawing->setWorksheet($spreadsheet->getActiveSheet());
-                    $activeSheet->getActiveSheet()->getColumnDimension($index)
-                        ->setAutoSize(true);;
+                    $activeSheet->getColumnDimension($index)
+                        ->setAutoSize(true);
 //                    $activeSheet->getColumnDimension($index)->setWidth(20);
                 }else{
                     $activeSheet->setCellValue($cellVal, $item);
