@@ -945,14 +945,10 @@ class EmployeeRepository extends EloquentBaseRepository
                     $drawing->setCoordinates($cellVal);
                     $drawing->getShadow()->setDirection(45);
                     $drawing->setWidth(80);
-                    $drawing->setHeight(80);
                     $drawing->setWorksheet($spreadsheet->getActiveSheet());
-//                    $activeSheet->getColumnDimension(self::toAlphabet(count($employee) - 1))->setWidth(20);
-//                    $activeSheet->getColumnDimension($index)->setWidth(20);
                 }else{
                     $activeSheet->setCellValue($cellVal, $item);
                 }
-
             }
         }
 
