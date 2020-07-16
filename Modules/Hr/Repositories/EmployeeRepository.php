@@ -782,7 +782,7 @@ class EmployeeRepository extends EloquentBaseRepository
                     $employeeData = array_merge($employeeData, ['marital_status' => $employee['employee_personal_details'] ? $employee['employee_personal_details']['marital_status'] : '-']);
                 }
                 if (isset($headers['Emp. Photo'])) {
-                    $employeeData = array_merge($employeeData, ['photo' =>$employee['file'] ? $employee['file']['local_path'] : '-']);
+                    $employeeData = array_merge($employeeData, ['photo' =>$employee['file'] ? $employee['file']['local_path'] : null]);
                 }
                 if (isset($headers['Expected Exit Date'])) {
                     $employeeData = array_merge($employeeData, [
@@ -938,7 +938,7 @@ class EmployeeRepository extends EloquentBaseRepository
             }
             foreach (array_values($employee) as $index => $item) {
                 $cellVal = self::toAlphabet($index) . ($index1+2);
-                if (!is_null($keyId) && ($index == $keyId)) {
+                if (!is_null($keyId) && ($index == $keyId) && (!is_null($item))) {
                     $drawing = new Drawing();
                     $drawing->setPath($item);
                     $drawing->setCoordinates($cellVal);
