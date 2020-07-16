@@ -939,6 +939,7 @@ class EmployeeRepository extends EloquentBaseRepository
             foreach (array_values($employee) as $index => $item) {
                 $cellVal = self::toAlphabet($index) . ($index1+2);
                 if (!is_null($keyId) && ($index == $keyId) && (!is_null($item))) {
+                    $activeSheet->getRowDimension($index1 + 2)->setRowHeight(70);
                     $drawing = new Drawing();
                     $drawing->setPath($item);
                     $drawing->setCoordinates($cellVal);
@@ -946,11 +947,10 @@ class EmployeeRepository extends EloquentBaseRepository
                     $drawing->setWidth(80);
                     $drawing->setHeight(80);
                     $drawing->setWorksheet($spreadsheet->getActiveSheet());
-                    $activeSheet->getColumnDimension(self::toAlphabet(count($employee) - 1))->setWidth(20);
+//                    $activeSheet->getColumnDimension(self::toAlphabet(count($employee) - 1))->setWidth(20);
 //                    $activeSheet->getColumnDimension($index)->setWidth(20);
                 }else{
                     $activeSheet->setCellValue($cellVal, $item);
-                    $activeSheet->getStyle($cellVal)->getFont()->setBold(true);
                 }
 
             }
