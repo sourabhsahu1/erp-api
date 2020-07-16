@@ -940,7 +940,7 @@ class EmployeeRepository extends EloquentBaseRepository
                 $cellVal = self::toAlphabet($index) . ($index1+2);
                 if (!is_null($keyId) && ($index == $keyId)) {
                     $drawing = new Drawing();
-                    $drawing->setPath(public_path($item));
+                    $drawing->setPath($item);
                     $drawing->setCoordinates($cellVal);
                     $drawing->getShadow()->setDirection(45);
                     $drawing->setWidth(80);
