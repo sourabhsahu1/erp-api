@@ -20,7 +20,7 @@ Route::post('files', '\Luezoid\Laravelcore\Http\Controllers\FileController@store
     ->name('files.store');
 
 
-\Illuminate\Routing\Route::get('download-file', function (Request $request) {
+Route::get('download-file', function (Request $request) {
     $fileId = $request->get('fileId');
     /** @var \Adapt\Models\File $file */
     $file = \Adapt\Models\File::find($fileId);

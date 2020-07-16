@@ -20,6 +20,7 @@
         "predis/predis": "^1.1",
         "pubnub/pubnub": "~4.0.0",
         "reliese/laravel": "^0.0.13",
+        "phpoffice/phpspreadsheet": "^1.6",
         "spatie/browsershot": "^3.34"
     },
     "require-dev": {
