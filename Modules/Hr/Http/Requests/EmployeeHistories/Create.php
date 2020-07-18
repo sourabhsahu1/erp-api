@@ -12,7 +12,11 @@ class Create extends BaseRequest
     {
         return [
             'employer' => "required",
-            'engaged'=> "required",
+            'engaged'=> ['required', 'date', function($a,$v,$f){
+                if (strtotime($this->get('disengaged')) < strtotime($v)) {
+                    return $f("engaged date cannot be greater than disengaged date");
+                }
+            }],
             'disengaged'=> "required",
             'totalRemuneration'=> "required",
             'filePage'=> "required"

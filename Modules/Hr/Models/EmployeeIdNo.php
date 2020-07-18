@@ -22,6 +22,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $national_id_number
  * @property string $pfa_number
  * @property string $payroll_pin
+ * @property bool $is_foreign_employee
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -37,7 +38,8 @@ class EmployeeIdNo extends Eloquent
     protected $table = 'hr_employee_id_nos';
 
 	protected $casts = [
-		'employee_id' => 'int'
+		'employee_id' => 'int',
+		'is_foreign_employee' => 'bool'
 	];
 
 	protected $fillable = [
@@ -49,6 +51,7 @@ class EmployeeIdNo extends Eloquent
         'pension_fund_administration',
         'national_id_number',
         'payroll_pin',
+        'is_foreign_employee',
         'pfa_number'
 	];
 

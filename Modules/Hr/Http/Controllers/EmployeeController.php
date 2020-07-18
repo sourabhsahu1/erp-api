@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Luezoid\Laravelcore\Jobs\BaseJob;
 use Modules\Hr\Http\Requests\Employee\CreateRequest;
 use Modules\Hr\Http\Requests\Employee\UpdateRequest;
+use Modules\Hr\Http\Requests\EmployeeIdNumbers\CreateIdNosRequest;
 use Modules\Hr\Http\Requests\EmployeeJobProfile\Create as CreateJobProfile;
 use Modules\Hr\Http\Requests\EmployeePersonalDetail\Create as CreatePersonalDetail;
 use Modules\Hr\Http\Requests\EmployeeContactDetail\Create as CreateContactDetail;
@@ -98,6 +99,7 @@ class EmployeeController extends BaseController
 
     public function employeeIdNos(Request $request)
     {
+        $this->customRequest = CreateIdNosRequest::class;
         $this->jobMethod = "employeeIdNos";
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
@@ -119,7 +121,6 @@ class EmployeeController extends BaseController
         $this->jobMethod = "downloadDetails";
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
-
 
     public function downloadEmpDetails(Request $request) {
 
