@@ -43,37 +43,37 @@ class InvoiceRepository extends EloquentBaseRepository
                     'updated_at' => Carbon::now()->toDateString()
                 ]);
 
-                ItemsLifoCost::create([
-                    'item_id' => $item['item_id'],
-                    'invoice_item_id' => $invoiceItem->id,
-                    'invoice_id' => $invoiceDetail->id,
-                    'quantity' => $item['quantity'],
-                    'price' => $item['unit_cost'],
-                    'available_quantity' => $item['quantity'],
-                    'type' => AppConstant::TYPE_IN,
-
-                ]);
-                ItemsFifoCost::create([
-                    'item_id' => $item['item_id'],
-                    'invoice_item_id' => $invoiceItem->id,
-                    'invoice_id' => $invoiceDetail->id,
-                    'quantity' => $item['quantity'],
-                    'price' => $item['unit_cost'],
-                    'available_quantity' => $item['quantity'],
-                    'type' => AppConstant::TYPE_IN,
-
-                ]);
-
-                ItemsAvgCost::create([
-                    'item_id' => $item['item_id'],
-                    'invoice_item_id' => $invoiceItem->id,
-                    'invoice_id' => $invoiceDetail->id,
-                    'quantity' => $item['quantity'],
-                    'price' => $item['unit_cost'],
-                    'available_quantity' => $item['quantity'],
-                    'type' => AppConstant::TYPE_IN,
-
-                ]);
+//                ItemsLifoCost::create([
+//                    'item_id' => $item['item_id'],
+//                    'invoice_item_id' => $invoiceItem->id,
+//                    'invoice_id' => $invoiceDetail->id,
+//                    'quantity' => $item['quantity'],
+//                    'price' => $item['unit_cost'],
+//                    'available_quantity' => $item['quantity'],
+//                    'type' => AppConstant::TYPE_IN,
+//
+//                ]);
+//                ItemsFifoCost::create([
+//                    'item_id' => $item['item_id'],
+//                    'invoice_item_id' => $invoiceItem->id,
+//                    'invoice_id' => $invoiceDetail->id,
+//                    'quantity' => $item['quantity'],
+//                    'price' => $item['unit_cost'],
+//                    'available_quantity' => $item['quantity'],
+//                    'type' => AppConstant::TYPE_IN,
+//
+//                ]);
+//
+//                ItemsAvgCost::create([
+//                    'item_id' => $item['item_id'],
+//                    'invoice_item_id' => $invoiceItem->id,
+//                    'invoice_id' => $invoiceDetail->id,
+//                    'quantity' => $item['quantity'],
+//                    'price' => $item['unit_cost'],
+//                    'available_quantity' => $item['quantity'],
+//                    'type' => AppConstant::TYPE_IN,
+//
+//                ]);
 
                 foreach ($item['taxes'] as $tax) {
                    $itemTaxes =  InvoiceTax::create([
@@ -129,9 +129,9 @@ class InvoiceRepository extends EloquentBaseRepository
                     'type' => AppConstant::TYPE_OUT
                 ];
 
-                $fifo = $this->fifo($cost);
-                $lifo = $this->lifo($cost);
-                $avg = $this->avg($cost);
+//                $fifo = $this->fifo($cost);
+//                $lifo = $this->lifo($cost);
+//                $avg = $this->avg($cost);
 
             }
 

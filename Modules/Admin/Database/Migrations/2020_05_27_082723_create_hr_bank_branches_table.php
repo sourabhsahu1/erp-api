@@ -17,6 +17,7 @@ class CreateHrBankBranchesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->unsignedBigInteger('bank_id');
+            $table->string('country');+
             $table->foreign('bank_id')->references('id')->on('hr_banks');
             $table->timestamps();
         });
