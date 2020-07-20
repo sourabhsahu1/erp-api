@@ -16,6 +16,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $employee_id
  * @property int $bank_id
  * @property int $bank_branch_id
+ * @property string $country
  * @property string $title
  * @property string $number
  * @property string $type
@@ -43,6 +44,7 @@ class EmployeeBankDetail extends Eloquent
 		'employee_id',
 		'bank_id',
 		'bank_branch_id',
+		'country',
 		'title',
 		'number',
 		'type'

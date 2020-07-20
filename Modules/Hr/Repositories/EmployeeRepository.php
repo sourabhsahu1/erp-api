@@ -47,6 +47,21 @@ class EmployeeRepository extends EloquentBaseRepository
 
     public function employeeDetails($data)
     {
+        $employeeDetails = EmployeePersonalDetail::where('employee_id', $data['data']['id'])
+            ->where('country_code', $data['data']['country_code'])
+            ->where('phone', $data['data']['phone'])
+            ->first();
+
+        $employeesPhone = EmployeePersonalDetail::where('country_code', $data['data']['country_code'])
+            ->where('phone', $data['data']['phone'])
+            ->first();
+
+        if (!is_null($employeesPhone)) {
+            if (is_null($employeeDetails)){
+                throw  new AppException("Choose Different Mobile Number");
+            }
+        }
+
         $employeeDetails = EmployeePersonalDetail::where('employee_id', $data['data']['id'])->first();
 
         if (is_null($employeeDetails)) {

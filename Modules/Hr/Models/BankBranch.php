@@ -14,6 +14,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * 
  * @property int $id
  * @property string $name
+ * @property string $country
  * @property int $bank_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -32,7 +33,8 @@ class BankBranch extends Eloquent
 
 	protected $fillable = [
 		'name',
-		'bank_id'
+		'bank_id',
+        'country'
 	];
 
 	public function hr_bank()

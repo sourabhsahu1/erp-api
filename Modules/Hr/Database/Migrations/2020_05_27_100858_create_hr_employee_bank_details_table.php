@@ -18,6 +18,7 @@ class CreateHrEmployeeBankDetailsTable extends Migration
             $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('bank_id');
             $table->unsignedBigInteger('bank_branch_id');
+            $table->string('country');
             $table->string('title');
             $table->string('number');
             $table->string('type');
