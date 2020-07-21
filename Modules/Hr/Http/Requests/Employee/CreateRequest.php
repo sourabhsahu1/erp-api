@@ -13,7 +13,7 @@ class CreateRequest extends BaseRequest
     function rules()
     {
         return [
-            'personnelFileNumber' => 'required',
+            'personnelFileNumber' => 'required|unique:hr_employees,personnel_file_number',
             'lastName' => 'required',
             'firstName' => 'required',
             'otherName' => 'sometimes',

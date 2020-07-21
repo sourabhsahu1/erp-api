@@ -166,6 +166,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('employee/{employeeId}/histories/{id}', 'EmploymentHistoryController@update');
     Route::delete('employee-histories/{id}', 'EmploymentHistoryController@destroy');
 
+    /*employee progression history*/
+    Route::get('employee/{employeeId}/progression-history','EmployeeProgressionController@index');
+    Route::post('employee/{employeeId}/progression-history','EmployeeProgressionController@store');
+    Route::put('employee/{employeeId}/progression-history/{id}','EmployeeProgressionController@update');
+
 
 });
 Route::get('employee/{id}/details-download', 'EmployeeController@downloadDetails');

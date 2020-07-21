@@ -12,8 +12,9 @@ class UpdateRequest extends BaseRequest
 
     function rules()
     {
+        $id = $this->route('id');
         return [
-            'personnelFileNumber' => 'sometimes',
+            'personnelFileNumber' => ['sometimes',Rule::unique('hr_employees','personnel_file_number')->ignore($id)],
             'lastName' => 'sometimes',
             'firstName' => 'sometimes',
             'otherName' => 'sometimes',

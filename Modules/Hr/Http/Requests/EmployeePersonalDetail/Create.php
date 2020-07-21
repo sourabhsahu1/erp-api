@@ -8,12 +8,17 @@ use App\Constants\AppConstant;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Luezoid\Laravelcore\Requests\BaseRequest;
+use Modules\Hr\Models\EmployeePersonalDetail;
 
 class Create extends BaseRequest
 {
 
     public function rules()
     {
+
+        $empId = $this->route('id');
+        $id = EmployeePersonalDetail::where('employee_id', $empId)->first();
+
         return [
             'dateOfBirth' => ["required","date", function($a,$v, $f) {
                 $dOB = Carbon::parse($v)->toDateString();
@@ -48,7 +53,7 @@ class Create extends BaseRequest
             ],
             'phone' => "required|min:5|max:10",
             'countryCode' => "required|min:2|max:5",
-            'email' => "required|email",
+            'email' => ['required','email',Rule::unique('hr_employee_personal_details')->ignore($id)],
             'isPermanentStaff' => "required|boolean",
             'typeOfAppointment' => [
                 "required",

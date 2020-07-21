@@ -115,19 +115,20 @@ class EmployeeRepository extends EloquentBaseRepository
                 'grade_level_step_id' => $data['data']['grade_level_step_id'],
                 'current_appointment' => Carbon::parse($data['data']['current_appointment'])->toDateString()
             ]);
-        } else {
-            $employeeJobProfile = EmployeeJobProfile::where('employee_id', $data['data']['id'])
-                ->update([
-                    'job_position_id' => $data['data']['job_position_id'],
-                    'designation_id' => $data['data']['designation_id'],
-                    'department_id' => $data['data']['department_id'],
-                    'work_location_id' => $data['data']['work_location_id'],
-                    'salary_scale_id' => $data['data']['salary_scale_id'],
-                    'grade_level_id' => $data['data']['grade_level_id'],
-                    'grade_level_step_id' => $data['data']['grade_level_step_id'],
-                    'current_appointment' => Carbon::parse($data['data']['current_appointment'])->toDateString()
-                ]);
         }
+//        else {
+//            $employeeJobProfile = EmployeeJobProfile::where('employee_id', $data['data']['id'])
+//                ->update([
+//                    'job_position_id' => $data['data']['job_position_id'],
+//                    'designation_id' => $data['data']['designation_id'],
+//                    'department_id' => $data['data']['department_id'],
+//                    'work_location_id' => $data['data']['work_location_id'],
+//                    'salary_scale_id' => $data['data']['salary_scale_id'],
+//                    'grade_level_id' => $data['data']['grade_level_id'],
+//                    'grade_level_step_id' => $data['data']['grade_level_step_id'],
+//                    'current_appointment' => Carbon::parse($data['data']['current_appointment'])->toDateString()
+//                ]);
+//        }
         return EmployeeJobProfile::where('employee_id', $data['data']['id'])->first();
     }
 
