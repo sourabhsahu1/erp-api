@@ -18,7 +18,7 @@ class CreateHrEmployeeProgressionHistoriesTable extends Migration
             $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('job_position_id');
             $table->unsignedBigInteger('designation_id');
-            $table->unsignedBigInteger('department_id');
+            $table->unsignedInteger('department_id');
             $table->unsignedBigInteger('work_location_id');
             $table->unsignedBigInteger('salary_scale_id');
             $table->unsignedBigInteger('grade_level_id');
@@ -30,6 +30,9 @@ class CreateHrEmployeeProgressionHistoriesTable extends Migration
             $table->foreign('grade_level_step_id')->references('id')->on('hr_grade_level_steps');
             $table->foreign('job_position_id')->references('id')->on('hr_job_positions');
             $table->foreign('work_location_id')->references('id')->on('hr_work_locations');
+            $table->foreign('department_id')->references('id')->on('admin_segments');
+            $table->foreign('designation_id')->references('id')->on('hr_designations');
+
             $table->boolean('is_active')->default(true);
             $table->softDeletes();
             $table->timestamps();

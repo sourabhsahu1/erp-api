@@ -26,6 +26,8 @@ class EmployeeProgressionController extends BaseController
         'grade_level_step',
         'job_position',
         'salary_scale',
-        'work_location'
+        'work_location',
+        'department',
+        'designation'
     ];
 }

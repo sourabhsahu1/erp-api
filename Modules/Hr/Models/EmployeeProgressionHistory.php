@@ -33,6 +33,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Modules\Hr\Models\JobPosition $job_position
  * @property \Modules\Hr\Models\SalaryScale $salary_scale
  * @property \Modules\Hr\Models\WorkLocation $work_location
+ * @property \Modules\Admin\Models\AdminSegment $department
+ * @property \Modules\Hr\Models\Designation $designation
  *
  * @package Modules\Hr\Models
  */
@@ -70,6 +72,16 @@ class EmployeeProgressionHistory extends Eloquent
 		'value_date',
 		'is_active'
 	];
+
+    public function department()
+    {
+        return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'department_id');
+    }
+
+    public function designation()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Designation::class, 'designation_id');
+    }
 
 	public function employee()
 	{
