@@ -57,6 +57,7 @@ class ItemRepository extends EloquentBaseRepository
     public function getAll($params = [], $query = null)
     {
 
+        $query = Item::query();
         if (isset($params['inputs']['search'])) {
             $query = Item::where('id', 'like', '%' . $params['inputs']['search'] . '%')
                 ->orWhere('description', 'like', '%' . $params['inputs']['search'] . '%')
