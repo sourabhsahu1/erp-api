@@ -378,7 +378,8 @@ class InvoiceRepository extends EloquentBaseRepository
         $query = DB::table('inventory_invoice_details as iid')
             ->join('inventory_invoice_items as iii', 'iid.id', '=', 'iii.invoice_id')
             ->join('inventory_items as ii', 'ii.id', '=', 'iii.item_id')
-            ->select('iid.date', 'ii.description as item_description', 'iii.item_id as item_id', 'iii.available_balance', 'iii.unit_cost', 'iid.type', 'iii.store_id');
+            ->join('items_lifo_cost as ilc', 'ilc.invoice_item_id', '=', 'iii.id')
+            ->select('iid.date', 'ii.description as item_description', 'iii.item_id as item_id', 'iii.quantity','ilc.quantity as lifo_quantity', 'iii.unit_cost', 'iid.type', 'iii.store_id');
 
 
         if (isset($params['inputs']['store_id'])) {
@@ -397,9 +398,6 @@ class InvoiceRepository extends EloquentBaseRepository
                 ->whereDate('iid.date', '<=', $toDate);
         }
 
-        $costingQuery = clone $query;
-        $avgFifo = 0;
-        $itemCost = 0;
         if (isset($params['inputs']['preferred_costing'])) {
 //            if ($params['inputs']['preferred_costing'] == 'FIFO') {
 //                foreach ($costingQuery as $item) {
@@ -422,7 +420,8 @@ class InvoiceRepository extends EloquentBaseRepository
 
         }
 
-        dd($itemCost);
+        return $query->get();
+//        dd($query->get());
     }
 
     public function inventoryQualityBalance($params)
