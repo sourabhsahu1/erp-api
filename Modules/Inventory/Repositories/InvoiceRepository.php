@@ -371,11 +371,92 @@ class InvoiceRepository extends EloquentBaseRepository
         return $invoiceDetail;
     }
 
+    public function getLifoData($params) {
+        $params['inputs']['orderby'] = 'created_at';
+        $params['inputs']['order'] = 'ASC';
+        $data = parent::getAll($params);
+
+        $updatedData = [];
+
+        // iterating invoice to get items and its lifo children
+        foreach ($data['items'] as $invoice) {
+            // children is for analysis
+            $children = [];
+            $d = [
+                'type' => $invoice['type'],
+                'date' => $invoice['date'],
+                'details' => $invoice['detail'],
+                'in_qty' => null,
+                'in_unit_price' => null,
+                'in_value' => null,
+                'out_qty' => null,
+                'out_unit_price' => null,
+                'out_value' => null,
+                'balance_qty' => null,
+                'balance_unit_price' => null,
+                'balance_value' => null,
+            ];
+
+            foreach ($invoice['invoice_items'] as $invoiceItem) {
+                $qtyKey = 'in_qty';
+                $unitPriceKey = 'in_unit_price';
+                $valueKey = 'in_value';
+                if ($invoice['type'] == AppConstant::TYPE_OUT) {
+                    $qtyKey = 'out_qty';
+                    $unitPriceKey = "out_unit_price";
+                    $valueKey = "out_value";
+                }
+                $d[$qtyKey] = $invoiceItem['quantity'];
+                $d[$unitPriceKey] = $invoiceItem['unit_cost'];
+                $d[$valueKey] = $d[$qtyKey] * $d[$unitPriceKey];
+
+                foreach ($invoiceItem['lifo'] as $lifo) {
+                    $child = [
+                        'type' => null,
+                        'date' => null,
+                        'details' => null,
+                        'in_qty' => null,
+                        'in_unit_price' => null,
+                        'in_value' => null,
+                        'out_qty' => null,
+                        'out_unit_price' => null,
+                        'out_value' => null,
+                        'balance_qty' => null,
+                        'balance_unit_price' => null,
+                        'balance_value' => null,
+                    ];
+                    $qtyKey = 'balance_qty';
+                    $unitPriceKey = "balance_unit_price";
+                    $valueKey = "balance_value";
+                    if ($invoice['type'] == AppConstant::TYPE_OUT) {
+                        $qtyKey = 'out_qty';
+                        $unitPriceKey = "out_unit_price";
+                        $valueKey = "out_value";
+                    }
+                    $child[$qtyKey] = $lifo['quantity'];
+                    $child[$unitPriceKey] = $lifo['lifo_cost'];
+                    $child[$valueKey] = $child[$qtyKey] * $child[$unitPriceKey];
+
+                    $children[] = $child;
+                }
+            }
+
+            $updatedData[] = $d;
+            if (count($children)) {
+                $updatedData = array_merge($updatedData, $children);
+            }
+        }
+        $data['items'] = $updatedData;
+
+        return $data;
+    }
 
     public function inventoryLedgerReport($params)
     {
+        return parent::getAll($params);
+//        $query = InvoiceDetail::with('invoice_items');
 
-        $query = DB::table('inventory_invoice_details as iid')
+        /*$query = DB::table('inventory_invoice_details as iid')
             ->join('inventory_invoice_items as iii', 'iid.id', '=', 'iii.invoice_id')
             ->join('inventory_items as ii', 'ii.id', '=', 'iii.item_id')
             ->join('items_lifo_cost as ilc', 'ilc.invoice_item_id', '=', 'iii.id')
@@ -420,7 +501,7 @@ class InvoiceRepository extends EloquentBaseRepository
 
         }
 
-        return $query->get();
+        return $query->get();*/
 //        dd($query->get());
     }
 
@@ -687,9 +768,14 @@ class InvoiceRepository extends EloquentBaseRepository
         $items = InvoiceItem::where('invoice_id', $invoiceId)->get()->toArray();
 
         foreach ($items as $item) {
-            $lastBatch = ItemsLifoCost::where('is_active', true)->get()->toArray();
+            // get last active batch to calculate cost
+            $lastBatch = ItemsLifoCost::where('is_active', true)
+                ->where('item_id', $item['item_id'])
+                ->get()->toArray();
             $dataToBeInserted = [];
 
+            // if it's in then add it
+            // else subtract the data
             if ($type === AppConstant::TYPE_IN) {
                 foreach ($lastBatch as $batch) {
                     unset($batch['id']);
@@ -748,11 +834,11 @@ class InvoiceRepository extends EloquentBaseRepository
                     $dataToBeInserted[] = $batch;
                 }
             }
-            ItemsLifoCost::where('is_active', true)->update(['is_active' => false]);
-            ItemsLifoCost::insert($dataToBeInserted);
-            /*ItemsLifoCost::create([
+            ItemsLifoCost::where('is_active', true)
+                ->where('item_id', $item['item_id'])
+                ->update(['is_active' => false]);
 
-            ]);*/
+            ItemsLifoCost::insert($dataToBeInserted);
         }
 
     }
