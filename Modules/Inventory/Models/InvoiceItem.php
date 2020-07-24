@@ -88,4 +88,9 @@ class InvoiceItem extends Eloquent
     {
         return $this->belongsTo(\Modules\Inventory\Models\Store::class, 'store_id');
     }
+
+    public function lifo()
+    {
+        return $this->hasMany(\Modules\Inventory\Models\ItemsLifoCost::class, 'invoice_item_id');
+    }
 }
