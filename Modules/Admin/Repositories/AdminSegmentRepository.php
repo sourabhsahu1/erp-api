@@ -90,7 +90,7 @@ class AdminSegmentRepository extends EloquentBaseRepository
         $keysToUpdate = ['name', 'max_level'];
         /** @var AdminSegment $existingSegment */
         $existingSegment = AdminSegment::find($data['id']);
-        if ($existingSegment->id == AdminSegment::SEGMENT_ECONOMIC_SEGMENT_ID &&  $data['data']['max_level'] < 5) {
+        if ($existingSegment->id == AdminSegment::SEGMENT_ECONOMIC_SEGMENT_ID && $data['data']['max_level'] < 5) {
             throw new AppException("Economic Segment levels can't be less tha 5");
         }
         if (isset($data['data']['max_level']) && $data['data']['max_level'] > $existingSegment->max_level) {
@@ -120,6 +120,9 @@ class AdminSegmentRepository extends EloquentBaseRepository
 
         if ($adminSegment->id == AdminSegment::SEGMENT_ECONOMIC_SEGMENT_ID && count($data['data']['levels']) < 5) {
             throw new AppException("Economic Segment levels can't be less tha 5");
+        }
+        if ($adminSegment->id == AdminSegment::SEGMENT_ECONOMIC_SEGMENT_ID && $data['data']['levels'][1] != 1) {
+            throw new AppException("Economic Segment level 1 code count must be 1");
         }
         AdminSegmentLevelConfig::where('admin_segment_id', $data['data']['id'])->delete();
         foreach ($data['data']['levels'] as $key => $levelObject) {
