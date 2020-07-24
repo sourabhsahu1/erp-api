@@ -384,6 +384,12 @@ class InvoiceRepository extends EloquentBaseRepository
             }]);
             unset($params['with']['invoice_items.lifo']);
         }
+        if (isset($params['inputs']['opening_date'])) {
+            $query->whereDate('date', '>=', Carbon::parse($params['inputs']['opening_date']));
+        }
+        if (isset($params['inputs']['closing_date'])) {
+            $query->whereDate('date', '<=', Carbon::parse($params['inputs']['closing_date']));
+        }
 
         $data = parent::getAll($params, $query);
 
