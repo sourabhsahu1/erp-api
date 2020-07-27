@@ -51,7 +51,7 @@ class Create extends BaseRequest
                     AppConstant::EMPLOYEE_RELIGION_OTHER
                 ])
             ],
-            'phone' => "required|min:5|max:10",
+            'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:5|max:10',
             'countryCode' => "required|min:2|max:5",
             'email' => ['required','email',Rule::unique('hr_employee_personal_details')->ignore($id)],
             'isPermanentStaff' => "required|boolean",

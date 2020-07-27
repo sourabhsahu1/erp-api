@@ -18,7 +18,7 @@ class Create extends BaseRequest
             'addressLine1' => 'required',
             'addressLine2' => 'sometimes',
             'city' => 'required',
-            'zipCode' => 'required',
+            'zipCode' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:5',
             'otherCountryId' => 'required|exists:countries,id',
             'otherRegionId' => 'required|exists:regions,id',
             'otherStateId' => 'required|exists:states,id',
