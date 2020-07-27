@@ -21,6 +21,7 @@ use Modules\Inventory\Repositories\InvoiceRepository;
 class InvoiceController extends BaseController
 {
     protected $repository = InvoiceRepository::class;
+    protected $indexWith = ['invoice_items.lifo'];
 
     public function srvPurchase(Request $request)
     {
@@ -106,6 +107,11 @@ class InvoiceController extends BaseController
 
     public function offLevelReport(Request $request){
         $this->jobMethod = "offLevelReport";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
+    public function getLifoData(Request $request){
+        $this->jobMethod = "getLifoData";
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
 
