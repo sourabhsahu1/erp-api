@@ -20,7 +20,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $bank_version_number
  * @property string $pension_fund_administration
  * @property string $national_id_number
- * @property string $pfa_number
+ * @property int $pfa_number
  * @property string $payroll_pin
  * @property bool $is_foreign_employee
  * @property string $deleted_at
@@ -39,6 +39,7 @@ class EmployeeIdNo extends Eloquent
 
 	protected $casts = [
 		'employee_id' => 'int',
+		'pfa_number' => 'int',
 		'is_foreign_employee' => 'bool'
 	];
 
