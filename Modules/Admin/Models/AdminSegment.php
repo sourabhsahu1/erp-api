@@ -78,7 +78,7 @@ class AdminSegment extends Eloquent
 
     public function level_config()
     {
-        return $this->hasMany(\Modules\Admin\Models\AdminSegmentLevelConfig::class);
+        return $this->hasMany(\Modules\Admin\Models\AdminSegmentLevelConfig::class)->where('level','!=',0);
     }
 
 }
