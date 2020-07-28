@@ -18,7 +18,7 @@ class AdminCreateRequest extends BaseRequest
 
             'name' => 'required|string|min:3',
             'individualCode' => 'required|string|min:1',
-            'maxLevel' => 'required|integer|min:1',
+            'maxLevel' => 'required|integer|min:0',
 //            'characterCount' => ['required', 'min:1', function($a, $v, $f) {
 //                $parentId = $this->get('parentId');
 //                $individualCode = $this->get('individualCode');
