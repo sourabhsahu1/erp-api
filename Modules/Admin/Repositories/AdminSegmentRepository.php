@@ -42,7 +42,7 @@ class AdminSegmentRepository extends EloquentBaseRepository
             $topLevelId = $adminSegment->id;
             if ($parentId) {
                 $topLevelId = $parent->top_level_id;
-                $parentCount = 1;
+                $parentCount = 0;
                 UtilityService::recurseAndIncrementParentCount(AdminSegment::with('admin_segment_parent')->find($adminSegment->id), 'admin_segment_parent', $parentCount);
 
                 $segmentLevel = AdminSegmentLevelConfig::where('admin_segment_id', $adminSegment->top_level_id)->where('level', $parentCount)->first();
