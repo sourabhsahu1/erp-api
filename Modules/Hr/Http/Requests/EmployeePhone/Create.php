@@ -12,8 +12,8 @@ class Create extends BaseRequest
     {
         return [
             'phoneNumberTypeId' => "required|exists:hr_phone_number_types,id",
-            'phone' => "required|digits:10",
-            'extension' => "required"
+            'phone' => "required|regex:/^([0-9\s\-\+\(\)]*)$/|min:7|max:15",
+            'extension' => "required|min:2|max:5"
         ];
     }
 

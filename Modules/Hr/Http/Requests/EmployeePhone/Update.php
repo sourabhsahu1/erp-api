@@ -12,8 +12,8 @@ class Update extends BaseRequest
     {
         return [
             'phoneNumberTypeId' => "sometimes|exists:hr_phone_number_types,id",
-            'phone' => "sometimes|digits:10",
-            'extension' => "sometimes"
+            'phone' => "sometimes|regex:/^([0-9\s\-\+\(\)]*)$/|min:7|max:15",
+            'extension' => "sometimes|min:2|max:5"
         ];
     }
 
