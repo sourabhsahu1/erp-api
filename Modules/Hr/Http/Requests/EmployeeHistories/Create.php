@@ -6,7 +6,7 @@ namespace Modules\Hr\Http\Requests\EmployeeHistories;
 
 use Carbon\Carbon;
 use Luezoid\Laravelcore\Requests\BaseRequest;
-use Modules\Hr\Models\EmployeeJobProfile;
+use Modules\Hr\Models\EmployeePersonalDetail;
 
 class Create extends BaseRequest
 {
@@ -22,8 +22,8 @@ class Create extends BaseRequest
                 }
             }],
             'disengaged' => ['required', function ($a, $v, $f) use ($empId){
-               $empJobProfile =  EmployeeJobProfile::where('employee_id', $empId)->first();
-               if ($empJobProfile->current_appointment < Carbon::parse($v)->toDateString()) {
+               $empJobProfile =  EmployeePersonalDetail::where('employee_id', $empId)->first();
+               if ($empJobProfile->assumed_duty_on < Carbon::parse($v)->toDateString()) {
                    return $f("disengaged date cannot later than current appointment date");
                }
             }],
