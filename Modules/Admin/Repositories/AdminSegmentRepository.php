@@ -121,7 +121,7 @@ class AdminSegmentRepository extends EloquentBaseRepository
         if ($adminSegment->id == AdminSegment::SEGMENT_ECONOMIC_SEGMENT_ID && count($data['data']['levels']) < 5) {
             throw new AppException("Economic Segment levels can't be less tha 5");
         }
-        if ($adminSegment->id == AdminSegment::SEGMENT_ECONOMIC_SEGMENT_ID && $data['data']['levels'][1] != 1) {
+        if ($adminSegment->id == AdminSegment::SEGMENT_ECONOMIC_SEGMENT_ID && $data['data']['levels'][0] != 1) {
             throw new AppException("Economic Segment level 1 code count must be 1");
         }
         AdminSegmentLevelConfig::where('admin_segment_id', $data['data']['id'])->delete();
