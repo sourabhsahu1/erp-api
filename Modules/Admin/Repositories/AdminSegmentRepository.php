@@ -31,6 +31,14 @@ class AdminSegmentRepository extends EloquentBaseRepository
                     'combined_code' => $parent["combined_code"] . '-' . $data['data']['individual_code'],
                     'top_level_id' => $parent->top_level_id
                 ];
+                if(AdminSegment::where('combined_code',$parent["combined_code"] . '-' . $data['data']['individual_code'])->exists()){
+                    throw new AppException("code already taken");
+                }
+
+            }else{
+                if(AdminSegment::where('individual_code', $data['data']['individual_code'])->exists()){
+                    throw new AppException("code already taken");
+                }
             }
 
 
@@ -91,7 +99,7 @@ class AdminSegmentRepository extends EloquentBaseRepository
         /** @var AdminSegment $existingSegment */
         $existingSegment = AdminSegment::find($data['id']);
         if ($existingSegment->id == AdminSegment::SEGMENT_ECONOMIC_SEGMENT_ID && $data['data']['max_level'] < 5) {
-            throw new AppException("Economic Segment levels can't be less tha 5");
+            throw new AppException("Economic Segment levels can't be less than 5");
         }
         if (isset($data['data']['max_level']) && $data['data']['max_level'] > $existingSegment->max_level) {
 
