@@ -31,6 +31,14 @@ class AdminSegmentRepository extends EloquentBaseRepository
                     'combined_code' => $parent["combined_code"] . '-' . $data['data']['individual_code'],
                     'top_level_id' => $parent->top_level_id
                 ];
+                if(AdminSegment::where('combined_code',$parent["combined_code"] . '-' . $data['data']['individual_code'])->exists()){
+                    throw new AppException("code already taken");
+                }
+
+            }else{
+                if(AdminSegment::where('individual_code', $data['data']['individual_code'])->exists()){
+                    throw new AppException("code already taken");
+                }
             }
 
 
@@ -42,7 +50,7 @@ class AdminSegmentRepository extends EloquentBaseRepository
             $topLevelId = $adminSegment->id;
             if ($parentId) {
                 $topLevelId = $parent->top_level_id;
-                $parentCount = 1;
+                $parentCount = 0;
                 UtilityService::recurseAndIncrementParentCount(AdminSegment::with('admin_segment_parent')->find($adminSegment->id), 'admin_segment_parent', $parentCount);
 
                 $segmentLevel = AdminSegmentLevelConfig::where('admin_segment_id', $adminSegment->top_level_id)->where('level', $parentCount)->first();
@@ -91,7 +99,7 @@ class AdminSegmentRepository extends EloquentBaseRepository
         /** @var AdminSegment $existingSegment */
         $existingSegment = AdminSegment::find($data['id']);
         if ($existingSegment->id == AdminSegment::SEGMENT_ECONOMIC_SEGMENT_ID && $data['data']['max_level'] < 5) {
-            throw new AppException("Economic Segment levels can't be less tha 5");
+            throw new AppException("Economic Segment levels can't be less than 5");
         }
         if (isset($data['data']['max_level']) && $data['data']['max_level'] > $existingSegment->max_level) {
 
@@ -121,7 +129,7 @@ class AdminSegmentRepository extends EloquentBaseRepository
         if ($adminSegment->id == AdminSegment::SEGMENT_ECONOMIC_SEGMENT_ID && count($data['data']['levels']) < 5) {
             throw new AppException("Economic Segment levels can't be less tha 5");
         }
-        if ($adminSegment->id == AdminSegment::SEGMENT_ECONOMIC_SEGMENT_ID && $data['data']['levels'][0] != 1) {
+        if ($adminSegment->id == AdminSegment::SEGMENT_ECONOMIC_SEGMENT_ID && $data['data']['levels'][0]['value'] != 1) {
             throw new AppException("Economic Segment level 1 code count must be 1");
         }
         AdminSegmentLevelConfig::where('admin_segment_id', $data['data']['id'])->delete();
