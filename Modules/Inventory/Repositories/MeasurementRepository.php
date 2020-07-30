@@ -15,8 +15,9 @@ class MeasurementRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-        $data = InvoiceItem::where('measurement_id', $data['id'])->first();
-        if (is_null($data)) {
+        $invoiceItem = InvoiceItem::where('measurement_id', $data['id'])->first();
+
+        if (is_null($invoiceItem)) {
             return parent::delete($data);
         }else {
             throw new AppException('Already in use');
