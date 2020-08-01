@@ -33,4 +33,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('bin-card/report','InvoiceController@binCardReport');
     Route::get('off-level-report', 'InvoiceController@offLevelReport');
     Route::get('company-config', 'ConstantApiController@getConfig');
+    Route::get('stores/{storeId}/item/{itemId}','InvoiceController@storeAvailableItems');
 });

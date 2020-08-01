@@ -110,4 +110,8 @@ class InvoiceController extends BaseController
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
 
+    public function storeAvailableItems(Request $request) {
+        $this->jobMethod = "storeAvailableItems";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
 }

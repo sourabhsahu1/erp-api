@@ -19,7 +19,7 @@ class CreateAdminSegmentsTable extends Migration
             $table->string('character_count');
             $table->smallInteger('max_level');
             $table->string('individual_code');
-            $table->string('combined_code')->unique();
+            $table->string('combined_code');
             $table->boolean('is_active');
             $table->unsignedInteger('top_level_id')->nullable();
             $table->smallInteger('top_level_child_count')->default(0);

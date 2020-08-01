@@ -26,7 +26,8 @@ class CreateHrEmployeeIdNosTable extends Migration
             $table->string('pension_fund_administration')->nullable();
             //todo administration segment
             $table->boolean('is_foreign_employee')->default(0);
-            $table->string('pfa_number')->nullable();
+            $table->unsignedBigInteger('pfa_number')->nullable();
+            $table->foreign('pfa_number')->references('id')->on('admin_companies');
             $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->softDeletes();
             $table->timestamps();

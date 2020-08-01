@@ -21,5 +21,5 @@ class ItemController extends BaseController
     protected $deleteJobMethod = "delete";
     protected $storeRequest = Create::class;
     protected $updateRequest = Update::class;
-    protected $indexWith = ['inventory_measurement','inventory_category','item_taxes.tax'];
+    protected $indexWith = ['inventory_measurement','inventory_category','item_taxes.tax','store_item'];
 }

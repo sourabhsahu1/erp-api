@@ -36,9 +36,12 @@ class ItemRepository extends EloquentBaseRepository
 
     public function update($data)
     {
+
+
+        if ($data['data']['is_not_physical_quantity'] == true) {
+            $data['data']['measurement_id'] = null;
+        }
         $item = parent::update($data);
-
-
         if (isset($data['data']['tax_ids'])) {
             ItemTax::where('item_id', $item->id)->delete();
             foreach ($data['data']['tax_ids'] as $taxId) {
@@ -63,7 +66,6 @@ class ItemRepository extends EloquentBaseRepository
                 ->orWhere('description', 'like', '%' . $params['inputs']['search'] . '%')
                 ->orWhere('unit_price', 'like', '%' . $params['inputs']['search'] . '%');
         }
-
 
         if (isset($params['inputs']['category_ids'])) {
             $query->whereHas('inventory_category', function ($query) use ($params) {
