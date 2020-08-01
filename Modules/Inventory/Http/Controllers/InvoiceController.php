@@ -110,9 +110,4 @@ class InvoiceController extends BaseController
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
 
-    public function getLifoData(Request $request){
-        $this->jobMethod = "getLifoData";
-        return $this->handleCustomEndPointGet(BaseJob::class, $request);
-    }
-
 }

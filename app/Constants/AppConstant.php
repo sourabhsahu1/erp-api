@@ -66,4 +66,9 @@ class AppConstant
     const COMPANY_TYPE_STORE = 'STORE';
     const TYPE_IN = 'IN';
     const TYPE_OUT = 'OUT';
+
+    // Coasting Methods
+    const COSTING_METHOD_LIFO = 'LIFO';
+    const COSTING_METHOD_FIFO = 'FIFO';
+    const COSTING_METHOD_AVG = 'AVG';
 }

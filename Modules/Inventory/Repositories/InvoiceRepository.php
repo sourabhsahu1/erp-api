@@ -11,7 +11,6 @@ use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Inventory\Models\InvoiceDetail;
 use Modules\Inventory\Models\InvoiceItem;
 use Modules\Inventory\Models\InvoiceTax;
-use Modules\Inventory\Models\ItemsAvgCost;
 use Modules\Inventory\Models\ItemsFifoCost;
 use Modules\Inventory\Models\ItemsLifoCost;
 
@@ -68,93 +67,6 @@ class InvoiceRepository extends EloquentBaseRepository
         DB::commit();
 
         return $invoiceDetail;
-    }
-
-    public function fifo($item)
-    {
-
-        //all items that were out
-//        foreach ($items as $item) {
-        //items that are available
-        $fifoItems = ItemsFifoCost::where('item_id', $item['item_id'])
-            ->where('quantity', '>', 0)
-            ->where('is_active', true)
-            ->where('type', AppConstant::TYPE_IN)
-            ->get();
-
-        //items list for fifo calculation
-        foreach ($fifoItems as $fifoItem) {
-            $quantity = $item['quantity'];
-            $item['quantity'] = $fifoItem->quantity - $item['quantity'];
-
-            //
-            if ($item['quantity'] == 0) {
-                $update = ItemsFifoCost::where('id', $fifoItem->id)
-                    ->update([
-                        'available_quantity' => 0,
-                        'is_active' => false
-                    ]);
-                $update = ItemsFifoCost::create([
-                    'item_id' => $item['item_id'],
-                    'invoice_id' => $item['invoice_id'],
-                    'quantity' => $quantity,
-                    'available_quantity' => 0,
-                    'price' => $fifoItem->price,
-                    'type' => AppConstant::TYPE_OUT,
-                    'is_active' => false,
-                    'fifo_cost' => $fifoItem->price,
-                    'selling_price' => $item['selling_price']
-                ]);
-                break;
-            }
-
-            if ($item['quantity'] > 0) {
-                $update = ItemsFifoCost::where('id', $fifoItem->id)
-                    ->update([
-                        'quantity' => $item['quantity']
-                    ]);
-                $update = ItemsFifoCost::create([
-                    'item_id' => $item['item_id'],
-                    'invoice_id' => $item['invoice_id'],
-                    'quantity' => $quantity,
-                    'available_quantity' => $item['quantity'],
-                    'price' => $fifoItem->price,
-                    'type' => AppConstant::TYPE_OUT,
-                    'is_active' => false,
-                    'fifo_cost' => $fifoItem->price,
-                    'selling_price' => $item['selling_price']
-                ]);
-                break;
-            }
-
-            if ($item['quantity'] < 0) {
-                $item['quantity'] = $item['quantity'] * (-1);
-                $update = ItemsFifoCost::where('id', $fifoItem->id)
-                    ->update([
-                        'available_quantity' => 0,
-                        'is_active' => false
-                    ]);
-            }
-        }
-    }
-
-    public function avg($item)
-    {
-        //all items that were out
-//        foreach ($items as $item) {
-
-        //items that are available
-        $fifoItems = ItemsAvgCost::where('item_id', $item['item_id'])
-            ->where('quantity', '>', 0)
-            ->where('is_active', true)
-            ->where('type', AppConstant::TYPE_IN);
-
-
-        $itemCount = $fifoItems->count();
-        $itemSum = $fifoItems->sum('price');
-
-//        }
-
     }
 
     public function salesInwards($data)
@@ -370,19 +282,31 @@ class InvoiceRepository extends EloquentBaseRepository
         return $invoiceDetail;
     }
 
-    public function getLifoData($params)
+    public function inventoryLedgerReport($params)
     {
         $params['inputs']['orderby'] = 'created_at';
         $params['inputs']['order'] = 'ASC';
+        $params['inputs']['costing_method'] = $params['inputs']['costing_method'] ?? AppConstant::COSTING_METHOD_LIFO;
         $query = InvoiceDetail::query();
+        $costingMethodKey = 'lifo';
+        switch ($params['inputs']['costing_method']) {
+            case AppConstant::COSTING_METHOD_LIFO:
+                $costingMethodKey = 'lifo';
+                break;
+            case AppConstant::COSTING_METHOD_FIFO:
+                $costingMethodKey = 'fifo';
+                break;
+            case AppConstant::COSTING_METHOD_AVG:
+                $costingMethodKey = 'avg';
+                break;
+        }
 
         if (isset($params['inputs']['item_id'])) {
-            $query->whereHas('invoice_items', function ($q) use ($params) {
+            $query->whereHas('invoice_items', function ($q) use ($params, $costingMethodKey) {
                 $q->where('item_id', $params['inputs']['item_id']);
-            })->with(['invoice_items' => function ($q) use ($params) {
-                $q->where('item_id', $params['inputs']['item_id'])->with('lifo');
+            })->with(['invoice_items' => function ($q) use ($params, $costingMethodKey) {
+                $q->where('item_id', $params['inputs']['item_id'])->with($costingMethodKey);
             }]);
-            unset($params['with']['invoice_items.lifo']);
         }
         if (isset($params['inputs']['opening_date'])) {
             $query->whereDate('date', '>=', Carbon::parse($params['inputs']['opening_date']));
@@ -399,7 +323,7 @@ class InvoiceRepository extends EloquentBaseRepository
         foreach ($data['items'] as $invoice) {
             // children is for analysis
             $children = [];
-            $d = [
+            $parent = [
                 'type' => $invoice['type'],
                 'date' => $invoice['date'],
                 'details' => $invoice['detail'],
@@ -410,7 +334,7 @@ class InvoiceRepository extends EloquentBaseRepository
                 'out_unit_price' => null,
                 'out_value' => null,
                 'balance_qty' => 0,
-                'balance_unit_price' => 0,
+                'balance_unit_price' => "-",
                 'balance_value' => 0,
             ];
 
@@ -425,18 +349,18 @@ class InvoiceRepository extends EloquentBaseRepository
                     $unitPriceKey = "out_unit_price";
                     $valueKey = "out_value";
                 }
-                $d[$qtyKey] = $invoiceItem['quantity'];
-                $d[$unitPriceKey] = $invoiceItem['unit_cost'] ?? $invoiceItem['selling_price'];
-                $d[$valueKey] = $d[$qtyKey] * $d[$unitPriceKey];
+                $parent[$qtyKey] = $invoiceItem['quantity'];
+                $parent[$unitPriceKey] = $invoiceItem['unit_cost'] ?? $invoiceItem['selling_price'];
+                $parent[$valueKey] = $parent[$qtyKey] * $parent[$unitPriceKey];
                 $inIndex = 0;
                 $outIndex = 0;
                 /*
                  * Adding analysis data
-                 * adding data in children variable and the adding this variable in the main item array
+                 * adding data in children variable and then adding this variable in the main item array
                  *
                  * we are merging IN and OUT value to create single row for analysis
                 */
-                foreach ($invoiceItem['lifo'] as $lifo) {
+                foreach ($invoiceItem[$costingMethodKey] as $lifo) {
                     $currentIndex = $inIndex++;
                     $child = [
                         'type' => null,
@@ -467,18 +391,19 @@ class InvoiceRepository extends EloquentBaseRepository
                         $child = $children[$currentIndex];
                     }
                     $child[$qtyKey] = $lifo['quantity'];
-                    $child[$unitPriceKey] = $lifo['lifo_cost'];
-                    $child[$valueKey] = $child[$qtyKey] * $child[$unitPriceKey];
+                    $child[$unitPriceKey] = $lifo['unit_price'];
+                    $child[$valueKey] = $lifo['price'];
                     $children[$currentIndex] = $child;
+
+                    // If item type is IN then add quantity and value in parent ($parent) row
                     if ($lifo['type'] == AppConstant::TYPE_IN) {
-                        $d['balance_qty'] += $lifo['quantity'];
-                        $d['balance_unit_price'] += $lifo['lifo_cost'];
-                        $d['balance_value'] = $d['balance_unit_price'] * $d['balance_qty'];
+                        $parent['balance_qty'] += $lifo['quantity'];
+                        $parent['balance_value'] += $lifo['price'];
                     }
                 }
             }
 
-            $updatedData[] = $d;
+            $updatedData[] = $parent;
             if (count($children)) {
                 $updatedData = array_merge($updatedData, $children);
             }
@@ -486,60 +411,6 @@ class InvoiceRepository extends EloquentBaseRepository
         $data['items'] = $updatedData;
 
         return $data;
-    }
-
-    public function inventoryLedgerReport($params)
-    {
-        return parent::getAll($params);
-//        $query = InvoiceDetail::with('invoice_items');
-
-        /*$query = DB::table('inventory_invoice_details as iid')
-            ->join('inventory_invoice_items as iii', 'iid.id', '=', 'iii.invoice_id')
-            ->join('inventory_items as ii', 'ii.id', '=', 'iii.item_id')
-            ->join('items_lifo_cost as ilc', 'ilc.invoice_item_id', '=', 'iii.id')
-            ->select('iid.date', 'ii.description as item_description', 'iii.item_id as item_id', 'iii.quantity','ilc.quantity as lifo_quantity', 'iii.unit_cost', 'iid.type', 'iii.store_id');
-
-
-        if (isset($params['inputs']['store_id'])) {
-            $query->where('iii.store_id', $params['inputs']['store_id']);
-        }
-
-        if (isset($params['inputs']['item_id'])) {
-            $query->where('iii.item_id', $params['inputs']['item_id']);
-        }
-
-        if (isset($params['inputs']['from_date']) && isset($params['inputs']['to_date'])) {
-            $fromDate = Carbon::parse($params['inputs']['from_date'])->toDateTimeString();
-            $toDate = Carbon::parse($params['inputs']['to_date'])->toDateString() . ' 23:59:59';
-
-            $query->whereDate('iid.date', '>=', $fromDate)
-                ->whereDate('iid.date', '<=', $toDate);
-        }
-
-        if (isset($params['inputs']['preferred_costing'])) {
-//            if ($params['inputs']['preferred_costing'] == 'FIFO') {
-//                foreach ($costingQuery as $item) {
-//                    $data = (array)$item;
-//                    $itemCost[$item->item_id] = [
-//                    ];
-//                }
-//            } elseif ($params['inputs']['preferred_costing'] == 'LIFO') {
-//
-//            } elseif ($params['inputs']['preferred_costing'] == 'AVG') {
-//                foreach ($costingQuery->get() as $item) {
-//                    $data = (array)$item;
-////                    dd($item);
-//                    $avgFifo = $avgFifo + $item->unit_cost;
-//                    $itemCost[$item->item_id] = [
-//                        $avgFifo
-//                    ];
-//                }
-//            }
-
-        }
-
-        return $query->get();*/
-//        dd($query->get());
     }
 
     public function inventoryQualityBalance($params)
@@ -685,37 +556,6 @@ class InvoiceRepository extends EloquentBaseRepository
                     'created_at' => Carbon::now()->toDateString(),
                     'updated_at' => Carbon::now()->toDateString()
                 ]);
-//                ItemsLifoCost::create([
-//                    'item_id' => $item['item_id'],
-//                    'invoice_item_id' => $invoiceItem->id,
-//                    'invoice_id' => $invoiceDetail->id,
-//                    'quantity' => $item['quantity'],
-//                    'price' => $item['unit_cost'],
-//                    'available_quantity' => $item['quantity'],
-//                    'type' => AppConstant::TYPE_IN,
-//
-//                ]);
-//                ItemsFifoCost::create([
-//                    'item_id' => $item['item_id'],
-//                    'invoice_item_id' => $invoiceItem->id,
-//                    'invoice_id' => $invoiceDetail->id,
-//                    'quantity' => $item['quantity'],
-//                    'price' => $item['unit_cost'],
-//                    'available_quantity' => $item['quantity'],
-//                    'type' => AppConstant::TYPE_IN,
-//
-//                ]);
-//
-//                ItemsAvgCost::create([
-//                    'item_id' => $item['item_id'],
-//                    'invoice_item_id' => $invoiceItem->id,
-//                    'invoice_id' => $invoiceDetail->id,
-//                    'quantity' => $item['quantity'],
-//                    'price' => $item['unit_cost'],
-//                    'available_quantity' => $item['quantity'],
-//                    'type' => AppConstant::TYPE_IN,
-//
-//                ]);
 
                 foreach ($item['taxes'] as $tax) {
                     $itemTaxes = InvoiceTax::create([
@@ -728,20 +568,21 @@ class InvoiceRepository extends EloquentBaseRepository
                 }
             }
             $this->lifo($invoiceDetail->id, AppConstant::TYPE_IN);
+            $this->fifo($invoiceDetail->id, AppConstant::TYPE_IN);
+            $this->avg($invoiceDetail->id, AppConstant::TYPE_IN);
+            DB::commit();
 
+            return $invoiceDetail;
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
         }
-        DB::commit();
-
-        return $invoiceDetail;
     }
 
     // data out
     public function salesOutwards($data)
     {
-
+        // todo check for quantity is available or not
         DB::beginTransaction();
 
         try {
@@ -777,29 +618,21 @@ class InvoiceRepository extends EloquentBaseRepository
                 }
                 $data['items'][] = $items;
 
-
-//                $data[''] =
-                //fifo
-
-
-                //lifo
-
-
-                //avg
-
             }
             InvoiceItem::insert($data['items']);
             InvoiceTax::insert($data['taxes']);
             $this->lifo($invoiceDetail->id, AppConstant::TYPE_OUT);
+            $this->fifo($invoiceDetail->id, AppConstant::TYPE_OUT);
+            $this->avg($invoiceDetail->id, AppConstant::TYPE_OUT);
+
+            DB::commit();
+            return $invoiceDetail;
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
         }
-        DB::commit();
-        return $invoiceDetail;
     }
 
-    // todo change this
     public function lifo($invoiceId, $type)
     {
         $items = InvoiceItem::where('invoice_id', $invoiceId)->get()->toArray();
@@ -829,12 +662,10 @@ class InvoiceRepository extends EloquentBaseRepository
                     'invoice_item_id' => $item['id'],
                     'invoice_id' => $item['invoice_id'],
                     'quantity' => $item['quantity'],
-                    'available_quantity' => $item['quantity'],
-                    'price' => $item['unit_cost'],
+                    'unit_price' => $item['unit_cost'],
+                    'price' => $item['quantity'] * $item['unit_cost'],
                     'type' => $type,
                     'is_active' => true,
-                    'lifo_cost' => $item['unit_cost'],
-                    'selling_price' => $item['unit_cost'],
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ];
@@ -857,7 +688,7 @@ class InvoiceRepository extends EloquentBaseRepository
                         $activeItem['is_active'] = false;
                         $activeItem['invoice_item_id'] = $item['id'];
                         $dataToBeInserted[] = $activeItem;
-                        if ($activeQty < 0) {
+                        if ($activeQty <= 0) {
                             break;
                         }
                     } else {
@@ -867,6 +698,8 @@ class InvoiceRepository extends EloquentBaseRepository
                         $activeItem['quantity'] = $activeQty;
                         $activeItem['is_active'] = false;
                         $activeItem['invoice_item_id'] = $item['id'];
+                        $activeItem['unit_price'] = $item['selling_price'];
+                        $activeItem['price'] = $activeQty * $item['selling_price'];
                         $dataToBeInserted[] = $activeItem;
                         break;
                     }
@@ -878,6 +711,7 @@ class InvoiceRepository extends EloquentBaseRepository
                     }
                     if (isset($activeItemQtyMap[$batch['id']])) {
                         $batch['quantity'] = $activeItemQtyMap[$batch['id']];
+                        $batch['price'] = $batch['quantity'] * $batch['unit_price'];
                     }
                     unset($batch['id']);
                     unset($batch['created_at']);
@@ -896,4 +730,108 @@ class InvoiceRepository extends EloquentBaseRepository
         }
 
     }
+
+    public function fifo($invoiceId, $type)
+    {
+        $items = InvoiceItem::where('invoice_id', $invoiceId)->get()->toArray();
+
+        foreach ($items as $item) {
+            // get last active batch to calculate cost
+            $lastBatch = ItemsFifoCost::where('is_active', true)
+                ->where('type', AppConstant::TYPE_IN)
+                ->where('item_id', $item['item_id'])
+                ->get()->toArray();
+            $dataToBeInserted = [];
+
+            // if it's in then add it
+            // else subtract the data
+            if ($type === AppConstant::TYPE_IN) {
+                foreach ($lastBatch as $batch) {
+                    unset($batch['id']);
+                    unset($batch['created_at']);
+                    unset($batch['updated_at']);
+                    $batch['invoice_item_id'] = $item['id'];
+                    $batch['created_at'] = Carbon::now();
+                    $batch['updated_at'] = Carbon::now();
+                    $dataToBeInserted[] = $batch;
+                }
+                $dataToBeInserted[] = [
+                    'item_id' => $item['item_id'],
+                    'invoice_item_id' => $item['id'],
+                    'invoice_id' => $item['invoice_id'],
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $item['unit_cost'],
+                    'price' => $item['quantity'] * $item['unit_cost'],
+                    'type' => $type,
+                    'is_active' => true,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ];
+            } else {
+                $activeItems = ItemsFifoCost::where('is_active', true)
+                    ->where('type', AppConstant::TYPE_IN)
+                    ->where('item_id', $item['item_id'])
+                    ->orderBy('id', 'ASC')->get()->toArray();
+
+                $deletedIds = [];
+                $activeItemQtyMap = [];
+                $activeQty = $item['quantity'];
+
+                foreach ($activeItems as $activeItem) {
+                    if ($activeQty >= $activeItem['quantity']) {
+                        $deletedIds[] = $activeItem['id'];
+                        $activeQty -= $activeItem['quantity'];
+                        unset($activeItem['id']);
+                        $activeItem['type'] = AppConstant::TYPE_OUT;
+                        $activeItem['is_active'] = false;
+                        $activeItem['invoice_item_id'] = $item['id'];
+                        $dataToBeInserted[] = $activeItem;
+                        if ($activeQty <= 0) {
+                            break;
+                        }
+                    } else {
+                        $activeItemQtyMap[$activeItem['id']] = $activeItem['quantity'] - $activeQty;
+                        unset($activeItem['id']);
+                        $activeItem['type'] = AppConstant::TYPE_OUT;
+                        $activeItem['quantity'] = $activeQty;
+                        $activeItem['is_active'] = false;
+                        $activeItem['invoice_item_id'] = $item['id'];
+                        $activeItem['unit_price'] = $item['selling_price'];
+                        $activeItem['price'] = $activeQty * $item['selling_price'];
+                        $dataToBeInserted[] = $activeItem;
+                        break;
+                    }
+                }
+
+                foreach ($lastBatch as &$batch) {
+                    if (array_search($batch['id'], $deletedIds) !== false) {
+                        continue;
+                    }
+                    if (isset($activeItemQtyMap[$batch['id']])) {
+                        $batch['quantity'] = $activeItemQtyMap[$batch['id']];
+                        $batch['price'] = $batch['quantity'] * $batch['unit_price'];
+                    }
+                    unset($batch['id']);
+                    unset($batch['created_at']);
+                    unset($batch['updated_at']);
+                    $batch['invoice_item_id'] = $item['id'];
+                    $batch['created_at'] = Carbon::now();
+                    $batch['updated_at'] = Carbon::now();
+                    $dataToBeInserted[] = $batch;
+                }
+            }
+            ItemsFifoCost::where('is_active', true)
+                ->where('item_id', $item['item_id'])
+                ->update(['is_active' => false]);
+
+            ItemsFifoCost::insert($dataToBeInserted);
+        }
+
+    }
+
+    public function avg($invoiceId, $type)
+    {
+
+    }
+
 }

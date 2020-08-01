@@ -93,4 +93,14 @@ class InvoiceItem extends Eloquent
     {
         return $this->hasMany(\Modules\Inventory\Models\ItemsLifoCost::class, 'invoice_item_id');
     }
+
+    public function fifo()
+    {
+        return $this->hasMany(\Modules\Inventory\Models\ItemsFifoCost::class, 'invoice_item_id');
+    }
+
+    public function avg()
+    {
+        return $this->hasMany(\Modules\Inventory\Models\ItemsAvgCost::class, 'invoice_item_id');
+    }
 }
