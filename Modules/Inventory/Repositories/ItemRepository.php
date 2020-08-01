@@ -67,7 +67,6 @@ class ItemRepository extends EloquentBaseRepository
                 ->orWhere('unit_price', 'like', '%' . $params['inputs']['search'] . '%');
         }
 
-
         if (isset($params['inputs']['category_ids'])) {
             $query->whereHas('inventory_category', function ($query) use ($params) {
                 $query->whereIn('id', json_decode($params['inputs']['category_ids'], true));

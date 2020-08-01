@@ -48,6 +48,7 @@ class Item extends Eloquent
 
     //todo static for now will make functional later on
     public function getQuantityAvailableAttribute() {
+
         return 5;
     }
 
@@ -105,4 +106,12 @@ class Item extends Eloquent
     {
         return $this->hasMany(\Modules\Inventory\Models\ItemTax::class, 'item_id');
     }
+
+    public function store_item()
+    {
+        return $this->hasMany(\Modules\Inventory\Models\StoreItem::class, 'item_id');
+
+    }
+
+
 }

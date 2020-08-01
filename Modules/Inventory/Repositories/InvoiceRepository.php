@@ -7,6 +7,7 @@ namespace Modules\Inventory\Repositories;
 use App\Constants\AppConstant;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Inventory\Models\InvoiceDetail;
 use Modules\Inventory\Models\InvoiceItem;
@@ -14,6 +15,7 @@ use Modules\Inventory\Models\InvoiceTax;
 use Modules\Inventory\Models\ItemsAvgCost;
 use Modules\Inventory\Models\ItemsFifoCost;
 use Modules\Inventory\Models\ItemsLifoCost;
+use Modules\Inventory\Models\StoreItem;
 
 class InvoiceRepository extends EloquentBaseRepository
 {
@@ -59,7 +61,7 @@ class InvoiceRepository extends EloquentBaseRepository
 //                $avg = $this->avg($cost);
 
             }
-
+            $this->storeItems($invoiceDetail->id, AppConstant::TYPE_OUT);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -191,6 +193,7 @@ class InvoiceRepository extends EloquentBaseRepository
             }
 
             InvoiceItem::insert($data['items']);
+            $this->storeItems($invoiceDetail->id, AppConstant::TYPE_IN);
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -225,6 +228,7 @@ class InvoiceRepository extends EloquentBaseRepository
                 $data['items'][] = $items;
             }
             InvoiceItem::insert($data['items']);
+            $this->storeItems($invoiceDetail->id, AppConstant::TYPE_IN);
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -259,6 +263,7 @@ class InvoiceRepository extends EloquentBaseRepository
                 $data['items'][] = $items;
             }
             InvoiceItem::insert($data['items']);
+            $this->storeItems($invoiceDetail->id, AppConstant::TYPE_IN);
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -293,6 +298,7 @@ class InvoiceRepository extends EloquentBaseRepository
                 $data['items'][] = $items;
             }
             InvoiceItem::insert($data['items']);
+            $this->storeItems($invoiceDetail->id, AppConstant::TYPE_IN);
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -327,7 +333,7 @@ class InvoiceRepository extends EloquentBaseRepository
                 $data['items'][] = $items;
             }
             InvoiceItem::insert($data['items']);
-
+            $this->storeItems($invoiceDetail->id, AppConstant::TYPE_IN);
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -362,6 +368,7 @@ class InvoiceRepository extends EloquentBaseRepository
                 $data['items'][] = $items;
             }
             InvoiceItem::insert($data['items']);
+            $this->storeItems($invoiceDetail->id, AppConstant::TYPE_OUT);
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -550,7 +557,6 @@ class InvoiceRepository extends EloquentBaseRepository
             ->groupBy('item_id')
             ->pluck('id')->toArray();
 
-
         $query = DB::table('inventory_invoice_details as iid')
             ->join('inventory_invoice_items as iii', 'iid.id', '=', 'iii.invoice_id')
             ->join('inventory_items as ii', 'ii.id', '=', 'iii.item_id')
@@ -587,9 +593,8 @@ class InvoiceRepository extends EloquentBaseRepository
 //
 //        }
 
-        dd($query->get());
-        $query = $query->whereIn('iii.id', $items);
-
+        $query = $query->whereIn('iii.id', $items)->get();
+        return $query;
     }
 
     public function binCardReport($params = [], $query = null)
@@ -619,6 +624,48 @@ class InvoiceRepository extends EloquentBaseRepository
         return $query->get();
     }
 
+//    public function offLevelReport($params)
+//    {
+//        $query = null;
+//        $items = DB::table('inventory_invoice_items')
+//            ->selectRaw('item_id, MAX(id) as id')
+//            ->groupBy('item_id')
+//            ->pluck('id')->toArray();
+////        dd($items);
+//
+//        $query = DB::table('inventory_invoice_items')
+//            ->join('inventory_stores', 'inventory_invoice_items.store_id', '=', 'inventory_stores.id')
+//            ->join('inventory_items', 'inventory_invoice_items.item_id', '=', 'inventory_items.id')
+//            ->join('inventory_measurements', 'inventory_invoice_items.measurement_id', '=', 'inventory_measurements.id')
+//            ->selectRaw(
+//                'inventory_items.id as itemCode, inventory_items.description as itemDescription, inventory_items.reorder_quantity, inventory_items.minimum_quantity, inventory_items.maximum_quantity, inventory_invoice_items.available_balance as onHand, inventory_measurements.name as unitOfMeasure, inventory_stores.name as storeName, inventory_invoice_items.item_id as item_id, inventory_invoice_items.store_id as store_id');
+//
+//        if (isset($params['inputs']['report_preference'])) {
+//            if ($params['inputs']['report_preference'] == 'MIN_ORDER') {
+//                $query->whereRaw('inventory_invoice_items.available_balance <= inventory_items.minimum_quantity')
+//                    ->whereIn('inventory_invoice_items.id', $items);
+//            }
+//            if ($params['inputs']['report_preference'] == 'MAX_ORDER') {
+//                $query->whereRaw('inventory_invoice_items.available_balance >= inventory_items.maximum_quantity')
+//                    ->whereIn('inventory_invoice_items.id', $items);
+//            }
+//            if ($params['inputs']['report_preference'] == 'RE_ORDER') {
+//                $query->whereRaw('inventory_invoice_items.available_balance <= inventory_items.reorder_quantity')
+//                    ->whereIn('inventory_invoice_items.id', $items);
+//            }
+//        }
+//        if (isset($params['inputs']['store_item'])) {
+//            $query
+//                ->where('inventory_invoice_items.item_id', '=', $params['inputs']['store_item']);
+//        }
+//        if (isset($params['inputs']['store_id'])) {
+//            $query
+//                ->where('inventory_invoice_items.store_id', '=', $params['inputs']['store_id']);
+//        }
+//        return $query->get();
+//    }
+
+
     public function offLevelReport($params)
     {
         $query = null;
@@ -626,16 +673,23 @@ class InvoiceRepository extends EloquentBaseRepository
             ->selectRaw('item_id, MAX(id) as id')
             ->groupBy('item_id')
             ->pluck('id')->toArray();
-
         $query = DB::table('inventory_invoice_items')
             ->join('inventory_stores', 'inventory_invoice_items.store_id', '=', 'inventory_stores.id')
             ->join('inventory_items', 'inventory_invoice_items.item_id', '=', 'inventory_items.id')
             ->join('inventory_measurements', 'inventory_invoice_items.measurement_id', '=', 'inventory_measurements.id')
-            ->selectRaw(
-                'inventory_items.id as itemCode, inventory_items.description as itemDescription, inventory_items.reorder_quantity, inventory_items.minimum_quantity, inventory_items.maximum_quantity, inventory_invoice_items.available_balance as onHand, inventory_measurements.name as unitOfMeasure, inventory_stores.name as storeName, inventory_invoice_items.item_id as item_id, inventory_invoice_items.store_id as store_id')
-            ->whereRaw('inventory_invoice_items.available_balance <= inventory_items.minimum_quantity')
-            ->whereIn('inventory_invoice_items.id', $items);
+            ->select(
+                'inventory_items.id as itemCode',
+                'inventory_items.description as itemDescription',//add level and  on hand
+                'inventory_items.reorder_quantity',
+                'inventory_items.minimum_quantity',
+                'inventory_items.maximum_quantity',
+                'inventory_invoice_items.available_balance as onHand',
+                'inventory_measurements.name as unitOfMeasure',
+                'inventory_stores.name as storeName',
+                'inventory_invoice_items.item_id as item_id',
+                'inventory_invoice_items.store_id as store_id'
 
+            );
         if (isset($params['inputs']['report_preference'])) {
             if ($params['inputs']['report_preference'] == 'MIN_ORDER') {
                 $query->whereRaw('inventory_invoice_items.available_balance <= inventory_items.minimum_quantity')
@@ -650,6 +704,7 @@ class InvoiceRepository extends EloquentBaseRepository
                     ->whereIn('inventory_invoice_items.id', $items);
             }
         }
+
         if (isset($params['inputs']['store_item'])) {
             $query
                 ->where('inventory_invoice_items.item_id', '=', $params['inputs']['store_item']);
@@ -658,6 +713,7 @@ class InvoiceRepository extends EloquentBaseRepository
             $query
                 ->where('inventory_invoice_items.store_id', '=', $params['inputs']['store_id']);
         }
+
         return $query->get();
     }
 
@@ -728,7 +784,7 @@ class InvoiceRepository extends EloquentBaseRepository
                 }
             }
             $this->lifo($invoiceDetail->id, AppConstant::TYPE_IN);
-
+            $this->storeItems($invoiceDetail->id, AppConstant::TYPE_IN);
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -791,6 +847,7 @@ class InvoiceRepository extends EloquentBaseRepository
             InvoiceItem::insert($data['items']);
             InvoiceTax::insert($data['taxes']);
             $this->lifo($invoiceDetail->id, AppConstant::TYPE_OUT);
+            $this->storeItems($invoiceDetail->id, AppConstant::TYPE_OUT);
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -893,6 +950,54 @@ class InvoiceRepository extends EloquentBaseRepository
                 ->update(['is_active' => false]);
 
             ItemsLifoCost::insert($dataToBeInserted);
+        }
+
+    }
+
+    public function storeItems($invoiceId, $type)
+    {
+        $items = InvoiceItem::where('invoice_id', $invoiceId)->get();
+
+        foreach ($items as $item) {
+            $storeItem = StoreItem::where('store_id', $item->store_id)
+                ->where('item_id', $item->item_id)->first();
+
+            if ($type == AppConstant::TYPE_IN) {
+                if (is_null($storeItem)) {
+                    $storeItem = StoreItem::create([
+                        'store_id' => $item->store_id,
+                        'item_id' => $item->item_id,
+                        'available_quantity' => $item->quantity
+                    ]);
+                } else {
+                    StoreItem::where('store_id', $item->store_id)
+                        ->where('item_id', $item->item_id)->update([
+                            'available_quantity' => $storeItem->available_quantity + $item->quantity
+                        ]);
+                }
+            } elseif ($type == AppConstant::TYPE_OUT) {
+
+                if (!is_null($storeItem)) {
+                    StoreItem::where('store_id', $item->store_id)
+                        ->where('item_id', $item->item_id)->update([
+                            'available_quantity' => $storeItem->available_quantity - $item->quantity
+                        ]);
+                }else {
+                    throw new AppException('no items');
+                }
+
+            }
+
+        }
+    }
+
+    public function storeAvailableItems($params) {
+        if (isset($params['inputs']['item_id']) && isset($params['inputs']['store_id'])) {
+            $store = StoreItem::where('store_id', $params['inputs']['store_id'])
+                ->where('item_id', $params['inputs']['item_id'])->first();
+            return $store;
+        }else {
+            throw new AppException("itemId and storeId is required");
         }
 
     }

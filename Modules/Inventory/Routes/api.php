@@ -34,4 +34,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('off-level-report', 'InvoiceController@offLevelReport');
     Route::get('company-config', 'ConstantApiController@getConfig');
     Route::get('invoices-lifo', 'InvoiceController@getLifoData');
+    Route::get('stores/{storeId}/item/{itemId}','InvoiceController@storeAvailableItems');
 });
