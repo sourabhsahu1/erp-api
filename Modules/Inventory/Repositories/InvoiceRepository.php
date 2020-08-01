@@ -561,8 +561,7 @@ class InvoiceRepository extends EloquentBaseRepository
             ->join('inventory_invoice_items as iii', 'iid.id', '=', 'iii.invoice_id')
             ->join('inventory_items as ii', 'ii.id', '=', 'iii.item_id')
             ->join('inventory_measurements as im', 'im.id', '=', 'iii.measurement_id')
-            ->selectRaw('iii.item_id, ii.description as item_description, iii.item_id as item_id, iii.available_balance, iii.measurement_id, im.name as measurement_name, iii.unit_cost, iid.type, iii.store_id');
-//            ->whereIn('iii.id', $items);
+            ->selectRaw('iii.item_id,ii.reorder_quantity,ii.minimum_quantity,ii.maximum_quantity,  ii.description as item_description, iii.item_id as item_id, iii.available_balance, iii.measurement_id, im.name as measurement_name, iii.unit_cost, iid.type, iii.store_id');
 
 
         if (isset($params['inputs']['store_id'])) {
@@ -618,8 +617,8 @@ class InvoiceRepository extends EloquentBaseRepository
             $query->where('inventory_invoice_items.item_id', '=', $params['inputs']['item_id']);
         }
 
-        if (isset($params['inputs']['from_date']) && isset($params['inputs']['to_date'])) {
-            $query->whereBetween('inventory_invoice_details.date', [$params['inputs']['from_date'], $params['inputs']['to_date']]);
+        if (isset($params['inputs']['opening_date']) && isset($params['inputs']['closing_date'])) {
+            $query->whereBetween('inventory_invoice_details.date', [$params['inputs']['opening_date'], $params['inputs']['closing_date']]);
         }
         return $query->get();
     }
