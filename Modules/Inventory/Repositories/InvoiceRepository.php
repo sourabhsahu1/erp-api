@@ -970,7 +970,7 @@ class InvoiceRepository extends EloquentBaseRepository
                     'updated_at' => Carbon::now()
                 ];
                 $d['unit_price'] = round(((($item['quantity'] * $item['unit_cost']) + ($lastBatch['quantity'] * $lastBatch['unit_price'])) / $d['quantity']), 2);
-                $d['price'] = $d['quantity']  * $d['unit_price'];
+                $d['price'] = $d['quantity'] * $d['unit_price'];
                 $dataToBeInserted[] = $d;
             } else {
                 unset($lastBatch['id']);
@@ -990,6 +990,21 @@ class InvoiceRepository extends EloquentBaseRepository
 
             ItemsAvgCost::insert($dataToBeInserted);
         }
+    }
+
+    public function downloadReports($params)
+    {
+        if ($params['inputs']['type'] == 'BIN_CARD') {
+
+        } elseif ($params['inputs']['type'] == 'OFF_LEVEL') {
+
+        }elseif($params['inputs']['type'] == 'INVENTORY_LEDGER'){
+
+        }elseif($params['inputs']['type'] == 'QUALITY_BALANCE'){
+
+        }
+
+
     }
 
 }
