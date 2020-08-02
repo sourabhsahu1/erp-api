@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
+use App\Constants\AppConstant;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateInventoryStoreItemsTable extends Migration
 {
@@ -15,12 +16,21 @@ class CreateInventoryStoreItemsTable extends Migration
     {
         Schema::create('inventory_store_items', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('store_id');
+            $table->enum('type', [AppConstant::TYPE_IN, AppConstant::TYPE_OUT]);
             $table->unsignedBigInteger('item_id');
-            $table->integer('available_quantity')->default(0);
+            $table->unsignedBigInteger('invoice_id');
+            $table->unsignedBigInteger('invoice_item_id');
+            $table->integer('quantity')->nullable();
+            $table->integer('available_quantity');
+            $table->integer('price');
+            $table->float('avg_cost', 8, 2)->nullable();
+            $table->float('selling_price', 8, 2)->nullable();
+            $table->boolean('is_active')->default(1);
             $table->timestamps();
-            $table->foreign('store_id')->references('id')->on('inventory_stores');
+
+            $table->foreign('invoice_item_id')->references('id')->on('inventory_invoice_items');
             $table->foreign('item_id')->references('id')->on('inventory_items');
+            $table->foreign('invoice_id')->references('id')->on('inventory_invoice_details');
         });
     }
 
