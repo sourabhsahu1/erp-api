@@ -16,21 +16,13 @@ class CreateInventoryStoreItemsTable extends Migration
     {
         Schema::create('inventory_store_items', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->enum('type', [AppConstant::TYPE_IN, AppConstant::TYPE_OUT]);
+            $table->unsignedBigInteger('store_id');
             $table->unsignedBigInteger('item_id');
-            $table->unsignedBigInteger('invoice_id');
-            $table->unsignedBigInteger('invoice_item_id');
-            $table->integer('quantity')->nullable();
-            $table->integer('available_quantity');
-            $table->integer('price');
-            $table->float('avg_cost', 8, 2)->nullable();
-            $table->float('selling_price', 8, 2)->nullable();
-            $table->boolean('is_active')->default(1);
+            $table->integer('available_quantity')->default(0);
             $table->timestamps();
 
-            $table->foreign('invoice_item_id')->references('id')->on('inventory_invoice_items');
+            $table->foreign('store_id')->references('id')->on('inventory_stores');
             $table->foreign('item_id')->references('id')->on('inventory_items');
-            $table->foreign('invoice_id')->references('id')->on('inventory_invoice_details');
         });
     }
 

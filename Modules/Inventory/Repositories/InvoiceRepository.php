@@ -12,6 +12,7 @@ use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Inventory\Models\InvoiceDetail;
 use Modules\Inventory\Models\InvoiceItem;
 use Modules\Inventory\Models\InvoiceTax;
+use Modules\Inventory\Models\ItemsAvgCost;
 use Modules\Inventory\Models\ItemsFifoCost;
 use Modules\Inventory\Models\ItemsLifoCost;
 use Modules\Inventory\Models\StoreItem;
@@ -815,7 +816,7 @@ class InvoiceRepository extends EloquentBaseRepository
                         ->where('item_id', $item->item_id)->update([
                             'available_quantity' => $storeItem->available_quantity - $item->quantity
                         ]);
-                }else {
+                } else {
                     throw new AppException('no items');
                 }
 
@@ -824,12 +825,13 @@ class InvoiceRepository extends EloquentBaseRepository
         }
     }
 
-    public function storeAvailableItems($params) {
+    public function storeAvailableItems($params)
+    {
         if (isset($params['inputs']['item_id']) && isset($params['inputs']['store_id'])) {
             $store = StoreItem::where('store_id', $params['inputs']['store_id'])
                 ->where('item_id', $params['inputs']['item_id'])->first();
             return $store;
-        }else {
+        } else {
             throw new AppException("itemId and storeId is required");
         }
 
@@ -935,7 +937,59 @@ class InvoiceRepository extends EloquentBaseRepository
 
     public function avg($invoiceId, $type)
     {
+        $items = InvoiceItem::where('invoice_id', $invoiceId)->get()->toArray();
 
+        foreach ($items as $item) {
+            // get last active batch to calculate cost
+            $lastBatch = ItemsAvgCost::where('is_active', true)
+                ->where('type', AppConstant::TYPE_IN)
+                ->where('item_id', $item['item_id'])
+                ->first();
+
+            if ($lastBatch) {
+                $lastBatch = $lastBatch->toArray();
+            } else {
+                $lastBatch = ['quantity' => 0, 'unit_cost' => 0];
+            }
+
+            $dataToBeInserted = [];
+
+            // if it's in then add it
+            // else subtract the data
+            if ($type === AppConstant::TYPE_IN) {
+                $d = [
+                    'item_id' => $item['item_id'],
+                    'invoice_item_id' => $item['id'],
+                    'invoice_id' => $item['invoice_id'],
+                    'quantity' => $lastBatch['quantity'] + $item['quantity'],
+                    'unit_price' => 0,
+                    'price' => 0,
+                    'type' => $type,
+                    'is_active' => true,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ];
+                $d['unit_price'] = round(((($item['quantity'] * $item['unit_cost']) + ($lastBatch['quantity'] * $lastBatch['unit_price'])) / $d['quantity']), 2);
+                $d['price'] = $d['quantity']  * $d['unit_price'];
+                $dataToBeInserted[] = $d;
+            } else {
+                unset($lastBatch['id']);
+                unset($lastBatch['created_at']);
+                unset($lastBatch['updated_at']);
+                $lastBatch['invoice_item_id'] = $item['id'];
+                $lastBatch['quantity'] -= $item['quantity'];
+                $lastBatch['price'] = $lastBatch['quantity'] * $lastBatch['unit_price'];
+                $lastBatch['created_at'] = Carbon::now();
+                $lastBatch['updated_at'] = Carbon::now();
+                $dataToBeInserted[] = $lastBatch;
+            }
+
+            ItemsAvgCost::where('is_active', true)
+                ->where('item_id', $item['item_id'])
+                ->update(['is_active' => false]);
+
+            ItemsAvgCost::insert($dataToBeInserted);
+        }
     }
 
 }
