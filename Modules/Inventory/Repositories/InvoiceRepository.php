@@ -411,8 +411,11 @@ class InvoiceRepository extends EloquentBaseRepository
                 }
             }
 
-            $updatedData[] = $parent;
-            if (count($children)) {
+            if (count($children) == 1 && is_null($children[0]['out_value'])) {
+                $parent['balance_unit_price'] = $children[0]['balance_unit_price'];
+                $updatedData[] = $parent;
+            } else if (count($children)) {
+                $updatedData[] = $parent;
                 $updatedData = array_merge($updatedData, $children);
             }
         }
@@ -996,15 +999,13 @@ class InvoiceRepository extends EloquentBaseRepository
     {
         if ($params['inputs']['type'] == 'BIN_CARD') {
 
-        } elseif ($params['inputs']['type'] == 'OFF_LEVEL') {
+        } else if ($params['inputs']['type'] == 'OFF_LEVEL') {
 
-        }elseif($params['inputs']['type'] == 'INVENTORY_LEDGER'){
+        } else if ($params['inputs']['type'] == 'INVENTORY_LEDGER') {
 
-        }elseif($params['inputs']['type'] == 'QUALITY_BALANCE'){
+        } else if ($params['inputs']['type'] == 'QUALITY_BALANCE') {
 
         }
-
-
     }
 
 }
