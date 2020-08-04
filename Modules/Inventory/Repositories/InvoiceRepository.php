@@ -5,9 +5,11 @@ namespace Modules\Inventory\Repositories;
 
 
 use App\Constants\AppConstant;
+use App\Services\UtilityService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
+use Luezoid\Laravelcore\Exceptions\BusinessLogicException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Inventory\Models\InvoiceDetail;
 use Modules\Inventory\Models\InvoiceItem;
@@ -16,6 +18,9 @@ use Modules\Inventory\Models\ItemsAvgCost;
 use Modules\Inventory\Models\ItemsFifoCost;
 use Modules\Inventory\Models\ItemsLifoCost;
 use Modules\Inventory\Models\StoreItem;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class InvoiceRepository extends EloquentBaseRepository
 {
@@ -34,13 +39,17 @@ class InvoiceRepository extends EloquentBaseRepository
                 /** @var InvoiceItem $availableQuantity */
                 $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
 
+                if ($availableQuantity) {
+                    $this->storeQuantityCheck($availableQuantity->available_balance, $item['quantity']);
+                }
+
                 $invoiceItem = InvoiceItem::create([
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
                     'invoice_id' => $invoiceDetail->id,
                     'measurement_id' => $item['measurement_id'],
                     'description' => $item['description'],
-                    'available_balance' => $item['quantity'] + (!is_null($availableQuantity) ? $availableQuantity->available_balance : 0),
+                    'available_balance' => $item['quantity'] - (!is_null($availableQuantity) ? $availableQuantity->available_balance : 0),
                     'unit_cost' => $item['unit_cost'],
                     'quantity' => $item['quantity'],
                     'created_at' => Carbon::now()->toDateString(),
@@ -161,6 +170,11 @@ class InvoiceRepository extends EloquentBaseRepository
             foreach ($data['data']['items'] as $item) {
                 /** @var InvoiceItem $availableQuantity */
                 $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
+
+                if ($availableQuantity) {
+                    $this->storeQuantityCheck($availableQuantity->available_balance, $item['quantity']);
+                }
+
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -266,6 +280,10 @@ class InvoiceRepository extends EloquentBaseRepository
             foreach ($data['data']['items'] as $item) {
                 /** @var InvoiceItem $availableQuantity */
                 $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
+
+                if ($availableQuantity) {
+                    $this->storeQuantityCheck($availableQuantity->available_balance, $item['quantity']);
+                }
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'measurement_id' => $item['measurement_id'],
@@ -471,7 +489,7 @@ class InvoiceRepository extends EloquentBaseRepository
         return $query;
     }
 
-    public function binCardReport($params = [], $query = null)
+    public function binCardReport($params)
     {
         $query = DB::table('inventory_invoice_details')
             ->join('inventory_invoice_items', 'inventory_invoice_details.id', '=', 'inventory_invoice_items.invoice_id')
@@ -479,9 +497,10 @@ class InvoiceRepository extends EloquentBaseRepository
             ->select(
                 'inventory_invoice_details.id',
                 'inventory_invoice_details.date',
+                'inventory_items.description as desc',
                 'inventory_invoice_details.type',
                 'inventory_invoice_items.unit_cost',
-                'inventory_items.description as desc',
+                'inventory_invoice_items.quantity as quantity',
                 'inventory_invoice_items.available_balance as balance'
             );
         if (isset($params['inputs']['store_id'])) {
@@ -652,7 +671,9 @@ class InvoiceRepository extends EloquentBaseRepository
             foreach ($data['data']['items'] as $item) {
                 /** @var InvoiceItem $availableQuantity */
                 $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
-
+                if ($availableQuantity) {
+                    $this->storeQuantityCheck($availableQuantity->available_balance, $item['quantity']);
+                }
                 $items = [
                     'store_id' => $data['data']['store_id'],
                     'item_id' => $item['item_id'],
@@ -952,7 +973,7 @@ class InvoiceRepository extends EloquentBaseRepository
             if ($lastBatch) {
                 $lastBatch = $lastBatch->toArray();
             } else {
-                $lastBatch = ['quantity' => 0, 'unit_cost' => 0];
+                $lastBatch = ['quantity' => 0, 'unit_price' => 0];
             }
 
             $dataToBeInserted = [];
@@ -995,17 +1016,111 @@ class InvoiceRepository extends EloquentBaseRepository
         }
     }
 
+    function storeQuantityCheck($avaialbleBal, $quantity) {
+
+        if ($avaialbleBal < $quantity) {
+            throw new BusinessLogicException('Insufficient Quantity of Item');
+        }
+    }
+
+
     public function downloadReports($params)
     {
         if ($params['inputs']['type'] == 'BIN_CARD') {
-
+            return $this->downloadBinCardReport($params);
         } else if ($params['inputs']['type'] == 'OFF_LEVEL') {
-
+            return $this->downloadOffLevel($params);
         } else if ($params['inputs']['type'] == 'INVENTORY_LEDGER') {
 
         } else if ($params['inputs']['type'] == 'QUALITY_BALANCE') {
 
         }
     }
+
+
+    public function downloadBinCardReport($params)
+    {
+
+        $binCardData = $this->binCardReport($params);
+
+        $binCardData = json_decode($binCardData, true);
+
+        $headers = ['date', 'description', 'in', 'unit_cost', 'out', 'balance'];
+        $data = [];
+
+        foreach ($binCardData as $bin) {
+            $d = [$bin['date'], $bin['desc'], '', '', '', ''];
+            if ($bin['type'] == 'IN') {
+                $d[2] = $bin['quantity'];
+                $d[3] = $bin['unit_cost'];
+                $d[5] = $bin['balance'];
+            } else {
+                $d[4] = $bin['quantity'];
+                $d[3] = $bin['unit_cost'];
+                $d[5] = $bin['balance'];
+            }
+            $data[] = $d;
+        }
+        $filePath = 'csv/bincard_report_' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.xlsx';
+        UtilityService::createSpoutFile($data, $headers, $filePath);
+
+        return ['url' => url($filePath)];
+    }
+
+
+    public function downloadOffLevel($params)
+    {
+
+        $offLevel = $this->offLevelReport($params);
+
+        $offLevel = json_decode($offLevel, true);
+
+        $headers = ['Item code', 'Item Description'];
+
+
+        if (!isset($params['inputs']['report_preference'])) {
+            throw new AppException('type report preference is required');
+        }
+        if ($params['inputs']['report_preference'] == 'MAX_ORDER') {
+            array_push($headers, 'Maximum level');
+        }
+        if ($params['inputs']['report_preference'] == 'MIN_ORDER') {
+            array_push($headers, 'Minimum level');
+        }
+        if ($params['inputs']['report_preference'] == 'RE_ORDER') {
+            array_push($headers, 'Reorder level');
+        }
+
+        $headers = array_merge($headers, ['On hand', 'Qty. Variance', 'Variance %', 'Unit Of Measure', 'Store']);
+
+        $data = [];
+
+        foreach ($offLevel as $off) {
+            $d = [$off['itemCode'], $off['itemDescription'], '', $off['onHand'], '', '', $off['unitOfMeasure'],$off['storeName']];
+
+            if ($params['inputs']['report_preference'] == 'MAX_ORDER') {
+                $d[2] = $off['maximum_quantity'];
+            }
+            if ($params['inputs']['report_preference'] == 'MIN_ORDER') {
+                $d[2] = $off['minimum_quantity'];
+            }
+            if ($params['inputs']['report_preference'] == 'RE_ORDER') {
+                $d[2] = $off['reorder_quantity'];
+            }
+
+            $d[4] = $d[2] - $off['onHand'];
+            $d[5] = ($d[3]*100)/$d[2];
+            $data[] = $d;
+        }
+
+        $filePath = 'csv/offlevel_report_' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.xlsx';
+        UtilityService::createSpoutFile($data, $headers, $filePath);
+
+        return ['url' => url($filePath)];
+
+    }
+
+
+
 
 }
