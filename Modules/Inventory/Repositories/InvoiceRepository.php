@@ -41,6 +41,8 @@ class InvoiceRepository extends EloquentBaseRepository
 
                 if ($availableQuantity) {
                     $this->storeQuantityCheck($availableQuantity->available_balance, $item['quantity']);
+                }else{
+                    throw new BusinessLogicException('No items available');
                 }
 
                 $invoiceItem = InvoiceItem::create([
@@ -173,6 +175,8 @@ class InvoiceRepository extends EloquentBaseRepository
 
                 if ($availableQuantity) {
                     $this->storeQuantityCheck($availableQuantity->available_balance, $item['quantity']);
+                }else {
+                    throw new BusinessLogicException('No items available');
                 }
 
                 $items = [
@@ -283,6 +287,8 @@ class InvoiceRepository extends EloquentBaseRepository
 
                 if ($availableQuantity) {
                     $this->storeQuantityCheck($availableQuantity->available_balance, $item['quantity']);
+                }else {
+                    throw new BusinessLogicException('No items available');
                 }
                 $items = [
                     'store_id' => $data['data']['store_id'],
@@ -673,6 +679,8 @@ class InvoiceRepository extends EloquentBaseRepository
                 $availableQuantity = InvoiceItem::where('item_id', $item['item_id'])->orderBy('id', 'desc')->first();
                 if ($availableQuantity) {
                     $this->storeQuantityCheck($availableQuantity->available_balance, $item['quantity']);
+                }else {
+                    throw new BusinessLogicException('No items available');
                 }
                 $items = [
                     'store_id' => $data['data']['store_id'],
