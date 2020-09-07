@@ -758,8 +758,8 @@ class InvoiceRepository extends EloquentBaseRepository
                         $activeItem['quantity'] = $activeQty;
                         $activeItem['is_active'] = false;
                         $activeItem['invoice_item_id'] = $item['id'];
-                        $activeItem['unit_price'] = $item['selling_price'];
-                        $activeItem['price'] = $activeQty * $item['selling_price'];
+//                        $activeItem['unit_price'] = $item['selling_price'];
+                        $activeItem['price'] = $activeQty * $activeItem['unit_price'];
                         $dataToBeInserted[] = $activeItem;
                         break;
                     }
@@ -905,8 +905,9 @@ class InvoiceRepository extends EloquentBaseRepository
                         $activeItem['quantity'] = $activeQty;
                         $activeItem['is_active'] = false;
                         $activeItem['invoice_item_id'] = $item['id'];
-                        $activeItem['unit_price'] = $item['selling_price'];
-                        $activeItem['price'] = $activeQty * $item['selling_price'];
+//                        $activeItem['unit_price'] = $item['selling_price'];
+//                        $activeItem['price'] = $activeQty * $item['selling_price'];
+                        $activeItem['price'] = $activeQty * $activeItem['unit_price'];
                         $dataToBeInserted[] = $activeItem;
                         break;
                     }
@@ -952,7 +953,7 @@ class InvoiceRepository extends EloquentBaseRepository
             if ($lastBatch) {
                 $lastBatch = $lastBatch->toArray();
             } else {
-                $lastBatch = ['quantity' => 0, 'unit_cost' => 0];
+                $lastBatch = ['quantity' => 0, 'unit_cost' => 0, 'unit_price' => 0];
             }
 
             $dataToBeInserted = [];
