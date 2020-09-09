@@ -787,8 +787,8 @@ class InvoiceRepository extends EloquentBaseRepository
                         $activeItem['quantity'] = $activeQty;
                         $activeItem['is_active'] = false;
                         $activeItem['invoice_item_id'] = $item['id'];
-                        $activeItem['unit_price'] = $item['selling_price'];
-                        $activeItem['price'] = $activeQty * $item['selling_price'];
+//                        $activeItem['unit_price'] = $item['selling_price'];
+                        $activeItem['price'] = $activeQty * $activeItem['unit_price'];
                         $dataToBeInserted[] = $activeItem;
                         break;
                     }
@@ -934,8 +934,9 @@ class InvoiceRepository extends EloquentBaseRepository
                         $activeItem['quantity'] = $activeQty;
                         $activeItem['is_active'] = false;
                         $activeItem['invoice_item_id'] = $item['id'];
-                        $activeItem['unit_price'] = $item['selling_price'];
-                        $activeItem['price'] = $activeQty * $item['selling_price'];
+//                        $activeItem['unit_price'] = $item['selling_price'];
+//                        $activeItem['price'] = $activeQty * $item['selling_price'];
+                        $activeItem['price'] = $activeQty * $activeItem['unit_price'];
                         $dataToBeInserted[] = $activeItem;
                         break;
                     }
