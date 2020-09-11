@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminSegmentsTableSeeder::class);
         $this->call(AdminSegmentLevelConfigTableSeeder::class);
         $this->call(CountryCodesTableSeeder::class);
+        $this->call(CompanyConfigTableSeeder::class);
     }
 }
