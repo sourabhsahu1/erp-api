@@ -20,7 +20,7 @@ class CompanyConfigTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'name' => 'is_supplier',
+                'name' => 'isSupplier',
                 'deleted_at' => NULL,
                 'created_at' => NULL,
                 'updated_at' => NULL,
@@ -28,7 +28,7 @@ class CompanyConfigTableSeeder extends Seeder
             1 => 
             array (
                 'id' => 2,
-                'name' => 'is_customer',
+                'name' => 'isCustomer',
                 'deleted_at' => NULL,
                 'created_at' => NULL,
                 'updated_at' => NULL,
@@ -36,7 +36,7 @@ class CompanyConfigTableSeeder extends Seeder
             2 => 
             array (
                 'id' => 3,
-                'name' => 'is_cashbook_ac',
+                'name' => 'isCashbookAc',
                 'deleted_at' => NULL,
                 'created_at' => NULL,
                 'updated_at' => NULL,
@@ -44,7 +44,7 @@ class CompanyConfigTableSeeder extends Seeder
             3 => 
             array (
                 'id' => 4,
-                'name' => 'is_on_off',
+                'name' => 'isOnOff',
                 'deleted_at' => NULL,
                 'created_at' => NULL,
                 'updated_at' => NULL,
@@ -52,7 +52,7 @@ class CompanyConfigTableSeeder extends Seeder
             4 => 
             array (
                 'id' => 5,
-                'name' => 'is_pfa',
+                'name' => 'isPfa',
                 'deleted_at' => NULL,
                 'created_at' => NULL,
                 'updated_at' => NULL,
