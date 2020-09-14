@@ -23,7 +23,7 @@ class Create extends BaseRequest
             "state"=> "required",
             "country"=> "required",
             "address"=> "required",
-            "phone"=> "required|digits:10",
+            'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:7|max:15',
             "email"=> "required|email|unique:admin_companies",
             "website"=> "required"
         ];
