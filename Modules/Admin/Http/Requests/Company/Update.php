@@ -23,7 +23,7 @@ class Update extends BaseRequest
             "state" => "sometimes",
             "country" => "sometimes",
             "address" => "sometimes",
-            "phone" => "sometimes|digits:10",
+            'phone' => 'sometimes|regex:/^([0-9\s\-\+\(\)]*)$/|min:7|max:15',
             "email" => [
                 'sometimes',
                 'email',
