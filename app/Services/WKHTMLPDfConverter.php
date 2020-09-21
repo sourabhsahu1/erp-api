@@ -70,6 +70,7 @@ class WKHTMLPDfConverter
                 . " \"$html_path\" \"$filePath\"";
 
             $command = $cmd . ' ';
+            Log::info($cmd);
             $pid = exec($command, $output);
             sleep(2);
             return array('processId' => $pid, 'filePath' => $filePath, 'htmlPath' => $tmp_path, 'fileName' => $pdfFileName);
