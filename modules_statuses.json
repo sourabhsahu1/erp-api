@@ -1,5 +1,6 @@
 {
     "Hr": true,
     "Admin": true,
-    "Inventory": true
+    "Inventory": true,
+    "Finance": true
 }

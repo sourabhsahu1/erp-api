@@ -7,6 +7,7 @@
 
 namespace Modules\Hr\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -15,6 +16,11 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $id
  * @property string $name
  * @property string $country
+ * @property string $sort_code
+ * @property string $address
+ * @property string $city
+ * @property string $state
+ * @property string $is_active
  * @property int $bank_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -25,7 +31,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  */
 class BankBranch extends Eloquent
 {
-
+    use SoftDeletes;
     protected $table = 'hr_bank_branches';
 	protected $casts = [
 		'bank_id' => 'int'
@@ -34,7 +40,12 @@ class BankBranch extends Eloquent
 	protected $fillable = [
 		'name',
 		'bank_id',
-        'country'
+        'country',
+        'sort_code',
+        'address',
+        'city',
+        'state',
+        'is_active'
 	];
 
 	public function hr_bank()
