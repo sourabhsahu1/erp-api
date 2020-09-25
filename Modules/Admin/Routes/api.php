@@ -31,5 +31,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('company/{companyId}/bank/{id}','CompanyBankController@destroy');
 
     Route::resource('taxes','TaxController');
+
+
+
+    /** roles permission **/
+    Route::get('roles/{id}/permissions', 'RoleController@getPermissions');
+    Route::post('roles/{id}/permissions', 'RoleController@assignPermission');
 });
 

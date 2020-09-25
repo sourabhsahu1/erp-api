@@ -18,7 +18,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * 
+ *
+ * @property \Illuminate\Database\Eloquent\Collection $permissions
  * @property \Illuminate\Database\Eloquent\Collection $users
  *
  * @package Modules\Hr\Models
@@ -31,6 +32,14 @@ class Role extends Eloquent
 		'role',
 		'description'
 	];
+
+    public function permissions()
+    {
+        return $this->belongsToMany(\Modules\Admin\Models\Permission::class, 'role_permissions')
+            ->withPivot('id', 'deleted_at')
+            ->withTimestamps();
+    }
+
 
 	public function users()
 	{
