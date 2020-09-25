@@ -6,6 +6,8 @@ namespace Modules\Finance\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
 use Luezoid\Laravelcore\Jobs\BaseJob;
+use Modules\Finance\Http\Requests\CreateBankRequest;
+use Modules\Finance\Http\Requests\UpdateBankRequest;
 use Modules\Finance\Repositories\BankRepository;
 
 class BankController extends BaseController
@@ -18,6 +20,6 @@ class BankController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
-//    protected $storeRequest = Create::class;
-//    protected $updateRequest = Update::class;
+    protected $storeRequest = CreateBankRequest::class;
+    protected $updateRequest = UpdateBankRequest::class;
 }
