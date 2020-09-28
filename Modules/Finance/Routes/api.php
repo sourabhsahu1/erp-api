@@ -18,5 +18,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::resource('banks', 'BankController');
     Route::resource('bank/{bankId}/branches', 'BankBranchesController');
-
+    Route::get('journal-vouchers','JournalVoucherController@index');
+    Route::post('journal-vouchers','JournalVoucherController@store');
+    Route::post('journal-vouchers/update','JournalVoucherController@updateStatus');
 });

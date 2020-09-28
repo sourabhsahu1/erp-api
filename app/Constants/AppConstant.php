@@ -71,4 +71,15 @@ class AppConstant
     const COSTING_METHOD_LIFO = 'LIFO';
     const COSTING_METHOD_FIFO = 'FIFO';
     const COSTING_METHOD_AVG = 'AVG';
+
+
+    //JV
+    const JV_STATUS_ALL = 'ALL';
+    const JV_STATUS_NEW = 'NEW';
+    const JV_STATUS_CHECKED = 'CHECKED';
+    const JV_STATUS_POSTED = 'POSTED';
+    const LINE_VALUE_TYPE_DEBIT = 'DEBIT';
+    const LINE_VALUE_TYPE_CREDIT = 'CREDIT';
+
+
 }
