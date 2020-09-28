@@ -30,7 +30,7 @@ class RoleRepository extends EloquentBaseRepository
         $roleId = array_get($data['inputs'], 'id');
         return Permission::join('role_permissions', 'role_permissions.permission_id', '=', 'permissions.id')
             ->where('role_permissions.role_id', $roleId)
-            ->select(['permissions.id','permissions.module','permissions.entity_name','permissions.name'])
+            ->select(['permissions.module','permissions.entity_name','permissions.name'])
             ->groupBy(['permissions.module','permissions.entity_name','permissions.name'])
             ->get();
     }
