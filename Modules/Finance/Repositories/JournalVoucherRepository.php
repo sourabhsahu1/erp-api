@@ -22,9 +22,14 @@ class JournalVoucherRepository extends EloquentBaseRepository
 
         $jvVoucherDetails = $data['data']['jv_detail'];
 
+        $latestEntry = JournalVoucher::latest()->first();
+      if (!$latestEntry){
+          $data['data']['jvReferenceNumber'] = "JV1";
+      }
         $data['data']['source_app'] = "PLINYEGL";
         $data['data']['status'] = "NEW";
         unset($data['data']['jv_detail']);
+
         DB::beginTransaction();
         try {
             $jv = parent::create($data);
@@ -71,7 +76,7 @@ class JournalVoucherRepository extends EloquentBaseRepository
             }
         }
 
-        return ['success' => strtolower($data['data']['status']). ' successfully'];
+        return ['success' => strtolower($data['data']['status']) . ' successfully'];
     }
 
 }
