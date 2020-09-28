@@ -4,6 +4,7 @@
 namespace Modules\Admin\Repositories;
 
 
+
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\Permission;
 use Modules\Hr\Models\Role;
