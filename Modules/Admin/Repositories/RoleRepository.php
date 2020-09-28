@@ -31,6 +31,7 @@ class RoleRepository extends EloquentBaseRepository
         return Permission::join('role_permissions', 'role_permissions.permission_id', '=', 'permissions.id')
             ->where('role_permissions.role_id', $roleId)
             ->select(['permissions.*'])
+            ->groupBy('permissions.module')
             ->get();
     }
 }
