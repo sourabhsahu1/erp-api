@@ -14,8 +14,10 @@ class JournalVoucherController extends BaseController
     protected $repository = JournalVoucherRepository::class;
     protected $createJob = BaseJob::class;
     protected $updateJob = BaseJob::class;
+    protected $deleteJob = BaseJob::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
+    protected $deleteJobMethod = "delete";
     protected $indexWith = ['journal_voucher_details'];
 
     public function updateStatus(Request $request)

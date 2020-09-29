@@ -18,8 +18,11 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::resource('banks', 'BankController');
     Route::resource('bank/{bankId}/branches', 'BankBranchesController');
-    Route::get('journal-vouchers','JournalVoucherController@index');
-    Route::post('journal-vouchers','JournalVoucherController@store');
+    Route::resource('journal-vouchers','JournalVoucherController');
+
+    Route::put('journal-vouchers/{id}/details/{detailId}','JournalVoucherDetailController@update');
+    Route::delete('journal-vouchers/{id}/details/{detailId}','JournalVoucherDetailController@destroy');
+    Route::get('journal-vouchers/{id}/details/{detailId}','JournalVoucherDetailController@show');
+
     Route::post('journal-vouchers/update','JournalVoucherController@updateStatus');
-    Route::put('journal-vouchers/{id}','JournalVoucherController@update');
 });
