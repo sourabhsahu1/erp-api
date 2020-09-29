@@ -28,6 +28,7 @@ class JournalVoucherController extends BaseController
         'journal_voucher_details.admin_segment',
         'journal_voucher_details.fund_segment',
         'journal_voucher_details.economic_segment',
+        'journal_voucher_details.programme_segment',
         'journal_voucher_details.functional_segment',
         'journal_voucher_details.geo_code_segment',
     ];
@@ -39,6 +40,7 @@ class JournalVoucherController extends BaseController
         'journal_voucher_details.admin_segment',
         'journal_voucher_details.fund_segment',
         'journal_voucher_details.economic_segment',
+        'journal_voucher_details.programme_segment',
         'journal_voucher_details.functional_segment',
         'journal_voucher_details.geo_code_segment',
     ];
