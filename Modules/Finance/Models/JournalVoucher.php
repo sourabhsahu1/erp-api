@@ -32,7 +32,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * 
+ *
  * @property \Modules\Admin\Models\AdminSegment $admin_segment
  * @property \Modules\Hr\Models\User $user
  * @property \Illuminate\Database\Eloquent\Collection $journal_voucher_details
@@ -41,7 +41,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  */
 class JournalVoucher extends Eloquent
 {
-	use \Illuminate\Database\Eloquent\SoftDeletes;
+    use \Illuminate\Database\Eloquent\SoftDeletes;
 
     protected $casts = [
         'fund_segment_id' => 'int',
@@ -79,18 +79,28 @@ class JournalVoucher extends Eloquent
         'posted_user_id'
     ];
 
-	public function admin_segment()
-	{
-		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'fund_segment_id');
-	}
+    public function fund_segment()
+    {
+        return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'fund_segment_id');
+    }
 
-	public function user()
-	{
-		return $this->belongsTo(\Modules\Hr\Models\User::class);
-	}
+    public function prepared_user()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\User::class, 'prepared_user_id');
+    }
 
-	public function journal_voucher_details()
-	{
-		return $this->hasMany(\Modules\Finance\Models\JournalVoucherDetail::class);
-	}
+    public function checked_user()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\User::class, 'checked_user_id');
+    }
+
+    public function posted_user()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\User::class, 'posted_user_id');
+    }
+
+    public function journal_voucher_details()
+    {
+        return $this->hasMany(\Modules\Finance\Models\JournalVoucherDetail::class);
+    }
 }

@@ -72,9 +72,29 @@ class JournalVoucherDetail extends Eloquent
 		'lv_line_value'
 	];
 
-	public function admin_segment()
+	public function programme_segment()
 	{
 		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'programme_segment_id');
+	}
+	public function admin_segment()
+	{
+		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'admin_segment_id');
+	}
+	public function fund_segment()
+	{
+		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'fund_segment_id');
+	}
+	public function economic_segment()
+	{
+		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'economic_segment_id');
+	}
+	public function functional_segment()
+	{
+		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'functional_segment_id');
+	}
+	public function geo_code_segment()
+	{
+		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'geo_code_segment_id');
 	}
 
 	public function journal_voucher()
