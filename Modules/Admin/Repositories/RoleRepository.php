@@ -36,14 +36,7 @@ class RoleRepository extends EloquentBaseRepository
         $module =[];
         foreach($permissions as $permission)
         {
-            if(isset($module[$permission['module']]))
-            {
-                $module[$permission['module']][] = $permission->toArray();
-            }
-            else
-            {
-                $module[$permission['module']][]=$permission->toArray();
-            }
+            $module[$permission['module']][]=$permission->toArray();
         }
         return $module;
     }
