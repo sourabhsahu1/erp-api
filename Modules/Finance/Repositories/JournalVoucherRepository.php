@@ -22,6 +22,7 @@ class JournalVoucherRepository extends EloquentBaseRepository
 
         $jvVoucherDetails = $data['data']['jv_detail'];
 
+        $data['data']['prepared_user_id'] = $data['data']['user_id'];
         $data['data']['source_app'] = "PLINYEGL";
         $data['data']['status'] = "NEW";
         unset($data['data']['jv_detail']);

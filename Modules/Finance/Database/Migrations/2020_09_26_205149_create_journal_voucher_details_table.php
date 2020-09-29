@@ -19,7 +19,7 @@ class CreateJournalVoucherDetailsTable extends Migration
             $table->unsignedBigInteger('journal_voucher_id');
             $table->string('currency');
             $table->decimal('x_rate_local',12,2);
-            $table->decimal('bank_x_rate_to_usd',4,2);
+            $table->decimal('bank_x_rate_to_usd',12,2);
             $table->string('account_name');
             $table->string('line_reference');
             $table->string('line_value');
