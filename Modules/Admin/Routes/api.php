@@ -40,4 +40,5 @@ Route::middleware(['auth:api'])->group(function () {
 
 });
 
-Route::get('roles/{id}/permissions', 'RoleController@getPermissions');
+Route::get('roles/{id}/permissions', 'RoleController@getRolePermissions');
+Route::get('permissions', 'RoleController@getPermissions');

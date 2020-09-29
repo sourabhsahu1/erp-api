@@ -18,6 +18,12 @@ class RoleController extends BaseController
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
 
+
+    public function getRolePermissions(Request $request) {
+        $this->jobMethod = "getRolePermissions";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
     public function assignPermission(Request $request) {
         $this->jobMethod = "assignPermission";
         return $this->handleCustomEndPoint(BaseJob::class, $request);

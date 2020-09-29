@@ -25,13 +25,29 @@ class RoleRepository extends EloquentBaseRepository
     }
 
 
-    public function getPermissions($data)
+    public function getRolePermissions($data)
     {
+
         $roleId = array_get($data['inputs'], 'id');
-        $permissions= Permission::join('role_permissions', 'role_permissions.permission_id', '=', 'permissions.id')
-            ->where('role_permissions.role_id', $roleId)
-            ->select(['permissions.*'])
-            ->get();
+        return Permission::join('role_permissions', 'role_permissions.permission_id', '=', 'permissions.id')->where('role_permissions.role_id', $roleId)->select(['permissions.*'])->get();
+
+//        $roleId = array_get($data['inputs'], 'id');
+//        $permissions= Permission::join('role_permissions', 'role_permissions.permission_id', '=', 'permissions.id')
+//            ->where('role_permissions.role_id', $roleId)
+//            ->select(['permissions.*'])
+//            ->get();
+//
+//        $module =[];
+//        foreach($permissions as $permission)
+//        {
+//            $module[$permission['module']][]=$permission->toArray();
+//        }
+//        return $module;
+    }
+
+
+    public function getPermissions() {
+        $permissions= Permission::all();
 
         $module =[];
         foreach($permissions as $permission)
