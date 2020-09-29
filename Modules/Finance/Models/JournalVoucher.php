@@ -47,7 +47,16 @@ class JournalVoucher extends Eloquent
         'fund_segment_id' => 'int',
         'prepared_user_id' => 'int',
         'checked_user_id' => 'int',
-        'posted_user_id' => 'int'
+        'posted_user_id' => 'int',
+        'jv_value_date' =>  'datetime:Y-m-d',
+        'prepared_value_date' => 'datetime:Y-m-d',
+        'prepared_transaction_date' => 'datetime:Y-m-d',
+        'checked_value_date' => 'datetime:Y-m-d',
+        'checked_transaction_date' => 'datetime:Y-m-d',
+        'posted_value_date' => 'datetime:Y-m-d',
+        'posted_transaction_date' => 'datetime:Y-m-d',
+        'created_at' => 'datetime:Y-m-d',
+        'updated_at' => 'datetime:Y-m-d'
     ];
 
     protected $dates = [
