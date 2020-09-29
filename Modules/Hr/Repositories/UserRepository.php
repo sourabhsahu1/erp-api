@@ -46,14 +46,8 @@ class UserRepository extends EloquentBaseRepository
     {
         $userId = $params['data']['user_id'];
 
-        $selfData = User::with(['file','roles'])->find($userId);
+        $selfData = User::with(['file','roles.permissions'])->find($userId);
 
-        $permissions = Permission::join('role_permissions', 'role_permissions.permission_id', '=', 'permissions.id')
-            ->whereIn('role_permissions.role_id', $roleIds)
-            ->select('permissions.*')
-            ->distinct()
-            ->get();
-        dd($selfData);
         return $selfData;
     }
 }
