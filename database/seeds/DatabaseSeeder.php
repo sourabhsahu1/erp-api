@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminSegmentLevelConfigTableSeeder::class);
         $this->call(CountryCodesTableSeeder::class);
         $this->call(CompanyConfigTableSeeder::class);
+        $this->call(PermissionsTableSeeder::class);
     }
 }
