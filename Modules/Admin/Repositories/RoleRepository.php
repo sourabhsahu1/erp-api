@@ -28,10 +28,23 @@ class RoleRepository extends EloquentBaseRepository
     public function getPermissions($data)
     {
         $roleId = array_get($data['inputs'], 'id');
-        return Permission::join('role_permissions', 'role_permissions.permission_id', '=', 'permissions.id')
+        $permissions= Permission::join('role_permissions', 'role_permissions.permission_id', '=', 'permissions.id')
             ->where('role_permissions.role_id', $roleId)
-            ->select(['permissions.module','permissions.entity_name','permissions.name'])
-            ->groupBy(['permissions.module','permissions.entity_name','permissions.name'])
+            ->select(['permissions.*'])
             ->get();
+
+        $module =[];
+        foreach($permissions as $permission)
+        {
+            if(isset($module[$permission['module']]))
+            {
+                $module[$permission['module']][] = $permission->toArray();
+            }
+            else
+            {
+                $module[$permission['module']][]=$permission->toArray();
+            }
+        }
+        return $module;
     }
 }
