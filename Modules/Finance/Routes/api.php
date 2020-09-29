@@ -21,4 +21,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('journal-vouchers','JournalVoucherController@index');
     Route::post('journal-vouchers','JournalVoucherController@store');
     Route::post('journal-vouchers/update','JournalVoucherController@updateStatus');
+    Route::put('journal-vouchers/{id}','JournalVoucherController@update');
 });
