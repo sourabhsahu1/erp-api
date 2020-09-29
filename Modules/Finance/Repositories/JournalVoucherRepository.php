@@ -32,7 +32,30 @@ class JournalVoucherRepository extends EloquentBaseRepository
             foreach ($jvVoucherDetails as $key => $detail) {
                 $jvVoucherDetails[$key]['journal_voucher_id'] = $jv->id;
             }
-            JournalVoucherDetail::insert($jvVoucherDetails);
+
+            $newData = null;
+            foreach ($jvVoucherDetails as $key => $jvVoucherDetail) {
+                $newData[] = array_intersect_key($jvVoucherDetail,
+                    array_flip(
+                        [
+                            'journal_voucher_id',
+                            'currency',
+                            'x_rate_local',
+                            'bank_x_rate_to_usd',
+                            'account_name',
+                            'line_reference',
+                            'line_value',
+                            'admin_segment_id',
+                            'fund_segment_id',
+                            'economic_segment_id',
+                            'programme_segment_id',
+                            'functional_segment_id',
+                            'geo_code_segment_id',
+                            'line_value_type',
+                            'lv_line_value'
+                        ]));
+            }
+            JournalVoucherDetail::insert($newData);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

@@ -12,7 +12,9 @@ use Modules\Finance\Repositories\JournalVoucherDetailRepository;
 class JournalVoucherDetailController extends BaseController
 {
     protected $repository = JournalVoucherDetailRepository::class;
+    protected $createJob = BaseJob::class;
     protected $updateJob = BaseJob::class;
+    protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
 
 
