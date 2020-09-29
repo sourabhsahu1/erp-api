@@ -36,8 +36,8 @@ class JournalVoucherDetailRepository extends EloquentBaseRepository
 
         $jvDetail = JournalVoucherDetail::where('journal_voucher_id', $data['data']['id'])->where('id', $data['data']['detail_id'])->first();
         if ($jvDetail) {
-              $jvDetail->delete();
-              return $jvDetail;
+            $jvDetail->delete();
+            return $jvDetail;
         } else {
             throw new AppException('Not exist');
         }
@@ -45,10 +45,17 @@ class JournalVoucherDetailRepository extends EloquentBaseRepository
 
     public function show($data, $params = null)
     {
-        $jvDetail = JournalVoucherDetail::where('journal_voucher_id', $data['data']['id'])->where('id', $data['data']['detail_id'])->first();
+        $jvDetail = JournalVoucherDetail::with([
+            'programme_segment',
+            'admin_segment',
+            'fund_segment',
+            'economic_segment',
+            'functional_segment',
+            'geo_code_segment'
+        ])->where('journal_voucher_id', $data['data']['id'])->where('id', $data['data']['detail_id'])->first();
         if ($jvDetail) {
             return $jvDetail;
-        }else {
+        } else {
             throw  new AppException('not exist');
         }
     }

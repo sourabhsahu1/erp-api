@@ -31,6 +31,17 @@ class JournalVoucherController extends BaseController
         'journal_voucher_details.functional_segment',
         'journal_voucher_details.geo_code_segment',
     ];
+    protected $showWith = [
+        'fund_segment',
+        'prepared_user',
+        'checked_user',
+        'posted_user',
+        'journal_voucher_details.admin_segment',
+        'journal_voucher_details.fund_segment',
+        'journal_voucher_details.economic_segment',
+        'journal_voucher_details.functional_segment',
+        'journal_voucher_details.geo_code_segment',
+    ];
     protected $storeRequest = Create::class;
     protected $updateRequest = Update::class;
     public function updateStatus(Request $request)
