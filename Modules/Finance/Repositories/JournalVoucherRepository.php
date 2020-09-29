@@ -22,13 +22,13 @@ class JournalVoucherRepository extends EloquentBaseRepository
 
         $jvVoucherDetails = $data['data']['jv_detail'];
 
-        $latestEntry = JournalVoucher::latest()->first();
-      if (!$latestEntry){
-          $data['data']['jv_reference_number'] = "JV1";
-      }else{
-          $v = explode('JV',$latestEntry->jv_reference_number)[1] + 1 ;
-          $data['data']['jv_reference_number'] = 'JV'.$v;
-      }
+//        $latestEntry = JournalVoucher::latest()->first();
+//      if (!$latestEntry){
+//          $data['data']['jv_reference_number'] = "JV1";
+//      }else{
+//          $v = explode('JV',$latestEntry->jv_reference_number)[1] + 1 ;
+//          $data['data']['jv_reference_number'] = 'JV'.$v;
+//      }
 
 
         $data['data']['source_app'] = "PLINYEGL";

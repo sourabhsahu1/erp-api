@@ -20,7 +20,7 @@ class CreateJournalVouchersTable extends Migration
             $table->string('batch_number');
             $table->date('jv_value_date');
             $table->unsignedInteger('fund_segment_id');
-            $table->string('jv_reference_number');
+            $table->string('jv_reference');
             $table->enum('status',[
                 AppConstant::JV_STATUS_NEW,
                 AppConstant::JV_STATUS_POSTED,

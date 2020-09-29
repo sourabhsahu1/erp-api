@@ -17,7 +17,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $batch_number
  * @property \Carbon\Carbon $jv_value_date
  * @property int $fund_segment_id
- * @property string $jv_reference_number
+ * @property string $jv_reference
  * @property string $status
  * @property string $transaction_details
  * @property \Carbon\Carbon $prepared_value_date
@@ -65,7 +65,7 @@ class JournalVoucher extends Eloquent
         'batch_number',
         'jv_value_date',
         'fund_segment_id',
-        'jv_reference_number',
+        'jv_reference',
         'status',
         'transaction_details',
         'prepared_value_date',
