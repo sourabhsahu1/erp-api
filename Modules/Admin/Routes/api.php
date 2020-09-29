@@ -17,7 +17,7 @@ Route::post('authenticate', "AuthenticationController@doLogin")->name('authentic
 Route::middleware(['auth:api'])->group(function () {
     Route::resource('admin', 'AdminController', ['parameters' => ['admin' => 'id']]);
     Route::resource('users', 'UserController');
-    Route::get('roles', 'RoleController@index');
+    Route::resource('roles', 'RoleController');
     Route::post('user/{id}/role', 'UserController@addRoleAssign');
     Route::put('user/{id}/role', 'UserController@updateRoleAssign');
     Route::delete('user/{id}/role/{roleId}', 'UserController@deleteRoleAssign');

@@ -12,12 +12,17 @@ use Modules\Admin\Repositories\RoleRepository;
 class RoleController extends BaseController
 {
     protected $repository = RoleRepository::class;
+    protected $createJob = BaseJob::class;
+    protected $updateJob = BaseJob::class;
+    protected $deleteJob = BaseJob::class;
+    protected $storeJobMethod = "create";
+    protected $updateJobMethod = "update";
+    protected $deleteJobMethod = "delete";
 
     public function getPermissions(Request $request) {
         $this->jobMethod = "getPermissions";
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
-
 
     public function getRolePermissions(Request $request) {
         $this->jobMethod = "getRolePermissions";
