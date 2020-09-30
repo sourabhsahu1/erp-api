@@ -62,6 +62,7 @@ class JournalVoucherRepository extends EloquentBaseRepository
             foreach ($newData as $item) {
                $lv[$item['line_value_type']] += $item['lv_line_value'];
             }
+
             if ($lv['CREDIT'] != $lv['DEBIT']) {
                 throw new  AppException('DEBIT and CREDIT values are not equal');
             }
@@ -92,6 +93,36 @@ class JournalVoucherRepository extends EloquentBaseRepository
     //todo filter to added in this function
     public function getAll($params = [], $query = null)
     {
+        if(isset($params['inputs']['status']))
+        {
+            if($params['inputs']['status'] == AppConstant::JV_STATUS_NEW)
+            {
+                $query=JournalVoucher::where('status',$params['inputs']['status']);
+            }
+            else if($params['inputs']['status'] == AppConstant::JV_STATUS_POSTED)
+            {
+                $query=JournalVoucher::where('status',$params['inputs']['status']);
+            }
+            else if($params['inputs']['status'] == AppConstant::JV_STATUS_CHECKED)
+            {
+                $query=JournalVoucher::where('status',$params['inputs']['status']);
+            }
+
+        }
+
+        if(isset($params['inputs']['source']))
+        {
+            $query=JournalVoucher::where('source_app',$params['inputs']['source']);
+        }
+
+        if(isset($params['inputs']['from']) && isset($params['inputs']['to']))
+        {
+            $params['inputs']['from'] = $params['inputs']['from'].' 00:00:00';
+            $params['inputs']['to'] = $params['inputs']['to'].' 23:59:59';
+
+            $query = JournalVoucher::where('created_at','>=',$params['inputs']['from'])
+                ->where('created_at','<=',$params['inputs']['to']);
+        }
         return parent::getAll($params, $query);
     }
 
