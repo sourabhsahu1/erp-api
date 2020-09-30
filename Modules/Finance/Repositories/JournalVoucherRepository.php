@@ -88,6 +88,8 @@ class JournalVoucherRepository extends EloquentBaseRepository
         return parent::delete($data);
     }
 
+
+    //todo filter to added in this function
     public function getAll($params = [], $query = null)
     {
         return parent::getAll($params, $query);
