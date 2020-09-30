@@ -56,6 +56,16 @@ class JournalVoucherRepository extends EloquentBaseRepository
                             'lv_line_value'
                         ]));
             }
+
+            $lv['CREDIT'] = 0;
+            $lv['DEBIT'] = 0;
+            foreach ($newData as $item) {
+               $lv[$item['line_value_type']] += $item['lv_line_value'];
+            }
+            if ($lv['CREDIT'] != $lv['DEBIT']) {
+                throw new  AppException('DEBIT and CREDIT values are not equal');
+            }
+
             JournalVoucherDetail::insert($newData);
             DB::commit();
         } catch (\Exception $e) {
