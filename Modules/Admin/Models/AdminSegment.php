@@ -43,6 +43,7 @@ class AdminSegment extends Eloquent
 
     const SEGMENT_ECONOMIC_SEGMENT_ID = 2;
 
+
     protected $fillable = [
         'name',
         'updated_At',
@@ -55,6 +56,13 @@ class AdminSegment extends Eloquent
         'top_level_child_count',
         'top_level_id',
     ];
+
+    public function getVirtualCombinedCodeAttribute($key)
+    {
+        if (strlen($key) > 3)
+            return substr($key, 3);
+
+    }
 
     public function children()
     {
@@ -78,7 +86,7 @@ class AdminSegment extends Eloquent
 
     public function level_config()
     {
-        return $this->hasMany(\Modules\Admin\Models\AdminSegmentLevelConfig::class)->where('level','!=',0);
+        return $this->hasMany(\Modules\Admin\Models\AdminSegmentLevelConfig::class)->where('level', '!=', 0);
     }
 
 }
