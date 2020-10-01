@@ -16,7 +16,7 @@ class Delete extends BaseRequest
         /** @var JournalVoucher $jv */
         $jv = JournalVoucher::find($this->route('id'));
         if ($jv->status != AppConstant::JV_STATUS_NEW) {
-            throw new AppException('Cannot Add Status is not NEW');
+            throw new AppException('Cannot Delete Status is not NEW');
         }
 
     }
