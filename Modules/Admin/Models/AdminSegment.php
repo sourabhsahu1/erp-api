@@ -7,6 +7,7 @@
 
 namespace Modules\Admin\Models;
 
+use phpDocumentor\Reflection\Types\This;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -43,6 +44,7 @@ class AdminSegment extends Eloquent
 
     const SEGMENT_ECONOMIC_SEGMENT_ID = 2;
 
+    protected $appends = ['virtual_combined_code'];
 
     protected $fillable = [
         'name',
@@ -57,10 +59,10 @@ class AdminSegment extends Eloquent
         'top_level_id',
     ];
 
-    public function getVirtualCombinedCodeAttribute($key)
+    public function getVirtualCombinedCodeAttribute()
     {
-        if (strlen($key) > 3)
-            return substr($key, 3);
+        if (strlen($this->combined_code) > 3)
+            return substr($this->combined_code, 3);
 
     }
 
