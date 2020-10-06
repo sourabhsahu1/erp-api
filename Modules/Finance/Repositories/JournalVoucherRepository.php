@@ -148,7 +148,11 @@ class JournalVoucherRepository extends EloquentBaseRepository
                     'posted_value_date' => Carbon::now()->toDateTimeString(),
                     'posted_transaction_date' => Carbon::now()->toDateTimeString()
                 ]);
-            } else {
+                } elseif ($data['data']['status'] == 'RENEW') {
+                $jv->update([
+                    'status' => AppConstant::JV_STATUS_NEW
+                ]);
+            }else {
                 throw new AppException('Invalid status');
             }
         }
