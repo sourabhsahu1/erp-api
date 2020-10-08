@@ -20,6 +20,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('bank/{bankId}/branches', 'BankBranchesController');
     Route::resource('journal-vouchers','JournalVoucherController');
     Route::resource('currencies','CurrencyController');
+    Route::get('economic-budget','BudgetController@getEconomicBudget');
+    Route::get('programme-budget','BudgetController@index');
+    Route::post('budget','BudgetController@store');
+    Route::put('budget/{id}','BudgetController@update');
 
     Route::post('journal-vouchers/{id}/details','JournalVoucherDetailController@store');
     Route::put('journal-vouchers/{id}/details/{detailId}','JournalVoucherDetailController@update');

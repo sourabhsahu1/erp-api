@@ -82,4 +82,8 @@ class AppConstant
     const LINE_VALUE_TYPE_CREDIT = 'CREDIT';
 
 
+    //BUDGET
+    const BUDGET_TYPE_ECONOMIC = 'ECONOMIC';
+    const BUDGET_TYPE_PROGRAM = 'PROGRAM';
+
 }
