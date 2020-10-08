@@ -24,6 +24,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('programme-budget','BudgetController@index');
     Route::post('budget','BudgetController@store');
     Route::put('budget/{id}','BudgetController@update');
+    Route::delete('budget/{id}','BudgetController@destroy');
 
     Route::post('journal-vouchers/{id}/details','JournalVoucherDetailController@store');
     Route::put('journal-vouchers/{id}/details/{detailId}','JournalVoucherDetailController@update');
