@@ -11,7 +11,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CompanySetting
- * 
+ *
  * @property int $id
  * @property int $company_information_id
  * @property string $country
@@ -20,7 +20,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * 
+ *
  * @property \Modules\Admin\Models\CompanyInformation $company_information
  *
  * @package Modules\Inventory\Models
@@ -37,7 +37,8 @@ class CompanySetting extends Eloquent
 	protected $fillable = [
 		'company_information_id',
 		'country',
-		'currency',
+		'local_currency',
+        'international_currency',
 		'auto_post'
 	];
 
