@@ -71,7 +71,7 @@ class Budget extends Eloquent
         'cumulative_previous_year_amount',
         'cumulative_previous_year_actual_amount'
     ];
-    public $searchable = ['id'];
+    public $searchable = ['id','admin_segment_id','fund_segment_id'];
 
     public function admin_segment()
     {
