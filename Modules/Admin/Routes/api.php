@@ -42,3 +42,5 @@ Route::middleware(['auth:api'])->group(function () {
 
 Route::get('roles/{id}/permissions', 'RoleController@getRolePermissions');
 Route::get('permissions', 'RoleController@getPermissions');
+Route::get('company-information','CompanyInformationController@index');
+Route::resource('company-setting','CompanyInformationSettingController');
