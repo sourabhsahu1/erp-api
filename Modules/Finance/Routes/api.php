@@ -30,6 +30,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('journal-vouchers/{id}/details/{detailId}','JournalVoucherDetailController@update');
     Route::delete('journal-vouchers/{id}/details/{detailId}','JournalVoucherDetailController@destroy');
     Route::get('journal-vouchers/{id}/details/{detailId}','JournalVoucherDetailController@show');
-
     Route::post('journal-vouchers/update','JournalVoucherController@updateStatus');
+
+    //finance report
+    Route::get('finance/trial-report','ReportController@getTrialBalanceReport');
+
+
+
 });
