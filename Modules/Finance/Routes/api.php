@@ -33,8 +33,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('journal-vouchers/update','JournalVoucherController@updateStatus');
 
     //finance report
-    Route::get('finance/trial-report','ReportController@getTrialBalanceReport');
+    //Route::get('finance/trial-report','ReportController@getTrialBalanceReport');
 
 
 
 });
+    Route::get('finance/trial-report','ReportController@getTrialBalanceReport');
+    Route::get('finance/jv-ledger','ReportController@getJvLedgerReport');
+

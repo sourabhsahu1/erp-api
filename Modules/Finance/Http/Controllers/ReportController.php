@@ -18,4 +18,10 @@ class ReportController extends BaseController
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
 
+    public function getJvLedgerReport(Request $request)
+    {
+        $this->jobMethod = 'getJvLedgerReport';
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
 }
