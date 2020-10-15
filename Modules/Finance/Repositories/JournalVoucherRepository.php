@@ -68,6 +68,15 @@ class JournalVoucherRepository extends EloquentBaseRepository
 //            }
 
             JournalVoucherDetail::insert($newData);
+
+
+            $jds = JournalVoucherDetail::where('journal_voucher_id',  $jv->id)->get();
+
+
+            foreach ($jds as $jd) {
+
+            }
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -75,6 +84,9 @@ class JournalVoucherRepository extends EloquentBaseRepository
         }
         return JournalVoucher::with('journal_voucher_details')->find($jv->id);
     }
+
+
+
 
 
     public function update($data)
