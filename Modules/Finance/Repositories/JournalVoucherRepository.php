@@ -7,10 +7,13 @@ namespace Modules\Finance\Repositories;
 use App\Constants\AppConstant;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Admin\Models\AdminSegment;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JournalVoucherDetail;
+use Modules\Finance\Models\JvTrailBalanceReport;
 
 class JournalVoucherRepository extends EloquentBaseRepository
 {
@@ -70,11 +73,12 @@ class JournalVoucherRepository extends EloquentBaseRepository
             JournalVoucherDetail::insert($newData);
 
 
-            $jds = JournalVoucherDetail::where('journal_voucher_id',  $jv->id)->get();
+            $jds = JournalVoucherDetail::where('journal_voucher_id', $jv->id)->get();
 
 
             foreach ($jds as $jd) {
-
+                $jd = $jd->toArray();
+                $this->insertInTrailReport($jd);
             }
 
             DB::commit();
@@ -86,8 +90,69 @@ class JournalVoucherRepository extends EloquentBaseRepository
     }
 
 
+    function insertInTrailReport($jd)
+    {
+
+        $existingJv = JvTrailBalanceReport::where('economic_segment_id', $jd['economic_segment_id'])->first();
+
+        $parent = AdminSegment::where('id', $jd['economic_segment_id'])->first();
+        if ($parent->parent_id == null) {
+            return;
+        }
+
+        if (is_null($existingJv)) {
+            $data = [
+                'economic_segment_id' => $jd['economic_segment_id'],
+                'parent_id' => $parent->parent_id ?? null,
+                'credit' => 0,
+                'debit' => 0,
+                'balance' => 0
+            ];
+
+            if ($jd['line_value_type'] == 'DEBIT') {
+                $data['debit'] = $jd['lv_line_value'];
+                $data['balance'] = abs($data['debit'] - $data['credit']);
+            } elseif ($jd['line_value_type'] == 'CREDIT') {
+                $data['credit'] = $jd['lv_line_value'];
+                $data['balance'] = abs($data['credit'] - $data['debit']);
+            }
+
+            $jv = JvTrailBalanceReport::create($data);
+Log::info($jv);
+            if ($parent->parent_id != null) {
+                $this->insertInTrailReport([
+                    'economic_segment_id' => $parent->parent_id,
+                    'lv_line_value' => $jd['lv_line_value'],
+                    'line_value_type' => $jd['line_value_type']
+                ]);
+            }
+
+        } else {
+            $this->updateTrailReport($existingJv, $jd);
+        }
+    }
 
 
+    function updateTrailReport($existingJv, $jd)
+    {
+        if (is_null($existingJv)) {
+            return;
+        }
+        $data = [
+            'debit' => $existingJv->debit,
+            'credit' => $existingJv->credit
+        ];
+        if ($jd['line_value_type'] == 'DEBIT') {
+            $data['debit'] += $jd['lv_line_value'];
+        }
+        if ($jd['line_value_type'] == 'CREDIT') {
+            $data['credit'] += $jd['lv_line_value'];
+        }
+        $data['balance'] = abs($data['debit'] - $data['credit']);
+        $existingJv->update($data);
+        $this->updateTrailReport(JvTrailBalanceReport::where('economic_segment_id', $existingJv['parent_id'])->first(), $jd);
+
+    }
 
     public function update($data)
     {
@@ -95,7 +160,7 @@ class JournalVoucherRepository extends EloquentBaseRepository
         /** @var JournalVoucher $jv */
         $jv = parent::find($data['id']);
 
-        if ( $jv && $jv->status != AppConstant::JV_STATUS_NEW) {
+        if ($jv && $jv->status != AppConstant::JV_STATUS_NEW) {
             throw new AppException('Cannot update');
         }
         $data['data']['prepared_user_id'] = $data['data']['user_id'];
@@ -160,11 +225,11 @@ class JournalVoucherRepository extends EloquentBaseRepository
                     'posted_value_date' => Carbon::now()->toDateTimeString(),
                     'posted_transaction_date' => Carbon::now()->toDateTimeString()
                 ]);
-                } elseif ($data['data']['status'] == 'RENEW') {
+            } elseif ($data['data']['status'] == 'RENEW') {
                 $jv->update([
                     'status' => AppConstant::JV_STATUS_NEW
                 ]);
-            }else {
+            } else {
                 throw new AppException('Invalid status');
             }
         }

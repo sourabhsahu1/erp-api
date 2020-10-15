@@ -87,7 +87,7 @@ class JournalVoucher extends Eloquent
         'checked_user_id',
         'posted_user_id'
     ];
-
+    public $searchable = ['programmeSegmentId','economicSegmentId'];
     public function fund_segment()
     {
         return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'fund_segment_id');

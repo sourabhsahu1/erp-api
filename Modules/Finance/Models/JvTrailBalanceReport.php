@@ -5,7 +5,7 @@
  * Date: Thu, 15 Oct 2020 06:27:31 +0000.
  */
 
-namespace Modules\Inventory\Models;
+namespace Modules\Finance\Models;
 
 use Reliese\Database\Eloquent\Model as Eloquent;
 
@@ -23,7 +23,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * 
  * @property \Modules\Admin\Models\AdminSegment $admin_segment
  *
- * @package Modules\Inventory\Models
+ * @package Modules\Finance\Models
  */
 class JvTrailBalanceReport extends Eloquent
 {
@@ -45,7 +45,13 @@ class JvTrailBalanceReport extends Eloquent
 		'balance'
 	];
 
-	public function admin_segment()
+	public function economic_segment()
+	{
+		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'economic_segment_id');
+	}
+
+
+	public function parent()
 	{
 		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'parent_id');
 	}
