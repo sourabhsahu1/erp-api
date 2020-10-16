@@ -40,4 +40,4 @@ Route::middleware(['auth:api'])->group(function () {
 });
     Route::get('finance/trial-report','ReportController@getTrialBalanceReport');
     Route::get('finance/jv-ledger','ReportController@getJvLedgerReport');
-
+    Route::post('notes/{adminSegmentId}','ReportController@addNotes');

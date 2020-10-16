@@ -24,4 +24,9 @@ class ReportController extends BaseController
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
 
+    public function addNotes(Request $request) {
+        $this->jobMethod = 'addNotes';
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
 }

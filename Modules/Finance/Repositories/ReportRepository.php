@@ -48,4 +48,10 @@ class ReportRepository extends EloquentBaseRepository
         }
         return parent::getAll($params, $query);
     }
+
+
+    public function addNotes($data)
+    {
+        return ['data' => 'success'];
+    }
 }
