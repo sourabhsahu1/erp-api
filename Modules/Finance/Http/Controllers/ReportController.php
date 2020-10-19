@@ -29,4 +29,9 @@ class ReportController extends BaseController
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 
+    public function getNotesTrialBalanceReport(Request $request) {
+        $this->jobMethod = 'getNotesTrialBalanceReport';
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
 }

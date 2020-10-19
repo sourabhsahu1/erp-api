@@ -15,14 +15,9 @@ class CreateNotesTrailBalanceReportTable extends Migration
     {
         Schema::create('notes_trail_balance_report', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedInteger('economic_segment_id')->nullable();
-            $table->foreign('economic_segment_id')->references('id')->on('admin_segments');
-            $table->unsignedInteger('parent_id')->nullable();
-            $table->foreign('parent_id')->references('id')->on('admin_segments');
-
-            $table->unsignedBigInteger('credit')->nullable();
-            $table->unsignedBigInteger('debit')->nullable();
-            $table->unsignedBigInteger('balance')->nullable();
+            $table->unsignedBigInteger('jv_tb_report_id')->nullable();
+            $table->foreign('jv_tb_report_id')->references('id')->on('jv_trail_balance_report');
+            $table->boolean('is_parent')->default(0);
             $table->timestamps();
         });
     }
