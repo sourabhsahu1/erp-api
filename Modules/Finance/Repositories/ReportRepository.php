@@ -5,6 +5,7 @@ namespace Modules\Finance\Repositories;
 
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\AdminSegment;
@@ -82,11 +83,20 @@ class ReportRepository extends EloquentBaseRepository
                 'is_parent' => $parent
             ];
         }
+        DB::beginTransaction();
+        try {
+            if (count($d) > 0) {
+                NotesTrailBalanceReport::insert($d);
+            }
 
-        if (count($d) > 0) {
-            NotesTrailBalanceReport::insert($d);
+            $jv = JvTrailBalanceReport::rightjoin('notes_trail_balance_report as n', 'jv_trail_balance_report.id', '=', 'n.jv_tb_report_id')->where('economic_segment_id', $data['data']['economic_segment_id'])->first();
+
+            JvTrailBalanceReport::where('economic_segment_id', $data['data']['economic_segment_id'])->update(['note_id' => $jv->id]);
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw $exception;
         }
-
         return ['data' => 'success'];
     }
 

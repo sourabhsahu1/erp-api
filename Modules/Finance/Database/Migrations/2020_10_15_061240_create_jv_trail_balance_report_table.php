@@ -19,7 +19,6 @@ class CreateJvTrailBalanceReportTable extends Migration
             $table->foreign('economic_segment_id')->references('id')->on('admin_segments');
             $table->unsignedInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('admin_segments');
-
             $table->unsignedBigInteger('credit')->nullable();
             $table->unsignedBigInteger('debit')->nullable();
             $table->unsignedBigInteger('balance')->nullable();
