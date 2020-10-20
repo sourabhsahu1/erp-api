@@ -97,6 +97,8 @@ class ReportRepository extends EloquentBaseRepository
             DB::rollBack();
             throw $exception;
         }
+        $jv = JvTrailBalanceReport::rightjoin('notes_trail_balance_report as n', 'jv_trail_balance_report.id', '=', 'n.jv_tb_report_id')->where('economic_segment_id', $data['data']['economic_segment_id'])->first();
+
         return $jv;
     }
 
