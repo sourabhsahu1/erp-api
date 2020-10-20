@@ -68,8 +68,8 @@ class ReportRepository extends EloquentBaseRepository
 
         $checkForJv = JvTrailBalanceReport::where('parent_id', $data['data']['economic_segment_id'])->get();
 
-        if (is_null($checkForJv)) {
-            throw new AppException('no data found');
+        if ($checkForJv->isEmpty()) {
+            throw new AppException('child doesnt exist , cannot create notes');
         }
 
         $d = [];
@@ -97,7 +97,7 @@ class ReportRepository extends EloquentBaseRepository
             DB::rollBack();
             throw $exception;
         }
-        return ['data' => 'success'];
+        return $jv;
     }
 
 
