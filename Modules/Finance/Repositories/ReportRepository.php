@@ -130,6 +130,13 @@ class ReportRepository extends EloquentBaseRepository
                 $query->whereHas('journal_voucher_details',function ($query) use ($params){
                     $query->where('economic_segment_id', $params['inputs']['economic_segment_id']);
                 });
+
+            if (isset($params['inputs']['from_date']) && isset($params['inputs']['to_date'])) {
+                $fromDate = $params['inputs']['from_date'] . ' 00:00:00';
+                $toDate = $params['inputs']['to_date'] . ' 23:59:59';
+                $query->where('created_at', '>=', $fromDate)
+                    ->where('created_at', '<=', $toDate);
+            }
         }
         else
         {
