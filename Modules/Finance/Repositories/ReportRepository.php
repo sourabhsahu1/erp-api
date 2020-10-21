@@ -5,6 +5,7 @@ namespace Modules\Finance\Repositories;
 
 
 use Carbon\Carbon;
+use http\Env\Request;
 use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
@@ -119,5 +120,21 @@ class ReportRepository extends EloquentBaseRepository
         $params['inputs']['orderby'] = 'n.created_at';
         return parent::getAll($params, $jv);
 
+    }
+
+    public function getSiblingReport($params)
+    {
+        if (isset($params['inputs']['economic_segment_id'])){
+            $query = JournalVoucher::with('journal_voucher_details');
+
+                $query->whereHas('journal_voucher_details',function ($query) use ($params){
+                    $query->where('economic_segment_id', $params['inputs']['economic_segment_id']);
+                });
+        }
+        else
+        {
+            throw new AppException('Economic Segment id required');
+        }
+        return parent::getAll($params, $query);
     }
 }
