@@ -130,7 +130,7 @@ class ReportRepository extends EloquentBaseRepository
                 $query->whereHas('journal_voucher_details',function ($query) use ($params){
                     $query->where('economic_segment_id', $params['inputs']['economic_segment_id']);
                 });
-
+                
             if (isset($params['inputs']['from_date']) && isset($params['inputs']['to_date'])) {
                 $fromDate = $params['inputs']['from_date'] . ' 00:00:00';
                 $toDate = $params['inputs']['to_date'] . ' 23:59:59';
@@ -142,6 +142,27 @@ class ReportRepository extends EloquentBaseRepository
         {
             throw new AppException('Economic Segment id required');
         }
-        return parent::getAll($params, $query);
+       $result =  parent::getAll($params, $query);
+       
+       foreach($result['items'] as $items)
+       {
+            $sumDebit = 0;
+            $sumCredit = 0;
+           foreach($items['journal_voucher_details'] as $item)
+           {
+               if($item['line_value_type'] == 'DEBIT')
+               {
+                    $sumDebit = $sumDebit + $item['lv_line_value'];
+               }
+               else if($item['line_value_type'] == 'CREDIT')
+               {
+                    $sumCredit = $sumCredit + $item['lv_line_value'];
+               }
+           }
+           $items['debit'] = $sumDebit;
+           $items['credit'] = $sumCredit;
+           $items['balance'] = $sumDebit - $sumCredit;
+       }
+       return $result;
     }
 }
