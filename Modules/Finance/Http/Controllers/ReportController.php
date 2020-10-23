@@ -38,4 +38,19 @@ class ReportController extends BaseController
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
 
+    public function getMonthlyActivity(Request $request) {
+        $this->jobMethod = 'getMonthlyActivity';
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
+    public function getStatementOfPosition(Request $request) {
+        $this->jobMethod = 'getStatementOfPosition';
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
+    public function getFinancialPerformance(Request $request) {
+        $this->jobMethod = 'getFinancialPerformance';
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
 }

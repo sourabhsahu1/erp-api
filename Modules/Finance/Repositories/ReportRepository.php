@@ -124,17 +124,251 @@ class ReportRepository extends EloquentBaseRepository
 
     public function getSiblingReport($params)
     {
-        if (isset($params['inputs']['economic_segment_id'])){
+        if (isset($params['inputs']['economic_segment_id'])) {
             $query = JournalVoucher::with('journal_voucher_details');
 
-                $query->whereHas('journal_voucher_details',function ($query) use ($params){
-                    $query->where('economic_segment_id', $params['inputs']['economic_segment_id']);
-                });
-        }
-        else
-        {
+            $query->whereHas('journal_voucher_details', function ($query) use ($params) {
+                $query->where('economic_segment_id', $params['inputs']['economic_segment_id']);
+            });
+        } else {
             throw new AppException('Economic Segment id required');
         }
         return parent::getAll($params, $query);
+    }
+
+
+    public function getMonthlyActivity($params)
+    {
+//        $ad = AdminSegment::with('economic_children');
+//        if (isset($params['inputs']['parent_id'])) {
+//            $ad->where('id', $params['inputs']['parent_id']);
+//        } else {
+//            $ad->where('id', 2);
+//        }
+////        $params['inputs']['orderby'] = 'created_at';
+////        $jvResult = parent::getAll($params, $ad);
+//
+//
+////        return $jvResult['items']->toArray();
+////        dd($jvResult['items'][0]->toArray());
+//
+//        dd($ad->get()->toArray());
+//
+//        foreach ($jvResult['items'][0]->toArray()['economic_children'] as $item) {
+//            $parentNode = $item['economic_children'];
+//            if (!empty($parentNode['economic_children'])) {
+//                $parentNode = $parentNode['economic_children'];
+//                dd($parentNode);
+//
+//                while (!empty($parentNode['economic_children'])) {
+//                    $parentNode = $parentNode['economic_children']->toArray();
+//                }
+//                dd($parentNode);
+//            }
+//
+//
+//        }
+
+
+        $data['revenue'] = [
+            [
+                'name' => 'Current Assets',
+                'combined_code' => 31,
+                'jan' => 0,
+                'feb' => 0,
+                'mar' => 0,
+                'apr' => 0,
+                'may' => 100,
+                'june' => 0,
+                'july' => 0,
+                'aug' => 200,
+                'sept' => 0,
+                'nov' => 0,
+                'dec' => 0,
+            ],
+            [
+                'name' => 'Non-Current Assets',
+                'combined_code' => 32,
+                'jan' => 0,
+                'feb' => 0,
+                'mar' => 0,
+                'apr' => 0,
+                'may' => 0,
+                'june' => 0,
+                'july' => 0,
+                'aug' => 100,
+                'sept' => 0,
+                'nov' => 0,
+                'dec' => 0,
+            ], [
+                'name' => 'Intangible Assets',
+                'combined_code' => 33,
+                'jan' => 0,
+                'feb' => 0,
+                'mar' => 0,
+                'apr' => 0,
+                'may' => 0,
+                'june' => 0,
+                'july' => 0,
+                'aug' => 0,
+                'sept' => 0,
+                'nov' => 0,
+                'dec' => 1000,
+            ]
+        ];
+        return $data;
+    }
+
+
+    public function getFinancialPerformance($params)
+    {
+
+
+        $data['revenue'] = [
+            'combined_code' => 1,
+            'individual_code' => 1,
+            'name' => 'Revenue',
+            'balance' => 20000.00
+        ];
+
+
+        $data['expenditure'] = [
+            'combined_code' => 1,
+            'individual_code' => 1,
+            'name' => 'expenditure',
+            'balance' => 20000.00
+        ];
+
+        $data['revenue']['revenue_child'] = [
+            [
+                'combined_code' => 101,
+                'individual_code' => 1,
+                'name' => 'Govt. share',
+                'balance' => 20000.00
+            ],
+            [
+                'combined_code' => 102,
+                'individual_code' => 2,
+                'name' => 'Independent. share',
+                'balance' => 0.00
+            ],
+            [
+                'combined_code' => 103,
+                'individual_code' => 3,
+                'name' => 'Aid. share',
+                'balance' => '(20000.00)'
+            ],
+            [
+                'combined_code' => 104,
+                'individual_code' => 4,
+                'name' => 'Capital. share',
+                'balance' => 0.00
+            ]
+        ];
+
+        $data['expenditure']['expenditure_child'] = [
+            [
+                'combined_code' => 201,
+                'individual_code' => 1,
+                'name' => 'other. share',
+                'balance' => 0.00
+            ],
+            [
+                'combined_code' => 202,
+                'individual_code' => 2,
+                'name' => 'capital expenditure',
+                'balance' => 0.00
+            ],
+            [
+                'combined_code' => 203,
+                'individual_code' => 3,
+                'name' => 'depreciation',
+                'balance' => 0.00
+            ],
+            [
+                'combined_code' => 204,
+                'individual_code' => 4,
+                'name' => 'impairment charges',
+                'balance' => 0.00
+            ]
+        ];
+
+
+        return $data;
+    }
+
+    public function getStatementOfPosition($params)
+    {
+        $data['asset'] = [
+            'combined_code' => 3,
+            'individual_code' => 3,
+            'name' => 'Asset',
+            'balance' => 20000.00
+        ];
+
+
+        $data['liabilities'] = [
+            'combined_code' => 4,
+            'individual_code' => 4,
+            'name' => 'Liabilities',
+            'balance' => 20000.00
+        ];
+
+        $data['asset']['asset_child'] = [
+            [
+                'combined_code' => 301,
+                'individual_code' => 1,
+                'name' => 'Govt. share',
+                'balance' => 20000.00
+            ],
+            [
+                'combined_code' => 302,
+                'individual_code' => 2,
+                'name' => 'Independent. share',
+                'balance' => 0.00
+            ],
+            [
+                'combined_code' => 303,
+                'individual_code' => 3,
+                'name' => 'Aid. share',
+                'balance' => '(20000.00)'
+            ],
+            [
+                'combined_code' => 304,
+                'individual_code' => 4,
+                'name' => 'Capital. share',
+                'balance' => 0.00
+            ]
+        ];
+
+        $data['liabilities']['liabilities_child'] = [
+            [
+                'combined_code' => 401,
+                'individual_code' => 1,
+                'name' => 'other. share',
+                'balance' => 0.00
+            ],
+            [
+                'combined_code' => 402,
+                'individual_code' => 2,
+                'name' => 'capital expenditure',
+                'balance' => 0.00
+            ],
+            [
+                'combined_code' => 403,
+                'individual_code' => 3,
+                'name' => 'depreciation',
+                'balance' => 0.00
+            ],
+            [
+                'combined_code' => 404,
+                'individual_code' => 4,
+                'name' => 'impairment charges',
+                'balance' => 0.00
+            ]
+        ];
+
+
+        return $data;
     }
 }

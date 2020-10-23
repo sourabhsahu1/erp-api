@@ -7,6 +7,7 @@
 
 namespace Modules\Admin\Models;
 
+use Modules\Finance\Models\JournalVoucherDetail;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -71,6 +72,12 @@ class AdminSegment extends Eloquent
         return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'parent_id');
     }
 
+
+    public function economic_segment()
+    {
+        return $this->hasMany(JournalVoucherDetail::class, 'economic_segment_id','id');
+    }
+
     public function admin_segment_parent()
     {
         return $this->admin_segment()->with('admin_segment_parent');
@@ -79,6 +86,18 @@ class AdminSegment extends Eloquent
     public function level_config()
     {
         return $this->hasMany(\Modules\Admin\Models\AdminSegmentLevelConfig::class)->where('level','!=',0);
+    }
+
+
+
+    public function economic_children()
+    {
+        return $this->getChilds()->with('economic_children');
+    }
+
+    public function getChilds()
+    {
+        return $this->hasMany(AdminSegment::class, 'parent_id')->with('economic_segment');
     }
 
 }
