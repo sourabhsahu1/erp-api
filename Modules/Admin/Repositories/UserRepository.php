@@ -5,8 +5,6 @@ namespace Modules\Admin\Repositories;
 
 
 use Illuminate\Support\Facades\Hash;
-use Luezoid\Laravelcore\Exceptions\AppException;
-use Luezoid\Laravelcore\Exceptions\AuthorizationException;
 use Luezoid\Laravelcore\Exceptions\ValidationException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Hr\Models\User;
@@ -73,13 +71,9 @@ class UserRepository extends EloquentBaseRepository
 
     public function deleteRoleAssign($data)
     {
-        $userRole = UserRole::where('user_id', $data['data']['id'])
-            ->where('role_id', $data['data']['role_id']);
-
-        if (is_null($userRole->first())) {
-            return ['message' => 'Already Deleted'];
-        }
-        $userRole = $userRole->forceDelete();
+        UserRole::where('user_id', $data['data']['id'])
+            ->where('role_id', $data['data']['role_id'])
+            ->delete();
 
         return ['message' => 'Deleted Successfully'];
     }
