@@ -35,6 +35,7 @@ class JournalVoucherRepository extends EloquentBaseRepository
             $jv = parent::create($data);
             foreach ($jvVoucherDetails as $key => $detail) {
                 $jvVoucherDetails[$key]['journal_voucher_id'] = $jv->id;
+                $jvVoucherDetails[$key]['created_at'] = Carbon::now()->toDateTimeString();
             }
 
             $newData = null;
@@ -56,7 +57,8 @@ class JournalVoucherRepository extends EloquentBaseRepository
                             'functional_segment_id',
                             'geo_code_segment_id',
                             'line_value_type',
-                            'lv_line_value'
+                            'lv_line_value',
+                            'created_at'
                         ]));
             }
 
