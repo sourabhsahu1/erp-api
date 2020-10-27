@@ -139,95 +139,180 @@ class ReportRepository extends EloquentBaseRepository
 
     public function getMonthlyActivity($params)
     {
-//        $ad = AdminSegment::with('economic_children');
-//        if (isset($params['inputs']['parent_id'])) {
-//            $ad->where('id', $params['inputs']['parent_id']);
-//        } else {
-//            $ad->where('id', 2);
-//        }
-////        $params['inputs']['orderby'] = 'created_at';
-////        $jvResult = parent::getAll($params, $ad);
-//
-//
-////        return $jvResult['items']->toArray();
-////        dd($jvResult['items'][0]->toArray());
-//
-//        dd($ad->get()->toArray());
-//
-//        foreach ($jvResult['items'][0]->toArray()['economic_children'] as $item) {
-//            $parentNode = $item['economic_children'];
-//            if (!empty($parentNode['economic_children'])) {
-//                $parentNode = $parentNode['economic_children'];
-//                dd($parentNode);
-//
-//                while (!empty($parentNode['economic_children'])) {
-//                    $parentNode = $parentNode['economic_children']->toArray();
-//                }
-//                dd($parentNode);
-//            }
-//
-//
-//        }
 
 
-        $data['revenue'] = [
-            [
-                'name' => 'Current Assets',
-                'combined_code' => 31,
-                'january' => 0,
-                'february' => 0,
-                'march' => 0,
-                'april' => 0,
-                'may' => 100,
-                'june' => 0,
-                'july' => 0,
-                'august' => 200,
-                'september' => 0,
-                'november' => 0,
-                'december' => 0,
-                'previous_years' => 0,
-                'total' => 300
-            ],
-            [
-                'name' => 'Non-Current Assets',
-                'combined_code' => 32,
-                'january' => 0,
-                'february' => 0,
-                'march' => 0,
-                'april' => 0,
-                'may' => 100,
-                'june' => 0,
-                'july' => 0,
-                'august' => 200,
-                'september' => 0,
-                'november' => 0,
-                'december' => 0,
-                'previous_years' => 0,
-                'total' => 300
-            ], [
-                'name' => 'Intangible Assets',
-                'combined_code' => 33,
-                'january' => 0,
-                'february' => 0,
-                'march' => 0,
-                'april' => 0,
-                'may' => 0,
-                'june' => 0,
-                'july' => 0,
-                'august' => 0,
-                'september' => 0,
-                'november' => 0,
-                'december' => 1000,
-                'previous_years' => 0,
-                'total' => 1000
-            ]
-        ];
-        return $data;
+        $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
+            ->selectRaw('name,jd.economic_segment_id, month(jd.created_at) as month, sum(lv_line_value) sum, line_value_type')
+            ->groupby(DB::raw('name,jd.economic_segment_id, month(jd.created_at), line_value_type'))
+            ->get()->toArray();
+
+        $data = null;
+        foreach ($jvS as $jv) {
+            if (!isset($data[$jv['economic_segment_id'] . '_' . $jv['month']])) {
+                $data[$jv['economic_segment_id'] . '_' . $jv['month']]['balance'] = 0;
+            }
+            $data[$jv['economic_segment_id'] . '_' . $jv['month']] = [
+                'name' => $jv['name'],
+                'economic_segment_id' => $jv['economic_segment_id'],
+                'month' => $jv['month'],
+                'balance' => ($jv['line_value_type'] === 'CREDIT') ? $data[$jv['economic_segment_id'] . '_' . $jv['month']]['balance'] + $jv['sum'] : $data[$jv['economic_segment_id'] . '_' . $jv['month']]['balance'] - $jv['sum']
+            ];
+        }
+
+        $d = [];
+        foreach ($data as $item) {
+            if (isset($d[$item['economic_segment_id']])) {
+                $d[$item['economic_segment_id']]['month'.$item['month']] += $item['balance'];
+            }else {
+                $d[$item['economic_segment_id']] = [
+                    'name' => $item['name'],
+                    'economic_segment_id' => $item['economic_segment_id'],
+                    'month1' => 0, 'month2' => 0, 'month3' => 0, 'month4' => 0,
+                    'month5' => 0, 'month6' => 0, 'month7' => 0, 'month8' => 0,
+                    'month9' => 0, 'month10' => 0, 'month11' => 0, 'month12' => 0,
+                ];
+
+                $d[$item['economic_segment_id']]['month' . $item['month']] += $item['balance'];
+            }
+        }
+
+        $segments = AdminSegment::with('children');
+
+        if (isset($params['inputs']['parent_id'])) {
+            $segments->where('parent_id', $params['inputs']['parent_id']);
+        } else {
+            $segments->where('parent_id', 2);
+        }
+
+        $segments = $segments->get()->toArray();
+
+        foreach ($segments as &$segment) {
+            $segment['child_ids'] = [];
+            $this->getChildIds($segment, $segment);
+            unset($segment['children']);
+
+            for ($i=1; $i<13; $i++) {
+                $segment['month'.$i] = 0;
+            }
+            foreach ($d as $key => $values) {
+                if (array_search($key, $segment['child_ids']) !== false) {
+                    $segment['month1'] += $values['month1'];
+                    $segment['month2'] += $values['month2'];
+                    $segment['month3'] += $values['month3'];
+                    $segment['month4'] += $values['month4'];
+                    $segment['month5'] += $values['month5'];
+                    $segment['month6'] += $values['month6'];
+                    $segment['month7'] += $values['month7'];
+                    $segment['month8'] += $values['month8'];
+                    $segment['month9'] += $values['month9'];
+                    $segment['month10'] += $values['month10'];
+                    $segment['month11'] += $values['month11'];
+                    $segment['month12'] += $values['month12'];
+
+                    unset($d[$key]);
+                }
+            }
+        }
+        
+        return ['items' => $segments];
+    }
+
+    private function getChildIds($data, &$segment) {
+        $segment['child_ids'][] = $data['id'];
+
+        foreach ($data['children'] as  $child) {
+            $this->getChildIds($child, $segment);
+        }
+
     }
 
 
     public function getFinancialPerformance($params)
     {
+
+
+        $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
+            ->selectRaw('name,jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
+            ->groupby(DB::raw('name,jd.economic_segment_id, line_value_type'))
+            ->get()->toArray();
+
+        $data = null;
+        foreach ($jvS as $jv) {
+            if (!isset($data[$jv['economic_segment_id']])) {
+                $data[$jv['economic_segment_id']]['balance'] = 0;
+            }
+            $data[$jv['economic_segment_id']] = [
+                'name' => $jv['name'],
+                'economic_segment_id' => $jv['economic_segment_id'],
+                'balance' => ($jv['line_value_type'] === 'CREDIT') ? $data[$jv['economic_segment_id']]['balance'] + $jv['sum'] : $data[$jv['economic_segment_id']]['balance'] - $jv['sum']
+            ];
+        }
+
+
+        $d = [];
+        foreach ($data as $item) {
+            if (isset($d[$item['economic_segment_id']])) {
+                $d[$item['economic_segment_id']]['month'.$item['month']] += $item['balance'];
+            }else {
+                $d[$item['economic_segment_id']] = [
+                    'name' => $item['name'],
+                    'economic_segment_id' => $item['economic_segment_id'],
+                    'sum' => 0
+                ];
+
+                $d[$item['economic_segment_id']]['month' . $item['month']] += $item['balance'];
+            }
+        }
+
+        $segments = AdminSegment::with('children');
+
+        if (isset($params['inputs']['parent_id'])) {
+            $segments->where('parent_id', $params['inputs']['parent_id']);
+        } else {
+            $segments->where('parent_id', 2);
+        }
+
+        $segments = $segments->get()->toArray();
+
+        foreach ($segments as &$segment) {
+            $segment['child_ids'] = [];
+            $this->getChildIds($segment, $segment);
+            unset($segment['children']);
+
+            for ($i=1; $i<13; $i++) {
+                $segment['month'.$i] = 0;
+            }
+            foreach ($d as $key => $values) {
+                if (array_search($key, $segment['child_ids']) !== false) {
+                    $segment['month1'] += $values['month1'];
+                    $segment['month2'] += $values['month2'];
+                    $segment['month3'] += $values['month3'];
+                    $segment['month4'] += $values['month4'];
+                    $segment['month5'] += $values['month5'];
+                    $segment['month6'] += $values['month6'];
+                    $segment['month7'] += $values['month7'];
+                    $segment['month8'] += $values['month8'];
+                    $segment['month9'] += $values['month9'];
+                    $segment['month10'] += $values['month10'];
+                    $segment['month11'] += $values['month11'];
+                    $segment['month12'] += $values['month12'];
+
+                    unset($d[$key]);
+                }
+            }
+        }
+
+        return ['items' => $segments];
+
+
+
+
+
+
+
+
+
+
 
 
         $data['revenue'] = [
