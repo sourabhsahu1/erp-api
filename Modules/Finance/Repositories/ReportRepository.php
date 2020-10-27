@@ -126,17 +126,15 @@ class ReportRepository extends EloquentBaseRepository
         $query = JournalVoucher
             ::join('journal_voucher_details as jd', 'journal_vouchers.id', '=', 'jd.journal_voucher_id');
 
-        if (isset($params['inputs']['programme_segment_id'])) {
-            $query->where('jd.programme_segment_id', $params['inputs']['programme_segment_id']);
-        }
-
         if (isset($params['inputs']['economic_segment_id'])) {
             $query->where('jd.economic_segment_id', $params['inputs']['economic_segment_id']);
+        } else {
+            throw new AppException('Economic Segment id required');
         }
 
         if (isset($params['inputs']['journal_voucher_id']) && isset($params['inputs']['jv_detail_id'])) {
             $query->where('journal_voucher_id', $params['inputs']['journal_voucher_id'])
-                ->where('jd.id', '!=',$params['inputs']['jv_detail_id']);
+                ->where('jd.id', '!=', $params['inputs']['jv_detail_id']);
         }
 
         return parent::getAll($params, $query);
