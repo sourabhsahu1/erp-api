@@ -315,74 +315,74 @@ class ReportRepository extends EloquentBaseRepository
 
 
 
-        $data['revenue'] = [
-            'combined_code' => 1,
-            'individual_code' => 1,
-            'name' => 'Revenue',
-            'balance' => 20000.00
-        ];
-
-
-        $data['expenditure'] = [
-            'combined_code' => 1,
-            'individual_code' => 1,
-            'name' => 'expenditure',
-            'balance' => 20000.00
-        ];
-
-        $data['revenue']['revenue_child'] = [
-            [
-                'combined_code' => 101,
-                'individual_code' => 1,
-                'name' => 'Govt. share',
-                'balance' => 20000.00
-            ],
-            [
-                'combined_code' => 102,
-                'individual_code' => 2,
-                'name' => 'Independent. share',
-                'balance' => 0.00
-            ],
-            [
-                'combined_code' => 103,
-                'individual_code' => 3,
-                'name' => 'Aid. share',
-                'balance' => '(20000.00)'
-            ],
-            [
-                'combined_code' => 104,
-                'individual_code' => 4,
-                'name' => 'Capital. share',
-                'balance' => 0.00
-            ]
-        ];
-
-        $data['expenditure']['expenditure_child'] = [
-            [
-                'combined_code' => 201,
-                'individual_code' => 1,
-                'name' => 'other. share',
-                'balance' => 0.00
-            ],
-            [
-                'combined_code' => 202,
-                'individual_code' => 2,
-                'name' => 'capital expenditure',
-                'balance' => 0.00
-            ],
-            [
-                'combined_code' => 203,
-                'individual_code' => 3,
-                'name' => 'depreciation',
-                'balance' => 0.00
-            ],
-            [
-                'combined_code' => 204,
-                'individual_code' => 4,
-                'name' => 'impairment charges',
-                'balance' => 0.00
-            ]
-        ];
+//        $data['revenue'] = [
+//            'combined_code' => 1,
+//            'individual_code' => 1,
+//            'name' => 'Revenue',
+//            'balance' => 20000.00
+//        ];
+//
+//
+//        $data['expenditure'] = [
+//            'combined_code' => 1,
+//            'individual_code' => 1,
+//            'name' => 'expenditure',
+//            'balance' => 20000.00
+//        ];
+//
+//        $data['revenue']['revenue_child'] = [
+//            [
+//                'combined_code' => 101,
+//                'individual_code' => 1,
+//                'name' => 'Govt. share',
+//                'balance' => 20000.00
+//            ],
+//            [
+//                'combined_code' => 102,
+//                'individual_code' => 2,
+//                'name' => 'Independent. share',
+//                'balance' => 0.00
+//            ],
+//            [
+//                'combined_code' => 103,
+//                'individual_code' => 3,
+//                'name' => 'Aid. share',
+//                'balance' => '(20000.00)'
+//            ],
+//            [
+//                'combined_code' => 104,
+//                'individual_code' => 4,
+//                'name' => 'Capital. share',
+//                'balance' => 0.00
+//            ]
+//        ];
+//
+//        $data['expenditure']['expenditure_child'] = [
+//            [
+//                'combined_code' => 201,
+//                'individual_code' => 1,
+//                'name' => 'other. share',
+//                'balance' => 0.00
+//            ],
+//            [
+//                'combined_code' => 202,
+//                'individual_code' => 2,
+//                'name' => 'capital expenditure',
+//                'balance' => 0.00
+//            ],
+//            [
+//                'combined_code' => 203,
+//                'individual_code' => 3,
+//                'name' => 'depreciation',
+//                'balance' => 0.00
+//            ],
+//            [
+//                'combined_code' => 204,
+//                'individual_code' => 4,
+//                'name' => 'impairment charges',
+//                'balance' => 0.00
+//            ]
+//        ];
 
 
         return $data;
