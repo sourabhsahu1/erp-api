@@ -148,22 +148,15 @@ class ReportRepository extends EloquentBaseRepository
             ->get()->toArray();
 
         $data = null;
-        foreach ($jvS as $jv) {
-            if (!isset($data[$jv['economic_segment_id'] . '_' . $jv['month']])) {
-                $data[$jv['economic_segment_id'] . '_' . $jv['month']]['balance'] = 0;
-            }
-            $data[$jv['economic_segment_id'] . '_' . $jv['month']] = [
-                'name' => $jv['name'],
-                'economic_segment_id' => $jv['economic_segment_id'],
-                'month' => $jv['month'],
-                'balance' => ($jv['line_value_type'] === 'CREDIT') ? $data[$jv['economic_segment_id'] . '_' . $jv['month']]['balance'] + $jv['sum'] : $data[$jv['economic_segment_id'] . '_' . $jv['month']]['balance'] - $jv['sum']
-            ];
-        }
-
         $d = [];
-        foreach ($data as $item) {
+
+        foreach ($jvS as $item) {
             if (isset($d[$item['economic_segment_id']])) {
-                $d[$item['economic_segment_id']]['month' . $item['month']] += $item['balance'];
+                if ($item['line_value_type'] === 'CREDIT') {
+                    $d[$item['economic_segment_id']]['month' . $item['month']] += $item['sum'];
+                } else {
+                    $d[$item['economic_segment_id']]['month' . $item['month']] -= $item['sum'];
+                }
             } else {
                 $d[$item['economic_segment_id']] = [
                     'name' => $item['name'],
@@ -172,8 +165,11 @@ class ReportRepository extends EloquentBaseRepository
                     'month5' => 0, 'month6' => 0, 'month7' => 0, 'month8' => 0,
                     'month9' => 0, 'month10' => 0, 'month11' => 0, 'month12' => 0,
                 ];
-
-                $d[$item['economic_segment_id']]['month' . $item['month']] += $item['balance'];
+                if ($item['line_value_type'] === 'CREDIT') {
+                    $d[$item['economic_segment_id']]['month' . $item['month']] += $item['sum'];
+                } else {
+                    $d[$item['economic_segment_id']]['month' . $item['month']] -= $item['sum'];
+                }
             }
         }
 
