@@ -124,15 +124,22 @@ class ReportRepository extends EloquentBaseRepository
 
     public function getSiblingReport($params)
     {
-        if (isset($params['inputs']['economic_segment_id'])) {
-            $query = JournalVoucher::with('journal_voucher_details');
+        $query = JournalVoucher
+            ::join('journal_voucher_details as jd', 'journal_vouchers.id', '=', 'jd.journal_voucher_id');
 
-            $query->whereHas('journal_voucher_details', function ($query) use ($params) {
-                $query->where('economic_segment_id', $params['inputs']['economic_segment_id']);
-            });
-        } else {
-            throw new AppException('Economic Segment id required');
+        if (isset($params['inputs']['programme_segment_id'])) {
+            $query->where('jd.programme_segment_id', $params['inputs']['programme_segment_id']);
         }
+
+        if (isset($params['inputs']['economic_segment_id'])) {
+            $query->where('jd.economic_segment_id', $params['inputs']['economic_segment_id']);
+        }
+
+        if (isset($params['inputs']['journal_voucher_id']) && isset($params['inputs']['jv_detail_id'])) {
+            $query->where('journal_voucher_id', $params['inputs']['journal_voucher_id'])
+            ->where('jd.id', '!=',$params['inputs']['jv_detail_id']);
+        }
+
         return parent::getAll($params, $query);
     }
 
@@ -162,8 +169,8 @@ class ReportRepository extends EloquentBaseRepository
         $d = [];
         foreach ($data as $item) {
             if (isset($d[$item['economic_segment_id']])) {
-                $d[$item['economic_segment_id']]['month'.$item['month']] += $item['balance'];
-            }else {
+                $d[$item['economic_segment_id']]['month' . $item['month']] += $item['balance'];
+            } else {
                 $d[$item['economic_segment_id']] = [
                     'name' => $item['name'],
                     'economic_segment_id' => $item['economic_segment_id'],
@@ -191,8 +198,8 @@ class ReportRepository extends EloquentBaseRepository
             $this->getChildIds($segment, $segment);
             unset($segment['children']);
 
-            for ($i=1; $i<13; $i++) {
-                $segment['month'.$i] = 0;
+            for ($i = 1; $i < 13; $i++) {
+                $segment['month' . $i] = 0;
             }
             foreach ($d as $key => $values) {
                 if (array_search($key, $segment['child_ids']) !== false) {
@@ -213,14 +220,15 @@ class ReportRepository extends EloquentBaseRepository
                 }
             }
         }
-        
+
         return ['items' => $segments];
     }
 
-    private function getChildIds($data, &$segment) {
+    private function getChildIds($data, &$segment)
+    {
         $segment['child_ids'][] = $data['id'];
 
-        foreach ($data['children'] as  $child) {
+        foreach ($data['children'] as $child) {
             $this->getChildIds($child, $segment);
         }
 
@@ -252,8 +260,8 @@ class ReportRepository extends EloquentBaseRepository
         $d = [];
         foreach ($data as $item) {
             if (isset($d[$item['economic_segment_id']])) {
-                $d[$item['economic_segment_id']]['month'.$item['month']] += $item['balance'];
-            }else {
+                $d[$item['economic_segment_id']]['month' . $item['month']] += $item['balance'];
+            } else {
                 $d[$item['economic_segment_id']] = [
                     'name' => $item['name'],
                     'economic_segment_id' => $item['economic_segment_id'],
@@ -279,8 +287,8 @@ class ReportRepository extends EloquentBaseRepository
             $this->getChildIds($segment, $segment);
             unset($segment['children']);
 
-            for ($i=1; $i<13; $i++) {
-                $segment['month'.$i] = 0;
+            for ($i = 1; $i < 13; $i++) {
+                $segment['month' . $i] = 0;
             }
             foreach ($d as $key => $values) {
                 if (array_search($key, $segment['child_ids']) !== false) {
@@ -303,16 +311,6 @@ class ReportRepository extends EloquentBaseRepository
         }
 
         return ['items' => $segments];
-
-
-
-
-
-
-
-
-
-
 
 
 //        $data['revenue'] = [
