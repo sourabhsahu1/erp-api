@@ -143,7 +143,7 @@ class ReportRepository extends EloquentBaseRepository
         $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
             ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
             ->selectRaw('name,jd.economic_segment_id, month(jd.created_at) as month, sum(lv_line_value) sum, line_value_type')
-            ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+//            ->where('jv.status', AppConstant::JV_STATUS_POSTED)
             ->groupby(DB::raw('name,jd.economic_segment_id, month(jd.created_at), line_value_type'))
             ->get()->toArray();
 
@@ -185,8 +185,9 @@ class ReportRepository extends EloquentBaseRepository
 
         foreach ($segments as &$segment) {
             $segment['child_ids'] = [];
-            $this->getChildIds($segment, $segment);
-            unset($segment['children']);
+            $childIds = $this->getChildIds($segment);
+            $segment['child_ids'] = $childIds;
+//            unset($segment['children']);
 
             for ($i = 1; $i < 13; $i++) {
                 $segment['month' . $i] = 0;
@@ -214,14 +215,29 @@ class ReportRepository extends EloquentBaseRepository
         return ['items' => $segments];
     }
 
-    private function getChildIds($data, &$segment)
+    private function getChildIds(&$data)
     {
-        $segment['child_ids'][] = $data['id'];
+        $childIds = [];
+        $childIds[] = $data['id'];
 
-        foreach ($data['children'] as $child) {
-            $this->getChildIds($child, $segment);
+        foreach ($data['children'] as &$child) {
+            $child['child_ids'] = $this->getChildIds($child);
+            $child['month1'] = 0;
+            $child['month2'] = 0;
+            $child['month3'] = 0;
+            $child['month4'] = 0;
+            $child['month5'] = 0;
+            $child['month6'] = 0;
+            $child['month7'] = 0;
+            $child['month8'] = 0;
+            $child['month9'] = 0;
+            $child['month10'] = 0;
+            $child['month11'] = 0;
+            $child['month12'] = 0;
+            $childIds = array_merge($childIds, $child['child_ids']);
         }
 
+        return $childIds;
     }
 
 
@@ -241,7 +257,7 @@ class ReportRepository extends EloquentBaseRepository
         foreach ($segments as &$segment) {
             $segment['child_ids'] = [];
             $segment['balance'] = 0;
-            $this->getChildIds($segment, $segment);
+            $segment['child_ids'] = $this->getChildIds($segment);
             $childIds = array_merge($childIds, $segment['child_ids']);
             unset($segment['children']);
         }
@@ -283,7 +299,7 @@ class ReportRepository extends EloquentBaseRepository
         foreach ($segments as &$segment) {
             $segment['child_ids'] = [];
             $segment['balance'] = 0;
-            $this->getChildIds($segment, $segment);
+            $segment['child_ids'] = $this->getChildIds($segment);
             $childIds = array_merge($childIds, $segment['child_ids']);
             unset($segment['children']);
         }
