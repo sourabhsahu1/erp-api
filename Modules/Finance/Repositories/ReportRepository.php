@@ -124,7 +124,8 @@ class ReportRepository extends EloquentBaseRepository
     public function getSiblingReport($params)
     {
         $query = JournalVoucher
-            ::join('journal_voucher_details as jd', 'journal_vouchers.id', '=', 'jd.journal_voucher_id');
+            ::join('journal_voucher_details as jd', 'journal_vouchers.id', '=', 'jd.journal_voucher_id')
+            ->join('admin_segments', 'jd.economic_segment_id', '=', 'admin_segments.id');
 
         if (isset($params['inputs']['economic_segment_id'])) {
             $query->where('jd.economic_segment_id', $params['inputs']['economic_segment_id']);
