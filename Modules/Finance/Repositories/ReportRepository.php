@@ -125,7 +125,8 @@ class ReportRepository extends EloquentBaseRepository
     {
         $query = JournalVoucher
             ::join('journal_voucher_details as jd', 'journal_vouchers.id', '=', 'jd.journal_voucher_id')
-            ->join('admin_segments', 'jd.economic_segment_id', '=', 'admin_segments.id');
+            ->join('admin_segments', 'jd.economic_segment_id', '=', 'admin_segments.id')
+            ->where('status', AppConstant::JV_STATUS_POSTED);
 
         if (isset($params['inputs']['economic_segment_id'])) {
             $query->where('jd.economic_segment_id', $params['inputs']['economic_segment_id']);
