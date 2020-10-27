@@ -4,8 +4,7 @@
 namespace Modules\Finance\Repositories;
 
 
-use Carbon\Carbon;
-use http\Env\Request;
+use App\Constants\AppConstant;
 use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
@@ -142,7 +141,9 @@ class ReportRepository extends EloquentBaseRepository
 
 
         $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
+            ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
             ->selectRaw('name,jd.economic_segment_id, month(jd.created_at) as month, sum(lv_line_value) sum, line_value_type')
+            ->where('jv.status', AppConstant::JV_STATUS_POSTED)
             ->groupby(DB::raw('name,jd.economic_segment_id, month(jd.created_at), line_value_type'))
             ->get()->toArray();
 
@@ -162,8 +163,8 @@ class ReportRepository extends EloquentBaseRepository
         $d = [];
         foreach ($data as $item) {
             if (isset($d[$item['economic_segment_id']])) {
-                $d[$item['economic_segment_id']]['month'.$item['month']] += $item['balance'];
-            }else {
+                $d[$item['economic_segment_id']]['month' . $item['month']] += $item['balance'];
+            } else {
                 $d[$item['economic_segment_id']] = [
                     'name' => $item['name'],
                     'economic_segment_id' => $item['economic_segment_id'],
@@ -191,8 +192,8 @@ class ReportRepository extends EloquentBaseRepository
             $this->getChildIds($segment, $segment);
             unset($segment['children']);
 
-            for ($i=1; $i<13; $i++) {
-                $segment['month'.$i] = 0;
+            for ($i = 1; $i < 13; $i++) {
+                $segment['month' . $i] = 0;
             }
             foreach ($d as $key => $values) {
                 if (array_search($key, $segment['child_ids']) !== false) {
@@ -213,14 +214,15 @@ class ReportRepository extends EloquentBaseRepository
                 }
             }
         }
-        
+
         return ['items' => $segments];
     }
 
-    private function getChildIds($data, &$segment) {
+    private function getChildIds($data, &$segment)
+    {
         $segment['child_ids'][] = $data['id'];
 
-        foreach ($data['children'] as  $child) {
+        foreach ($data['children'] as $child) {
             $this->getChildIds($child, $segment);
         }
 
@@ -229,237 +231,85 @@ class ReportRepository extends EloquentBaseRepository
 
     public function getFinancialPerformance($params)
     {
-
-
-        $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
-            ->selectRaw('name,jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
-            ->groupby(DB::raw('name,jd.economic_segment_id, line_value_type'))
-            ->get()->toArray();
-
-        $data = null;
-        foreach ($jvS as $jv) {
-            if (!isset($data[$jv['economic_segment_id']])) {
-                $data[$jv['economic_segment_id']]['balance'] = 0;
-            }
-            $data[$jv['economic_segment_id']] = [
-                'name' => $jv['name'],
-                'economic_segment_id' => $jv['economic_segment_id'],
-                'balance' => ($jv['line_value_type'] === 'CREDIT') ? $data[$jv['economic_segment_id']]['balance'] + $jv['sum'] : $data[$jv['economic_segment_id']]['balance'] - $jv['sum']
-            ];
-        }
-
-
-        $d = [];
-        foreach ($data as $item) {
-            if (isset($d[$item['economic_segment_id']])) {
-                $d[$item['economic_segment_id']]['month'.$item['month']] += $item['balance'];
-            }else {
-                $d[$item['economic_segment_id']] = [
-                    'name' => $item['name'],
-                    'economic_segment_id' => $item['economic_segment_id'],
-                    'sum' => 0
-                ];
-
-                $d[$item['economic_segment_id']]['month' . $item['month']] += $item['balance'];
-            }
-        }
-
         $segments = AdminSegment::with('children');
 
         if (isset($params['inputs']['parent_id'])) {
             $segments->where('parent_id', $params['inputs']['parent_id']);
         } else {
-            $segments->where('parent_id', 2);
+            $segments->whereIn('id', [7, 8]);
         }
 
         $segments = $segments->get()->toArray();
+        $childIds = [];
 
         foreach ($segments as &$segment) {
             $segment['child_ids'] = [];
+            $segment['balance'] = 0;
             $this->getChildIds($segment, $segment);
+            $childIds = array_merge($childIds, $segment['child_ids']);
             unset($segment['children']);
+        }
 
-            for ($i=1; $i<13; $i++) {
-                $segment['month'.$i] = 0;
-            }
-            foreach ($d as $key => $values) {
-                if (array_search($key, $segment['child_ids']) !== false) {
-                    $segment['month1'] += $values['month1'];
-                    $segment['month2'] += $values['month2'];
-                    $segment['month3'] += $values['month3'];
-                    $segment['month4'] += $values['month4'];
-                    $segment['month5'] += $values['month5'];
-                    $segment['month6'] += $values['month6'];
-                    $segment['month7'] += $values['month7'];
-                    $segment['month8'] += $values['month8'];
-                    $segment['month9'] += $values['month9'];
-                    $segment['month10'] += $values['month10'];
-                    $segment['month11'] += $values['month11'];
-                    $segment['month12'] += $values['month12'];
+        $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
+            ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
+            ->selectRaw('name, jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
+            ->whereIn('admin_segments.id', $childIds)
+            ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+            ->groupby(DB::raw('name,jd.economic_segment_id, line_value_type'))
+            ->get()
+            ->toArray();
 
-                    unset($d[$key]);
+        foreach ($jvS as $jv) {
+            foreach ($segments as &$segment) {
+                if (array_search($jv['economic_segment_id'], $segment['child_ids']) !== false) {
+                    $segment['balance'] += $jv['sum'];
+                    break;
                 }
             }
         }
 
         return ['items' => $segments];
-
-
-
-
-
-
-
-
-
-
-
-
-//        $data['revenue'] = [
-//            'combined_code' => 1,
-//            'individual_code' => 1,
-//            'name' => 'Revenue',
-//            'balance' => 20000.00
-//        ];
-//
-//
-//        $data['expenditure'] = [
-//            'combined_code' => 1,
-//            'individual_code' => 1,
-//            'name' => 'expenditure',
-//            'balance' => 20000.00
-//        ];
-//
-//        $data['revenue']['revenue_child'] = [
-//            [
-//                'combined_code' => 101,
-//                'individual_code' => 1,
-//                'name' => 'Govt. share',
-//                'balance' => 20000.00
-//            ],
-//            [
-//                'combined_code' => 102,
-//                'individual_code' => 2,
-//                'name' => 'Independent. share',
-//                'balance' => 0.00
-//            ],
-//            [
-//                'combined_code' => 103,
-//                'individual_code' => 3,
-//                'name' => 'Aid. share',
-//                'balance' => '(20000.00)'
-//            ],
-//            [
-//                'combined_code' => 104,
-//                'individual_code' => 4,
-//                'name' => 'Capital. share',
-//                'balance' => 0.00
-//            ]
-//        ];
-//
-//        $data['expenditure']['expenditure_child'] = [
-//            [
-//                'combined_code' => 201,
-//                'individual_code' => 1,
-//                'name' => 'other. share',
-//                'balance' => 0.00
-//            ],
-//            [
-//                'combined_code' => 202,
-//                'individual_code' => 2,
-//                'name' => 'capital expenditure',
-//                'balance' => 0.00
-//            ],
-//            [
-//                'combined_code' => 203,
-//                'individual_code' => 3,
-//                'name' => 'depreciation',
-//                'balance' => 0.00
-//            ],
-//            [
-//                'combined_code' => 204,
-//                'individual_code' => 4,
-//                'name' => 'impairment charges',
-//                'balance' => 0.00
-//            ]
-//        ];
-
-
-        return $data;
     }
 
     public function getStatementOfPosition($params)
     {
-        $data['asset'] = [
-            'combined_code' => 3,
-            'individual_code' => 3,
-            'name' => 'Asset',
-            'balance' => 20000.00
-        ];
+        $segments = AdminSegment::with('children');
 
+        if (isset($params['inputs']['parent_id'])) {
+            $segments->where('parent_id', $params['inputs']['parent_id']);
+        } else {
+            $segments->whereIn('id', [9, 10]);
+        }
 
-        $data['liabilities'] = [
-            'combined_code' => 4,
-            'individual_code' => 4,
-            'name' => 'Liabilities',
-            'balance' => 20000.00
-        ];
+        $segments = $segments->get()->toArray();
+        $childIds = [];
 
-        $data['asset']['asset_child'] = [
-            [
-                'combined_code' => 301,
-                'individual_code' => 1,
-                'name' => 'Govt. share',
-                'balance' => 20000.00
-            ],
-            [
-                'combined_code' => 302,
-                'individual_code' => 2,
-                'name' => 'Independent. share',
-                'balance' => 0.00
-            ],
-            [
-                'combined_code' => 303,
-                'individual_code' => 3,
-                'name' => 'Aid. share',
-                'balance' => '(20000.00)'
-            ],
-            [
-                'combined_code' => 304,
-                'individual_code' => 4,
-                'name' => 'Capital. share',
-                'balance' => 0.00
-            ]
-        ];
+        foreach ($segments as &$segment) {
+            $segment['child_ids'] = [];
+            $segment['balance'] = 0;
+            $this->getChildIds($segment, $segment);
+            $childIds = array_merge($childIds, $segment['child_ids']);
+            unset($segment['children']);
+        }
 
-        $data['liabilities']['liabilities_child'] = [
-            [
-                'combined_code' => 401,
-                'individual_code' => 1,
-                'name' => 'other. share',
-                'balance' => 0.00
-            ],
-            [
-                'combined_code' => 402,
-                'individual_code' => 2,
-                'name' => 'capital expenditure',
-                'balance' => 0.00
-            ],
-            [
-                'combined_code' => 403,
-                'individual_code' => 3,
-                'name' => 'depreciation',
-                'balance' => 0.00
-            ],
-            [
-                'combined_code' => 404,
-                'individual_code' => 4,
-                'name' => 'impairment charges',
-                'balance' => 0.00
-            ]
-        ];
+        $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
+            ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
+            ->selectRaw('name, jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
+            ->whereIn('admin_segments.id', $childIds)
+            ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+            ->groupby(DB::raw('name,jd.economic_segment_id, line_value_type'))
+            ->get()
+            ->toArray();
 
+        foreach ($jvS as $jv) {
+            foreach ($segments as &$segment) {
+                if (array_search($jv['economic_segment_id'], $segment['child_ids']) !== false) {
+                    $segment['balance'] += $jv['sum'];
+                    break;
+                }
+            }
+        }
 
-        return $data;
+        return ['items' => $segments];
     }
 }
