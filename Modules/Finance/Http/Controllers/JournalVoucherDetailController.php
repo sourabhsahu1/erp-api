@@ -20,7 +20,7 @@ class JournalVoucherDetailController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $storeRequest = Create::class;
-    protected $updateRequest = Update::class;
+//    protected $updateRequest = Update::class;
     protected $deleteRequest = Delete::class;
 
     public function destroy(Request $request, $id)
