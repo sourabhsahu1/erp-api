@@ -19,7 +19,7 @@ class JournalVoucherDetailController extends BaseController
     protected $updateJob = BaseJob::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
-    protected $storeRequest = Create::class;
+//    protected $storeRequest = Create::class;
 //    protected $updateRequest = Update::class;
     protected $deleteRequest = Delete::class;
 
