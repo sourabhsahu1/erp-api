@@ -28,11 +28,16 @@ class JournalVoucherRepository extends EloquentBaseRepository
         $data['data']['prepared_user_id'] = $data['data']['user_id'];
         $data['data']['source_app'] = "PLINYEGL";
         $data['data']['status'] = "NEW";
-        unset($data['data']['jv_detail']);
+
 
         DB::beginTransaction();
         try {
             $jv = parent::create($data);
+            if (count($data['data']['jv_detail']) <= 0) {
+                DB::commit();
+                return $jv;
+            }
+            unset($data['data']['jv_detail']);
             foreach ($jvVoucherDetails as $key => $detail) {
                 $jvVoucherDetails[$key]['journal_voucher_id'] = $jv->id;
                 $jvVoucherDetails[$key]['created_at'] = Carbon::now()->toDateTimeString();

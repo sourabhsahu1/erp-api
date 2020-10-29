@@ -22,7 +22,7 @@ class Create extends BaseRequest
             'transactionDetails' => 'required',
             'preparedValueDate' => 'required',
             'preparedTransactionDate' => 'required',
-            'jvDetail' => 'required|array',
+            'jvDetail' => 'array',
             'jvDetail.*.currency' => 'required',
             'jvDetail.*.xRateLocal' => 'required',
             'jvDetail.*.bankXRateToUsd' => 'required',
