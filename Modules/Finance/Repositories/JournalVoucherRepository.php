@@ -23,8 +23,6 @@ class JournalVoucherRepository extends EloquentBaseRepository
     public function create($data)
     {
 
-        $jvVoucherDetails = $data['data']['jv_detail'];
-
         $data['data']['prepared_user_id'] = $data['data']['user_id'];
         $data['data']['source_app'] = "PLINYEGL";
         $data['data']['status'] = "NEW";
@@ -33,10 +31,13 @@ class JournalVoucherRepository extends EloquentBaseRepository
         DB::beginTransaction();
         try {
             $jv = parent::create($data);
-            if (count($data['data']['jv_detail']) <= 0) {
+
+            if (!isset($data['data']['jv_detail']) || count($data['data']['jv_detail']) <= 0) {
                 DB::commit();
                 return $jv;
             }
+
+            $jvVoucherDetails = $data['data']['jv_detail'];
             unset($data['data']['jv_detail']);
             foreach ($jvVoucherDetails as $key => $detail) {
                 $jvVoucherDetails[$key]['journal_voucher_id'] = $jv->id;
