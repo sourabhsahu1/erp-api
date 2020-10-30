@@ -184,7 +184,7 @@ class ReportRepository extends EloquentBaseRepository
         if (isset($params['inputs']['parent_id'])) {
             $segments->where('parent_id', $params['inputs']['parent_id']);
         } elseif (isset($params['inputs']['economic_segment_id'])   ) {
-            $segments->where('parent_id', $params['inputs']['economic_segment_id']);
+            $segments->where('id', $params['inputs']['economic_segment_id']);
         } else {
             $segments->where('parent_id', 2);
         }
