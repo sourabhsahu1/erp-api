@@ -17,6 +17,12 @@ class JournalVoucherDetailRepository extends EloquentBaseRepository
     public function create($data)
     {
         $data['data']['journal_voucher_id'] = $data['data']['id'];
+        $jvDetail = JournalVoucherDetail::where('journal_voucher_id', $data['data']['journal_voucher_id'])
+            ->where('economic_segment_id', $data['data']['economic_segment_id'])->first();
+
+        if ($jvDetail) {
+            throw new AppException('Detail Line with this economic segment already exists');
+        }
         return parent::create($data);
     }
 
@@ -24,6 +30,14 @@ class JournalVoucherDetailRepository extends EloquentBaseRepository
     {
 
         $jvDetail = JournalVoucherDetail::where('journal_voucher_id', $data['data']['id'])->where('id', $data['data']['detail_id'])->first();
+
+        $jvDetail = JournalVoucherDetail::where('journal_voucher_id', $data['data']['journal_voucher_id'])
+            ->where('economic_segment_id', $data['data']['economic_segment_id'])->first();
+
+        if ($jvDetail) {
+            throw new AppException('Detail Line with this economic segment already exists');
+        }
+
         if ($jvDetail) {
             return parent::update($data);
         } else {

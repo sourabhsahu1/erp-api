@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\AdminSegment;
+use Modules\Admin\Models\CompanySetting;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JournalVoucherDetail;
 use Modules\Finance\Models\JvTrailBalanceReport;
@@ -25,8 +26,19 @@ class JournalVoucherRepository extends EloquentBaseRepository
 
         $data['data']['prepared_user_id'] = $data['data']['user_id'];
         $data['data']['source_app'] = "PLINYEGL";
-        $data['data']['status'] = "NEW";
 
+        $companySetting = CompanySetting::where('id', 1)->first();
+        if ($companySetting->auto_post == true) {
+            $data['data']['status'] = "POSTED";
+            $data['data']['checked_user_id'] = $data['data']['user_id'];
+            $data['data']['checked_value_date'] = Carbon::now()->toDateTimeString();
+            $data['data']['checked_transaction_date'] = Carbon::now()->toDateTimeString();
+            $data['data']['posted_user_id'] = $data['data']['user_id'];
+            $data['data']['posted_value_date'] = Carbon::now()->toDateTimeString();
+            $data['data']['posted_transaction_date'] = Carbon::now()->toDateTimeString();
+        } else {
+            $data['data']['status'] = "NEW";
+        }
 
         DB::beginTransaction();
         try {
@@ -80,13 +92,12 @@ class JournalVoucherRepository extends EloquentBaseRepository
 
             JournalVoucherDetail::insert($newData);
 
-
-            $jds = JournalVoucherDetail::where('journal_voucher_id', $jv->id)->get();
-
-
-            foreach ($jds as $jd) {
-                $jd = $jd->toArray();
-                $this->insertInTrailReport($jd);
+            if ($companySetting->auto_post == true) {
+                $jds = JournalVoucherDetail::where('journal_voucher_id', $jv->id)->get();
+                foreach ($jds as $jd) {
+                    $jd = $jd->toArray();
+                    $this->insertInTrailReport($jd);
+                }
             }
 
             DB::commit();
@@ -126,7 +137,7 @@ class JournalVoucherRepository extends EloquentBaseRepository
             }
 
             $jv = JvTrailBalanceReport::create($data);
-Log::info($jv);
+            Log::info($jv);
             if ($parent->parent_id != null) {
                 $this->insertInTrailReport([
                     'economic_segment_id' => $parent->parent_id,
@@ -216,25 +227,35 @@ Log::info($jv);
 
     public function updateStatus($data)
     {
-        $jv = JournalVoucher::whereIn('id', $data['data']['jv_reference_numbers']);
+        $jvs = JournalVoucher::whereIn('id', $data['data']['jv_reference_numbers']);
 
         if (isset($data['data']['status'])) {
             if ($data['data']['status'] == 'CHECKED') {
-                $jv->update([
+                $jvs->update([
                     'status' => AppConstant::JV_STATUS_CHECKED,
                     'checked_user_id' => $data['data']['user_id'],
                     'checked_value_date' => Carbon::now()->toDateTimeString(),
                     'checked_transaction_date' => Carbon::now()->toDateTimeString(),
                 ]);
             } elseif ($data['data']['status'] == 'POSTED') {
-                $jv->update([
+                $jvs->update([
                     'status' => AppConstant::JV_STATUS_POSTED,
                     'posted_user_id' => $data['data']['user_id'],
                     'posted_value_date' => Carbon::now()->toDateTimeString(),
                     'posted_transaction_date' => Carbon::now()->toDateTimeString()
                 ]);
+
+              $jvs =  $jvs->get();
+              foreach ($jvs as $jv) {
+                  $jds = JournalVoucherDetail::where('journal_voucher_id', $jv->id)->get();
+                  foreach ($jds as $jd) {
+                      $jd = $jd->toArray();
+                      $this->insertInTrailReport($jd);
+                  }
+              }
+
             } elseif ($data['data']['status'] == 'RENEW') {
-                $jv->update([
+                $jvs->update([
                     'status' => AppConstant::JV_STATUS_NEW
                 ]);
             } else {

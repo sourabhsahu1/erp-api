@@ -20,39 +20,39 @@ class Create extends BaseRequest
 
         /** @var JournalVoucher $jv */
         $jv = JournalVoucher::find($this->route('id'));
-        if ($jv->status != AppConstant::JV_STATUS_NEW) {
-            throw new AppException('Cannot Add Status is not NEW');
+        if ($jv->status == AppConstant::JV_STATUS_POSTED) {
+            throw new AppException('Cannot Add Status is Posted');
         }
 
 
-        $jvD = JournalVoucherDetail::where('journal_voucher_id', $this->route('id'))->get();
-        $lv['CREDIT'] = 0;
-        $lv['DEBIT'] = 0;
-        foreach ($jvD as $item) {
-            $lv[$item['line_value_type']] += $item['lv_line_value'];
-        }
-        if ($lv['CREDIT'] == $lv['DEBIT']) {
-            throw new  AppException('Cannot add more');
-        }
-
-        if ($lv['CREDIT'] > $lv['DEBIT']) {
-            if ($this->get('lineValueType') == AppConstant::LINE_VALUE_TYPE_DEBIT) {
-                if (($lv['CREDIT'] - $lv['DEBIT']) != $this->get('lvLineValue')) {
-                    throw new AppException('Entered amount is not applicable');
-                }
-            }else {
-                throw new  AppException('Cannot add');
-            }
-        }
-        if ($lv['CREDIT'] < $lv['DEBIT']) {
-            if ($this->get('lineValueType') == AppConstant::LINE_VALUE_TYPE_CREDIT) {
-                if (($lv['DEBIT'] - $lv['CREDIT']) != $this->get('lvLineValue')) {
-                    throw new AppException('Entered amount is not applicable');
-                }
-            }else {
-                throw new  AppException('Cannot add');
-            }
-        }
+//        $jvD = JournalVoucherDetail::where('journal_voucher_id', $this->route('id'))->get();
+//        $lv['CREDIT'] = 0;
+//        $lv['DEBIT'] = 0;
+//        foreach ($jvD as $item) {
+//            $lv[$item['line_value_type']] += $item['lv_line_value'];
+//        }
+//        if ($lv['CREDIT'] == $lv['DEBIT']) {
+//            throw new  AppException('Cannot add more');
+//        }
+//
+//        if ($lv['CREDIT'] > $lv['DEBIT']) {
+//            if ($this->get('lineValueType') == AppConstant::LINE_VALUE_TYPE_DEBIT) {
+//                if (($lv['CREDIT'] - $lv['DEBIT']) != $this->get('lvLineValue')) {
+//                    throw new AppException('Entered amount is not applicable');
+//                }
+//            }else {
+//                throw new  AppException('Cannot add');
+//            }
+//        }
+//        if ($lv['CREDIT'] < $lv['DEBIT']) {
+//            if ($this->get('lineValueType') == AppConstant::LINE_VALUE_TYPE_CREDIT) {
+//                if (($lv['DEBIT'] - $lv['CREDIT']) != $this->get('lvLineValue')) {
+//                    throw new AppException('Entered amount is not applicable');
+//                }
+//            }else {
+//                throw new  AppException('Cannot add');
+//            }
+//        }
 
         return [
             'currency' => 'required',

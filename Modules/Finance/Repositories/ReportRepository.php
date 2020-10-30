@@ -130,8 +130,6 @@ class ReportRepository extends EloquentBaseRepository
 
         if (isset($params['inputs']['economic_segment_id'])) {
             $query->where('jd.economic_segment_id', $params['inputs']['economic_segment_id']);
-        } else {
-            throw new AppException('Economic Segment id required');
         }
 
         if (isset($params['inputs']['journal_voucher_id']) && isset($params['inputs']['jv_detail_id'])) {
@@ -152,7 +150,8 @@ class ReportRepository extends EloquentBaseRepository
             ->selectRaw('name,jd.economic_segment_id, month(jd.created_at) as month, sum(lv_line_value) sum, line_value_type')
 //            ->where('jv.status', AppConstant::JV_STATUS_POSTED)
             ->groupby(DB::raw('name,jd.economic_segment_id, month(jd.created_at), line_value_type'))
-            ->get()->toArray();
+            ->get()
+            ->toArray();
 
         $data = null;
         $d = [];
@@ -184,6 +183,8 @@ class ReportRepository extends EloquentBaseRepository
 
         if (isset($params['inputs']['parent_id'])) {
             $segments->where('parent_id', $params['inputs']['parent_id']);
+        } elseif (isset($params['inputs']['economic_segment_id'])   ) {
+            $segments->where('parent_id', $params['inputs']['economic_segment_id']);
         } else {
             $segments->where('parent_id', 2);
         }
