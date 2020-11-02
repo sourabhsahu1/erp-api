@@ -22,26 +22,75 @@ class ReportRepository extends EloquentBaseRepository
     public function getTrialBalanceReport($params)
     {
 
-        $economicSegmentChildIds = AdminSegment::where('parent_id', 2)->get()->pluck('id');
 
-        $journals = JvTrailBalanceReport::with(['economic_segment', 'parent']);
-
-        if (!isset($params['inputs']['parent_id'])) {
-            $journals->whereIn('economic_segment_id', $economicSegmentChildIds);
-        }
+        $segments = AdminSegment::with('children');
+        $economicChilds = AdminSegment::where('parent_id', 2)->get()->pluck('id');
 
         if (isset($params['inputs']['parent_id'])) {
-            $journals->where('parent_id', $params['inputs']['parent_id']);
+            $segments->where('parent_id', $params['inputs']['parent_id']);
+        } else {
+            $segments->whereIn('id', $economicChilds);
         }
 
-        if (isset($params['inputs']['from_date']) && isset($params['inputs']['to_date'])) {
-            $fromDate = $params['inputs']['from_date'] . ' 00:00:00';
-            $toDate = $params['inputs']['to_date'] . ' 23:59:59';
-            $journals->where('created_at', '>=', $fromDate)
-                ->where('created_at', '<=', $toDate);
+        $segments = $segments->get()->toArray();
+        $childIds = [];
+
+        foreach ($segments as &$segment) {
+            $segment['child_ids'] = [];
+            $segment['balance'] = 0;
+            $segment['debit'] = 0;
+            $segment['credit'] = 0;
+            $segment['child_ids'] = $this->getChildIds($segment);
+            $childIds = array_merge($childIds, $segment['child_ids']);
+            unset($segment['children']);
         }
-        $params['inputs']['orderby'] = 'created_at';
-        return parent::getAll($params, $journals);
+
+        $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
+            ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
+            ->selectRaw('name, jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
+            ->whereIn('admin_segments.id', $childIds)
+            ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+            ->groupby(DB::raw('name,jd.economic_segment_id, line_value_type'))
+            ->get()
+            ->toArray();
+
+        foreach ($jvS as $jv) {
+            foreach ($segments as &$segment) {
+                if (array_search($jv['economic_segment_id'], $segment['child_ids']) !== false) {
+
+                    $segment['balance'] += $jv['sum'];
+                    if ($jv['line_value_type']=='CREDIT') {
+                        $segment['credit'] += $jv['sum'];
+                    }else {
+                        $segment['debit'] += $jv['sum'];
+                    }
+                    break;
+                }
+            }
+        }
+
+        return ['items' => $segments];
+
+//        $economicSegmentChildIds = AdminSegment::where('parent_id', 2)->get()->pluck('id');
+//
+//        $journals = JvTrailBalanceReport::with(['economic_segment', 'parent']);
+//
+//        if (!isset($params['inputs']['parent_id'])) {
+//            $journals->whereIn('economic_segment_id', $economicSegmentChildIds);
+//        }
+//
+//        if (isset($params['inputs']['parent_id'])) {
+//            $journals->where('parent_id', $params['inputs']['parent_id']);
+//        }
+//
+//        if (isset($params['inputs']['from_date']) && isset($params['inputs']['to_date'])) {
+//            $fromDate = $params['inputs']['from_date'] . ' 00:00:00';
+//            $toDate = $params['inputs']['to_date'] . ' 23:59:59';
+//            $journals->where('created_at', '>=', $fromDate)
+//                ->where('created_at', '<=', $toDate);
+//        }
+//        $params['inputs']['orderby'] = 'created_at';
+//        return parent::getAll($params, $journals);
     }
 
     public function getJvLedgerReport($params)
