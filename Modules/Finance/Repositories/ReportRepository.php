@@ -50,18 +50,25 @@ class ReportRepository extends EloquentBaseRepository
             ->selectRaw('name, jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
             ->whereIn('admin_segments.id', $childIds)
             ->where('jv.status', AppConstant::JV_STATUS_POSTED)
-            ->groupby(DB::raw('name,jd.economic_segment_id, line_value_type'))
-            ->get()
-            ->toArray();
+            ->groupby(DB::raw('name,jd.economic_segment_id, line_value_type'));
+
+        if (isset($params['inputs']['from_date']) && isset($params['inputs']['to_date'])) {
+            $fromDate = $params['inputs']['from_date'] . ' 00:00:00';
+            $toDate = $params['inputs']['to_date'] . ' 23:59:59';
+            $jvS->where('jd.created_at', '>=', $fromDate)
+                ->where('jd.created_at', '<=', $toDate);
+        }
+
+        $jvS = $jvS->get()->toArray();
 
         foreach ($jvS as $jv) {
             foreach ($segments as &$segment) {
                 if (array_search($jv['economic_segment_id'], $segment['child_ids']) !== false) {
 
                     $segment['balance'] += $jv['sum'];
-                    if ($jv['line_value_type']=='CREDIT') {
+                    if ($jv['line_value_type'] == 'CREDIT') {
                         $segment['credit'] += $jv['sum'];
-                    }else {
+                    } else {
                         $segment['debit'] += $jv['sum'];
                     }
                     break;
@@ -232,7 +239,7 @@ class ReportRepository extends EloquentBaseRepository
 
         if (isset($params['inputs']['parent_id'])) {
             $segments->where('parent_id', $params['inputs']['parent_id']);
-        } elseif (isset($params['inputs']['economic_segment_id'])   ) {
+        } elseif (isset($params['inputs']['economic_segment_id'])) {
             $segments->where('id', $params['inputs']['economic_segment_id']);
         } else {
             $segments->where('parent_id', 2);
