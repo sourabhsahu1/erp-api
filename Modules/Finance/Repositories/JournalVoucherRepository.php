@@ -256,7 +256,10 @@ class JournalVoucherRepository extends EloquentBaseRepository
 
             } elseif ($data['data']['status'] == 'RENEW') {
                 $jvs->update([
-                    'status' => AppConstant::JV_STATUS_NEW
+                    'status' => AppConstant::JV_STATUS_NEW,
+                    'checked_user_id' => null,
+                    'checked_value_date' => null,
+                    'checked_transaction_date' => null
                 ]);
             } else {
                 throw new AppException('Invalid status');

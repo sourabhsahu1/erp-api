@@ -22,7 +22,6 @@ class ReportRepository extends EloquentBaseRepository
     public function getTrialBalanceReport($params)
     {
 
-
         $segments = AdminSegment::with('children');
         $economicChilds = AdminSegment::where('parent_id', 2)->get()->pluck('id');
 
@@ -158,7 +157,6 @@ class ReportRepository extends EloquentBaseRepository
         return $jv;
     }
 
-
     public function getNotesTrialBalanceReport($params)
     {
         $jv = JvTrailBalanceReport::with(['economic_segment', 'parent'])->join('notes_trail_balance_report as n', 'jv_trail_balance_report.id', '=', 'n.jv_tb_report_id');
@@ -195,7 +193,6 @@ class ReportRepository extends EloquentBaseRepository
 
         return parent::getAll($params, $query);
     }
-
 
     public function getMonthlyActivity($params)
     {
@@ -303,7 +300,6 @@ class ReportRepository extends EloquentBaseRepository
 
         return $childIds;
     }
-
 
     public function getFinancialPerformance($params)
     {
