@@ -38,7 +38,7 @@ class Create extends BaseRequest
             'budgetBreakups' => 'required|array',
             'budgetBreakups.*.month' => 'required',
             'budgetBreakups.*.mainBudget' => 'required',
-            'budgetBreakups.*.supplementaryBudget' => 'required'
+            'budgetBreakups.*.supplementaryBudget' => 'sometimes'
 
         ];
     }
