@@ -229,6 +229,12 @@ class JournalVoucherRepository extends EloquentBaseRepository
     {
         $jvs = JournalVoucher::whereIn('id', $data['data']['jv_reference_numbers']);
 
+        $jVD = JournalVoucherDetail::whereIn('journal_voucher_id', $data['data']['jv_reference_numbers'])->first();
+
+        if (is_null($jVD)) {
+            throw new AppException('cannot update or post, jv detail is empty');
+        }
+
         if (isset($data['data']['status'])) {
             if ($data['data']['status'] == 'CHECKED') {
                 $jvs->update([
