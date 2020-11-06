@@ -29,6 +29,11 @@ class JournalVoucherRepository extends EloquentBaseRepository
 
         $companySetting = CompanySetting::where('id', 1)->first();
         if ($companySetting->auto_post == true) {
+
+            if (count($data['data']['jv_detail']) <=0) {
+                throw new AppException('jv detail required when auto post is enabled');
+            }
+
             $data['data']['status'] = "POSTED";
             $data['data']['checked_user_id'] = $data['data']['user_id'];
             $data['data']['checked_value_date'] = Carbon::now()->toDateTimeString();
