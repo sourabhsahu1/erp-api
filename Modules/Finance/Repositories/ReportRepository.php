@@ -182,13 +182,15 @@ class ReportRepository extends EloquentBaseRepository
             ->join('admin_segments', 'jd.economic_segment_id', '=', 'admin_segments.id')
             ->where('status', AppConstant::JV_STATUS_POSTED);
 
+        $q = clone $query;
         if (isset($params['inputs']['economic_segment_id'])) {
             $query->where('jd.economic_segment_id', $params['inputs']['economic_segment_id']);
         }
 
         if (isset($params['inputs']['journal_voucher_id']) && isset($params['inputs']['jv_detail_id'])) {
-            $query->where('journal_voucher_id', $params['inputs']['journal_voucher_id'])
+            $q->where('journal_voucher_id', $params['inputs']['journal_voucher_id'])
                 ->where('jd.id', '!=', $params['inputs']['jv_detail_id']);
+            return parent::getAll($params, $q);
         }
 
         return parent::getAll($params, $query);
