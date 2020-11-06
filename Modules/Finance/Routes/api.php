@@ -46,3 +46,4 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('finance/monthly-activity','ReportController@getMonthlyActivity');
     Route::get('finance/financial-performance','ReportController@getFinancialPerformance');
     Route::get('finance/statement-of-position','ReportController@getStatementOfPosition');
+    Route::delete('finance/notes','ReportController@deleteNotes');

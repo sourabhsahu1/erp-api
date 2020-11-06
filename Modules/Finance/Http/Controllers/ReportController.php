@@ -53,4 +53,10 @@ class ReportController extends BaseController
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
 
+    public function deleteNotes(Request $request) {
+        $this->jobMethod = 'deleteNotes';
+        $this->customMessage = "table truncated successfully";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
 }

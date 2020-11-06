@@ -5,6 +5,7 @@ namespace Modules\Finance\Repositories;
 
 
 use App\Constants\AppConstant;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
@@ -118,6 +119,9 @@ class ReportRepository extends EloquentBaseRepository
     public function addNotes($data)
     {
 
+        $data['data']['type'] = 'Trail_balance';
+        //todo report type get from obj
+
         $jvTbReport = JvTrailBalanceReport::where('economic_segment_id', $data['data']['economic_segment_id'])->orWhere('parent_id', $data['data']['economic_segment_id'])->get();
 
 
@@ -128,14 +132,26 @@ class ReportRepository extends EloquentBaseRepository
         }
 
         $d = [];
+
+        $note = NotesTrailBalanceReport::whereNotNull('note_id')->orderBy('created_at', 'desc')->orderBy('id', 'desc')->first();
+        if (is_null($note)) {
+            $noteId = 'N1';
+        } else {
+            $num = explode('N', $note->note_id)[1] + 1;
+            $noteId = 'N' . $num;
+        }
+
         foreach ($jvTbReport as $item) {
             $parent = false;
             if ($item->economic_segment_id == $data['data']['economic_segment_id']) {
                 $parent = true;
             }
             $d[] = [
+                'note_id' => $parent ? $noteId : null,
+                'type' => $data['data']['type'],
                 'jv_tb_report_id' => $item->id,
-                'is_parent' => $parent
+                'is_parent' => $parent,
+                'created_at' => Carbon::now()->toDateTimeString()
             ];
         }
         DB::beginTransaction();
@@ -159,7 +175,15 @@ class ReportRepository extends EloquentBaseRepository
 
     public function getNotesTrialBalanceReport($params)
     {
-        $jv = JvTrailBalanceReport::with(['economic_segment', 'parent'])->join('notes_trail_balance_report as n', 'jv_trail_balance_report.id', '=', 'n.jv_tb_report_id');
+        $jv = JvTrailBalanceReport::with([
+            'economic_segment',
+            'parent'
+        ])
+            ->join('notes_trail_balance_report as n', 'jv_trail_balance_report.id', '=', 'n.jv_tb_report_id');
+
+        if (isset($params['inputs']['type'])) {
+            $jv->where('type', $params['inputs']['type']);
+        }
 
         if (!isset($params['inputs']['parent_id'])) {
             $jv->where('n.is_parent', 1);
@@ -385,5 +409,12 @@ class ReportRepository extends EloquentBaseRepository
         }
 
         return ['items' => $segments];
+    }
+
+
+    public function deleteNotes()
+    {
+        $notes = NotesTrailBalanceReport::truncate();
+        return ['data' => 'success'];
     }
 }
