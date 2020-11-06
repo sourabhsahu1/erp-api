@@ -215,6 +215,11 @@ class JournalVoucherRepository extends EloquentBaseRepository
 
         }
 
+        if (isset($params['inputs']['jv_reference'])) {
+            $query = JournalVoucher::where('jv_reference', $params['inputs']['jv_reference']);
+        }
+
+
         if (isset($params['inputs']['source'])) {
             $query = JournalVoucher::where('source_app', $params['inputs']['source']);
         }
@@ -223,8 +228,8 @@ class JournalVoucherRepository extends EloquentBaseRepository
             $params['inputs']['from'] = $params['inputs']['from'] . ' 00:00:00';
             $params['inputs']['to'] = $params['inputs']['to'] . ' 23:59:59';
 
-            $query = JournalVoucher::where('created_at', '>=', $params['inputs']['from'])
-                ->where('created_at', '<=', $params['inputs']['to']);
+            $query = JournalVoucher::where('jv_value_date', '>=', $params['inputs']['from'])
+                ->where('jv_value_date', '<=', $params['inputs']['to']);
         }
         return parent::getAll($params, $query);
     }
