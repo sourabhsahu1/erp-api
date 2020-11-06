@@ -4,6 +4,7 @@
 namespace Modules\Finance\Repositories;
 
 use Illuminate\Support\Facades\DB;
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Finance\Models\Budget;
 use Modules\Finance\Models\BudgetBreakup;
@@ -19,6 +20,25 @@ class BudgetRepository extends EloquentBaseRepository
         $budgets = $data['data']['budget_breakups'];
         unset($data['data']['budget_breakups']);
 
+        if (isset($data['data']['economic_segment_id'])) {
+            $budgetCheck = Budget::where('admin_segment_id', $data['data']['admin_segment_id'])
+                ->where('fund_segment_id', $data['data']['fund_segment_id'])
+                ->where('economic_segment_id', $data['data']['economic_segment_id'])
+                ->first();
+            if ($budgetCheck) {
+                throw new AppException('required budget already exist');
+            }
+        }
+
+        if (isset($data['data']['program_segment_id'])) {
+            $budgetCheck = Budget::where('admin_segment_id', $data['data']['admin_segment_id'])
+                ->where('fund_segment_id', $data['data']['fund_segment_id'])
+                ->where('program_segment_id', $data['data']['program_segment_id'])
+                ->first();
+            if ($budgetCheck) {
+                throw new AppException('required budget already exist');
+            }
+        }
         DB::beginTransaction();
         try {
             $budget = parent::create($data);
@@ -70,7 +90,8 @@ class BudgetRepository extends EloquentBaseRepository
     }
 
 
-    public function getEconomicBudget($params) {
+    public function getEconomicBudget($params)
+    {
 
         $query = Budget::whereNull('program_segment_id');
         $budgets = parent::getAll($params, $query);
