@@ -30,7 +30,7 @@ class JournalVoucherRepository extends EloquentBaseRepository
         $companySetting = CompanySetting::where('id', 1)->first();
         if ($companySetting->auto_post == true) {
 
-            if (count($data['data']['jv_detail']) <=0) {
+            if (!isset($data['data']['jv_detail']) || count($data['data']['jv_detail']) <=0) {
                 throw new AppException('jv detail required when auto post is enabled');
             }
 
