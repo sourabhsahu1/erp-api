@@ -204,31 +204,32 @@ class JournalVoucherRepository extends EloquentBaseRepository
 
     public function getAll($params = [], $query = null)
     {
+        $query = JournalVoucher::query();
         if (isset($params['inputs']['status'])) {
             if ($params['inputs']['status'] == AppConstant::JV_STATUS_NEW) {
-                $query = JournalVoucher::where('status', $params['inputs']['status']);
+                $query->where('status', $params['inputs']['status']);
             } else if ($params['inputs']['status'] == AppConstant::JV_STATUS_POSTED) {
-                $query = JournalVoucher::where('status', $params['inputs']['status']);
+                $query->where('status', $params['inputs']['status']);
             } else if ($params['inputs']['status'] == AppConstant::JV_STATUS_CHECKED) {
-                $query = JournalVoucher::where('status', $params['inputs']['status']);
+                $query->where('status', $params['inputs']['status']);
             }
 
         }
 
         if (isset($params['inputs']['jv_reference'])) {
-            $query = JournalVoucher::where('jv_reference', $params['inputs']['jv_reference']);
+            $query->where('jv_reference', $params['inputs']['jv_reference']);
         }
 
 
         if (isset($params['inputs']['source'])) {
-            $query = JournalVoucher::where('source_app', $params['inputs']['source']);
+            $query->where('source_app', $params['inputs']['source']);
         }
 
         if (isset($params['inputs']['from']) && isset($params['inputs']['to'])) {
             $params['inputs']['from'] = $params['inputs']['from'] . ' 00:00:00';
             $params['inputs']['to'] = $params['inputs']['to'] . ' 23:59:59';
 
-            $query = JournalVoucher::where('jv_value_date', '>=', $params['inputs']['from'])
+            $query->where('jv_value_date', '>=', $params['inputs']['from'])
                 ->where('jv_value_date', '<=', $params['inputs']['to']);
         }
         return parent::getAll($params, $query);

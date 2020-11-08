@@ -5,6 +5,7 @@ namespace Modules\Finance\Repositories;
 
 
 use App\Constants\AppConstant;
+use App\Services\UtilityService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
@@ -13,6 +14,9 @@ use Modules\Admin\Models\AdminSegment;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JvTrailBalanceReport;
 use Modules\Finance\Models\NotesTrailBalanceReport;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class ReportRepository extends EloquentBaseRepository
 {
@@ -343,6 +347,8 @@ class ReportRepository extends EloquentBaseRepository
         foreach ($segments as &$segment) {
             $segment['child_ids'] = [];
             $segment['balance'] = 0;
+            $segment['debit'] = 0;
+            $segment['credit'] = 0;
             $segment['child_ids'] = $this->getChildIds($segment);
             $childIds = array_merge($childIds, $segment['child_ids']);
             unset($segment['children']);
@@ -361,6 +367,11 @@ class ReportRepository extends EloquentBaseRepository
             foreach ($segments as &$segment) {
                 if (array_search($jv['economic_segment_id'], $segment['child_ids']) !== false) {
                     $segment['balance'] += $jv['sum'];
+                    if ($jv['line_value_type'] == 'CREDIT') {
+                        $segment['credit'] += $jv['sum'];
+                    } else {
+                        $segment['debit'] += $jv['sum'];
+                    }
                     break;
                 }
             }
@@ -385,6 +396,8 @@ class ReportRepository extends EloquentBaseRepository
         foreach ($segments as &$segment) {
             $segment['child_ids'] = [];
             $segment['balance'] = 0;
+            $segment['debit'] = 0;
+            $segment['credit'] = 0;
             $segment['child_ids'] = $this->getChildIds($segment);
             $childIds = array_merge($childIds, $segment['child_ids']);
             unset($segment['children']);
@@ -403,6 +416,11 @@ class ReportRepository extends EloquentBaseRepository
             foreach ($segments as &$segment) {
                 if (array_search($jv['economic_segment_id'], $segment['child_ids']) !== false) {
                     $segment['balance'] += $jv['sum'];
+                    if ($jv['line_value_type'] == 'CREDIT') {
+                        $segment['credit'] += $jv['sum'];
+                    } else {
+                        $segment['debit'] += $jv['sum'];
+                    }
                     break;
                 }
             }
@@ -416,5 +434,100 @@ class ReportRepository extends EloquentBaseRepository
     {
         $notes = NotesTrailBalanceReport::truncate();
         return ['data' => 'success'];
+    }
+
+    public static function toAlphabet($num)
+    {
+
+        $numeric = $num % 26;
+        $letter = chr(65 + $numeric);
+        $num2 = intval($num / 26);
+        if ($num2 > 0) {
+            return self::toAlphabet($num2 - 1) . $letter;
+        } else {
+            return $letter;
+        }
+
+    }
+
+    public function downloadNotes($params)
+    {
+
+        if (!isset($params['inputs']['note_ids'])) {
+            throw new AppException('Pass note id to download report');
+        } else {
+
+            $spreadsheet = new Spreadsheet();
+            $activeSheet = $spreadsheet->getActiveSheet();
+
+            $header = [];
+            $masterHeader = ['Note', 'Full Code', 'Title', 'Debit', 'Credit', 'Balance'];
+            $data = [];
+
+            foreach (json_decode($params['inputs']['note_ids'], true) as $idx =>$note_id) {
+                if ($idx !== 0) {
+                    $data[] = ['', '', '', '', '', ''];
+                }
+                $data[] = $masterHeader;
+
+                $jv = JvTrailBalanceReport::with([
+                    'economic_segment',
+                    'parent'
+                ])
+                    ->join('notes_trail_balance_report as n', 'jv_trail_balance_report.id', '=', 'n.jv_tb_report_id');
+
+                if (isset($params['inputs']['type'])) {
+                    $jv->where('type', $params['inputs']['type']);
+                }
+
+                $jv->where(function ($q) use ($note_id) {
+                    $q->where('jv_trail_balance_report.parent_id', $note_id)
+                        ->orWhere('jv_trail_balance_report.economic_segment_id', $note_id);
+                });
+
+                $jv->where(function ($q) {
+                    $q->where('n.is_parent', 0)
+                        ->orWhere('n.is_parent', 1);
+                });
+
+                $jv->orderBy('jv_trail_balance_report.parent_id', 'asc');
+
+                $jvs = $jv->get()->toArray();
+
+                foreach ($jvs as $var) {
+                    $temp = [
+                        'note_id' => ($note_id === $var['economic_segment_id'])? $var['note_id'] : '',
+                        'full_code' => $var['economic_segment']['combined_code'],
+                        'title' => $var['economic_segment']['name'],
+                        'debit' => $var['debit'],
+                        'credit' => $var['credit'],
+                        'balance' => $var['balance']
+                    ];
+                    $data[] = $temp;
+                }
+
+//                dd($data);
+                /*foreach ($header as $index => $h) {
+                    $cellVal = self::toAlphabet($index) . 1;
+                    $activeSheet->setCellValue($cellVal, $h);
+                    $activeSheet->getStyle($cellVal)->getFont()->setBold(true);
+                }
+
+                foreach ($data as $index1 => $jv) {
+                    foreach (array_values($jv) as $index => $item) {
+                        $cellVal = self::toAlphabet($index) . ($index1 + 2);
+
+                        $activeSheet->setCellValue($cellVal, $item);
+                    }
+
+                }*/
+            }
+
+//            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+            $filePath = 'csv/notes_report' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.xlsx';
+            UtilityService::createSpoutFile($data, $header, $filePath);
+//            $writer->save($filePath);
+            return ['url' => url($filePath)];
+        }
     }
 }

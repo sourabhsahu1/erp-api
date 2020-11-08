@@ -33,13 +33,13 @@ class JournalVoucherDetailRepository extends EloquentBaseRepository
             ->where('id', $data['data']['detail_id'])
             ->first();
 
-        $jvDetailCheck = JournalVoucherDetail::where('journal_voucher_id', $data['data']['journal_voucher_id'])
-            ->where('economic_segment_id', $data['data']['economic_segment_id'])
-            ->first();
-
-        if ($jvDetailCheck) {
-            throw new AppException('Detail Line with this economic segment already exists');
-        }
+//        $jvDetailCheck = JournalVoucherDetail::where('journal_voucher_id', $data['data']['journal_voucher_id'])
+//            ->where('economic_segment_id', $data['data']['economic_segment_id'])
+//            ->first();
+//
+//        if ($jvDetailCheck) {
+//            throw new AppException('Detail Line with this economic segment already exists');
+//        }
 
         if ($jvDetail) {
             return parent::update($data);
