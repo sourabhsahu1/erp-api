@@ -123,8 +123,10 @@ class ReportRepository extends EloquentBaseRepository
     public function addNotes($data)
     {
 
-        dd($data);
-//        $data['data']['type'] = 'Trail_balance';
+
+        if (!isset($data['data']['type'])) {
+            $data['data']['type'] = 'Trail_balance';
+        }
         //todo report type get from obj
 
         $jvTbReport = JvTrailBalanceReport::where('economic_segment_id', $data['data']['economic_segment_id'])->orWhere('parent_id', $data['data']['economic_segment_id'])->get();
@@ -156,7 +158,7 @@ class ReportRepository extends EloquentBaseRepository
             //todo change from fe type
             $d[] = [
                 'note_id' => $parent ? $noteId : null,
-                'type' => $data['data']['type'] ?? 'Trail_balance',
+                'type' => $data['data']['type'],
                 'jv_tb_report_id' => $item->id,
                 'is_parent' => $parent,
                 'created_at' => Carbon::now()->toDateTimeString()
@@ -165,7 +167,7 @@ class ReportRepository extends EloquentBaseRepository
         DB::beginTransaction();
         try {
 
-            $jv = JvTrailBalanceReport::rightjoin('notes_trail_balance_report as n', 'jv_trail_balance_report.id', '=', 'n.jv_tb_report_id')->where('economic_segment_id', $data['data']['economic_segment_id'])->where('type', $data['data']['type'])->where('is_parent',1)->first();
+            $jv = JvTrailBalanceReport::rightjoin('notes_trail_balance_report as n', 'jv_trail_balance_report.id', '=', 'n.jv_tb_report_id')->where('economic_segment_id', $data['data']['economic_segment_id'])->where('type', $data['data']['type'])->where('is_parent', 1)->first();
 
             if (!is_null($jv)) {
                 throw new AppException('already created');
