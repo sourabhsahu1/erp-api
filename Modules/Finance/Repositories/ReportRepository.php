@@ -465,8 +465,8 @@ class ReportRepository extends EloquentBaseRepository
     public function downloadNotes($params)
     {
 
-        if (!isset($params['inputs']['note_ids'])) {
-            throw new AppException('Pass note id to download report');
+        if (!isset($params['inputs']['notes_data'])) {
+            throw new AppException('Pass note ids to download report');
         } else {
 
             $spreadsheet = new Spreadsheet();
@@ -476,7 +476,10 @@ class ReportRepository extends EloquentBaseRepository
             $masterHeader = ['Note', 'Full Code', 'Title', 'Debit', 'Credit', 'Balance'];
             $data = [];
 
-            foreach (json_decode($params['inputs']['note_ids'], true) as $idx => $note_id) {
+//            dd(json_decode($params['inputs']['notes_data'], true));
+            foreach (json_decode($params['inputs']['notes_data'], true) as $idx => $ids) {
+
+//              dd($ids);
                 if ($idx !== 0) {
                     $data[] = ['', '', '', '', '', ''];
                 }
@@ -492,9 +495,9 @@ class ReportRepository extends EloquentBaseRepository
                     $jv->where('type', $params['inputs']['type']);
                 }
 
-                $jv->where(function ($q) use ($note_id) {
-                    $q->where('jv_trail_balance_report.parent_id', $note_id)
-                        ->orWhere('jv_trail_balance_report.economic_segment_id', $note_id);
+                $jv->where(function ($q) use ($ids) {
+                    $q->where('jv_trail_balance_report.parent_id', $ids['economicSegmentId'])
+                        ->orWhere('jv_trail_balance_report.economic_segment_id', $ids['economicSegmentId']);
                 });
 
                 $jv->where(function ($q) {
@@ -508,7 +511,7 @@ class ReportRepository extends EloquentBaseRepository
 
                 foreach ($jvs as $var) {
                     $temp = [
-                        'note_id' => ($note_id === $var['economic_segment_id']) ? $var['note_id'] : '',
+                        'note_id' => ($ids['economicSegmentId'] === $var['economic_segment_id']) ? $var['note_id'] : '',
                         'full_code' => $var['economic_segment']['combined_code'],
                         'title' => $var['economic_segment']['name'],
                         'debit' => $var['debit'],
