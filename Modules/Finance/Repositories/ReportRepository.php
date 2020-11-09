@@ -123,7 +123,7 @@ class ReportRepository extends EloquentBaseRepository
     public function addNotes($data)
     {
 
-        $data['data']['type'] = 'Trail_balance';
+//        $data['data']['type'] = 'Trail_balance';
         //todo report type get from obj
 
         $jvTbReport = JvTrailBalanceReport::where('economic_segment_id', $data['data']['economic_segment_id'])->orWhere('parent_id', $data['data']['economic_segment_id'])->get();
@@ -160,11 +160,17 @@ class ReportRepository extends EloquentBaseRepository
         }
         DB::beginTransaction();
         try {
+
+            $jv = JvTrailBalanceReport::rightjoin('notes_trail_balance_report as n', 'jv_trail_balance_report.id', '=', 'n.jv_tb_report_id')->where('economic_segment_id', $data['data']['economic_segment_id'])->where('type', $data['data']['type'])->where('is_parent',1)->first();
+
+            if (!is_null($jv)) {
+                throw new AppException('already created');
+            }
+
             if (count($d) > 0) {
                 NotesTrailBalanceReport::insert($d);
             }
-
-            $jv = JvTrailBalanceReport::rightjoin('notes_trail_balance_report as n', 'jv_trail_balance_report.id', '=', 'n.jv_tb_report_id')->where('economic_segment_id', $data['data']['economic_segment_id'])->first();
+            $jv = JvTrailBalanceReport::rightjoin('notes_trail_balance_report as n', 'jv_trail_balance_report.id', '=', 'n.jv_tb_report_id')->where('economic_segment_id', $data['data']['economic_segment_id'])->where('type', $data['data']['type'])->first();
 
             JvTrailBalanceReport::where('economic_segment_id', $data['data']['economic_segment_id'])->update(['note_id' => $jv->id]);
             DB::commit();
@@ -464,7 +470,7 @@ class ReportRepository extends EloquentBaseRepository
             $masterHeader = ['Note', 'Full Code', 'Title', 'Debit', 'Credit', 'Balance'];
             $data = [];
 
-            foreach (json_decode($params['inputs']['note_ids'], true) as $idx =>$note_id) {
+            foreach (json_decode($params['inputs']['note_ids'], true) as $idx => $note_id) {
                 if ($idx !== 0) {
                     $data[] = ['', '', '', '', '', ''];
                 }
@@ -496,7 +502,7 @@ class ReportRepository extends EloquentBaseRepository
 
                 foreach ($jvs as $var) {
                     $temp = [
-                        'note_id' => ($note_id === $var['economic_segment_id'])? $var['note_id'] : '',
+                        'note_id' => ($note_id === $var['economic_segment_id']) ? $var['note_id'] : '',
                         'full_code' => $var['economic_segment']['combined_code'],
                         'title' => $var['economic_segment']['name'],
                         'debit' => $var['debit'],
