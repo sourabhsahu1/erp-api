@@ -123,6 +123,7 @@ class ReportRepository extends EloquentBaseRepository
     public function addNotes($data)
     {
 
+        dd($data);
 //        $data['data']['type'] = 'Trail_balance';
         //todo report type get from obj
 
@@ -150,9 +151,12 @@ class ReportRepository extends EloquentBaseRepository
             if ($item->economic_segment_id == $data['data']['economic_segment_id']) {
                 $parent = true;
             }
+
+
+            //todo change from fe type
             $d[] = [
                 'note_id' => $parent ? $noteId : null,
-                'type' => $data['data']['type'],
+                'type' => $data['data']['type'] ?? 'Trail_balance',
                 'jv_tb_report_id' => $item->id,
                 'is_parent' => $parent,
                 'created_at' => Carbon::now()->toDateTimeString()
