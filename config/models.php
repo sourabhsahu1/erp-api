@@ -26,7 +26,7 @@ return [
         */
 
 //        'path' => app_path('Models'),
-        'path' => app_path() . DIRECTORY_SEPARATOR.".." . DIRECTORY_SEPARATOR . "Modules" . DIRECTORY_SEPARATOR . "Inventory" . DIRECTORY_SEPARATOR . "Models",
+        'path' => app_path() . DIRECTORY_SEPARATOR.".." . DIRECTORY_SEPARATOR . "Modules" . DIRECTORY_SEPARATOR . "Treasury" . DIRECTORY_SEPARATOR . "Models",
 
         /*
         |--------------------------------------------------------------------------
@@ -39,7 +39,7 @@ return [
         |
         */
 
-        'namespace' =>  "Modules\Inventory\Models" ,
+        'namespace' =>  "Modules\Treasury\Models" ,
 
         /*
         |--------------------------------------------------------------------------
