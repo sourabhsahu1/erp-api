@@ -510,6 +510,12 @@ class ReportRepository extends EloquentBaseRepository
                 $jvs = $jv->get()->toArray();
 
                 foreach ($jvs as $var) {
+
+                    if (array_search($var['economic_segment']['combined_code'], $data)) {
+                        continue;
+                    }
+                    array_search($var['economic_segment']['combined_code'], $data);
+
                     $temp = [
                         'note_id' => ($ids['economicSegmentId'] === $var['economic_segment_id']) ? $var['note_id'] : '',
                         'full_code' => $var['economic_segment']['combined_code'],
@@ -518,6 +524,7 @@ class ReportRepository extends EloquentBaseRepository
                         'credit' => $var['credit'],
                         'balance' => $var['balance']
                     ];
+
                     $data[] = $temp;
                 }
 
