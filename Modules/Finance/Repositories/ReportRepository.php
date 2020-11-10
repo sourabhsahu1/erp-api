@@ -512,9 +512,9 @@ class ReportRepository extends EloquentBaseRepository
                 foreach ($jvs as $var) {
 
 
-                    if (array_search($var['economic_segment']['combined_code'], array_column($data, 'full_code'))) {
-                        continue;
-                    }
+//                    if (array_search($var['economic_segment']['combined_code'], array_column($data, 'full_code'))) {
+//                        continue;
+//                    }
 
                     $temp = [
                         'note_id' => ($ids['economicSegmentId'] === $var['economic_segment_id']) ? $var['note_id'] : '',
