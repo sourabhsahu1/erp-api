@@ -25,7 +25,7 @@ class CreateTreasuryCashbooksTable extends Migration
             $table->unsignedInteger('e_mandate')->nullable();
             $table->string('prefix')->nullable();
             $table->string('suffix')->nullable();
-            $table->unsignedInteger('fund_owned_by')->nullable();
+            $table->unsignedBigInteger('fund_owned_by')->nullable();
             $table->string('bank_account_number');
             $table->unsignedBigInteger('bank_id');
             $table->unsignedBigInteger('bank_branch_id');;
@@ -33,9 +33,10 @@ class CreateTreasuryCashbooksTable extends Migration
             $table->unsignedBigInteger('currency_id');
             $table->string('bank_e_mandate');
             $table->timestamps();
+            $table->boolean('is_editable')->default(1);
             $table->softDeletes();
             $table->foreign('economic_segment_id')->references('id')->on('admin_segments');
-            $table->foreign('fund_owned_by')->references('id')->on('admin_segments');
+            $table->foreign('fund_owned_by')->references('id')->on('treasury_cashbook_types');
             $table->foreign('bank_id')->references('id')->on('hr_banks');
             $table->foreign('bank_branch_id')->references('id')->on('hr_bank_branches');
             $table->foreign('currency_id')->references('id')->on('currencies');

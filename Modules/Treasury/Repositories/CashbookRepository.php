@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Treasury\Models\Cashbook;
 use Modules\Treasury\Models\CashbookMonthlyBalance;
+use Modules\Treasury\Models\CashbookType;
 
 class CashbookRepository extends EloquentBaseRepository
 {
@@ -32,5 +33,11 @@ class CashbookRepository extends EloquentBaseRepository
         }
 
         return Cashbook::with('cashbook_monthly_balances')->find($cashbook->id);
+    }
+
+    public function getCashbookTypes($params)
+    {
+        $this->model = CashbookType::class;
+        return parent::getAll($params);
     }
 }
