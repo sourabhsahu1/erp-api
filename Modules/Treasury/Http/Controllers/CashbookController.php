@@ -18,7 +18,14 @@ class CashbookController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
-    protected $indexWith = ['cashbook_monthly_balances'];
+    protected $indexWith = [
+        'cashbook_monthly_balances',
+        'bank_branch',
+        'bank',
+        'currency',
+        'economic_segment',
+        'fund_owned'
+    ];
 
 
     public function getCashbookTypes(Request $request)

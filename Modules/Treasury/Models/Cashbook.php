@@ -37,7 +37,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Modules\Hr\Models\BankBranch $bank_branch
  * @property \Modules\Hr\Models\Bank $bank
  * @property \Modules\Finance\Models\Currency $currency
- * @property \Modules\Admin\Models\AdminSegment $admin_segment
+ * @property \Modules\Admin\Models\AdminSegment $economic_segment
+ * @property \Modules\Treasury\Models\CashbookType $fund_owned
  * @property \Illuminate\Database\Eloquent\Collection $cashbook_monthly_balances
  *
  * @package Modules\Treasury\Models
@@ -97,10 +98,15 @@ class Cashbook extends Eloquent
 		return $this->belongsTo(\Modules\Finance\Models\Currency::class);
 	}
 
-	public function admin_segment()
+	public function economic_segment()
 	{
-		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'fund_owned_by');
+		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'economic_segment_id');
 	}
+
+    public function fund_owned()
+    {
+        return $this->belongsTo(\Modules\Treasury\Models\CashbookType::class, 'fund_owned_by');
+    }
 
 	public function cashbook_monthly_balances()
 	{
