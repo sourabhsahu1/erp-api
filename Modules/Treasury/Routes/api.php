@@ -22,5 +22,6 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
    Route::resource('default-settings','DefaultSettingController');
    Route::resource('cashbooks','CashbookController');
    Route::resource('aies','AieController');
+   Route::resource('source-units','VoucherSourceUnitController');
    Route::get('cashbook-types', 'CashbookController@getCashbookTypes');
 });
