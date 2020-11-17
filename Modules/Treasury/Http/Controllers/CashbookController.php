@@ -7,6 +7,8 @@ namespace Modules\Treasury\Http\Controllers;
 use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use Luezoid\Laravelcore\Jobs\BaseJob;
+use Modules\Treasury\Http\Requests\Cashbook\Create;
+use Modules\Treasury\Http\Requests\Cashbook\Update;
 use Modules\Treasury\Repositories\CashbookRepository;
 
 class CashbookController extends BaseController
@@ -18,6 +20,8 @@ class CashbookController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
+    protected $storeRequest = Create::class;
+    protected $updateRequest = Update::class;
     protected $indexWith = [
         'cashbook_monthly_balances',
         'bank_branch',

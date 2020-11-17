@@ -6,6 +6,8 @@ namespace Modules\Treasury\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
 use Luezoid\Laravelcore\Jobs\BaseJob;
+use Modules\Treasury\Http\Requests\Aie\Create;
+use Modules\Treasury\Http\Requests\Aie\Update;
 use Modules\Treasury\Repositories\AieRepository;
 
 class AieController extends BaseController
@@ -18,5 +20,7 @@ class AieController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
+    protected $storeRequest = Create::class;
+    protected $updateRequest = Update::class;
     protected $indexWith = ['fund_segment','aie_economic_balances'];
 }

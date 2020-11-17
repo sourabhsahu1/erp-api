@@ -25,6 +25,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $reverse_voucher_id
  * @property int $revalidation_id
  * @property int $tax_voucher_id
+ * @property boolean $is_personal_advance_unit
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -48,7 +49,8 @@ class VoucherSourceUnit extends Eloquent
 		'retirement_id' => 'int',
 		'reverse_voucher_id' => 'int',
 		'revalidation_id' => 'int',
-		'tax_voucher_id' => 'int'
+		'tax_voucher_id' => 'int',
+        'is_personal_advance_unit' => 'bool'
 	];
 
 	protected $fillable = [
@@ -63,7 +65,8 @@ class VoucherSourceUnit extends Eloquent
 		'retirement_id',
 		'reverse_voucher_id',
 		'revalidation_id',
-		'tax_voucher_id'
+		'tax_voucher_id',
+        'is_personal_advance_unit'
 	];
 
 	public function hr_employee()
