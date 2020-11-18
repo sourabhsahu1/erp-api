@@ -23,4 +23,14 @@ class VoucherSourceUnitController extends BaseController
     protected $deleteJobMethod = "delete";
     protected $storeRequest = Create::class;
     protected $updateRequest = Update::class;
+
+    protected $indexWith = [
+        'paying_officer',
+        'financial_controller',
+        'checking_officer',
+        'retirement',
+        'reverse_voucher',
+        'revalidation',
+        'tax_voucher'
+    ];
 }

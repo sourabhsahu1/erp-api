@@ -69,8 +69,40 @@ class VoucherSourceUnit extends Eloquent
         'is_personal_advance_unit'
 	];
 
-	public function hr_employee()
+	public function paying_officer()
 	{
 		return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'paying_officer_id');
 	}
+
+    public function financial_controller()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'financial_controller_id');
+    }
+
+    public function checking_officer()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'checking_officer_id');
+    }
+
+    public function retirement()
+    {
+        return $this->belongsTo(\Modules\Treasury\Models\VoucherSourceUnit::class, 'retirement_id');
+    }
+
+    public function reverse_voucher()
+    {
+        return $this->belongsTo(\Modules\Treasury\Models\VoucherSourceUnit::class, 'reverse_voucher_id');
+    }
+
+    public function revalidation()
+    {
+        return $this->belongsTo(\Modules\Treasury\Models\VoucherSourceUnit::class, 'revalidation_id');
+    }
+
+    public function tax_voucher()
+    {
+        return $this->belongsTo(\Modules\Treasury\Models\VoucherSourceUnit::class, 'tax_voucher_id');
+    }
+
+
 }
