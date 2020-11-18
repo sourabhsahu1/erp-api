@@ -86,4 +86,10 @@ class AppConstant
     const BUDGET_TYPE_ECONOMIC = 'ECONOMIC';
     const BUDGET_TYPE_PROGRAM = 'PROGRAM';
 
+
+    const PAYEE_EMPLOYEE = 'EMPLOYEE';
+    const PAYEE_CUSTOMER = 'CUSTOMER';
+
+
+
 }
