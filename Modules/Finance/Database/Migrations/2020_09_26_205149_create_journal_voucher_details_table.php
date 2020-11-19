@@ -22,7 +22,7 @@ class CreateJournalVoucherDetailsTable extends Migration
             $table->decimal('bank_x_rate_to_usd',12,2);
             $table->string('account_name');
             $table->string('line_reference');
-            $table->string('line_value');
+            $table->unsignedInteger('line_value');
             $table->unsignedInteger('admin_segment_id')->nullable();
             $table->foreign('admin_segment_id')->references('id')->on('admin_segments');
             $table->unsignedInteger('fund_segment_id')->nullable();

@@ -20,6 +20,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $account_name
  * @property string $line_reference
  * @property string $line_currency
+ * @property string $local_currency
  * @property int $admin_segment_id
  * @property int $fund_segment_id
  * @property int $economic_segment_id
@@ -28,6 +29,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $geo_code_segment_id
  * @property string $line_value_type
  * @property int $lv_line_value
+ * @property int $line_value
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
@@ -51,6 +53,7 @@ class JournalVoucherDetail extends Eloquent
 		'programme_segment_id' => 'int',
 		'functional_segment_id' => 'int',
 		'geo_code_segment_id' => 'int',
+		'line_value' => 'int',
 		'lv_line_value' => 'int'
 	];
 
@@ -69,7 +72,8 @@ class JournalVoucherDetail extends Eloquent
 		'functional_segment_id',
 		'geo_code_segment_id',
 		'line_value_type',
-		'lv_line_value'
+		'lv_line_value',
+        'local_currency'
 	];
 
 	public function programme_segment()
