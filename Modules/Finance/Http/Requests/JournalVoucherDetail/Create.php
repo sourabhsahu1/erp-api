@@ -56,8 +56,8 @@ class Create extends BaseRequest
 
         return [
             'currency' => 'required',
-            'xRateLocal' => 'required|numeric|between:0,99.99',
-            'bankXRateToUsd' => 'required|numeric|between:0,99.99',
+            'xRateLocal' => 'required|numeric',
+            'bankXRateToUsd' => 'required|numeric',
             'accountName' => 'required',
             'lineReference' => 'required',
             'lineValue' => 'required',

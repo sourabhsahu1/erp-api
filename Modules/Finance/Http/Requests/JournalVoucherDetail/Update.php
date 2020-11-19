@@ -48,8 +48,8 @@ class Update extends BaseRequest
 
         return [
             'currency' => 'sometimes',
-            'xRateLocal' => 'sometimes|numeric|between:0,99.99',
-            'bankXRateToUsd' => 'sometimes|numeric|between:0,99.99',
+            'xRateLocal' => 'sometimes|numeric',
+            'bankXRateToUsd' => 'sometimes|numeric',
             'accountName' => 'sometimes',
             'lineReference' => 'sometimes',
             'lineValue' => 'sometimes',
