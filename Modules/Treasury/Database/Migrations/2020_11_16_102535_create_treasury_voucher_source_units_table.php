@@ -29,7 +29,7 @@ class CreateTreasuryVoucherSourceUnitsTable extends Migration
             $table->unsignedBigInteger('revalidation_id');
             $table->unsignedBigInteger('tax_voucher_id');
             $table->boolean('is_personal_advance_unit')->default(false);
-
+            $table->boolean('is_editable')->default(1);
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('checking_officer_id')->references('id')->on('hr_employees');

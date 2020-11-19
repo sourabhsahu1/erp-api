@@ -15,5 +15,17 @@ class DefaultSettingController extends BaseController
     protected $updateJob = BaseJob::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
-    protected $indexWith = ['checking_officer','financial_controller','paying_officer','account_head','program_segment','economic_segment','functional_segment','geo_code_segment','admin_segment','fund_segment','sub_organisation'];
+    protected $indexWith = [
+        'checking_officer',
+        'financial_controller',
+        'paying_officer',
+        'account_head',
+        'program_segment',
+        'economic_segment',
+        'functional_segment',
+        'geo_code_segment',
+        'admin_segment',
+        'fund_segment',
+        'sub_organisation'
+    ];
 }
