@@ -28,9 +28,9 @@ class VoucherSourceUnitController extends BaseController
         'paying_officer',
         'financial_controller',
         'checking_officer',
-        'retirement',
+        'retirement_voucher',
         'reverse_voucher',
-        'revalidation',
+        'revalidation_voucher',
         'tax_voucher'
     ];
 }

@@ -84,7 +84,7 @@ class VoucherSourceUnit extends Eloquent
         return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'checking_officer_id');
     }
 
-    public function retirement()
+    public function retirement_voucher()
     {
         return $this->belongsTo(\Modules\Treasury\Models\VoucherSourceUnit::class, 'retirement_id');
     }
@@ -94,7 +94,7 @@ class VoucherSourceUnit extends Eloquent
         return $this->belongsTo(\Modules\Treasury\Models\VoucherSourceUnit::class, 'reverse_voucher_id');
     }
 
-    public function revalidation()
+    public function revalidation_voucher()
     {
         return $this->belongsTo(\Modules\Treasury\Models\VoucherSourceUnit::class, 'revalidation_id');
     }
