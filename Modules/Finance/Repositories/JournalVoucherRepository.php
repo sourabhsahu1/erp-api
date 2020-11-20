@@ -43,6 +43,12 @@ class JournalVoucherRepository extends EloquentBaseRepository
             $data['data']['posted_transaction_date'] = Carbon::now()->toDateTimeString();
         } else {
             $data['data']['status'] = "NEW";
+            $data['data']['checked_user_id'] = null;
+            $data['data']['checked_value_date'] = null;
+            $data['data']['checked_transaction_date'] = null;
+            $data['data']['posted_user_id'] = null;
+            $data['data']['posted_value_date'] = null;
+            $data['data']['posted_transaction_date'] = null;
         }
 
         DB::beginTransaction();
