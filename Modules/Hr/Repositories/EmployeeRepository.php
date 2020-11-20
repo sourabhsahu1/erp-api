@@ -320,7 +320,6 @@ class EmployeeRepository extends EloquentBaseRepository
 //        }
 
 
-
         if (isset($params['inputs']['search'])) {
             $query->where('personnel_file_number', 'like', '%' . $params['inputs']['search'] . '%')
                 ->orWhere('last_name', 'like', '%' . $params['inputs']['search'] . '%')
@@ -328,14 +327,14 @@ class EmployeeRepository extends EloquentBaseRepository
                 ->orWhere('id', 'like', '%' . $params['inputs']['search'] . '%');
         }
 
+
         if (isset($params['inputs']['admin_segment_ids'])) {
             $query->whereHas('employee_job_profiles', function ($query) use ($params) {
                 $query->whereHas('department', function ($query) use ($params) {
-                    $query->whereIn('id', json_decode(isset($params['inputs']['admin_segment_ids']), true));
+                    $query->whereIn('id', json_decode($params['inputs']['admin_segment_ids'], true));
                 });
             });
         }
-
 
         if (isset($params['inputs']['department_ids'])) {
             $query->whereHas('employee_job_profiles', function ($query) use ($params) {
@@ -344,7 +343,7 @@ class EmployeeRepository extends EloquentBaseRepository
                 });
             });
         }
-        
+
         if (isset($params['inputs']['status'])) {
             if ($params['inputs']['status'] == AppConstant::PROGRESSION_STATUS_NEW) {
                 $query->whereHas('employee_progressions', function ($query) {
