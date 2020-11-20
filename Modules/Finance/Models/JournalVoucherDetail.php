@@ -53,8 +53,8 @@ class JournalVoucherDetail extends Eloquent
 		'programme_segment_id' => 'int',
 		'functional_segment_id' => 'int',
 		'geo_code_segment_id' => 'int',
-		'line_value' => 'int',
-		'lv_line_value' => 'int'
+		'line_value' => 'float',
+		'lv_line_value' => 'float'
 	];
 
 	protected $fillable = [
