@@ -28,7 +28,7 @@ class Update  extends BaseRequest
             'bankBranchId' => 'sometimes',
             'title' => 'sometimes',
             'currencyId' => 'sometimes',
-            'bankEMandate' => 'sometimes'
+            'typeOfAccount' => 'sometimes'
         ];
     }
 }

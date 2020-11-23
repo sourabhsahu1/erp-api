@@ -28,7 +28,7 @@ class Create extends BaseRequest
             'bankBranchId' => 'required',
             'title' => 'required',
             'currencyId' => 'required',
-            'bankEMandate' => 'required'
+            'typeOfAccount' => 'required'
         ];
     }
 }

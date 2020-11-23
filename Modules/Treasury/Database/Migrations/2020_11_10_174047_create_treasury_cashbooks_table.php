@@ -31,7 +31,7 @@ class CreateTreasuryCashbooksTable extends Migration
             $table->unsignedBigInteger('bank_branch_id');;
             $table->string('title');
             $table->unsignedBigInteger('currency_id');
-            $table->string('bank_e_mandate');
+            $table->string('type_of_account');
             $table->timestamps();
             $table->boolean('is_editable')->default(1);
             $table->softDeletes();

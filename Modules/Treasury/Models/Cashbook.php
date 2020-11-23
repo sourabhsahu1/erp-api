@@ -29,7 +29,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $bank_branch_id
  * @property string $title
  * @property int $currency_id
- * @property string $bank_e_mandate
+ * @property string $type_of_account
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
@@ -80,7 +80,7 @@ class Cashbook extends Eloquent
 		'bank_branch_id',
 		'title',
 		'currency_id',
-		'bank_e_mandate'
+		'type_of_account'
 	];
 
 	public function bank_branch()
