@@ -5,6 +5,7 @@ namespace Modules\Treasury\Http\Controllers;
 
 
 use App\Http\Controllers\BaseController;
+use Illuminate\Http\Request;
 use Luezoid\Laravelcore\Jobs\BaseJob;
 use Modules\Treasury\Repositories\PaymentRepository;
 
@@ -30,4 +31,12 @@ class PaymentVoucherController extends BaseController
         'currency',
         'voucher_source_unit',
     ];
+
+
+
+    public function updateStatus(Request $request)
+    {
+        $this->jobMethod = "updateStatus";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
 }

@@ -46,4 +46,10 @@ class PaymentRepository extends EloquentBaseRepository
         return parent::getAll($params, $query);
     }
 
+
+    public function updateStatus($data)
+    {
+
+        dd($data);
+    }
 }

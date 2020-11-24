@@ -7,6 +7,7 @@
 
 namespace Modules\Treasury\Models;
 
+use Illuminate\Support\Carbon;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -103,6 +104,12 @@ class PaymentVoucher extends Eloquent
         'paying_officer_id',
         'financial_controller_id'
     ];
+
+    protected $appends = ['year'];
+
+    public function getYearAttribute() {
+        return Carbon::parse($this->value_date)->year;
+    }
 
     public function program_segment()
     {
