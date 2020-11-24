@@ -18,13 +18,34 @@ class CreateTreasuryPaymentVouchersTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('voucher_source_unit_id');
             $table->string('source_unit');
-            $table->unsignedBigInteger('deptal_id')->nullable();
-            $table->unsignedBigInteger('voucher_number');
+            $table->unsignedBigInteger('deptal_id');
+            $table->unsignedBigInteger('voucher_number')->nullable();
             $table->date('value_date');
             $table->unsignedBigInteger('payment_approve_id')->nullable();
             $table->enum('payee', [
                 AppConstant::PAYEE_CUSTOMER,
                 AppConstant::PAYEE_EMPLOYEE
+            ]);
+            $table->enum('type',[
+                AppConstant::VOUCHER_TYPE_DEPOSIT_VOUCHER,
+                AppConstant::VOUCHER_TYPE_EXPENDITURE_CREDIT_VOUCHER,
+                AppConstant::VOUCHER_TYPE_EXPENDITURE_VOUCHER,
+                AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER,
+                AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER,
+                AppConstant::VOUCHER_TYPE_REMITTANCE_VOUCHER,
+                AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER,
+                AppConstant::VOUCHER_TYPE_STANDING_VOUCHER,
+                AppConstant::VOUCHER_TYPE_TRANSFER_CASHBOOK_VOUCHER
+            ]);
+            $table->enum('status',[
+                AppConstant::VOUCHER_STATUS_CHECKED,
+                AppConstant::VOUCHER_STATUS_APPROVED,
+                AppConstant::VOUCHER_STATUS_AUDITED,
+                AppConstant::VOUCHER_STATUS_BUDGET_CONTROL_VERIFIED,
+                AppConstant::VOUCHER_STATUS_CLOSED,
+                AppConstant::VOUCHER_STATUS_NEW,
+                AppConstant::VOUCHER_STATUS_ON_MANDATE,
+                AppConstant::VOUCHER_STATUS_POSTED_TO_GL
             ]);
             $table->unsignedBigInteger('currency_id');
             $table->string('payment_description');

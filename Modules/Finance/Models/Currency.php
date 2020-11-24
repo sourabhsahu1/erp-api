@@ -67,6 +67,8 @@ class Currency extends Eloquent
 		'is_active' => 'bool'
 	];
 
+
+	protected $table = 'currencies';
 	protected $fillable = [
 		'code_currency',
 		'country_id',
