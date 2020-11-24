@@ -39,7 +39,7 @@ class PaymentRepository extends EloquentBaseRepository
         if (isset($params['inputs']['voucher_source_unit_id'])) {
             $query->where('voucher_source_unit_id', $params['inputs']['voucher_source_unit_id']);
         }else {
-            $query->where('voucher_source_unit_id', 1);
+            $query->where('voucher_source_unit_id', 10);
         }
 
         if (isset($params['inputs']['status'])) {
