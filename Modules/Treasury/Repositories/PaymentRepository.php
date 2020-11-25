@@ -50,6 +50,15 @@ class PaymentRepository extends EloquentBaseRepository
     public function updateStatus($data)
     {
 
-        dd($data);
+        $pv = PaymentVoucher::whereIn('id', $data['data']['payment_voucher_ids']);
+
+        //todo validation for payee added or not and their bank account
+        $pv->update([
+            'status' => $data['data']['status']
+        ]);
+
+        return [
+            'data' => 'Status Updated Successfully'
+        ];
     }
 }

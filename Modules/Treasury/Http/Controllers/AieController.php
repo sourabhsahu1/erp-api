@@ -22,5 +22,8 @@ class AieController extends BaseController
     protected $deleteJobMethod = "delete";
     protected $storeRequest = Create::class;
     protected $updateRequest = Update::class;
-    protected $indexWith = ['fund_segment','aie_economic_balances'];
+    protected $indexWith = [
+        'fund_segment',
+        'aie_economic_balances.economic_segment'
+    ];
 }
