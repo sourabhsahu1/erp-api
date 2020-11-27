@@ -84,7 +84,7 @@ class DefaultSetting extends Eloquent
 
     public function account_head()
     {
-        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'account_head_id');
+        return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'account_head_id');
     }
 
     public function program_segment()
