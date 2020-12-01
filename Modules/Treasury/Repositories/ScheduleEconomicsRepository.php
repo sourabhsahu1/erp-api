@@ -28,4 +28,8 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
 
         return ["data" => "success"];
     }
+
+    public function getPaymentVoucherScheduleEconomic($params) {
+        return parent::getAll($params);
+    }
 }
