@@ -20,9 +20,9 @@ class Create extends BaseRequest
             'checkingOfficerId' => 'required',
             'payingOfficerId' => 'required',
             'financialControllerId' => 'required',
-            'retirementId' => 'required',
-            'reverseVoucherId' => 'required',
-            'revalidationId' => 'required',
+            'retirementId' => 'required|exists:treasury_voucher_source_units,id',
+            'reverseVoucherId' => 'required|exists:treasury_voucher_source_units,id',
+            'revalidationId' => 'required|exists:treasury_voucher_source_units,id',
             'taxVoucherId' => 'required'
         ];
     }
