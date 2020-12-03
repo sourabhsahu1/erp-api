@@ -38,7 +38,8 @@ class PayeeVoucherRepository extends EloquentBaseRepository
         $query = PayeeVoucher::with([
             'admin_company.company_banks.bank',
             'admin_company.company_banks.bank_branch',
-            'employee.employee_banks.bank'
+            'employee.employee_banks.bank',
+            'employee.employee_banks.branches'
         ]);
         return parent::getAll($params, $query);
     }
