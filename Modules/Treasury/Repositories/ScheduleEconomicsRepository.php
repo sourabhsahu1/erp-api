@@ -18,12 +18,18 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
 
         foreach ($data['data']['schedule_economics'] as $key => $scheduleEconomic) {
             $dataToInsert[] = [
-                'payee_voucher_id' => $data['payee_voucher_id'],
+                'payee_voucher_id' => $data['data']['payee_voucher_id'],
                 'economic_segment_id' => $scheduleEconomic['economic_segment_id'],
                 'amount' => $scheduleEconomic['amount']
             ];
         }
 
-       return ScheduleEconomic::insert($dataToInsert);
+        ScheduleEconomic::insert($dataToInsert);
+
+        return ["data" => "success"];
+    }
+
+    public function getPaymentVoucherScheduleEconomic($params) {
+        return parent::getAll($params);
     }
 }

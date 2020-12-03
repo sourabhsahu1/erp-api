@@ -16,16 +16,6 @@ class AieRepository extends EloquentBaseRepository
 
     public $model = Aie::class;
 
-
-    public function getAll($params = [], $query = null)
-    {
-        $query = Aie::query();
-        $query->where('fund_segment_id', $params['inputs']['fund_segment_id'])
-            ->where('admin_segment_id', $params['inputs']['admin_segment_id']);
-
-        return parent::getAll($params, $query);
-    }
-
     public function create($data)
     {
 

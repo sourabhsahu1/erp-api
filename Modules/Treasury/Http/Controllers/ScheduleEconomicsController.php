@@ -5,6 +5,7 @@ namespace Modules\Treasury\Http\Controllers;
 
 
 use App\Http\Controllers\BaseController;
+use Illuminate\Http\Request;
 use Luezoid\Laravelcore\Jobs\BaseJob;
 use Modules\Treasury\Repositories\ScheduleEconomicsRepository;
 
@@ -16,4 +17,9 @@ class ScheduleEconomicsController extends BaseController
     protected $updateJob = BaseJob::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
+
+    function getPaymentVoucherScheduleEconomic(Request $request) {
+        $this->jobMethod = 'getPaymentVoucherScheduleEconomic';
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
 }
