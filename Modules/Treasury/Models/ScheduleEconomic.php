@@ -43,7 +43,7 @@ class ScheduleEconomic extends Eloquent
 		'amount'
 	];
 
-	public function admin_segment()
+	public function economic_segment()
 	{
 		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'economic_segment_id');
 	}
