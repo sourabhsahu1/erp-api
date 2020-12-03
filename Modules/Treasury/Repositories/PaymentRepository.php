@@ -5,8 +5,10 @@ namespace Modules\Treasury\Repositories;
 
 
 use App\Constants\AppConstant;
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Treasury\Models\PaymentVoucher;
+use Modules\Treasury\Models\VoucherSourceUnit;
 
 class PaymentRepository extends EloquentBaseRepository
 {
@@ -60,5 +62,40 @@ class PaymentRepository extends EloquentBaseRepository
         return [
             'data' => 'Status Updated Successfully'
         ];
+    }
+
+    public function typePaymentVoucher($params)
+    {
+        /** @var VoucherSourceUnit $vsu */
+        $vsu = VoucherSourceUnit::where('id', $params['inputs']['voucher_source_unit_id'])->first();
+
+        if (is_null($vsu)) {
+            throw new AppException('voucher source unit not exist');
+        } else {
+
+            if ($vsu->is_personal_advance_unit == true) {
+                return [
+                    'type' => [
+                        AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER,
+                        AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER,
+                        AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER,
+                        AppConstant::VOUCHER_TYPE_STANDING_VOUCHER
+                    ]
+                ];
+            } elseif ($vsu->is_personal_advance_unit == false) {
+
+                return [
+                    'type' => [
+                        AppConstant::VOUCHER_TYPE_TRANSFER_CASHBOOK_VOUCHER,
+                        AppConstant::VOUCHER_TYPE_DEPOSIT_VOUCHER,
+                        AppConstant::VOUCHER_TYPE_REMITTANCE_VOUCHER,
+                        AppConstant::VOUCHER_TYPE_EXPENDITURE_VOUCHER,
+                        AppConstant::VOUCHER_TYPE_EXPENDITURE_CREDIT_VOUCHER
+                    ]
+                ];
+            }
+        }
+
+
     }
 }

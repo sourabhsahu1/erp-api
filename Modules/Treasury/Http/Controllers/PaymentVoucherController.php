@@ -39,4 +39,10 @@ class PaymentVoucherController extends BaseController
         $this->jobMethod = "updateStatus";
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
+
+    public function typePaymentVoucher(Request $request)
+    {
+        $this->jobMethod = "typePaymentVoucher";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
 }
