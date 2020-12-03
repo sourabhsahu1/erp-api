@@ -139,4 +139,9 @@ class Employee extends Eloquent
     }
 
 
+    public function employee_bank()
+    {
+        return $this->hasOne(\Modules\Hr\Models\EmployeeBankDetail::class, 'employee_id')->where('is_active',1);
+    }
+
 }

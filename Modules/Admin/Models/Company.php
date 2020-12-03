@@ -76,4 +76,10 @@ class Company extends Eloquent
     {
         return $this->hasMany(\Modules\Admin\Models\CompanyBank::class, 'company_id','id');
     }
+
+
+    public function company_bank()
+    {
+        return $this->hasOne(\Modules\Admin\Models\CompanyBank::class, 'company_id','id')->where('is_active',1);
+    }
 }
