@@ -16,21 +16,25 @@ class CashbookRepository extends EloquentBaseRepository
 
     public function create($data)
     {
-        $cashbookMonthly = $data['data']['cashbook_monthly'];
-        unset($data['data']['cashbook_monthly']);
-
-        DB::beginTransaction();
-        try {
-            $cashbook = parent::create($data);
-            foreach ($cashbookMonthly as $key => $item) {
-                $cashbookMonthly[$key]['cashbook_id'] = $cashbook->id;
+        if (isset($data['data']['cashbook_monthly'])) {
+            $cashbookMonthly = $data['data']['cashbook_monthly'];
+            unset($data['data']['cashbook_monthly']);
+            DB::beginTransaction();
+            try {
+                $cashbook = parent::create($data);
+                foreach ($cashbookMonthly as $key => $item) {
+                    $cashbookMonthly[$key]['cashbook_id'] = $cashbook->id;
+                }
+                CashbookMonthlyBalance::insert($cashbookMonthly);
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
             }
-            CashbookMonthlyBalance::insert($cashbookMonthly);
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
+        } else {
+            $cashbook = parent::create($data);
         }
+
 
         return Cashbook::with('cashbook_monthly_balances')->find($cashbook->id);
     }
