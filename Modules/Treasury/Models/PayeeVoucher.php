@@ -76,4 +76,8 @@ class PayeeVoucher extends Eloquent
 	{
 		return $this->hasMany(\Modules\Treasury\Models\ScheduleEconomic::class, 'payee_voucher_id');
 	}
+//
+//	public function sum_amount() {
+//        return $this->hasMany(\Modules\Treasury\Models\ScheduleEconomic::class, 'payee_voucher_id');
+//    }
 }

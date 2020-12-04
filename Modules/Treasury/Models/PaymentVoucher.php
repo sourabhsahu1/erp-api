@@ -107,7 +107,8 @@ class PaymentVoucher extends Eloquent
 
     protected $appends = ['year'];
 
-    public function getYearAttribute() {
+    public function getYearAttribute()
+    {
         return Carbon::parse($this->value_date)->year;
     }
 
@@ -159,5 +160,29 @@ class PaymentVoucher extends Eloquent
     public function voucher_source_unit()
     {
         return $this->belongsTo(\Modules\Treasury\Models\VoucherSourceUnit::class, 'voucher_source_unit_id');
+    }
+
+    public function total_amount()
+    {
+        return $this->hasOne(PayeeVoucher::class,'payment_voucher_id')
+            ->selectRaw('payment_voucher_id, sum(net_amount) as amount')
+            ->groupBy('payment_voucher_id');
+    }
+
+//    public function taxes()
+//    {
+////        return $this->hasMany('Payments')
+////            ->selectRaw('SUM(payments.amount) as payment_amount')
+////            ->groupBy('id'); // as per our requirements.
+//
+//        return $this->hasMany(PayeeVoucher::class, 'payment_voucher_id')
+////            ->selectRaw('SUM(treasury_payee_vouchers.total_tax) as total_tax')
+//            ;
+//    }
+
+    public function total_tax() {
+        return $this->hasOne(PayeeVoucher::class,'payment_voucher_id')
+            ->selectRaw('payment_voucher_id, sum(total_tax) as tax')
+            ->groupBy('payment_voucher_id');
     }
 }

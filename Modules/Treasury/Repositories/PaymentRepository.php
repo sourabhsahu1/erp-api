@@ -47,6 +47,9 @@ class PaymentRepository extends EloquentBaseRepository
         if (isset($params['inputs']['status'])) {
             $query->where('status', $params['inputs']['status']);
         }
+       /* $query->with(['total_tax' => function ($tax) {
+            $tax->selectRaw('SUM(total_tax)');
+        }]);*/
         return parent::getAll($params, $query);
     }
 
@@ -64,7 +67,7 @@ class PaymentRepository extends EloquentBaseRepository
                 throw new AppException('Payee not added');
             }
 
-            $schedulevoucher = ScheduleEconomic::where('payee_voucher_id',$payeeVoucher->id)->first();
+            $schedulevoucher = ScheduleEconomic::where('payee_voucher_id', $payeeVoucher->id)->first();
 
             if (is_null($schedulevoucher)) {
                 throw new AppException('Schedule Economic not added');

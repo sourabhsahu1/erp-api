@@ -30,6 +30,8 @@ class PaymentVoucherController extends BaseController
         'employee',
         'currency',
         'voucher_source_unit',
+        'total_amount',
+        'total_tax'
     ];
 
 
