@@ -32,7 +32,7 @@ class CreateTreasuryDefaultSettingsTable extends Migration
             $table->timestamps();
 
             $table->foreign('account_head_id')->references('id')->on('admin_segments');
-            $table->foreign('sub_organisation_id')->references('id')->on('admin_companies');
+            $table->foreign('sub_organisation_id')->references('id')->on('admin_segments');
             $table->foreign('admin_segment_id')->references('id')->on('admin_segments');
             $table->foreign('fund_segment_id')->references('id')->on('admin_segments');
             $table->foreign('economic_segment_id')->references('id')->on('admin_segments');

@@ -6,6 +6,7 @@ namespace Modules\Treasury\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
 use Luezoid\Laravelcore\Jobs\BaseJob;
+use Modules\Treasury\Http\Requests\DefaultSetting\Create;
 use Modules\Treasury\Repositories\DefaultSettingRepository;
 
 class DefaultSettingController extends BaseController
@@ -15,6 +16,7 @@ class DefaultSettingController extends BaseController
     protected $updateJob = BaseJob::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
+    protected $storeRequest = Create::class;
     protected $indexWith = [
         'checking_officer',
         'financial_controller',

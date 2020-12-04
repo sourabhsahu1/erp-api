@@ -119,6 +119,6 @@ class DefaultSetting extends Eloquent
 
     public function sub_organisation()
     {
-        return $this->belongsTo(\Modules\Admin\Models\Company::class, 'sub_organisation_id');
+        return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'sub_organisation_id');
     }
 }
