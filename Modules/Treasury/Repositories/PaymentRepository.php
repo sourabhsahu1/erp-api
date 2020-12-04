@@ -47,9 +47,9 @@ class PaymentRepository extends EloquentBaseRepository
         if (isset($params['inputs']['status'])) {
             $query->where('status', $params['inputs']['status']);
         }
-       /* $query->with(['total_tax' => function ($tax) {
-            $tax->selectRaw('SUM(total_tax)');
-        }]);*/
+        /* $query->with(['total_tax' => function ($tax) {
+             $tax->selectRaw('SUM(total_tax)');
+         }]);*/
         return parent::getAll($params, $query);
     }
 
@@ -86,31 +86,57 @@ class PaymentRepository extends EloquentBaseRepository
     public function typePaymentVoucher($params)
     {
         /** @var VoucherSourceUnit $vsu */
-        $vsu = VoucherSourceUnit::where('id', $params['inputs']['voucher_source_unit_id'])->first();
+        $vsu = VoucherSourceUnit::where('id', $params['inputs']['id'])->first();
 
         if (is_null($vsu)) {
             throw new AppException('voucher source unit not exist');
         } else {
-
             if ($vsu->is_personal_advance_unit == true) {
                 return [
                     'type' => [
-                        AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER,
-                        AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER,
-                        AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER,
-                        AppConstant::VOUCHER_TYPE_STANDING_VOUCHER
+                        [
+                            'name' => 'PERSONAL ADVANCES VOUCHER',
+                            'value' => AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER
+                        ],
+                        [
+                            'name' => 'NON PERSONAL VOUCHER',
+                            'value' => AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER
+                        ],
+                        [
+                            'name' => 'SPECIAL VOUCHER',
+                            'value' => AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER
+                        ],
+                        [
+                            'name' => 'STANDING VOUCHER',
+                            'value' => AppConstant::VOUCHER_TYPE_STANDING_VOUCHER
+                        ]
                     ]
                 ];
             } elseif ($vsu->is_personal_advance_unit == false) {
 
                 return [
                     'type' => [
-                        AppConstant::VOUCHER_TYPE_TRANSFER_CASHBOOK_VOUCHER,
-                        AppConstant::VOUCHER_TYPE_DEPOSIT_VOUCHER,
-                        AppConstant::VOUCHER_TYPE_REMITTANCE_VOUCHER,
-                        AppConstant::VOUCHER_TYPE_EXPENDITURE_VOUCHER,
-                        AppConstant::VOUCHER_TYPE_EXPENDITURE_CREDIT_VOUCHER
-                    ]
+
+                        [
+                            'name' => 'TRANSFER CASHBOOK VOUCHER',
+                            'value' => AppConstant::VOUCHER_TYPE_TRANSFER_CASHBOOK_VOUCHER
+                        ],
+                        [
+                            'name' => 'DEPOSIT VOUCHER',
+                            'value' => AppConstant::VOUCHER_TYPE_DEPOSIT_VOUCHER
+                        ],
+                        [
+                            'name' => 'REMITTANCE VOUCHER',
+                            'value' => AppConstant::VOUCHER_TYPE_REMITTANCE_VOUCHER
+                        ],
+                        [
+                            'name' => 'EXPENDITURE VOUCHER',
+                            'value' => AppConstant::VOUCHER_TYPE_EXPENDITURE_VOUCHER
+                        ],                        [
+                            'name' => 'CREDIT VOUCHER',
+                            'value' => AppConstant::VOUCHER_TYPE_EXPENDITURE_CREDIT_VOUCHER
+                        ]
+                      ]
                 ];
             }
         }
