@@ -17,9 +17,18 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
     {
         $dataToInsert = [];
 
+        $payeeVoucher = PayeeVoucher::find($data['data']['payee_voucher_id']);
+
+        if (!isset($data['data']['schedule_economics'])) {
+            ScheduleEconomic::where('payee_voucher_id', $data['data']['payee_voucher_id'])->delete();
+            return ["data" => "success"];
+        }else {
+            ScheduleEconomic::where('payee_voucher_id', $data['data']['payee_voucher_id'])->delete();
+        }
+
         foreach ($data['data']['schedule_economics'] as $key => $scheduleEconomic) {
             /** @var PayeeVoucher $payeeVoucher */
-            $payeeVoucher = PayeeVoucher::find($data['data']['payee_voucher_id']);
+
             $dataToInsert[] = [
                 'payment_voucher_id' => $payeeVoucher->payment_voucher_id,
                 'payee_voucher_id' => $data['data']['payee_voucher_id'],
