@@ -3,6 +3,7 @@
 
 namespace Modules\Treasury\Repositories;
 
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\CompanyBank;
 use Modules\Hr\Models\EmployeeBankDetail;
@@ -18,12 +19,27 @@ class PayeeVoucherRepository extends EloquentBaseRepository
         $payeeBank = parent::create($data);
 
         if (isset($data['data']['employee_id'])) {
+
+            $empBank = EmployeeBankDetail::where('employee_id', $data['data']['employee_id'])->first();
+
+            if (is_null($empBank)) {
+                throw new AppException('Bank Required to Add Payee Employee');
+            }
             EmployeeBankDetail::where('id', $data['data']['payee_bank_id'])->update([
                 'is_active' => true
             ]);
+
+
         }
 
         if (isset($data['data']['company_id'])) {
+
+            $compBank = CompanyBank::where('company_id', $data['data']['company_id'])->first();
+
+            if (is_null($compBank)) {
+                throw new AppException('Bank Required to Add Payee Company');
+            }
+
             CompanyBank::where('id', $data['data']['payee_bank_id'])->update([
                 'is_active' => true
             ]);

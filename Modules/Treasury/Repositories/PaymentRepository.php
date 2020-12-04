@@ -7,7 +7,9 @@ namespace Modules\Treasury\Repositories;
 use App\Constants\AppConstant;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentVoucher;
+use Modules\Treasury\Models\ScheduleEconomic;
 use Modules\Treasury\Models\VoucherSourceUnit;
 
 class PaymentRepository extends EloquentBaseRepository
@@ -54,7 +56,21 @@ class PaymentRepository extends EloquentBaseRepository
 
         $pv = PaymentVoucher::whereIn('id', $data['data']['payment_voucher_ids']);
 
-        //todo validation for payee added or not and their bank account
+        foreach ($data['data']['payment_voucher_ids'] as $payment_voucher_id) {
+            $pv = PaymentVoucher::where('id', $payment_voucher_id)->first();
+            $payeeVoucher = PayeeVoucher::where('payment_voucher_id', $pv->id)->first();
+
+            if (is_null($payeeVoucher)) {
+                throw new AppException('Payee not added');
+            }
+
+            $schedulevoucher = ScheduleEconomic::where('payee_voucher_id',$payeeVoucher->id)->first();
+
+            if (is_null($schedulevoucher)) {
+                throw new AppException('Schedule Economic not added');
+            }
+        }
+
         $pv->update([
             'status' => $data['data']['status']
         ]);
