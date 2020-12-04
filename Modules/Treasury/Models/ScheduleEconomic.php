@@ -14,6 +14,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * 
  * @property int $id
  * @property int $payee_voucher_id
+ * @property int $payment_voucher_id
  * @property int $economic_segment_id
  * @property float $amount
  * @property \Carbon\Carbon $created_at
@@ -33,12 +34,14 @@ class ScheduleEconomic extends Eloquent
 
 	protected $casts = [
 		'payee_voucher_id' => 'int',
+		'payment_voucher_id' => 'int',
 		'economic_segment_id' => 'int',
 		'amount' => 'float'
 	];
 
 	protected $fillable = [
 		'payee_voucher_id',
+		'payment_voucher_id',
 		'economic_segment_id',
 		'amount'
 	];
@@ -51,5 +54,10 @@ class ScheduleEconomic extends Eloquent
 	public function payee_voucher()
 	{
 		return $this->belongsTo(\Modules\Treasury\Models\PayeeVoucher::class, 'payee_voucher_id');
+	}
+
+	public function payment_voucher()
+	{
+		return $this->belongsTo(\Modules\Treasury\Models\PaymentVoucher::class, 'payment_voucher_id');
 	}
 }

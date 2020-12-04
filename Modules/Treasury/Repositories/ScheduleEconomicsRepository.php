@@ -31,10 +31,17 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
 
     public function getPaymentVoucherScheduleEconomic($params) {
 
+
         $query = ScheduleEconomic::with([
             'economic_segment',
-            'payee_voucher'
-        ])->where('payee_voucher_id', $params['inputs']['payment_voucher_id']);
+            'payee_voucher',
+            'payment_voucher'
+        ])->where('payment_voucher_id', $params['inputs']['payment_voucher_id']);
+
+
+        if (isset($params['inputs']['payee_voucher_id'])) {
+            $query->where('payee_voucher_id', $params['inputs']['payee_voucher_id']);
+        }
         return parent::getAll($params, $query);
     }
 }

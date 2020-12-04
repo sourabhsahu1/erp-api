@@ -67,9 +67,9 @@ class PaymentRepository extends EloquentBaseRepository
                 throw new AppException('Payee not added');
             }
 
-            $schedulevoucher = ScheduleEconomic::where('payee_voucher_id', $payeeVoucher->id)->first();
+            $scheduleVoucher = ScheduleEconomic::where('payee_voucher_id', $payeeVoucher->id)->first();
 
-            if (is_null($schedulevoucher)) {
+            if (is_null($scheduleVoucher)) {
                 throw new AppException('Schedule Economic not added');
             }
         }
