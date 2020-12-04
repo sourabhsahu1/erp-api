@@ -133,4 +133,15 @@ class Employee extends Eloquent
         return $this->hasMany(\Modules\Hr\Models\EmployeeQualification::class, 'employee_id');
     }
 
+    public function employee_banks()
+    {
+        return $this->hasMany(\Modules\Hr\Models\EmployeeBankDetail::class, 'employee_id');
+    }
+
+
+    public function employee_bank()
+    {
+        return $this->hasOne(\Modules\Hr\Models\EmployeeBankDetail::class, 'employee_id')->where('is_active',1);
+    }
+
 }

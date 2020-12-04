@@ -11,14 +11,14 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class Permission
- * 
+ *
  * @property int $id
  * @property string $name
  * @property string $entity_name
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * 
+ *
  * @property \Illuminate\Database\Eloquent\Collection $roles
  *
  * @package Modules\Admin\Models
@@ -29,7 +29,8 @@ class Permission extends Eloquent
 
 	protected $fillable = [
 		'name',
-		'entity_name'
+		'entity_name',
+        'module'
 	];
 
 	public function roles()

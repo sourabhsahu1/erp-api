@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Luezoid\Laravelcore\Exceptions\InvalidCredentialsException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Hr\Models\User;
+use Modules\Admin\Models\Permission;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserRepository extends EloquentBaseRepository
@@ -46,8 +47,24 @@ class UserRepository extends EloquentBaseRepository
     {
         $userId = $params['data']['user_id'];
 
-        $selfData = User::with(['file','roles'])->find($userId);
+        $selfData = User::with(['file','roles.permissions'])->find($userId);
+        $roles_data = $selfData['roles'];
+        $role_id =[];
+        foreach($roles_data as $roles)
+        {
+            $role_id=$roles['id'];
+        }
+        $permissions = [];
 
-        return $selfData;
+        $permissions = Permission::join('role_permissions','role_permissions.permission_id', '=', 'permissions.id')
+        ->where('role_permissions.role_id', $role_id)
+                ->select('permissions.*')
+                ->distinct()
+                ->get();
+
+       // dd($permissions);
+        $selfData->permissions = $permissions;
+
+        return $selfData->toArray();
     }
 }

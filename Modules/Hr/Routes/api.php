@@ -74,7 +74,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('marriages', 'ConstantApiController@getMarriageData');
     Route::get('religions', 'ConstantApiController@getReligions');
     Route::get('type-of-appointments', 'ConstantApiController@getTypeOfAppointments');
-    Route::get('banks', 'ConstantApiController@getBanks');
+//    Route::get('banks', 'ConstantApiController@getBanks');
     Route::get('bank/{id}/branches', 'ConstantApiController@getBranches');
 
     Route::resource('address-type', 'AddressTypeController');
