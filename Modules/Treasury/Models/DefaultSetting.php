@@ -7,6 +7,7 @@
 
 namespace Modules\Treasury\Models;
 
+use Modules\Admin\Models\AdminSegment;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -120,5 +121,15 @@ class DefaultSetting extends Eloquent
     public function sub_organisation()
     {
         return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'sub_organisation_id');
+    }
+
+    public function children()
+    {
+        return $this->getChilds()->with('children');
+    }
+
+    public function getChilds()
+    {
+        return $this->hasMany(AdminSegment::class, 'parent_id')->where('parent_id',1 );
     }
 }

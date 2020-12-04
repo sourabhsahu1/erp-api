@@ -27,7 +27,21 @@ class DefaultSettingRepository extends EloquentBaseRepository
 
     public function getAll($params = [], $query = null)
     {
-        $query = DefaultSetting::where('id', 1)->with(['checking_officer','financial_controller','paying_officer','account_head','program_segment','economic_segment','functional_segment','geo_code_segment','admin_segment','fund_segment','sub_organisation'])->first();
+        $query = DefaultSetting::where('id', 1)
+            ->with([
+                'checking_officer',
+                'financial_controller',
+                'paying_officer',
+                'account_head',
+                'program_segment',
+                'economic_segment',
+                'functional_segment',
+                'geo_code_segment',
+                'admin_segment',
+                'fund_segment',
+                'sub_organisation',
+                'children'
+            ])->first();
 
         return $query;
     }
