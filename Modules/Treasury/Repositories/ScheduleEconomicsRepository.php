@@ -5,6 +5,7 @@ namespace Modules\Treasury\Repositories;
 
 
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\ScheduleEconomic;
 
 class ScheduleEconomicsRepository extends EloquentBaseRepository
@@ -17,7 +18,10 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
         $dataToInsert = [];
 
         foreach ($data['data']['schedule_economics'] as $key => $scheduleEconomic) {
+            /** @var PayeeVoucher $payeeVoucher */
+            $payeeVoucher = PayeeVoucher::find($data['data']['payee_voucher_id']);
             $dataToInsert[] = [
+                'payment_voucher_id' => $payeeVoucher->payment_voucher_id,
                 'payee_voucher_id' => $data['data']['payee_voucher_id'],
                 'economic_segment_id' => $scheduleEconomic['economic_segment_id'],
                 'amount' => $scheduleEconomic['amount']
