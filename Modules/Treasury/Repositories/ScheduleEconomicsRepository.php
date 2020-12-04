@@ -38,7 +38,8 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
 
         $query = ScheduleEconomic::with([
             'economic_segment',
-            'payee_voucher',
+            'payee_voucher.employee',
+            'payee_voucher.admin_company',
             'payment_voucher'
         ])->where('payment_voucher_id', $params['inputs']['payment_voucher_id']);
 
