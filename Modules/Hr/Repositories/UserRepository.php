@@ -49,18 +49,20 @@ class UserRepository extends EloquentBaseRepository
 
         $selfData = User::with(['file','roles.permissions'])->find($userId);
         $roles_data = $selfData['roles'];
-        $role_id =[];
+        $roleId =[];
         foreach($roles_data as $roles)
         {
-            $role_id=$roles['id'];
+            $roleId[] =$roles['id'];
         }
         $permissions = [];
 
-        $permissions = Permission::join('role_permissions','role_permissions.permission_id', '=', 'permissions.id')
-        ->where('role_permissions.role_id', $role_id)
+        if (count($roleId)) {
+            $permissions = Permission::join('role_permissions','role_permissions.permission_id', '=', 'permissions.id')
+                ->whereIn('role_permissions.role_id', $roleId)
                 ->select('permissions.*')
                 ->distinct()
                 ->get();
+        }
 
        // dd($permissions);
         $selfData->permissions = $permissions;
