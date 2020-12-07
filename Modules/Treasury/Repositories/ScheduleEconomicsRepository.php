@@ -39,6 +39,7 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
             ScheduleEconomic::where('payee_voucher_id', $data['data']['payee_voucher_id'])->delete();
         }
 
+        $totalAmount = 0;
         foreach ($data['data']['schedule_economics'] as $key => $scheduleEconomic) {
             /** @var PayeeVoucher $payeeVoucher */
 
@@ -48,8 +49,14 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
                 'economic_segment_id' => $scheduleEconomic['economic_segment_id'],
                 'amount' => $scheduleEconomic['amount']
             ];
+
+            $totalAmount = $totalAmount + $scheduleEconomic['amount'];
         }
 
+
+        if ($payeeVoucher->net_amount != $totalAmount) {
+            throw new AppException('Given Amount is not equal to gross amount of Schedule Payee');
+        }
         ScheduleEconomic::insert($dataToInsert);
 
         return ["data" => "success"];
