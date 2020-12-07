@@ -24,6 +24,7 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::resource('aies', 'AieController');
     Route::resource('source-units', 'VoucherSourceUnitController');
     Route::get('cashbook-types', 'CashbookController@getCashbookTypes');
+    Route::get('payment-voucher-status', 'PaymentVoucherController@statusPaymentVoucher');
 
     Route::post('payment-vouchers', 'PaymentVoucherController@store');
     Route::get('payment-vouchers', 'PaymentVoucherController@index');

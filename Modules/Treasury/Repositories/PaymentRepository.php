@@ -5,6 +5,7 @@ namespace Modules\Treasury\Repositories;
 
 
 use App\Constants\AppConstant;
+use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Treasury\Models\PayeeVoucher;
@@ -132,15 +133,22 @@ class PaymentRepository extends EloquentBaseRepository
                         [
                             'name' => 'EXPENDITURE VOUCHER',
                             'value' => AppConstant::VOUCHER_TYPE_EXPENDITURE_VOUCHER
-                        ],                        [
+                        ], [
                             'name' => 'CREDIT VOUCHER',
                             'value' => AppConstant::VOUCHER_TYPE_EXPENDITURE_CREDIT_VOUCHER
                         ]
-                      ]
+                    ]
                 ];
             }
         }
 
+
+    }
+
+    public function statusPaymentVoucher()
+    {
+        $status = DB::table('treasury_status_payment_voucher')->get();
+        return ['status' => $status];
 
     }
 }
