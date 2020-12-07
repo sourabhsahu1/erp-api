@@ -18,6 +18,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $company_id
  * @property float $net_amount
  * @property float $total_tax
+ * @property string $details
  * @property \Carbon\Carbon $year
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -54,7 +55,8 @@ class PayeeVoucher extends Eloquent
 		'company_id',
 		'net_amount',
 		'total_tax',
-		'year'
+		'year',
+		'details'
 	];
 
 	public function admin_company()

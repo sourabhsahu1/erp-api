@@ -142,13 +142,13 @@ class PaymentRepository extends EloquentBaseRepository
             }
         }
 
-
     }
 
     public function statusPaymentVoucher()
     {
         $status = DB::table('treasury_status_payment_voucher')->get();
-        return ['status' => $status];
-
+        return [
+            'status' => $status
+        ];
     }
 }
