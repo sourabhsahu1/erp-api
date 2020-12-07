@@ -33,8 +33,8 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
         }
 
         if (!isset($data['data']['schedule_economics'])) {
-            ScheduleEconomic::where('payee_voucher_id', $data['data']['payee_voucher_id'])->delete();
-            return ["data" => "success"];
+//            ScheduleEconomic::where('payee_voucher_id', $data['data']['payee_voucher_id'])->delete();
+            return ["data" => "Empty schedule economics"];
         } else {
             ScheduleEconomic::where('payee_voucher_id', $data['data']['payee_voucher_id'])->delete();
         }
