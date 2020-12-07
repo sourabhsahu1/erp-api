@@ -28,14 +28,14 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
                 throw new AppException('Cannot Add status is not NEW');
             }
 
-        }else {
+        } else {
             throw new AppException('Payee not Exist');
         }
 
         if (!isset($data['data']['schedule_economics'])) {
             ScheduleEconomic::where('payee_voucher_id', $data['data']['payee_voucher_id'])->delete();
             return ["data" => "success"];
-        }else {
+        } else {
             ScheduleEconomic::where('payee_voucher_id', $data['data']['payee_voucher_id'])->delete();
         }
 
@@ -54,7 +54,7 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
         }
 
 
-        if ($payeeVoucher->net_amount != $totalAmount) {
+        if ($payeeVoucher->net_amount < $totalAmount) {
             throw new AppException('Given Amount is not equal to gross amount of Schedule Payee');
         }
         ScheduleEconomic::insert($dataToInsert);
@@ -62,7 +62,8 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
         return ["data" => "success"];
     }
 
-    public function getPaymentVoucherScheduleEconomic($params) {
+    public function getPaymentVoucherScheduleEconomic($params)
+    {
 
         $query = ScheduleEconomic::with([
             'economic_segment',
