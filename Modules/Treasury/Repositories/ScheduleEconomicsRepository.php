@@ -4,8 +4,10 @@
 namespace Modules\Treasury\Repositories;
 
 
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Treasury\Models\PayeeVoucher;
+use Modules\Treasury\Models\PaymentVoucher;
 use Modules\Treasury\Models\ScheduleEconomic;
 
 class ScheduleEconomicsRepository extends EloquentBaseRepository
@@ -18,6 +20,17 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
         $dataToInsert = [];
 
         $payeeVoucher = PayeeVoucher::find($data['data']['payee_voucher_id']);
+
+        if ($payeeVoucher) {
+            /** @var PaymentVoucher $paymentVoucher */
+            $paymentVoucher = PaymentVoucher::find($payeeVoucher->payment_voucher_id);
+            if ($paymentVoucher->status != 'NEW') {
+                throw new AppException('Cannot Add status is not NEW');
+            }
+
+        }else {
+            throw new AppException('Payee not Exist');
+        }
 
         if (!isset($data['data']['schedule_economics'])) {
             ScheduleEconomic::where('payee_voucher_id', $data['data']['payee_voucher_id'])->delete();
@@ -43,7 +56,6 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
     }
 
     public function getPaymentVoucherScheduleEconomic($params) {
-
 
         $query = ScheduleEconomic::with([
             'economic_segment',
