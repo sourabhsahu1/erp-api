@@ -54,7 +54,7 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
         }
 
 
-        if ($payeeVoucher->net_amount < $totalAmount) {
+        if (($payeeVoucher->net_amount + $payeeVoucher->total_tax) < $totalAmount) {
             throw new AppException('Given Amount is not equal to gross amount of Schedule Payee');
         }
         ScheduleEconomic::insert($dataToInsert);
