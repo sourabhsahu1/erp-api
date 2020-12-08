@@ -39,6 +39,7 @@ class CreateTreasuryPaymentVouchersTable extends Migration
             ]);
             $table->enum('status',[
                 AppConstant::VOUCHER_STATUS_CHECKED,
+                AppConstant::VOUCHER_STATUS_DRAFT,
                 AppConstant::VOUCHER_STATUS_APPROVED,
                 AppConstant::VOUCHER_STATUS_AUDITED,
                 AppConstant::VOUCHER_STATUS_BUDGET_CONTROL_VERIFIED,
