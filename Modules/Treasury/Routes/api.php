@@ -24,14 +24,27 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::resource('aies', 'AieController');
     Route::resource('source-units', 'VoucherSourceUnitController');
     Route::get('cashbook-types', 'CashbookController@getCashbookTypes');
-    Route::get('payment-voucher-status', 'PaymentVoucherController@statusPaymentVoucher');
 
     Route::post('payment-vouchers', 'PaymentVoucherController@store');
     Route::get('payment-vouchers', 'PaymentVoucherController@index');
     Route::post('payment-vouchers/update-status', 'PaymentVoucherController@updateStatus');
-    Route::get('source-units/{id}/types','PaymentVoucherController@typePaymentVoucher');
     Route::resource('payment-vouchers/{payment_voucher_id}/schedule-payees','PayeeVoucherController');
     Route::resource('payee-vouchers/{payee_voucher_id}/schedule-economic','ScheduleEconomicsController');
     Route::get('payment-vouchers/{payment_voucher_id}/schedule-economic','ScheduleEconomicsController@getPaymentVoucherScheduleEconomic');
+    Route::get('source-units/{id}/types','PaymentVoucherController@typePaymentVoucher');
+    Route::get('payment-voucher-status', 'PaymentVoucherController@statusPaymentVoucher');
+
+
+
+    //Rvs
+
+    Route::get('source-units/{id}/rv-types','ReceiptVoucherController@typePaymentVoucher');
+    Route::post('receipt-vouchers', 'ReceiptVoucherController@store');
+    Route::get('receipt-vouchers', 'ReceiptVoucherController@index');
+    Route::post('receipt-vouchers/update-status', 'ReceiptVoucherController@updateStatus');
+    Route::get('source-units/{id}/types','PaymentVoucherController@typePaymentVoucher');
+    Route::resource('payment-vouchers/{payment_voucher_id}/schedule-payees','PayeeVoucherController');
+    Route::resource('payee-vouchers/{payee_voucher_id}/schedule-economic','ScheduleEconomicsController');
+
 
 });
