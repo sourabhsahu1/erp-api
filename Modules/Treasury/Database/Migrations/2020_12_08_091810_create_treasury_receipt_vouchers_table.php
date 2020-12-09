@@ -51,10 +51,10 @@ class CreateTreasuryReceiptVouchersTable extends Migration
             $table->unsignedInteger('functional_segment_id')->nullable();
             $table->unsignedInteger('geo_code_segment_id')->nullable();
 
-            $table->unsignedBigInteger('receiving_officer_id')->nullable();
+            $table->unsignedBigInteger('receiving_officer_id');
             $table->unsignedBigInteger('prepared_by_officer_id')->nullable();
             $table->unsignedBigInteger('closed_by_officer_id')->nullable();
-            $table->unsignedBigInteger('cashbook_id')->nullable();
+            $table->unsignedBigInteger('cashbook_id');
 
             $table->softDeletes();
             $table->timestamps();

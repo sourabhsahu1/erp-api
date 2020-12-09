@@ -12,8 +12,21 @@ use Modules\Treasury\Repositories\ReceiptVoucherRepository;
 class ReceiptVoucherController extends BaseController
 {
     protected $repository = ReceiptVoucherRepository::class;
+    protected $createJob = BaseJob::class;
+    protected $storeJobMethod = "create";
 
-
+    protected $indexWith = [
+        'program_segment',
+        'economic_segment',
+        'functional_segment',
+        'geo_code_segment',
+        'admin_segment',
+        'fund_segment',
+        'employee',
+        'voucher_source_unit',
+        'total_amount',
+        'total_tax'
+    ];
     public function typePaymentVoucher(Request $request)
     {
         $this->jobMethod = "typePaymentVoucher";

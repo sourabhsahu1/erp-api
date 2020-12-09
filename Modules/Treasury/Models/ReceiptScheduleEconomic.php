@@ -29,6 +29,7 @@ class ReceiptScheduleEconomic extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
+    protected $table = "treasury_receipt_schedule_economics";
 	protected $casts = [
 		'receipt_payee_id' => 'int',
 		'economic_segment_id' => 'int',

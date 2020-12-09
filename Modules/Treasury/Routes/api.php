@@ -43,8 +43,8 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::get('receipt-vouchers', 'ReceiptVoucherController@index');
     Route::post('receipt-vouchers/update-status', 'ReceiptVoucherController@updateStatus');
     Route::get('source-units/{id}/types','PaymentVoucherController@typePaymentVoucher');
-    Route::resource('payment-vouchers/{payment_voucher_id}/schedule-payees','PayeeVoucherController');
-    Route::resource('payee-vouchers/{payee_voucher_id}/schedule-economic','ScheduleEconomicsController');
+    Route::resource('receipt-vouchers/{payment_voucher_id}/schedule-payees','PayeeVoucherController');
+    Route::resource('receipt-vouchers/{payee_voucher_id}/schedule-economic','ScheduleEconomicsController');
 
 
 });

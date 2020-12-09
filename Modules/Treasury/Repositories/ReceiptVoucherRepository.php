@@ -16,6 +16,38 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
     public $model = ReceiptVoucher::class;
 
 
+    public function create($data)
+    {
+        $receiptV = ReceiptVoucher::latest()->orderby('id', 'desc')->first();
+
+        if (is_null($receiptV)) {
+            $data['data']['deptal_id'] = 1;
+        } else {
+            $data['data']['deptal_id'] = $receiptV->deptal_id + 1;
+        }
+        $data['data']['status'] = 'NEW';
+
+        return parent::create($data);
+    }
+
+
+    public function getAll($params = [], $query = null)
+    {
+        $query = ReceiptVoucher::query();
+
+        if (isset($params['inputs']['voucher_source_unit_id'])) {
+            $query->where('voucher_source_unit_id', $params['inputs']['voucher_source_unit_id']);
+        }
+
+        if (isset($params['inputs']['status'])) {
+            $query->where('status', $params['inputs']['status']);
+        }
+        /* $query->with(['total_tax' => function ($tax) {
+             $tax->selectRaw('SUM(total_tax)');
+         }]);*/
+        return parent::getAll($params, $query);
+    }
+
     public function typePaymentVoucher($params)
     {
         /** @var VoucherSourceUnit $vsu */

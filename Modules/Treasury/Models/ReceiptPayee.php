@@ -40,6 +40,7 @@ class ReceiptPayee extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
+    protected $table = "treasury_receipt_payees";
 	protected $casts = [
 		'receipt_voucher_id' => 'int',
 		'employee_id' => 'int',

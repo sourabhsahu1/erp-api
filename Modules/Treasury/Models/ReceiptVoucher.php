@@ -7,6 +7,7 @@
 
 namespace Modules\Treasury\Models;
 
+use Illuminate\Support\Carbon;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -51,6 +52,7 @@ class ReceiptVoucher extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
+	protected $table = "treasury_receipt_vouchers";
 	protected $casts = [
 		'voucher_source_unit_id' => 'int',
 		'deptal_id' => 'int',
@@ -99,10 +101,42 @@ class ReceiptVoucher extends Eloquent
 		'cashbook_id'
 	];
 
-	public function admin_segment()
-	{
-		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'program_segment_id');
-	}
+    protected $appends = ['year'];
+
+    public function getYearAttribute()
+    {
+        return Carbon::parse($this->value_date)->year;
+    }
+
+    public function program_segment()
+    {
+        return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'program_segment_id');
+    }
+
+    public function economic_segment()
+    {
+        return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'economic_segment_id');
+    }
+
+    public function functional_segment()
+    {
+        return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'functional_segment_id');
+    }
+
+    public function geo_code_segment()
+    {
+        return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'geo_code_segment_id');
+    }
+
+    public function admin_segment()
+    {
+        return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'admin_segment_id');
+    }
+
+    public function fund_segment()
+    {
+        return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'fund_segment_id');
+    }
 
 	public function cashbook()
 	{
@@ -123,4 +157,18 @@ class ReceiptVoucher extends Eloquent
 	{
 		return $this->hasMany(\Modules\Treasury\Models\ReceiptPayee::class, 'receipt_voucher_id');
 	}
+
+    public function total_amount()
+    {
+        return $this->hasOne(ReceiptPayee::class,'receipt_voucher_id')
+            ->selectRaw('receipt_voucher_id, sum(net_amount) as amount')
+            ->groupBy('receipt_voucher_id');
+    }
+
+    public function total_tax() {
+        return $this->hasOne(ReceiptPayee::class,'receipt_voucher_id')
+            ->selectRaw('receipt_voucher_id, sum(total_tax) as tax')
+            ->groupBy('receipt_voucher_id');
+    }
+
 }
