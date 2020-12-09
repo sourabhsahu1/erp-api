@@ -61,19 +61,21 @@ class PaymentRepository extends EloquentBaseRepository
         $pv = PaymentVoucher::whereIn('id', $data['data']['payment_voucher_ids']);
 
         foreach ($data['data']['payment_voucher_ids'] as $payment_voucher_id) {
-            $pv = PaymentVoucher::where('id', $payment_voucher_id)->first();
-            $payeeVoucher = PayeeVoucher::where('payment_voucher_id', $pv->id)->first();
 
-            if (is_null($payeeVoucher)) {
+            $pv = PaymentVoucher::where('id', $payment_voucher_id)->first();
+            $payeeVoucherIds = PayeeVoucher::where('payment_voucher_id', $pv->id)->pluck('id')->all();
+
+            if (is_null($payeeVoucherIds)) {
                 throw new AppException('Payee not added');
             }
 
-            $scheduleVoucher = ScheduleEconomic::where('payee_voucher_id', $payeeVoucher->id)->first();
+            $scheduleVoucher = ScheduleEconomic::whereIn('payee_voucher_id', $payeeVoucherIds)->first();
 
             if (is_null($scheduleVoucher)) {
                 throw new AppException('Schedule Economic not added');
             }
         }
+
 
         $pv->update([
             'status' => $data['data']['status']
