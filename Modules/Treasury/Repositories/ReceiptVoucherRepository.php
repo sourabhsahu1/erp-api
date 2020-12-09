@@ -7,7 +7,12 @@ namespace Modules\Treasury\Repositories;
 use App\Constants\AppConstant;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Treasury\Models\PayeeVoucher;
+use Modules\Treasury\Models\PaymentVoucher;
+use Modules\Treasury\Models\ReceiptPayee;
+use Modules\Treasury\Models\ReceiptScheduleEconomic;
 use Modules\Treasury\Models\ReceiptVoucher;
+use Modules\Treasury\Models\ScheduleEconomic;
 use Modules\Treasury\Models\VoucherSourceUnit;
 
 class ReceiptVoucherRepository extends EloquentBaseRepository
@@ -105,5 +110,35 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
 
     }
 
+    public function updateStatus($data)
+    {
+
+        $pv = ReceiptVoucher::whereIn('id', $data['data']['receipt_voucher_ids']);
+
+        foreach ($data['data']['receipt_voucher_ids'] as $receipt_voucher_id) {
+
+            $pv = ReceiptVoucher::where('id', $receipt_voucher_id)->first();
+            $payeeVoucherIds = ReceiptPayee::where('receipt_voucher_id', $pv->id)->pluck('id')->all();
+
+            if (is_null($payeeVoucherIds)) {
+                throw new AppException('Payee not added');
+            }
+
+            $scheduleVoucher = ReceiptScheduleEconomic::whereIn('receipt_payee_id', $payeeVoucherIds)->first();
+
+            if (is_null($scheduleVoucher)) {
+                throw new AppException('Schedule Economic not added');
+            }
+        }
+
+
+        $pv->update([
+            'status' => $data['data']['status']
+        ]);
+
+        return [
+            'data' => 'Status Updated Successfully'
+        ];
+    }
 
 }
