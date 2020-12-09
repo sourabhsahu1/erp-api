@@ -23,7 +23,7 @@ class Create extends BaseRequest
             'retirementId' => 'required|exists:treasury_voucher_source_units,id',
             'reverseVoucherId' => 'required|exists:treasury_voucher_source_units,id',
             'revalidationId' => 'required|exists:treasury_voucher_source_units,id',
-            'taxVoucherId' => 'required'
+            'taxVoucherId' => 'required|exists:treasury_voucher_source_units,id'
         ];
     }
 }
