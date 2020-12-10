@@ -24,8 +24,7 @@ class ReceiptVoucherController extends BaseController
         'fund_segment',
         'employee',
         'voucher_source_unit',
-        'total_amount',
-        'total_tax'
+        'total_amount'
     ];
     public function typePaymentVoucher(Request $request)
     {

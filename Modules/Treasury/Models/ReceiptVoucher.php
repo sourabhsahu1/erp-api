@@ -161,13 +161,7 @@ class ReceiptVoucher extends Eloquent
     public function total_amount()
     {
         return $this->hasOne(ReceiptPayee::class,'receipt_voucher_id')
-            ->selectRaw('receipt_voucher_id, sum(net_amount) as amount')
-            ->groupBy('receipt_voucher_id');
-    }
-
-    public function total_tax() {
-        return $this->hasOne(ReceiptPayee::class,'receipt_voucher_id')
-            ->selectRaw('receipt_voucher_id, sum(total_tax) as tax')
+            ->selectRaw('receipt_voucher_id, sum(total_amount) as amount')
             ->groupBy('receipt_voucher_id');
     }
 
