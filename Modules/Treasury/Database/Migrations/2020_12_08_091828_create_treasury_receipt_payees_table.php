@@ -20,11 +20,9 @@ class CreateTreasuryReceiptPayeesTable extends Migration
             $table->unsignedBigInteger('receipt_voucher_id');
             $table->unsignedBigInteger('employee_id')->nullable();
             $table->unsignedBigInteger('company_id')->nullable();
-            $table->decimal('net_amount',18,2);
-            $table->decimal('total_tax',18,2);
+            $table->decimal('total_amount',18,2);
             $table->year('year');
             $table->string('details');
-//            $table->string('line_detail');
             $table->enum('pay_mode', [
                 AppConstant::RECEIPT_PAY_MODE_CASH,
                 AppConstant::RECEIPT_PAY_MODE_DIRECT_PAYMENTS,

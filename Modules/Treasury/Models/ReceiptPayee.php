@@ -16,8 +16,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $receipt_voucher_id
  * @property int $employee_id
  * @property int $company_id
- * @property float $net_amount
- * @property float $total_tax
+ * @property float $total_amount
  * @property \Carbon\Carbon $year
  * @property string $details
  * @property string $pay_mode
@@ -45,8 +44,7 @@ class ReceiptPayee extends Eloquent
 		'receipt_voucher_id' => 'int',
 		'employee_id' => 'int',
 		'company_id' => 'int',
-		'net_amount' => 'float',
-		'total_tax' => 'float'
+		'total_amount' => 'float'
 	];
 
 	protected $dates = [
@@ -57,8 +55,7 @@ class ReceiptPayee extends Eloquent
 		'receipt_voucher_id',
 		'employee_id',
 		'company_id',
-		'net_amount',
-		'total_tax',
+		'total_amount',
 		'year',
 		'details',
 		'pay_mode',
@@ -73,7 +70,7 @@ class ReceiptPayee extends Eloquent
 		return $this->belongsTo(\Modules\Admin\Models\Company::class, 'company_id');
 	}
 
-	public function hr_employee()
+	public function employee()
 	{
 		return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'employee_id');
 	}

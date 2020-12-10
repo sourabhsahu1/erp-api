@@ -21,7 +21,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $deleted_at
  * 
  * @property \Modules\Admin\Models\AdminSegment $admin_segment
- * @property \Modules\Treasury\Models\ReceiptPayee $treasury_receipt_payee
+ * @property \Modules\Treasury\Models\ReceiptPayee $receipt_payee
+ * @property \Modules\Treasury\Models\ReceiptPayee $receipt_voucher
  *
  * @package Modules\Treasury\Models
  */
@@ -32,24 +33,31 @@ class ReceiptScheduleEconomic extends Eloquent
     protected $table = "treasury_receipt_schedule_economics";
 	protected $casts = [
 		'receipt_payee_id' => 'int',
+        'receipt_voucher_id' => 'int',
 		'economic_segment_id' => 'int',
 		'amount' => 'float'
 	];
 
 	protected $fillable = [
 		'receipt_payee_id',
+		'receipt_voucher_id',
 		'economic_segment_id',
 		'amount'
 	];
 
 
-	public function admin_segment()
+	public function economic_segment()
 	{
 		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'economic_segment_id');
 	}
 
-	public function treasury_receipt_payee()
+	public function receipt_payee()
 	{
 		return $this->belongsTo(\Modules\Treasury\Models\ReceiptPayee::class, 'receipt_payee_id');
 	}
+
+    public function receipt_voucher()
+    {
+        return $this->belongsTo(\Modules\Treasury\Models\ReceiptVoucher::class, 'receipt_voucher_id');
+    }
 }
