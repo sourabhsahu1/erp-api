@@ -29,10 +29,10 @@ class CreateTreasuryReceiptPayeesTable extends Migration
                 AppConstant::RECEIPT_PAY_MODE_INSTRUMENTS
 
             ]);
-            $table->string('instrument_number');
-            $table->string('instrument_type');
-            $table->string('instrument_teller_number');
-            $table->string('instrument_issued_by');
+            $table->string('instrument_number')->nullable();
+            $table->string('instrument_type')->nullable();
+            $table->string('instrument_teller_number')->nullable();
+            $table->string('instrument_issued_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

@@ -7,12 +7,9 @@ namespace Modules\Treasury\Repositories;
 use App\Constants\AppConstant;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
-use Modules\Treasury\Models\PayeeVoucher;
-use Modules\Treasury\Models\PaymentVoucher;
 use Modules\Treasury\Models\ReceiptPayee;
 use Modules\Treasury\Models\ReceiptScheduleEconomic;
 use Modules\Treasury\Models\ReceiptVoucher;
-use Modules\Treasury\Models\ScheduleEconomic;
 use Modules\Treasury\Models\VoucherSourceUnit;
 
 class ReceiptVoucherRepository extends EloquentBaseRepository
