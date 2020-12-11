@@ -153,7 +153,7 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
                     'value' => 'CLOSED'
                 ],
                 [
-                    'name' => 'POSTED_TO_GL',
+                    'name' => 'POSTED TO GL',
                     'value' => 'POSTED_TO_GL'
                 ]
             ]
