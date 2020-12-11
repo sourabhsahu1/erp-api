@@ -105,11 +105,18 @@ class PaymentVoucher extends Eloquent
         'financial_controller_id'
     ];
 
-    protected $appends = ['year'];
+    protected $appends = ['year', 'types'];
 
     public function getYearAttribute()
     {
         return Carbon::parse($this->value_date)->year;
+    }
+
+    public function getTypesAttribute()
+    {
+        return [
+            'name' => str_replace('_',' ', $this->type)
+        ];
     }
 
     public function program_segment()
