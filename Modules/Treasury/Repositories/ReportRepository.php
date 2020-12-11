@@ -12,6 +12,7 @@ class ReportRepository extends EloquentBaseRepository
 
 
     public function summaryNonPersonalAdvances($params) {
+
         $pv =  PaymentVoucher::with([]);
     }
 
