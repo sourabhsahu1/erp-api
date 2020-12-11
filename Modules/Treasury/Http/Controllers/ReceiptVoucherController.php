@@ -23,6 +23,7 @@ class ReceiptVoucherController extends BaseController
         'admin_segment',
         'fund_segment',
         'employee',
+        'receipt_payees',
         'voucher_source_unit',
         'total_amount'
     ];

@@ -19,6 +19,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property float $total_amount
  * @property \Carbon\Carbon $year
  * @property string $details
+ * @property string $line_detail
  * @property string $pay_mode
  * @property string $instrument_number
  * @property string $instrument_type
@@ -58,6 +59,7 @@ class ReceiptPayee extends Eloquent
 		'total_amount',
 		'year',
 		'details',
+		'line_detail',
 		'pay_mode',
 		'instrument_number',
 		'instrument_type',

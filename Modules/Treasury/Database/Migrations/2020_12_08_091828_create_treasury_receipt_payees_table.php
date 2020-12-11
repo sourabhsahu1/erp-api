@@ -23,6 +23,7 @@ class CreateTreasuryReceiptPayeesTable extends Migration
             $table->decimal('total_amount',18,2);
             $table->year('year');
             $table->string('details');
+            $table->string('line_detail')->nullable();
             $table->enum('pay_mode', [
                 AppConstant::RECEIPT_PAY_MODE_CASH,
                 AppConstant::RECEIPT_PAY_MODE_DIRECT_PAYMENTS,
