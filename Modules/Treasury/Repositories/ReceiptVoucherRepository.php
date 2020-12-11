@@ -138,4 +138,25 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
         ];
     }
 
+
+
+    public function statusReceiptVoucher()
+    {
+        return [
+            'status' => [
+                [
+                    'name' => 'NEW',
+                    'value' => 'NEW'
+                ],
+                [
+                    'name' => 'CLOSED',
+                    'value' => 'CLOSED'
+                ],
+                [
+                    'name' => 'POSTED_TO_GL',
+                    'value' => 'POSTED_TO_GL'
+                ]
+            ]
+        ];
+    }
 }

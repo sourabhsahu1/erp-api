@@ -37,4 +37,10 @@ class ReceiptVoucherController extends BaseController
         $this->jobMethod = "updateStatus";
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
+
+    public function statusReceiptVoucher(Request $request)
+    {
+        $this->jobMethod = "statusReceiptVoucher";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
 }

@@ -20,4 +20,10 @@ class ReceiptScheduleEconomicController extends BaseController
         $this->jobMethod = 'getReceiptVoucherScheduleEconomic';
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
+
+    protected $indexWith = [
+        'economic_segment',
+        'receipt_payee',
+        'receipt_voucher'
+    ];
 }
