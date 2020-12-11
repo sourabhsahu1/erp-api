@@ -169,16 +169,9 @@ class PaymentVoucher extends Eloquent
             ->groupBy('payment_voucher_id');
     }
 
-//    public function taxes()
-//    {
-////        return $this->hasMany('Payments')
-////            ->selectRaw('SUM(payments.amount) as payment_amount')
-////            ->groupBy('id'); // as per our requirements.
-//
-//        return $this->hasMany(PayeeVoucher::class, 'payment_voucher_id')
-////            ->selectRaw('SUM(treasury_payee_vouchers.total_tax) as total_tax')
-//            ;
-//    }
+    public function payee_vouchers() {
+        return $this->hasMany(\Modules\Treasury\Models\PayeeVoucher::class, 'payment_voucher_id');
+    }
 
     public function total_tax() {
         return $this->hasOne(PayeeVoucher::class,'payment_voucher_id')

@@ -31,7 +31,8 @@ class PaymentVoucherController extends BaseController
         'currency',
         'voucher_source_unit',
         'total_amount',
-        'total_tax'
+        'total_tax',
+        'payee_vouchers'
     ];
 
 

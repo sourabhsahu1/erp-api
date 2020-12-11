@@ -58,7 +58,7 @@ class ReceiptPayee extends Eloquent
 		'company_id',
 		'total_amount',
 		'year',
-		'details',
+//		'details',
 		'line_detail',
 		'pay_mode',
 		'instrument_number',

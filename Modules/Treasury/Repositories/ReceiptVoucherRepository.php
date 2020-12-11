@@ -47,13 +47,15 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
         /* $query->with(['total_tax' => function ($tax) {
              $tax->selectRaw('SUM(total_tax)');
          }]);*/
+
         return parent::getAll($params, $query);
     }
 
     public function typePaymentVoucher($params)
     {
         /** @var VoucherSourceUnit $vsu */
-        $vsu = VoucherSourceUnit::where('id', $params['inputs']['id'])->first();
+
+            $vsu = VoucherSourceUnit::where('id', $params['inputs']['id'])->first();
 
         if (is_null($vsu)) {
             throw new AppException('voucher source unit not exist');
@@ -137,7 +139,6 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
             'data' => 'Status Updated Successfully'
         ];
     }
-
 
 
     public function statusReceiptVoucher()
