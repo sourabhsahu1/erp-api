@@ -111,7 +111,7 @@ class ReceiptVoucher extends Eloquent
     public function getTypesAttribute()
     {
         return [
-            'name' => $this->type
+            'name' => str_replace('_',' ', $this->type)
         ];
     }
 
