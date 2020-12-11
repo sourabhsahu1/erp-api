@@ -16,7 +16,7 @@ class PayeeVoucherRepository extends EloquentBaseRepository
 
     public function create($data)
     {
-        $payeeBank = parent::create($data);
+
 
         if (isset($data['data']['employee_id'])) {
 
@@ -44,7 +44,7 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                 'is_active' => true
             ]);
         }
-
+        $payeeBank = parent::create($data);
         return $payeeBank;
     }
 

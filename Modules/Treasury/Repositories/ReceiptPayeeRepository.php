@@ -17,7 +17,7 @@ class ReceiptPayeeRepository extends EloquentBaseRepository
 
     public function create($data)
     {
-        $payeeBank = parent::create($data);
+
         if (isset($data['data']['employee_id'])) {
             $empBank = EmployeeBankDetail::where('employee_id', $data['data']['employee_id'])->first();
             if (is_null($empBank)) {
@@ -31,7 +31,7 @@ class ReceiptPayeeRepository extends EloquentBaseRepository
                 throw new AppException('Bank Required to Add Payee Company');
             }
         }
-
+        $payeeBank = parent::create($data);
         return $payeeBank;
     }
 
