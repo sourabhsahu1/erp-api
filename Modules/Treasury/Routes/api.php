@@ -47,7 +47,10 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::get('receipt-voucher-status', 'ReceiptVoucherController@statusReceiptVoucher');
 
     //report
-    Route::get('summary-non-personal','ReportController@summaryNonPersonalAdvances');
+    Route::get('report/summary-non-personal','ReportController@summaryNonPersonalAdvances');
+    Route::get('report/summary-personal','ReportController@summaryNonPersonalAdvances');
+    Route::get('report/summary-special','ReportController@summarySpecialImprest');
+    Route::get('report/summary-standing','ReportController@summaryStandingImprest');
 
 
 });

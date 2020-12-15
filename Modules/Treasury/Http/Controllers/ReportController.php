@@ -25,4 +25,16 @@ class ReportController extends BaseController
         $this->jobMethod = "summaryPersonalAdvances";
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
+
+    public function summarySpecialImprest(Request $request)
+    {
+        $this->jobMethod = "summarySpecialImprest";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
+    public function summaryStandingImprest(Request $request)
+    {
+        $this->jobMethod = "summaryStandingImprest";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
 }
