@@ -46,7 +46,7 @@ class CreateTreasuryPaymentVouchersTable extends Migration
                 AppConstant::VOUCHER_STATUS_CLOSED,
                 AppConstant::VOUCHER_STATUS_NEW,
                 AppConstant::VOUCHER_STATUS_ON_MANDATE,
-                AppConstant::VOUCHER_STATUS_POSTED_TO_GL
+                AppConstant::VOUCHER_STATUS_PAID
             ]);
             $table->unsignedBigInteger('currency_id');
             $table->string('payment_description');

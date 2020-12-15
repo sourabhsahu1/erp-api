@@ -112,6 +112,7 @@ class AppConstant
     const VOUCHER_STATUS_ON_MANDATE = 'ON_MANDATE';
     const VOUCHER_STATUS_CLOSED = 'CLOSED';
     const VOUCHER_STATUS_POSTED_TO_GL = 'POSTED_TO_GL';
+    const VOUCHER_STATUS_PAID = 'PAID';
 
 
     //Treasury receipt voucher
