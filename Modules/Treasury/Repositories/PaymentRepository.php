@@ -106,11 +106,11 @@ class PaymentRepository extends EloquentBaseRepository
                             'value' => AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER
                         ],
                         [
-                            'name' => 'SPECIAL VOUCHER',
+                            'name' => 'SPECIAL IMPREST VOUCHER',
                             'value' => AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER
                         ],
                         [
-                            'name' => 'STANDING VOUCHER',
+                            'name' => 'STANDING IMPREST VOUCHER',
                             'value' => AppConstant::VOUCHER_TYPE_STANDING_VOUCHER
                         ]
                     ]

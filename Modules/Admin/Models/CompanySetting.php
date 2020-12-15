@@ -15,7 +15,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $id
  * @property int $company_information_id
  * @property string $country
- * @property string $currency
+ * @property string $local_currency
+ * @property string $international_currency
  * @property bool $auto_post
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -46,4 +47,13 @@ class CompanySetting extends Eloquent
 	{
 		return $this->belongsTo(\Modules\Admin\Models\CompanyInformation::class);
 	}
+
+	public function local() {
+        return $this->hasOne(\Modules\Finance\Models\Currency::class, 'code_currency', 'local_currency');
+    }
+
+
+    public function international() {
+        return $this->hasOne(\Modules\Finance\Models\Currency::class, 'code_currency', 'international_currency');
+    }
 }

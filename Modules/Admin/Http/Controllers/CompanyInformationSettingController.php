@@ -20,4 +20,9 @@ class CompanyInformationSettingController extends ApiController
     protected $deleteJobMethod = "delete";
 
 
+    protected $indexWith = [
+        'company_information',
+        'local',
+        'international'
+    ];
 }
