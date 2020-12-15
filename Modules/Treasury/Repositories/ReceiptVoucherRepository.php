@@ -64,27 +64,27 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
                 return [
                     'type' => [
                         [
-                            'name' => 'DEPOSIT RECEIVED',
+                            'name' => 'DEPOSIT RECEIVED VOUCHER',
                             'value' => AppConstant::VOUCHER_TYPE_DEPOSIT_RECEIVED_VOUCHER
                         ],
                         [
-                            'name' => 'NON PERSONAL ADVANCES RECEIVED',
+                            'name' => 'NON PERSONAL ADVANCES RECEIVED VOUCHER',
                             'value' => AppConstant::VOUCHER_TYPE_NON_PERSONAL_ADVANCES_RECEIVED_VOUCHER
                         ],
                         [
-                            'name' => 'SPECIAL IMPREST RECEIVED',
+                            'name' => 'SPECIAL IMPREST RECEIVED VOUCHER',
                             'value' => AppConstant::VOUCHER_TYPE_SPECIAL_IMPREST_RECEIVED_VOUCHER
                         ],
                         [
-                            'name' => 'STANDING IMPREST RECEIVED',
+                            'name' => 'STANDING IMPREST RECEIVED VOUCHER',
                             'value' => AppConstant::VOUCHER_TYPE_STANDING_IMPREST_RECEIVED_VOUCHER
                         ],
                         [
-                            'name' => 'REMITTANCE RECEIVED',
+                            'name' => 'REMITTANCE RECEIVED VOUCHER',
                             'value' => AppConstant::VOUCHER_TYPE_REMITTANCE_RECEIVED_VOUCHER
                         ],
                         [
-                            'name' => 'REVENUE DEBIT',
+                            'name' => 'REVENUE DEBIT VOUCHER',
                             'value' => AppConstant::VOUCHER_TYPE_REVENUE_DEBIT_VOUCHER
                         ]
                     ]
@@ -99,7 +99,7 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
                             'value' => AppConstant::VOUCHER_TYPE_REVENUE_VOUCHER
                         ],
                         [
-                            'name' => 'REVENUE DEBIT',
+                            'name' => 'REVENUE DEBIT VOUCHER',
                             'value' => AppConstant::VOUCHER_TYPE_REVENUE_DEBIT_VOUCHER
                         ]
                     ]
