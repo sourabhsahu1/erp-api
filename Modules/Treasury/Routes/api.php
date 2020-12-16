@@ -48,7 +48,7 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
 
     //report
     Route::get('report/summary-non-personal','ReportController@summaryNonPersonalAdvances');
-    Route::get('report/summary-personal','ReportController@summaryNonPersonalAdvances');
+    Route::get('report/summary-personal','ReportController@summaryPersonalAdvances');
     Route::get('report/summary-special','ReportController@summarySpecialImprest');
     Route::get('report/summary-standing','ReportController@summaryStandingImprest');
 
