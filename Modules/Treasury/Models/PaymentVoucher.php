@@ -105,11 +105,28 @@ class PaymentVoucher extends Eloquent
         'financial_controller_id'
     ];
 
-    protected $appends = ['year', 'types'];
+    protected $appends = ['year', 'types','is_checked', 'is_payed', 'is_audited'];
 
     public function getYearAttribute()
     {
         return Carbon::parse($this->value_date)->year;
+    }
+
+    public function getIsCheckedAttribute()
+    {
+
+        return is_null($this->checking_officer_id) ? false : true;
+    }
+
+    public function getIsPayedAttribute()
+    {
+        return is_null($this->paying_officer_id) ? false : true;
+    }
+
+
+    public function getIsAuditedAttribute()
+    {
+        return is_null($this->financial_controller_id) ? false : true;
     }
 
     public function getTypesAttribute()
