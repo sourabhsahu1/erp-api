@@ -27,7 +27,6 @@ class PaymentVoucherController extends BaseController
         'admin_segment',
         'fund_segment',
         'aie',
-        'employee',
         'currency',
         'voucher_source_unit',
         'total_amount',
