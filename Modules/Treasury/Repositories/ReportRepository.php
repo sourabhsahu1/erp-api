@@ -40,27 +40,7 @@ class ReportRepository extends EloquentBaseRepository
                 ->whereDate('value_date', '<=', $toDate);
         }
 
-        if (isset($params['inputs']['admin_segment_ids'])) {
-
-            $adminSegmentIds = json_decode($params['inputs']['admin_segment_ids']);
-            sort($adminSegmentIds);
-
-            $pv->whereIn('admin_segment_id', json_decode($params['inputs']['admin_segment_ids']))
-                ->selectRaw('admin_segment_id,admin_segments.name,SUM(net_amount+total_tax) as amount')
-                ->join('treasury_payee_vouchers', 'treasury_payment_vouchers.id', '=', 'treasury_payee_vouchers.payment_voucher_id')
-                ->join('admin_segments', 'admin_segments.id', '=', 'treasury_payment_vouchers.admin_segment_id')
-                ->whereNull('company_id')
-                ->where('type', AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER)
-                ->groupby('treasury_payment_vouchers.admin_segment_id');
-            $pv = $pv->get()->toArray();
-
-            $adminSeg = AdminSegment::find($adminSegmentIds[0]);
-            $pv[0]['admin_segment_id'] = $adminSeg->id;
-            $pv[0]['name'] = $adminSeg->name;
-            return $pv;
-
-
-        } elseif (isset($params['inputs']['admin_segment_id']) && isset($params['inputs']['employee_id'])) {
+        if (isset($params['inputs']['admin_segment_id']) && isset($params['inputs']['employee_id'])) {
             $pv->whereHas('payee_vouchers', function ($query) use ($params) {
                 $query->where('employee_id', $params['inputs']['employee_id']);
             })
@@ -92,14 +72,13 @@ class ReportRepository extends EloquentBaseRepository
                 ->where('type', AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER)
                 ->groupby(['admin_segment_id', 'hr_employees.id']);
         } else {
-            $pv->join('treasury_payee_vouchers', 'treasury_payment_vouchers.id', '=', 'treasury_payee_vouchers.payment_voucher_id')
+            $pv->selectRaw('admin_segment_id,admin_segments.name,SUM(net_amount+total_tax) as amount')
+                ->join('treasury_payee_vouchers', 'treasury_payment_vouchers.id', '=', 'treasury_payee_vouchers.payment_voucher_id')
                 ->join('admin_segments', 'admin_segments.id', '=', 'treasury_payment_vouchers.admin_segment_id')
                 ->whereNull('company_id')
                 ->where('type', AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER)
-                ->select(DB::raw('SUM(net_amount+total_tax) as amount'));
+                ->groupby('treasury_payment_vouchers.admin_segment_id');
             $pv = $pv->get()->toArray();
-            $pv[0]['admin_segment_id'] = 1;
-            $pv[0]['name'] = 'Administrative Segment';
             return $pv;
 
         }
