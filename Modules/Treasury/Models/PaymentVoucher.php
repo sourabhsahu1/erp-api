@@ -76,7 +76,7 @@ class PaymentVoucher extends Eloquent
     ];
 
     protected $dates = [
-        'value_date'
+        'value_date' =>'datetime:Y-m-d'
     ];
 
     protected $fillable = [
