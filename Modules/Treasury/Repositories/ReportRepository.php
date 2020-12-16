@@ -9,10 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\AdminSegment;
-use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentVoucher;
-use Modules\Treasury\Models\ReceiptPayee;
-use Modules\Treasury\Models\ReceiptVoucher;
 
 class ReportRepository extends EloquentBaseRepository
 {

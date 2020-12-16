@@ -154,9 +154,20 @@ class PaymentVoucher extends Eloquent
         return $this->belongsTo(\Modules\Treasury\Models\Aie::class, 'aie_id');
     }
 
-    public function employee()
+    public function paying_officer()
     {
         return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'paying_officer_id');
+    }
+
+    public function checking_officer()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'checking_officer_id');
+    }
+
+
+    public function financial_controller()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'financial_controller_id');
     }
 
     public function currency()

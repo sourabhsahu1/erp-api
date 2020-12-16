@@ -32,7 +32,10 @@ class PaymentVoucherController extends BaseController
         'voucher_source_unit',
         'total_amount',
         'total_tax',
-        'payee_vouchers'
+        'payee_vouchers',
+        'paying_officer',
+        'checking_officer',
+        'financial_controller'
     ];
 
 
