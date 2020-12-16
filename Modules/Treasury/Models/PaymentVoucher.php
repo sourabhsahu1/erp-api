@@ -72,11 +72,12 @@ class PaymentVoucher extends Eloquent
         'geo_code_segment_id' => 'int',
         'checking_officer_id' => 'int',
         'paying_officer_id' => 'int',
-        'financial_controller_id' => 'int'
+        'financial_controller_id' => 'int',
+        'value_date' =>'datetime:Y-m-d'
     ];
 
     protected $dates = [
-        'value_date' =>'datetime:Y-m-d'
+        'value_date'
     ];
 
     protected $fillable = [
