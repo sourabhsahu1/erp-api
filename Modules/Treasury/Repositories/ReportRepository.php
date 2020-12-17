@@ -6,7 +6,7 @@ namespace Modules\Treasury\Repositories;
 
 use App\Constants\AppConstant;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\AdminSegment;
 use Modules\Treasury\Models\PaymentVoucher;
@@ -14,12 +14,15 @@ use Modules\Treasury\Models\PaymentVoucher;
 class ReportRepository extends EloquentBaseRepository
 {
 
+
     private function getChildIds(&$data)
     {
         $childIds = [];
         $childIds[] = $data['id'];
 
+
         foreach ($data['children'] as &$child) {
+
             $child['child_ids'] = $this->getChildIds($child);
             $childIds = array_merge($childIds, $child['child_ids']);
         }
@@ -27,8 +30,34 @@ class ReportRepository extends EloquentBaseRepository
         return $childIds;
     }
 
+
+    public function getAllChildren($id)
+    {
+        $segments = AdminSegment::with('children');
+        $economicChilds = AdminSegment::where('parent_id', $id)->get()->pluck('id');
+
+        if (isset($params['inputs']['parent_id'])) {
+            $segments->where('parent_id', $id);
+        } else {
+            $segments->whereIn('id', $economicChilds);
+        }
+
+        $segments = $segments->get()->toArray();
+        $childIds = [];
+
+        foreach ($segments as &$segment) {
+            $segment['child_ids'] = [];
+            $segment['child_ids'] = $this->getChildIds($segment);
+            $childIds = array_merge($childIds, $segment['child_ids']);
+            unset($segment['children']);
+        }
+
+        return $segments;
+    }
+
     public function summaryNonPersonalAdvances($params)
     {
+
 
         $pv = PaymentVoucher::query();
 
@@ -39,6 +68,7 @@ class ReportRepository extends EloquentBaseRepository
             $pv->whereDate('value_date', '>=', $fromDate)
                 ->whereDate('value_date', '<=', $toDate);
         }
+
 
         if (isset($params['inputs']['admin_segment_id']) && isset($params['inputs']['employee_id'])) {
             $pv->whereHas('payee_vouchers', function ($query) use ($params) {
@@ -70,6 +100,21 @@ class ReportRepository extends EloquentBaseRepository
                 ->where('admin_segment_id', $params['inputs']['admin_segment_id'])
                 ->where('type', AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER)
                 ->groupby(['admin_segment_id', 'hr_employees.id']);
+        } elseif (isset($params['inputs']['admin_segment_ids'])) {
+            $adminSegmentData = $this->getAllChildren(json_decode($params['inputs']['admin_segment_ids'])[0]);
+            $adminSegmentsIds = [];
+            foreach ($adminSegmentData as $segment) {
+                $adminSegmentsIds = array_merge($adminSegmentsIds, $segment['child_ids']);
+            }
+
+            $pv->selectRaw('admin_segment_id,admin_segments.name,SUM(net_amount+total_tax) as amount')
+                ->join('treasury_payee_vouchers', 'treasury_payment_vouchers.id', '=', 'treasury_payee_vouchers.payment_voucher_id')
+                ->join('admin_segments', 'admin_segments.id', '=', 'treasury_payment_vouchers.admin_segment_id')
+                ->whereNull('company_id')
+                ->where('type', AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER)
+                ->whereIn('admin_segment_id', $adminSegmentsIds)
+                ->groupby('treasury_payment_vouchers.admin_segment_id');
+
         } else {
             $pv->selectRaw('admin_segment_id,admin_segments.name,SUM(net_amount+total_tax) as amount')
                 ->join('treasury_payee_vouchers', 'treasury_payment_vouchers.id', '=', 'treasury_payee_vouchers.payment_voucher_id')
@@ -128,7 +173,22 @@ class ReportRepository extends EloquentBaseRepository
                 ->where('admin_segment_id', $params['inputs']['admin_segment_id'])
                 ->where('type', AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER)
                 ->groupby(['admin_segment_id', 'hr_employees.id']);
-        } else {
+        }  elseif (isset($params['inputs']['admin_segment_ids'])) {
+            $adminSegmentData = $this->getAllChildren(json_decode($params['inputs']['admin_segment_ids'])[0]);
+            $adminSegmentsIds = [];
+            foreach ($adminSegmentData as $segment) {
+                $adminSegmentsIds = array_merge($adminSegmentsIds, $segment['child_ids']);
+            }
+
+            $pv->selectRaw('admin_segment_id,admin_segments.name,SUM(net_amount+total_tax) as amount')
+                ->join('treasury_payee_vouchers', 'treasury_payment_vouchers.id', '=', 'treasury_payee_vouchers.payment_voucher_id')
+                ->join('admin_segments', 'admin_segments.id', '=', 'treasury_payment_vouchers.admin_segment_id')
+                ->whereNull('company_id')
+                ->where('type', AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER)
+                ->whereIn('admin_segment_id', $adminSegmentsIds)
+                ->groupby('treasury_payment_vouchers.admin_segment_id');
+
+        }else {
             $pv->selectRaw('admin_segment_id,admin_segments.name,SUM(net_amount+total_tax) as amount')
                 ->join('treasury_payee_vouchers', 'treasury_payment_vouchers.id', '=', 'treasury_payee_vouchers.payment_voucher_id')
                 ->join('admin_segments', 'admin_segments.id', '=', 'treasury_payment_vouchers.admin_segment_id')
@@ -186,6 +246,21 @@ class ReportRepository extends EloquentBaseRepository
                 ->where('admin_segment_id', $params['inputs']['admin_segment_id'])
                 ->where('type', AppConstant::VOUCHER_TYPE_STANDING_VOUCHER)
                 ->groupby(['admin_segment_id', 'hr_employees.id']);
+        } elseif (isset($params['inputs']['admin_segment_ids'])) {
+            $adminSegmentData = $this->getAllChildren(json_decode($params['inputs']['admin_segment_ids'])[0]);
+            $adminSegmentsIds = [];
+            foreach ($adminSegmentData as $segment) {
+                $adminSegmentsIds = array_merge($adminSegmentsIds, $segment['child_ids']);
+            }
+
+            $pv->selectRaw('admin_segment_id,admin_segments.name,SUM(net_amount+total_tax) as amount')
+                ->join('treasury_payee_vouchers', 'treasury_payment_vouchers.id', '=', 'treasury_payee_vouchers.payment_voucher_id')
+                ->join('admin_segments', 'admin_segments.id', '=', 'treasury_payment_vouchers.admin_segment_id')
+                ->whereNull('company_id')
+                ->where('type', AppConstant::VOUCHER_TYPE_STANDING_VOUCHER)
+                ->whereIn('admin_segment_id', $adminSegmentsIds)
+                ->groupby('treasury_payment_vouchers.admin_segment_id');
+
         } else {
             $pv->selectRaw('admin_segment_id,admin_segments.name,SUM(net_amount+total_tax) as amount')
                 ->join('treasury_payee_vouchers', 'treasury_payment_vouchers.id', '=', 'treasury_payee_vouchers.payment_voucher_id')
@@ -245,6 +320,21 @@ class ReportRepository extends EloquentBaseRepository
                 ->where('admin_segment_id', $params['inputs']['admin_segment_id'])
                 ->where('type', AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER)
                 ->groupby(['admin_segment_id', 'hr_employees.id']);
+        } elseif (isset($params['inputs']['admin_segment_ids'])) {
+            $adminSegmentData = $this->getAllChildren(json_decode($params['inputs']['admin_segment_ids'])[0]);
+            $adminSegmentsIds = [];
+            foreach ($adminSegmentData as $segment) {
+                $adminSegmentsIds = array_merge($adminSegmentsIds, $segment['child_ids']);
+            }
+
+            $pv->selectRaw('admin_segment_id,admin_segments.name,SUM(net_amount+total_tax) as amount')
+                ->join('treasury_payee_vouchers', 'treasury_payment_vouchers.id', '=', 'treasury_payee_vouchers.payment_voucher_id')
+                ->join('admin_segments', 'admin_segments.id', '=', 'treasury_payment_vouchers.admin_segment_id')
+                ->whereNull('company_id')
+                ->where('type', AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER)
+                ->whereIn('admin_segment_id', $adminSegmentsIds)
+                ->groupby('treasury_payment_vouchers.admin_segment_id');
+
         } else {
             $pv->selectRaw('admin_segment_id,admin_segments.name,SUM(net_amount+total_tax) as amount')
                 ->join('treasury_payee_vouchers', 'treasury_payment_vouchers.id', '=', 'treasury_payee_vouchers.payment_voucher_id')
