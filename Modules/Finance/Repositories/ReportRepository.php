@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\AdminSegment;
+use Modules\Finance\Models\Budget;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JvTrailBalanceReport;
 use Modules\Finance\Models\NotesTrailBalanceReport;
@@ -552,4 +553,104 @@ class ReportRepository extends EloquentBaseRepository
             return ['url' => url($filePath)];
         }
     }
+
+    public function applicationOfFund($params)
+    {
+
+        $params['inputs']['admin_segment_id'] = !isset($params['inputs']['admin_segment_id']) ? 1 : $params['inputs']['admin_segment_id'];
+
+
+        // from economic's child expenditure level
+        $params['inputs']['economic_segment_id'] = !isset($params['inputs']['economic_segment_id']) ? 8 : $params['inputs']['economic_segment_id'];
+
+        $params['inputs']['fund_segment_id'] = !isset($params['inputs']['fund_segment_id']) ? 5 : $params['inputs']['fund_segment_id'];
+
+
+//        $adminSeg = AdminSegment::where('parent_id',$params['inputs']['admin_segment_id'])->pluck('id')->all();
+        $ecoSegIstLevel = AdminSegment::where('parent_id', $params['inputs']['economic_segment_id'])->get();
+//        $fundSeg = AdminSegment::where('parent_id',$params['inputs']['fund_segment_id'])->pluck('id')->all();
+
+//        dd($adminSeg,$ecoSeg,$fundSeg );
+
+
+        foreach ($ecoSegIstLevel as $i => $ecoSeg) {
+            $adminSegIds = $this->getAllChildren($params['inputs']['admin_segment_id']);
+            $ecoSegIds = $this->getAllChildren($ecoSeg->id);
+            $fundSegIds = $this->getAllChildren($params['inputs']['fund_segment_id']);
+
+            $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
+                ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
+                ->selectRaw('name, jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
+                ->whereIn('jd.admin_segment_id', $adminSegIds)
+                ->whereIn('jd.economic_segment_id', $ecoSegIds)
+                ->whereIn('jd.fund_segment_id', $fundSegIds)
+//            ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+                ->groupby(DB::raw('name,jd.economic_segment_id,line_value_type'));
+
+
+            $budget = AdminSegment::join('budget', 'budget.economic_segment_id', 'admin_segments.id')
+                ->join('budget_breakups', 'budget_breakups.budget_id', 'budget.id')
+                ->selectRaw('admin_segments.name, budget.economic_segment_id, sum(main_budget) sum')
+                ->whereIn('budget.admin_segment_id', $adminSegIds)
+                ->whereIn('budget.economic_segment_id', $ecoSegIds)
+                ->whereIn('budget.fund_segment_id', $fundSegIds)
+                ->whereNull('budget.program_segment_id')
+                ->groupby(DB::raw('admin_segments.id,budget.economic_segment_id'));
+
+            $jvS = $jvS->get()->toArray();
+//            dd($jvS);
+            $jv[$i] = $jvS;
+
+            $budgets[$i] = $budget->get()->toArray();
+
+        }
+
+
+        dd($budgets, $jv);
+
+
+    }
+
+
+    private function getChildId2(&$data)
+    {
+        $childIds = [];
+        $childIds[] = $data['id'];
+
+
+        foreach ($data['children'] as &$child) {
+
+            $child['child_ids'] = $this->getChildId2($child);
+            $childIds = array_merge($childIds, $child['child_ids']);
+        }
+
+        return $childIds;
+    }
+
+
+    public function getAllChildren($id)
+    {
+        $segments = AdminSegment::with('children');
+        $economicChilds = AdminSegment::where('parent_id', $id)->get()->pluck('id');
+
+        if (isset($params['inputs']['parent_id'])) {
+            $segments->where('parent_id', $id);
+        } else {
+            $segments->whereIn('id', $economicChilds);
+        }
+
+        $segments = $segments->get()->toArray();
+        $childIds = [];
+
+        foreach ($segments as &$segment) {
+            $segment['child_ids'] = [];
+            $segment['child_ids'] = $this->getChildId2($segment);
+            $childIds = array_merge($childIds, $segment['child_ids']);
+            unset($segment['children']);
+        }
+
+        return $childIds;
+    }
+
+
 }

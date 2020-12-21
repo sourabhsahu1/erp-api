@@ -38,7 +38,8 @@ Route::middleware(['auth:api'])->group(function () {
 
 
 });
-    Route::get('finance/trial-report','ReportController@getTrialBalanceReport');
+Route::get('finance/report/application-of-funds','ReportController@applicationOfFund');
+Route::get('finance/trial-report','ReportController@getTrialBalanceReport');
     Route::get('finance/notes-trial-report','ReportController@getNotesTrialBalanceReport');
     Route::get('finance/jv-ledger','ReportController@getJvLedgerReport');
     Route::post('notes/{economicSegmentId}','ReportController@addNotes');
