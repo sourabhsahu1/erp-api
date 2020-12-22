@@ -11,13 +11,10 @@ use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\AdminSegment;
-use Modules\Finance\Models\Budget;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JvTrailBalanceReport;
 use Modules\Finance\Models\NotesTrailBalanceReport;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class ReportRepository extends EloquentBaseRepository
 {
@@ -556,59 +553,172 @@ class ReportRepository extends EloquentBaseRepository
 
     public function applicationOfFund($params)
     {
+        $reportType = !isset($params['inputs']['report_type']) ? 'SEMESTER' : !isset($params['inputs']['report_type']);
+        $report = !isset($params['inputs']['report']) ? 1 : !isset($params['inputs']['report']);
+        $economicSegmentId = !isset($params['inputs']['economic_segment_id']) ? 8 : $params['inputs']['economic_segment_id'];
+        $adminSegmentId = !isset($params['inputs']['admin_segment_id']) ? 1 : $params['inputs']['admin_segment_id'];
+        $fundSegmentId = !isset($params['inputs']['fund_segment_id']) ? 5 : $params['inputs']['fund_segment_id'];
 
-        $params['inputs']['admin_segment_id'] = !isset($params['inputs']['admin_segment_id']) ? 1 : $params['inputs']['admin_segment_id'];
+        $economicParents = $this->getAllChildren($economicSegmentId);
+        $adminSegmentChildIds = $this->getAllChildrenId($adminSegmentId);
+        $fundSegmentChildIds = $this->getAllChildrenId($fundSegmentId);
+        $months = [];
+        $previousMonth = [];
 
-
-        // from economic's child expenditure level
-        $params['inputs']['economic_segment_id'] = !isset($params['inputs']['economic_segment_id']) ? 8 : $params['inputs']['economic_segment_id'];
-
-        $params['inputs']['fund_segment_id'] = !isset($params['inputs']['fund_segment_id']) ? 5 : $params['inputs']['fund_segment_id'];
-
-
-//        $adminSeg = AdminSegment::where('parent_id',$params['inputs']['admin_segment_id'])->pluck('id')->all();
-        $ecoSegIstLevel = AdminSegment::where('parent_id', $params['inputs']['economic_segment_id'])->get();
-//        $fundSeg = AdminSegment::where('parent_id',$params['inputs']['fund_segment_id'])->pluck('id')->all();
-
-//        dd($adminSeg,$ecoSeg,$fundSeg );
-
-
-        foreach ($ecoSegIstLevel as $i => $ecoSeg) {
-            $adminSegIds = $this->getAllChildren($params['inputs']['admin_segment_id']);
-            $ecoSegIds = $this->getAllChildren($ecoSeg->id);
-            $fundSegIds = $this->getAllChildren($params['inputs']['fund_segment_id']);
-
-            $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
-                ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
-                ->selectRaw('name, jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
-                ->whereIn('jd.admin_segment_id', $adminSegIds)
-                ->whereIn('jd.economic_segment_id', $ecoSegIds)
-                ->whereIn('jd.fund_segment_id', $fundSegIds)
-//            ->where('jv.status', AppConstant::JV_STATUS_POSTED)
-                ->groupby(DB::raw('name,jd.economic_segment_id,line_value_type'));
-
-
-            $budget = AdminSegment::join('budget', 'budget.economic_segment_id', 'admin_segments.id')
-                ->join('budget_breakups', 'budget_breakups.budget_id', 'budget.id')
-                ->selectRaw('admin_segments.name, budget.economic_segment_id, sum(main_budget) sum')
-                ->whereIn('budget.admin_segment_id', $adminSegIds)
-                ->whereIn('budget.economic_segment_id', $ecoSegIds)
-                ->whereIn('budget.fund_segment_id', $fundSegIds)
-                ->whereNull('budget.program_segment_id')
-                ->groupby(DB::raw('admin_segments.id,budget.economic_segment_id'));
-
-            $jvS = $jvS->get()->toArray();
-//            dd($jvS);
-            $jv[$i] = $jvS;
-
-            $budgets[$i] = $budget->get()->toArray();
-
+        switch ($reportType) {
+            case AppConstant::REPORT_TYPE_MONTHLY:
+                $months = [$report];
+                $previousMonth = ((int)$report - 1) === 0 ? [] : [((int)$report - 1)];
+                break;
+            case AppConstant::REPORT_TYPE_QUARTER:
+                if ($report == 1) {
+                    $months = [1, 2, 3];
+                } else if ($report == 2) {
+                    $months = [4, 5, 6];
+                    $previousMonth = [1, 2, 3];
+                } else if ($report == 3) {
+                    $months = [7, 8, 9];
+                    $previousMonth = [4, 5, 6];
+                } else {
+                    $months = [10, 11, 12];
+                    $previousMonth = [7, 8, 9];
+                }
+                break;
+            default:
+                if ($report == 1) {
+                    $months = [1, 2, 3, 4, 5, 6];
+                } else {
+                    $months = [7, 8, 9, 10, 11, 12];
+                    $previousMonth = [1, 2, 3, 4, 5, 6];
+                }
         }
 
+        foreach ($economicParents as &$economicParent) {
+            $this->parseEconomic($economicParent);
+            $economicParent['actual'] = 0;
+            $economicParent['budget'] = 0;
+            $economicParent['variance'] = 0;
+            $economicParent['cumulative_actual'] = 0;
+            $economicParent['cumulative_budget'] = 0;
+            $economicParent['cumulative_variance'] = 0;
+            $economicParent['previous_actual'] = 0;
+            $economicParent['previous_budget'] = 0;
+            $economicParent['previous_variance'] = 0;
 
-        dd($budgets, $jv);
+            if (count($months)) {
+                $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
+                    ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
+                    ->selectRaw('name, jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
+                    ->whereIn('jd.admin_segment_id', $adminSegmentChildIds)
+                    ->whereIn('jd.economic_segment_id', $economicParent['child_ids'])
+                    ->whereIn('jd.fund_segment_id', $fundSegmentChildIds)
+                    ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+                    ->groupby(DB::raw('name,jd.economic_segment_id,line_value_type'))
+                    ->whereRaw('MONTH(jd.created_at) in (' . implode(',', $months) . ')')
+                    ->get()
+                    ->toArray();
+                $creditAmount = 0;
+                $debitAmount = 0;
+                foreach ($jvS as $jv) {
+                    if ($jv['line_value_type'] === 'DEBIT') {
+                        $debitAmount = $jv['sum'];
+                    } else if ($jv['line_value_type'] === 'CREDIT') {
+                        $creditAmount = $jv['sum'];
+                    }
+                }
+
+                $economicParent['actual'] = $debitAmount - $creditAmount;
+
+                $budgets = AdminSegment::join('budget', 'budget.economic_segment_id', 'admin_segments.id')
+                    ->join('budget_breakups', 'budget_breakups.budget_id', 'budget.id')
+                    ->selectRaw('admin_segments.name, budget.economic_segment_id, sum(budget_breakups.main_budget) sum')
+                    ->whereIn('budget.admin_segment_id', $adminSegmentChildIds)
+                    ->whereIn('budget.economic_segment_id', $economicParent['child_ids'])
+                    ->whereIn('budget.fund_segment_id', $fundSegmentChildIds)
+                    ->whereNull('budget.program_segment_id')
+                    ->groupby(DB::raw('admin_segments.id,budget.economic_segment_id'))
+                    ->whereIn('budget_breakups.month', $previousMonth)
+                    ->get()
+                    ->toArray();
+
+                $budgetAmount = 0;
+                foreach ($budgets as $budget) {
+                    $budgetAmount += $budget['sum'];
+                }
+
+                $economicParent['budget'] = $budgetAmount;
+                $economicParent['variance'] = $economicParent['budget'] - $economicParent['actual'];
+            }
+
+            if (count($previousMonth)) {
+                $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
+                    ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
+                    ->selectRaw('name, jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
+                    ->whereIn('jd.admin_segment_id', $adminSegmentChildIds)
+                    ->whereIn('jd.economic_segment_id', $economicParent['child_ids'])
+                    ->whereIn('jd.fund_segment_id', $fundSegmentChildIds)
+                    ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+                    ->groupby(DB::raw('name,jd.economic_segment_id,line_value_type'))
+                    ->whereRaw('MONTH(jd.created_at) in (' . implode(',', $previousMonth) . ')')
+                    ->get()
+                    ->toArray();
+                $creditAmount = 0;
+                $debitAmount = 0;
+                foreach ($jvS as $jv) {
+                    if ($jv['line_value_type'] === 'DEBIT') {
+                        $debitAmount = $jv['sum'];
+                    } else if ($jv['line_value_type'] === 'CREDIT') {
+                        $creditAmount = $jv['sum'];
+                    }
+                }
+
+                $economicParent['previous_actual'] = $debitAmount - $creditAmount;
+
+                $budgets = AdminSegment::join('budget', 'budget.economic_segment_id', 'admin_segments.id')
+                    ->join('budget_breakups', 'budget_breakups.budget_id', 'budget.id')
+                    ->selectRaw('admin_segments.name, budget.economic_segment_id, sum(budget_breakups.main_budget) sum')
+                    ->whereIn('budget.admin_segment_id', $adminSegmentChildIds)
+                    ->whereIn('budget.economic_segment_id', $economicParent['child_ids'])
+                    ->whereIn('budget.fund_segment_id', $fundSegmentChildIds)
+                    ->whereNull('budget.program_segment_id')
+                    ->groupby(DB::raw('admin_segments.id,budget.economic_segment_id'))
+                    ->whereIn('budget_breakups.month', $previousMonth)
+                    ->get()
+                    ->toArray();
+
+                $budgetAmount = 0;
+                foreach ($budgets as $budget) {
+                    $budgetAmount += $budget['sum'];
+                }
+                $economicParent['cumulative_actual'] = $economicParent['actual'] + $economicParent['previous_actual'];
+                $economicParent['cumulative_budget'] = $economicParent['budget'] + $economicParent['previous_budget'];
+                $economicParent['cumulative_variance'] = $economicParent['variance'] + $economicParent['previous_variance'];
+
+                $economicParent['previous_budget'] = $budgetAmount;
+                $economicParent['previous_variance'] = $economicParent['budget'] - $economicParent['actual'];
+            }
 
 
+            unset($economicParent['child_ids']);
+            unset($economicParent['children']);
+        }
+
+        return $economicParents;
+    }
+
+    public function parseEconomic(&$economic)
+    {
+        $economic['child_ids'] = [];
+
+        foreach ($economic['children'] as &$child) {
+            $economic['child_ids'][] = $child['id'];
+            if (count($child['children'])) {
+                $childIds = $this->parseEconomic($child);
+                $economic['child_ids'] = array_merge($economic['child_ids'], $childIds);
+            }
+        }
+
+        return $economic['child_ids'];
     }
 
 
@@ -628,7 +738,7 @@ class ReportRepository extends EloquentBaseRepository
     }
 
 
-    public function getAllChildren($id)
+    public function getAllChildrenId($id)
     {
         $segments = AdminSegment::with('children');
         $economicChilds = AdminSegment::where('parent_id', $id)->get()->pluck('id');
@@ -650,6 +760,11 @@ class ReportRepository extends EloquentBaseRepository
         }
 
         return $childIds;
+    }
+
+    public function getAllChildren($id)
+    {
+        return AdminSegment::where('id', $id)->with('children')->get()->toArray();
     }
 
 
