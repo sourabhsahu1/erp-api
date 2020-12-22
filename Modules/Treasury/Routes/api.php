@@ -52,5 +52,7 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::get('report/summary-special','ReportController@summarySpecialImprest');
     Route::get('report/summary-standing','ReportController@summaryStandingImprest');
 
+    Route::get('download/payment-vouchers','ReportController@downloadReportPv');
+    Route::get('download/receipt-vouchers','ReportController@downloadReportRv');
 
 });

@@ -5,6 +5,7 @@ namespace Modules\Treasury\Repositories;
 
 
 use App\Constants\AppConstant;
+use App\Services\UtilityService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
@@ -350,4 +351,26 @@ class ReportRepository extends EloquentBaseRepository
 
     }
 
+
+    public function downloadReportRv($params) {
+
+        $headers = ['date', 'description', 'in', 'unit_cost', 'out', 'balance'];
+        $data = [];
+        $filePath = 'csv/bincard_report_' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.xlsx';
+        UtilityService::createSpoutFile($data, $headers, $filePath);
+
+        return ['url' => url($filePath)];
+    }
+
+    public function downloadReportPv($params) {
+        $headers = ['date', 'description', 'in', 'unit_cost', 'out', 'balance'];
+        $data = [];
+        $filePath = 'csv/bincard_report_' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.xlsx';
+        UtilityService::createSpoutFile($data, $headers, $filePath);
+
+        return ['url' => url($filePath)];
+    }
+
 }
+
+

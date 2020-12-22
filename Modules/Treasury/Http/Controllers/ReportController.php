@@ -37,4 +37,17 @@ class ReportController extends BaseController
         $this->jobMethod = "summaryStandingImprest";
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
+
+    public function downloadReportPv(Request $request)
+    {
+        $this->jobMethod = "downloadReportPv";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
+    public function downloadReportRv(Request $request)
+    {
+        $this->jobMethod = "downloadReportRv";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
 }
