@@ -554,7 +554,7 @@ class ReportRepository extends EloquentBaseRepository
     public function applicationOfFund($params)
     {
         $reportType = !isset($params['inputs']['report_type']) ? 'SEMESTER' : !isset($params['inputs']['report_type']);
-        $report = !isset($params['inputs']['report']) ? 1 : !isset($params['inputs']['report']);
+        $report = !isset($params['inputs']['report']) ? 2 : !isset($params['inputs']['report']);
         $economicSegmentId = !isset($params['inputs']['economic_segment_id']) ? 8 : $params['inputs']['economic_segment_id'];
         $adminSegmentId = !isset($params['inputs']['admin_segment_id']) ? 1 : $params['inputs']['admin_segment_id'];
         $fundSegmentId = !isset($params['inputs']['fund_segment_id']) ? 5 : $params['inputs']['fund_segment_id'];
@@ -764,7 +764,7 @@ class ReportRepository extends EloquentBaseRepository
 
     public function getAllChildren($id)
     {
-        return AdminSegment::where('id', $id)->with('children')->get()->toArray();
+        return AdminSegment::where('parent_id', $id)->with('children')->get()->toArray();
     }
 
 
