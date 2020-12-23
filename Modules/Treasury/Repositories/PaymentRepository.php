@@ -51,7 +51,9 @@ class PaymentRepository extends EloquentBaseRepository
             'voucher_source_unit',
             'total_amount',
             'total_tax',
-            'payee_vouchers',
+            'payee_vouchers.admin_company.company_bank.bank_branch.hr_bank',
+            'payee_vouchers.employee.employee_bank.branches.hr_bank',
+            'schedule_economic.economic_segment',
             'paying_officer',
             'checking_officer',
             'financial_controller'

@@ -10,7 +10,12 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\AdminSegment;
+use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentVoucher;
+use Modules\Treasury\Models\ReceiptPayee;
+use Modules\Treasury\Models\ReceiptScheduleEconomic;
+use Modules\Treasury\Models\ReceiptVoucher;
+use Modules\Treasury\Models\ScheduleEconomic;
 
 class ReportRepository extends EloquentBaseRepository
 {
@@ -356,19 +361,178 @@ class ReportRepository extends EloquentBaseRepository
     {
 
 
-        $headers = array_combine(json_decode($params['inputs']['columns']), json_decode($params['inputs']['columns']));
+//        $headers = array_combine(json_decode($params['inputs']['columns']), json_decode($params['inputs']['columns']));
 
         $data = [];
 
         $rvRepo = new ReceiptVoucherRepository();
 
-        $data = $rvRepo->getAll($params);
+        $receiptVouchers = $rvRepo->getAll($params)['items'];
 
-        dd($data);
+        /** @var ReceiptVoucher $receiptVoucher */
+        foreach ($receiptVouchers as $key => $receiptVoucher) {
+//            dd($receiptVoucher->toArray());
+            $headers = [
+                "PV Year" => "PV Year",
+                "Deptal No." => "Deptal No.",
+                "Amount (Net)" => "Amount (Net)",
+                "Cashbook" => "Cashbook",
+//                "Total Amount" => "Total Amount",
+                "Last Actioned" => "Last Actioned",
+                "Currency" => "Currency",
+                "Value Date" => "Value Date",
+                "Type Of Payee" => "Type Of Payee",
+                "Xrate" => "Xrate",
+                "XRate To USD" => "XRate To USD",
+                "Ref. AIE" => "Ref. AIE",
+                "Ref. AIE Title" => "Ref. AIE Title",
+                "Prepared Date" => "Prepared Date",
+                "COA: Admin" => "COA: Admin",
+                "COA: Programme" => "COA: Programme",
+                "COA: Geo Code" => "COA: Geo Code",
+                "COA: Fund" => "COA: Fund",
+                "COA: Functional" => "COA: Functional",
+                "COA: Economic" => "COA: Economic",
+                "Admin FullCode" => "Admin FullCode",
+                "Admin: Title" => "Admin: Title",
+                "Programme: Title" => "Programme: Title",
+                "Programme: Full Code" => "Programme: Full Code",
+                "Economic: Full Code" => "Economic: Full Code",
+                "Economic: Title" => "Economic: Title",
+                "Geo: Title" => "Geo: Title",
+                "Geo: Full Code" => "Geo: Full Code",
+                "Fund: Title" => "Fund: Title",
+                "Fund: Full Code" => "Fund: Full Code",
+                "Functional: Title" => "Functional: Title",
+                "Functional: Full Code" => "Functional: Full Code",
+                "Receiving Officer" => "Receiving Officer",
+                "Prepared By Officer" => "Prepared By Officer",
+                "Closed By Controller" => "Closed By Controller",
+                "Parent Voucher Year" => "Parent Voucher Year",
+                "Parent Voucher Ref" => "Parent Voucher Ref",
+//                "Checked?" => "Checked?",
+//                "Approved?" => "Approved?",
+//                "Audited?" => "Audited?",
+//                "Paid?" => "Paid?",
+//                "Approved Date" => "Approved Date",
+//                "Checked Date" => "Checked Date",
+//                "Audited Date" => "Audited Date",
+//                "Paid Date" => "Paid Date",
+                "Status" => "Status"
+            ];
 
-        $filePath = 'csv/bincard_report_' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.xlsx';
-        UtilityService::createSpoutFile($data, $headers, $filePath);
 
+            $finalData[] = [''];
+            $finalData[] = $headers;
+
+
+            $data = [
+                $receiptVoucher->getYearAttribute(),
+                $receiptVoucher->deptal_id,
+                $receiptVoucher->total_amount->amount ?? 0,
+                $receiptVoucher->cashbook->cashbook_title ?? 0,
+//                ($receiptVoucher->total_amount->amount ?? 0) + ($receiptVoucher->total_amount->tax ?? 0),
+                Carbon::parse($receiptVoucher->updated_at)->toDateString(),
+                $receiptVoucher->cashbook->currency->plural_currency_name ?? null,
+                Carbon::parse($receiptVoucher->value_date)->toDateString(),
+                $receiptVoucher->type,
+                $receiptVoucher->x_rate,
+                $receiptVoucher->official_x_rate,
+                $receiptVoucher->aie->id ?? null,
+                $receiptVoucher->aie->narration ?? null,
+                Carbon::parse($receiptVoucher->created_at)->toDateString(),
+                $receiptVoucher->admin_segment->id ?? null,
+                $receiptVoucher->program_segment->id ?? null,
+                $receiptVoucher->geo_code_segment->id ?? null,
+                $receiptVoucher->fund_segment->id ?? null,
+                $receiptVoucher->functional_segment->id ?? null,
+                $receiptVoucher->economic_segment->id ?? null,
+                $receiptVoucher->admin_segment->combined_code ?? null,
+                $receiptVoucher->admin_segment->name ?? null,
+                $receiptVoucher->program_segment->combined_code ?? null,
+                $receiptVoucher->program_segment->name ?? null,
+                $receiptVoucher->economic_segment->combined_code ?? null,
+                $receiptVoucher->economic_segment->name ?? null,
+                $receiptVoucher->geo_code_segment->combined_code ?? null,
+                $receiptVoucher->geo_code_segment->name ?? null,
+                $receiptVoucher->fund_segment->combined_code ?? null,
+                $receiptVoucher->fund_segment->name ?? null,
+                $receiptVoucher->functional_segment->combined_code ?? null,
+                $receiptVoucher->functional_segment->name ?? null,
+                ($receiptVoucher->receiving_officer->first_name ?? '') . ' ' . ($receiptVoucher->receiving_officer->last_name ?? ' '),
+                ($receiptVoucher->closed_by_officer->first_name ?? '') . ' ' . ($receiptVoucher->closed_by_officer->last_name ?? ''),
+                ($receiptVoucher->prepared_by_officer->first_name ?? null) . ' ' . ($receiptVoucher->prepared_by_officer->last_name ?? ''),
+                $receiptVoucher->getYearAttribute(),
+                $receiptVoucher->id,
+//                $receiptVoucher->getIsCheckedAttribute(),
+//                $receiptVoucher->getIsApprovedAttribute(),
+//                $receiptVoucher->getIsAuditedAttribute(),
+//                $receiptVoucher->getIsPayedAttribute(),
+//                $receiptVoucher->approved_date ?? null,
+//                $receiptVoucher->checked_date ?? null,
+//                $receiptVoucher->audited_date ?? null,
+//                $receiptVoucher->paid_date ?? null,
+                $receiptVoucher->status
+            ];
+            $finalData[] = $data;
+
+            $headers2 = [
+                'Payee Id',
+                'Payee Name',
+                'Amount',
+                'Tax',
+                'Payee Bank',
+                'Branch'
+            ];
+
+            $finalData[] = $headers2;
+
+            /** @var ReceiptPayee $payee */
+
+            if (isset($receiptVoucher->receipt_payees)) {
+                foreach ($receiptVoucher->receipt_payees as $payee) {
+                    $dataPayee = [
+                        $payee->id,
+                        ($payee->employee->first_name ?? ' ') . ' ' . ($payee->employee->last_name ?? ' '),
+                        $payee->net_amount,
+                        $payee->total_tax,
+                        $payee->admin_company->company_bank->bank_branch->hr_bank->name ?? null,
+                        $payee->admin_company->company_bank->bank_branch->name ?? null
+                    ];
+                }
+                $finalData[] = $dataPayee;
+            }
+
+
+
+
+            $headers3 = [
+                'Schedule Economic Id',
+                'Economic Segment Name',
+                'Amount'
+            ];
+
+            $finalData[] = $headers3;
+
+            /** @var ReceiptScheduleEconomic $schedule */
+
+            if (isset($receiptVoucher->receipt_schedule_economic)) {
+                foreach ($receiptVoucher->receipt_schedule_economic as $schedule) {
+                    $dataSchedule = [
+                        $schedule->id,
+                        $schedule->admin_segment->name ?? null,
+                        $schedule->amount
+                    ];
+                }
+                $finalData[] = $dataSchedule;
+            }
+
+
+            $finalData[] = ['', ''];
+        }
+
+        $filePath = 'csv/receipt_voucher' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.xlsx';
+        UtilityService::createSpoutFile($finalData, [], $filePath);
 
         return ['url' => url($filePath)];
     }
@@ -376,25 +540,167 @@ class ReportRepository extends EloquentBaseRepository
     public function downloadReportPv($params)
     {
 
-        $headers = array_combine(json_decode($params['inputs']['columns']), json_decode($params['inputs']['columns']));
-
-
+//        $headers = array_combine(json_decode($params['inputs']['columns']), json_decode($params['inputs']['columns']));
 
         $pvRepo = new PaymentRepository();
-
+        $finalData = [];
         $paymentVouchers = $pvRepo->getAll($params)['items'];
-//dd($paymentVouchers);
+        /** @var PaymentVoucher $paymentVoucher */
         foreach ($paymentVouchers as $key => $paymentVoucher) {
-            $paymentVoucher = $paymentVoucher->toArray();
-            dd($paymentVoucher);
+            $headers = [
+                "PV Year" => "PV Year",
+                "Deptal No." => "Deptal No.",
+                "Amount (Net)" => "Amount (Net)",
+                "Taxes" => "Taxes",
+                "Total Amount" => "Total Amount",
+                "Last Actioned" => "Last Actioned",
+                "Currency" => "Currency",
+                "Value Date" => "Value Date",
+                "Type Of Payee" => "Type Of Payee",
+                "Xrate" => "Xrate",
+                "XRate To USD" => "XRate To USD",
+                "Ref. AIE" => "Ref. AIE",
+                "Ref. AIE Title" => "Ref. AIE Title",
+                "Prepared Date" => "Prepared Date",
+                "COA: Admin" => "COA: Admin",
+                "COA: Programme" => "COA: Programme",
+                "COA: Geo Code" => "COA: Geo Code",
+                "COA: Fund" => "COA: Fund",
+                "COA: Functional" => "COA: Functional",
+                "COA: Economic" => "COA: Economic",
+                "Admin FullCode" => "Admin FullCode",
+                "Admin: Title" => "Admin: Title",
+                "Programme: Title" => "Programme: Title",
+                "Programme: Full Code" => "Programme: Full Code",
+                "Economic: Full Code" => "Economic: Full Code",
+                "Economic: Title" => "Economic: Title",
+                "Geo: Title" => "Geo: Title",
+                "Geo: Full Code" => "Geo: Full Code",
+                "Fund: Title" => "Fund: Title",
+                "Fund: Full Code" => "Fund: Full Code",
+                "Functional: Title" => "Functional: Title",
+                "Functional: Full Code" => "Functional: Full Code",
+                "Checking Officer" => "Checking Officer",
+                "Paying Officer" => "Paying Officer",
+                "Financials Controller" => "Financials Controller",
+                "Parent Voucher Year" => "Parent Voucher Year",
+                "Parent Voucher Ref" => "Parent Voucher Ref",
+                "Checked?" => "Checked?",
+                "Approved?" => "Approved?",
+                "Audited?" => "Audited?",
+                "Paid?" => "Paid?",
+                "Approved Date" => "Approved Date",
+                "Checked Date" => "Checked Date",
+                "Audited Date" => "Audited Date",
+                "Paid Date" => "Paid Date",
+                "Status" => "Status"
+            ];
+
+
+            $finalData[] = [''];
+            $finalData[] = $headers;
+
+            $data = [
+                $paymentVoucher->getYearAttribute(),
+                $paymentVoucher->deptal_id,
+                $paymentVoucher->total_amount->amount ?? 0,
+                $paymentVoucher->total_tax->tax ?? 0,
+                ($paymentVoucher->total_amount->amount ?? 0) + ($paymentVoucher->total_amount->tax ?? 0),
+                Carbon::parse($paymentVoucher->updated_at)->toDateString(),
+                $paymentVoucher->currency->plural_currency_name ?? null,
+                Carbon::parse($paymentVoucher->value_date)->toDateString(),
+                $paymentVoucher->type,
+                $paymentVoucher->x_rate,
+                $paymentVoucher->official_x_rate,
+                $paymentVoucher->aie->id ?? null,
+                $paymentVoucher->aie->narration ?? null,
+                Carbon::parse($paymentVoucher->created_at)->toDateString(),
+                $paymentVoucher->admin_segment->id ?? null,
+                $paymentVoucher->program_segment->id ?? null,
+                $paymentVoucher->geo_code_segment->id ?? null,
+                $paymentVoucher->fund_segment->id ?? null,
+                $paymentVoucher->functional_segment->id ?? null,
+                $paymentVoucher->economic_segment->id ?? null,
+                $paymentVoucher->admin_segment->combined_code ?? null,
+                $paymentVoucher->admin_segment->name ?? null,
+                $paymentVoucher->program_segment->combined_code ?? null,
+                $paymentVoucher->program_segment->name ?? null,
+                $paymentVoucher->economic_segment->combined_code ?? null,
+                $paymentVoucher->economic_segment->name ?? null,
+                $paymentVoucher->geo_code_segment->combined_code ?? null,
+                $paymentVoucher->geo_code_segment->name ?? null,
+                $paymentVoucher->fund_segment->combined_code ?? null,
+                $paymentVoucher->fund_segment->name ?? null,
+                $paymentVoucher->functional_segment->combined_code ?? null,
+                $paymentVoucher->functional_segment->name ?? null,
+                $paymentVoucher->checking_officer->first_name . ' ' . $paymentVoucher->checking_officer->last_name,
+                $paymentVoucher->paying_officer->first_name . ' ' . $paymentVoucher->paying_officer->last_name,
+                $paymentVoucher->financial_controller->first_name . ' ' . $paymentVoucher->financial_controller->last_name,
+                $paymentVoucher->getYearAttribute(),
+                $paymentVoucher->id,
+                $paymentVoucher->getIsCheckedAttribute(),
+                $paymentVoucher->getIsApprovedAttribute(),
+                $paymentVoucher->getIsAuditedAttribute(),
+                $paymentVoucher->getIsPayedAttribute(),
+                $paymentVoucher->approved_date ?? null,
+                $paymentVoucher->checked_date ?? null,
+                $paymentVoucher->audited_date ?? null,
+                $paymentVoucher->paid_date ?? null,
+                $paymentVoucher->status
+            ];
+
+            $finalData[] = $data;
+
+            $headers2 = [
+                'Payee Id',
+                'Payee Name',
+                'Amount',
+                'Tax',
+                'Payee Bank',
+                'Branch'
+            ];
+
+            $finalData[] = $headers2;
+
+            /** @var PayeeVoucher $payee */
+            foreach ($paymentVoucher->payee_vouchers as $payee) {
+//                dd($payee->toArray());
+                $dataPayee = [
+                    $payee->id,
+                    ($payee->employee->first_name ?? ' ') . ' ' . ($payee->employee->last_name ?? ' '),
+                    $payee->net_amount,
+                    $payee->total_tax,
+                    $payee->admin_company->company_bank->bank_branch->hr_bank->name ?? null,
+                    $payee->admin_company->company_bank->bank_branch->name ?? null
+                ];
+
+            }
+
+            $finalData[] = $dataPayee;
+
+            $headers3 = [
+                'Schedule Economic Id',
+                'Economic Segment Name',
+                'Amount'
+            ];
+
+            $finalData[] = $headers3;
+
+            /** @var ScheduleEconomic $schedule */
+            foreach ($paymentVoucher->schedule_economic as $schedule) {
+                $dataSchedule = [
+                    $schedule->id,
+                    $schedule->admin_segment->name ?? null,
+                    $schedule->amount
+                ];
+            }
+
+            $finalData[] = $dataSchedule;
+            $finalData[] = ['', ''];
         }
 
-        dd($data);
-
-        $headers = ['date', 'description', 'in', 'unit_cost', 'out', 'balance'];
-        $data = [];
-        $filePath = 'csv/bincard_report_' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.xlsx';
-        UtilityService::createSpoutFile($data, $headers, $filePath);
+        $filePath = 'csv/payment_voucher' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.xlsx';
+        UtilityService::createSpoutFile($finalData, [], $filePath);
 
         return ['url' => url($filePath)];
     }

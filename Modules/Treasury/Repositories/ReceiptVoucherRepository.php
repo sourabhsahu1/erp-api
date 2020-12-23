@@ -35,7 +35,21 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
 
     public function getAll($params = [], $query = null)
     {
-        $query = ReceiptVoucher::query();
+        $query = ReceiptVoucher::with([
+            'program_segment',
+            'economic_segment',
+            'functional_segment',
+            'geo_code_segment',
+            'admin_segment',
+            'fund_segment',
+            'receiving_officer',
+            'prepared_by_officer',
+            'closed_by_officer',
+            'receipt_payees',
+            'receipt_schedule_economic',
+            'voucher_source_unit',
+            'total_amount'
+        ]);
 
         if (isset($params['inputs']['voucher_source_unit_id'])) {
             $query->where('voucher_source_unit_id', $params['inputs']['voucher_source_unit_id']);

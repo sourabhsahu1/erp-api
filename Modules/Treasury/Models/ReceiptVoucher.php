@@ -41,10 +41,18 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $updated_at
  *
  * @property \Modules\Admin\Models\AdminSegment $admin_segment
- * @property \Modules\Treasury\Models\Cashbook $treasury_cashbook
- * @property \Modules\Hr\Models\Employee $employee
+ * @property \Modules\Admin\Models\AdminSegment $program_segment
+ * @property \Modules\Admin\Models\AdminSegment $economic_segment
+ * @property \Modules\Admin\Models\AdminSegment $fund_segment
+ * @property \Modules\Admin\Models\AdminSegment $functional_segment
+ * @property \Modules\Admin\Models\AdminSegment $geo_code_segment
+ * @property \Modules\Treasury\Models\Cashbook $cashbook
+ * @property \Modules\Hr\Models\Employee $prepared_by_officer
+ * @property \Modules\Hr\Models\Employee $receiving_officer
+ * @property \Modules\Hr\Models\Employee $closed_by_officer
  * @property \Modules\Treasury\Models\VoucherSourceUnit $treasury_voucher_source_unit
- * @property \Illuminate\Database\Eloquent\Collection $treasury_receipt_payees
+ * @property \Illuminate\Database\Eloquent\Collection $receipt_payees
+ * @property \Illuminate\Database\Eloquent\Collection $receipt_schedule_economic
  *
  * @package Modules\Treasury\Models
  */
@@ -151,11 +159,26 @@ class ReceiptVoucher extends Eloquent
         return $this->belongsTo(\Modules\Treasury\Models\Cashbook::class, 'cashbook_id');
     }
 
+    public function receiving_officer()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'receiving_officer_id');
+    }
+
     public function employee()
     {
         return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'receiving_officer_id');
     }
 
+
+    public function prepared_by_officer()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'prepared_by_officer_id');
+    }
+
+    public function closed_by_officer()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'closed_by_officer_id');
+    }
     public function voucher_source_unit()
     {
         return $this->belongsTo(\Modules\Treasury\Models\VoucherSourceUnit::class, 'voucher_source_unit_id');
@@ -164,6 +187,11 @@ class ReceiptVoucher extends Eloquent
     public function receipt_payees()
     {
         return $this->hasMany(\Modules\Treasury\Models\ReceiptPayee::class, 'receipt_voucher_id');
+    }
+
+    public function receipt_schedule_economic()
+    {
+        return $this->hasMany(\Modules\Treasury\Models\ReceiptScheduleEconomic::class, 'receipt_voucher_id');
     }
 
     public function total_amount()

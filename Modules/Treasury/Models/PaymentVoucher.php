@@ -42,9 +42,18 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $updated_at
  *
  * @property \Modules\Admin\Models\AdminSegment $admin_segment
+ * @property \Modules\Admin\Models\AdminSegment $program_segment
+ * @property \Modules\Admin\Models\AdminSegment $economic_segment
+ * @property \Modules\Admin\Models\AdminSegment $fund_segment
+ * @property \Modules\Admin\Models\AdminSegment $functional_segment
+ * @property \Modules\Admin\Models\AdminSegment $geo_code_segment
  * @property \Modules\Treasury\Models\Aie $aie
- * @property \Modules\Hr\Models\Employee $employee
+ * @property \Modules\Hr\Models\Employee $checking_officer
+ * @property \Modules\Hr\Models\Employee $paying_officer
+ * @property \Modules\Hr\Models\Employee $financial_controller
  * @property \Modules\Finance\Models\Currency $currency
+ * @property \Modules\Treasury\Models\ScheduleEconomic $schedule_economic
+ * @property \Modules\Treasury\Models\PayeeVoucher $payee_vouchers
  * @property \Modules\Treasury\Models\VoucherSourceUnit $treasury_voucher_source_unit
  *
  * @package Modules\Treasury\Models
@@ -212,6 +221,11 @@ class PaymentVoucher extends Eloquent
 
     public function payee_vouchers() {
         return $this->hasMany(\Modules\Treasury\Models\PayeeVoucher::class, 'payment_voucher_id');
+    }
+
+
+    public function schedule_economic() {
+        return $this->hasMany(\Modules\Treasury\Models\ScheduleEconomic::class, 'payment_voucher_id');
     }
 
     public function total_tax() {

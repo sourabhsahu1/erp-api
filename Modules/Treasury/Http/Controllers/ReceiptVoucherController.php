@@ -24,6 +24,7 @@ class ReceiptVoucherController extends BaseController
         'fund_segment',
         'employee',
         'receipt_payees',
+        'receipt_schedule_economic',
         'voucher_source_unit',
         'total_amount'
     ];
