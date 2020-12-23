@@ -79,4 +79,9 @@ class ReportController extends BaseController
         $this->jobMethod = 'applicationOfFund';
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
+
+    public function sourcesUserOfFund(Request $request) {
+        $this->jobMethod = 'sourcesUserOfFund';
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
 }

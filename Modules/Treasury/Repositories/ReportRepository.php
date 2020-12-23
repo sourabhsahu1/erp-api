@@ -174,7 +174,7 @@ class ReportRepository extends EloquentBaseRepository
                 ->where('admin_segment_id', $params['inputs']['admin_segment_id'])
                 ->where('type', AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER)
                 ->groupby(['admin_segment_id', 'hr_employees.id']);
-        }  elseif (isset($params['inputs']['admin_segment_ids'])) {
+        } elseif (isset($params['inputs']['admin_segment_ids'])) {
             $adminSegmentData = $this->getAllChildren(json_decode($params['inputs']['admin_segment_ids'])[0]);
             $adminSegmentsIds = [];
             foreach ($adminSegmentData as $segment) {
@@ -189,7 +189,7 @@ class ReportRepository extends EloquentBaseRepository
                 ->whereIn('admin_segment_id', $adminSegmentsIds)
                 ->groupby('treasury_payment_vouchers.admin_segment_id');
 
-        }else {
+        } else {
             $pv->selectRaw('admin_segment_id,admin_segments.name,SUM(net_amount+total_tax) as amount')
                 ->join('treasury_payee_vouchers', 'treasury_payment_vouchers.id', '=', 'treasury_payee_vouchers.payment_voucher_id')
                 ->join('admin_segments', 'admin_segments.id', '=', 'treasury_payment_vouchers.admin_segment_id')
@@ -352,17 +352,45 @@ class ReportRepository extends EloquentBaseRepository
     }
 
 
-    public function downloadReportRv($params) {
+    public function downloadReportRv($params)
+    {
 
-        $headers = ['date', 'description', 'in', 'unit_cost', 'out', 'balance'];
+
+        $headers = array_combine(json_decode($params['inputs']['columns']), json_decode($params['inputs']['columns']));
+
         $data = [];
+
+        $rvRepo = new ReceiptVoucherRepository();
+
+        $data = $rvRepo->getAll($params);
+
+        dd($data);
+
         $filePath = 'csv/bincard_report_' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.xlsx';
         UtilityService::createSpoutFile($data, $headers, $filePath);
+
 
         return ['url' => url($filePath)];
     }
 
-    public function downloadReportPv($params) {
+    public function downloadReportPv($params)
+    {
+
+        $headers = array_combine(json_decode($params['inputs']['columns']), json_decode($params['inputs']['columns']));
+
+
+
+        $pvRepo = new PaymentRepository();
+
+        $paymentVouchers = $pvRepo->getAll($params)['items'];
+//dd($paymentVouchers);
+        foreach ($paymentVouchers as $key => $paymentVoucher) {
+            $paymentVoucher = $paymentVoucher->toArray();
+            dd($paymentVoucher);
+        }
+
+        dd($data);
+
         $headers = ['date', 'description', 'in', 'unit_cost', 'out', 'balance'];
         $data = [];
         $filePath = 'csv/bincard_report_' . \Carbon\Carbon::now()->format("Y-m-d_h:i:s") . '.xlsx';

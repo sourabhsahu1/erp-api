@@ -39,7 +39,23 @@ class PaymentRepository extends EloquentBaseRepository
 
     public function getAll($params = [], $query = null)
     {
-        $query = PaymentVoucher::query();
+        $query = PaymentVoucher::with([
+            'program_segment',
+            'economic_segment',
+            'functional_segment',
+            'geo_code_segment',
+            'admin_segment',
+            'fund_segment',
+            'aie',
+            'currency',
+            'voucher_source_unit',
+            'total_amount',
+            'total_tax',
+            'payee_vouchers',
+            'paying_officer',
+            'checking_officer',
+            'financial_controller'
+        ]);
 
         if (isset($params['inputs']['voucher_source_unit_id'])) {
             $query->where('voucher_source_unit_id', $params['inputs']['voucher_source_unit_id']);
