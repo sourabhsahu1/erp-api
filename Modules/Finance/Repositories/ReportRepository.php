@@ -768,8 +768,8 @@ class ReportRepository extends EloquentBaseRepository
     }
 
 
-
-    public function sourcesUserOfFund($params) {
+    public function sourcesUserOfFund($params)
+    {
         $reportType = !isset($params['inputs']['report_type']) ? 'SEMESTER' : !isset($params['inputs']['report_type']);
         $report = !isset($params['inputs']['report']) ? 2 : !isset($params['inputs']['report']);
         $adminSegmentId = !isset($params['inputs']['admin_segment_id']) ? 1 : $params['inputs']['admin_segment_id'];
@@ -823,10 +823,10 @@ class ReportRepository extends EloquentBaseRepository
                 $budgets = AdminSegment::join('budget', 'budget.economic_segment_id', 'admin_segments.id')
                     ->join('budget_breakups', 'budget_breakups.budget_id', 'budget.id')
                     ->join('currencies as c', 'budget.currency_id', 'c.id')
-                    ->selectRaw('admin_segments.name, budget.economic_segment_id, c.plural_currency_name, c.currency_sign, sum(budget_breakups.main_budget) sum')
+                    ->selectRaw('admin_segments.name, budget.economic_segment_id, c.plural_currency_name, c.currency_sign, sum(budget_breakups.main_budget*x_rate_local) sum,sum(budget_breakups.main_budget*x_rate_to_international) sum_international')
                     ->whereIn('budget.admin_segment_id', $adminSegmentChildIds)
                     ->whereIn('budget.economic_segment_id', $economicParent['child_ids'])
-                    ->whereNull('budget.program_segment_id')
+//                    ->whereNull('budget.program_segment_id')
                     ->groupby(DB::raw('admin_segments.id, budget.economic_segment_id, c.plural_currency_name, c.currency_sign'))
                     ->whereIn('budget_breakups.month', $months);
 
@@ -841,6 +841,8 @@ class ReportRepository extends EloquentBaseRepository
                 foreach ($budgets as $budget) {
                     $economicParent['actual_local'] += $budget['sum'];
                     $economicParent['actual_local'] = round($economicParent['actual_local'], 2);
+                    $economicParent['actual_international'] += $budget['sum_international'];
+                    $economicParent['actual_international'] = round($economicParent['actual_international'], 2);
                 }
             }
 
@@ -848,29 +850,38 @@ class ReportRepository extends EloquentBaseRepository
             $budgets = AdminSegment::join('budget', 'budget.economic_segment_id', 'admin_segments.id')
                 ->join('budget_breakups', 'budget_breakups.budget_id', 'budget.id')
                 ->join('currencies as c', 'budget.currency_id', 'c.id')
-                ->selectRaw('admin_segments.name, budget.economic_segment_id, c.plural_currency_name, c.currency_sign, sum(budget_breakups.main_budget) sum')
+                ->selectRaw('admin_segments.name, budget.economic_segment_id, c.plural_currency_name, c.currency_sign, sum(budget_breakups.main_budget*x_rate_local) sum,sum(budget_breakups.main_budget*x_rate_to_international) sum_international')
                 ->whereIn('budget.admin_segment_id', $adminSegmentChildIds)
-                ->whereIn('budget.economic_segment_id', $economicParent['child_ids'])
-                ->whereNull('budget.program_segment_id')
-                ->groupby(DB::raw('admin_segments.id, budget.economic_segment_id, c.plural_currency_name, c.currency_sign'));
+                ->whereIn('budget.economic_segment_id', $economicParent['child_ids']);
+//                ->whereNull('budget.program_segment_id')
+
 
             if ($isProgram) {
-                $budgets->whereNull('economic_segment_id');
+                $budgets->whereNull('economic_segment_id')
+                    ->groupby(DB::raw('admin_segments.id, budget.program_segment_id, c.plural_currency_name, c.currency_sign'));;
             } else {
-                $budgets->whereNull('program_segment_id');
+                $budgets->whereNull('program_segment_id')
+                    ->groupby(DB::raw('admin_segments.id, budget.economic_segment_id, c.plural_currency_name, c.currency_sign'));;
             }
 
             $budgets = $budgets->get()->toArray();
 
             foreach ($budgets as $budget) {
+//                dd($budget);
                 $economicParent['cumulative_local'] += $budget['sum'];
-                $economicParent['cumulative_local'] = round($economicParent['actual_local'], 2);
+                $economicParent['cumulative_local'] = round($economicParent['cumulative_local'], 2);
+
+                $economicParent['cumulative_international'] += $budget['sum_international'];
+                $economicParent['cumulative_international'] = round($economicParent['cumulative_international'], 2);
             }
 
             unset($economicParent['child_ids']);
             unset($economicParent['children']);
         }
 
-        return $economicParents;
+        $data['sources'] = $economicParents;
+
+
+        return $data;
     }
 }
