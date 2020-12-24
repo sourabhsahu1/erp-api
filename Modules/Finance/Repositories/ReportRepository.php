@@ -920,7 +920,7 @@ class ReportRepository extends EloquentBaseRepository
             ->get()
             ->toArray();
 
-        dd($jvS);
+//        dd($jvS);
 
 
         return $data;
