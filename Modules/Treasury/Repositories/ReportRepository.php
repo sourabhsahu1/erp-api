@@ -107,7 +107,7 @@ class ReportRepository extends EloquentBaseRepository
                 ->where('type', AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER)
                 ->groupby(['admin_segment_id', 'hr_employees.id']);
         } elseif (isset($params['inputs']['admin_segment_ids'])) {
-            $adminSegmentData = $this->getAllChildren(json_decode($params['inputs']['admin_segment_ids'])[0]);
+            $adminSegmentData = $this->getAllChildren($params['inputs']['admin_segment_ids']);
             $adminSegmentsIds = [];
             foreach ($adminSegmentData as $segment) {
                 $adminSegmentsIds = array_merge($adminSegmentsIds, $segment['child_ids']);
@@ -180,7 +180,7 @@ class ReportRepository extends EloquentBaseRepository
                 ->where('type', AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER)
                 ->groupby(['admin_segment_id', 'hr_employees.id']);
         } elseif (isset($params['inputs']['admin_segment_ids'])) {
-            $adminSegmentData = $this->getAllChildren(json_decode($params['inputs']['admin_segment_ids'])[0]);
+            $adminSegmentData = $this->getAllChildren($params['inputs']['admin_segment_ids']);
             $adminSegmentsIds = [];
             foreach ($adminSegmentData as $segment) {
                 $adminSegmentsIds = array_merge($adminSegmentsIds, $segment['child_ids']);
@@ -253,7 +253,7 @@ class ReportRepository extends EloquentBaseRepository
                 ->where('type', AppConstant::VOUCHER_TYPE_STANDING_VOUCHER)
                 ->groupby(['admin_segment_id', 'hr_employees.id']);
         } elseif (isset($params['inputs']['admin_segment_ids'])) {
-            $adminSegmentData = $this->getAllChildren(json_decode($params['inputs']['admin_segment_ids'])[0]);
+            $adminSegmentData = $this->getAllChildren($params['inputs']['admin_segment_ids']);
             $adminSegmentsIds = [];
             foreach ($adminSegmentData as $segment) {
                 $adminSegmentsIds = array_merge($adminSegmentsIds, $segment['child_ids']);
@@ -327,7 +327,7 @@ class ReportRepository extends EloquentBaseRepository
                 ->where('type', AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER)
                 ->groupby(['admin_segment_id', 'hr_employees.id']);
         } elseif (isset($params['inputs']['admin_segment_ids'])) {
-            $adminSegmentData = $this->getAllChildren(json_decode($params['inputs']['admin_segment_ids'])[0]);
+            $adminSegmentData = $this->getAllChildren($params['inputs']['admin_segment_ids']);
             $adminSegmentsIds = [];
             foreach ($adminSegmentData as $segment) {
                 $adminSegmentsIds = array_merge($adminSegmentsIds, $segment['child_ids']);
