@@ -911,15 +911,16 @@ class ReportRepository extends EloquentBaseRepository
         // Calculating Uses
         $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
             ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
-            ->join('currencies as c', 'jd.currency_id', 'c.id')
-            ->selectRaw('name, jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
+            ->join('currencies as c', 'jd.currency', 'c.code_currency')
+            ->selectRaw('name, c.currency_sign as international_sign, c.code_currency as international_code ,jd.economic_segment_id, sum(lv_line_value*x_rate_local) local_sum, sum(lv_line_value*bank_x_rate_to_usd) international_sum,line_value_type')
             ->whereIn('jd.admin_segment_id', $adminSegmentChildIds)
-            ->whereIn('jd.economic_segment_id', [8])
-            ->where('jv.status', AppConstant::JV_STATUS_POSTED)
-            ->groupby(DB::raw('name,jd.economic_segment_id,line_value_type'))
+//            ->whereIn('jd.economic_segment_id', [8])
+//            ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+            ->groupby(DB::raw('name,jd.economic_segment_id,line_value_type ,c.currency_sign,c.code_currency'))
             ->get()
             ->toArray();
 
+        dd($jvS);
 
 
         return $data;
