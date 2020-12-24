@@ -967,6 +967,7 @@ class ReportRepository extends EloquentBaseRepository
         $cashBooks = Cashbook::get()->toArray();
 
         foreach ($cashBooks as &$cashBook) {
+            $cashBook['name'] = $cashBook['cashbook_title'];
             $cashBook['actual_local'] = 0;
             $cashBook['actual_international'] = 0;
             $cashBook['cumulative_local'] = 0;
