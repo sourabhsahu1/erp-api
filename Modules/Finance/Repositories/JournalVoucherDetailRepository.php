@@ -6,6 +6,7 @@ namespace Modules\Finance\Repositories;
 
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Admin\Models\CompanySetting;
 use Modules\Finance\Models\JournalVoucherDetail;
 
 
@@ -17,6 +18,8 @@ class JournalVoucherDetailRepository extends EloquentBaseRepository
     public function create($data)
     {
         $data['data']['journal_voucher_id'] = $data['data']['id'];
+        $companySetting = CompanySetting::where('company_information_id', 1)->first();
+        $data['data']['local_currency'] = $companySetting->local_currency;
         $jvDetail = JournalVoucherDetail::where('journal_voucher_id', $data['data']['journal_voucher_id'])
             ->where('economic_segment_id', $data['data']['economic_segment_id'])->first();
 
