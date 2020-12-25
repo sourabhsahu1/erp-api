@@ -514,7 +514,7 @@ class ReportRepository extends EloquentBaseRepository
             /** @var ReceiptScheduleEconomic $schedule */
 
             if (isset($receiptVoucher->receipt_schedule_economic)) {
-                $dataSchedule = []
+                $dataSchedule = [];
                 foreach ($receiptVoucher->receipt_schedule_economic as $schedule) {
                     $dataSchedule = [
                         $schedule->id,
