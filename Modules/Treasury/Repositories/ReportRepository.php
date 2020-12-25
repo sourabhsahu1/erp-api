@@ -661,10 +661,9 @@ class ReportRepository extends EloquentBaseRepository
             ];
 
             $finalData[] = $headers2;
+            $dataPayee = [];
 
-            /** @var PayeeVoucher $payee */
             foreach ($paymentVoucher->payee_vouchers as $payee) {
-//                dd($payee->toArray());
                 $dataPayee = [
                     $payee->id,
                     ($payee->employee->first_name ?? ' ') . ' ' . ($payee->employee->last_name ?? ' '),
@@ -685,8 +684,8 @@ class ReportRepository extends EloquentBaseRepository
             ];
 
             $finalData[] = $headers3;
+            $dataSchedule = [];
 
-            /** @var ScheduleEconomic $schedule */
             foreach ($paymentVoucher->schedule_economic as $schedule) {
                 $dataSchedule = [
                     $schedule->id,
