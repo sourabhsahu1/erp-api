@@ -360,16 +360,12 @@ class ReportRepository extends EloquentBaseRepository
     public function downloadReportRv($params)
     {
 //        $headers = array_combine(json_decode($params['inputs']['columns']), json_decode($params['inputs']['columns']));
-
-        $data = [];
-
+        $finalData = [];
         $rvRepo = new ReceiptVoucherRepository();
 
         $receiptVouchers = $rvRepo->getAll($params)['items'];
 
-        /** @var ReceiptVoucher $receiptVoucher */
         foreach ($receiptVouchers as $key => $receiptVoucher) {
-//            dd($receiptVoucher->toArray());
             $headers = [
                 "PV Year" => "PV Year",
                 "Deptal No." => "Deptal No.",
@@ -486,9 +482,8 @@ class ReportRepository extends EloquentBaseRepository
             $finalData[] = $headers2;
 
             if (isset($receiptVoucher->receipt_payees)) {
-                $dataPayee = [];
                 foreach ($receiptVoucher->receipt_payees as $payee) {
-                    $dataPayee = [
+                    $finalData[] = [
                         $payee->id,
                         ($payee->employee->first_name ?? ' ') . ' ' . ($payee->employee->last_name ?? ' '),
                         $payee->net_amount,
@@ -497,7 +492,6 @@ class ReportRepository extends EloquentBaseRepository
                         $payee->admin_company->company_bank->bank_branch->name ?? null
                     ];
                 }
-                $finalData[] = $dataPayee;
             }
 
 
@@ -514,15 +508,13 @@ class ReportRepository extends EloquentBaseRepository
             /** @var ReceiptScheduleEconomic $schedule */
 
             if (isset($receiptVoucher->receipt_schedule_economic)) {
-                $dataSchedule = [];
                 foreach ($receiptVoucher->receipt_schedule_economic as $schedule) {
-                    $dataSchedule = [
+                    $finalData[] = [
                         $schedule->id,
                         $schedule->admin_segment->name ?? null,
                         $schedule->amount
                     ];
                 }
-                $finalData[] = $dataSchedule;
             }
 
 
@@ -537,13 +529,10 @@ class ReportRepository extends EloquentBaseRepository
 
     public function downloadReportPv($params)
     {
-
-//        $headers = array_combine(json_decode($params['inputs']['columns']), json_decode($params['inputs']['columns']));
-
         $pvRepo = new PaymentRepository();
         $finalData = [];
         $paymentVouchers = $pvRepo->getAll($params)['items'];
-        /** @var PaymentVoucher $paymentVoucher */
+
         foreach ($paymentVouchers as $key => $paymentVoucher) {
             $headers = [
                 "PV Year" => "PV Year",
@@ -659,10 +648,9 @@ class ReportRepository extends EloquentBaseRepository
             ];
 
             $finalData[] = $headers2;
-            $dataPayee = [];
 
             foreach ($paymentVoucher->payee_vouchers as $payee) {
-                $dataPayee = [
+                $finalData[] = [
                     $payee->id,
                     ($payee->employee->first_name ?? ' ') . ' ' . ($payee->employee->last_name ?? ' '),
                     $payee->net_amount,
@@ -673,8 +661,6 @@ class ReportRepository extends EloquentBaseRepository
 
             }
 
-            $finalData[] = $dataPayee;
-
             $headers3 = [
                 'Schedule Economic Id',
                 'Economic Segment Name',
@@ -682,17 +668,15 @@ class ReportRepository extends EloquentBaseRepository
             ];
 
             $finalData[] = $headers3;
-            $dataSchedule = [];
 
             foreach ($paymentVoucher->schedule_economic as $schedule) {
-                $dataSchedule = [
+                $finalData[] = [
                     $schedule->id,
                     $schedule->admin_segment->name ?? null,
                     $schedule->amount
                 ];
             }
 
-            $finalData[] = $dataSchedule;
             $finalData[] = ['', ''];
         }
 
