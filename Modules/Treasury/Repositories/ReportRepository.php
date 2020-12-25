@@ -359,8 +359,6 @@ class ReportRepository extends EloquentBaseRepository
 
     public function downloadReportRv($params)
     {
-
-
 //        $headers = array_combine(json_decode($params['inputs']['columns']), json_decode($params['inputs']['columns']));
 
         $data = [];
@@ -487,9 +485,8 @@ class ReportRepository extends EloquentBaseRepository
 
             $finalData[] = $headers2;
 
-            /** @var ReceiptPayee $payee */
-
             if (isset($receiptVoucher->receipt_payees)) {
+                $dataPayee = [];
                 foreach ($receiptVoucher->receipt_payees as $payee) {
                     $dataPayee = [
                         $payee->id,
@@ -517,6 +514,7 @@ class ReportRepository extends EloquentBaseRepository
             /** @var ReceiptScheduleEconomic $schedule */
 
             if (isset($receiptVoucher->receipt_schedule_economic)) {
+                $dataSchedule = []
                 foreach ($receiptVoucher->receipt_schedule_economic as $schedule) {
                     $dataSchedule = [
                         $schedule->id,
