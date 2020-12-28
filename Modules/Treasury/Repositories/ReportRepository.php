@@ -7,15 +7,12 @@ namespace Modules\Treasury\Repositories;
 use App\Constants\AppConstant;
 use App\Services\UtilityService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\AdminSegment;
-use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentVoucher;
-use Modules\Treasury\Models\ReceiptPayee;
 use Modules\Treasury\Models\ReceiptScheduleEconomic;
-use Modules\Treasury\Models\ReceiptVoucher;
-use Modules\Treasury\Models\ScheduleEconomic;
 
 class ReportRepository extends EloquentBaseRepository
 {
@@ -495,8 +492,6 @@ class ReportRepository extends EloquentBaseRepository
             }
 
 
-
-
             $headers3 = [
                 'Schedule Economic Id',
                 'Economic Segment Name',
@@ -686,6 +681,56 @@ class ReportRepository extends EloquentBaseRepository
         return ['url' => url($filePath)];
     }
 
+
+    public function advanceLedger($params)
+    {
+
+        $employeeId = isset($params['inputs']['employee_id']) ? $params['inputs']['employee_id'] : null;
+
+        if (is_null($employeeId)) {
+            throw  new AppException('Select Employee');
+        }
+
+        $pv = DB::table('treasury_payment_vouchers as pv')
+            ->join('treasury_payee_vouchers as p', 'pv.id', '=', 'p.payment_voucher_id')
+            ->selectRaw('payment_description  as narration,deptal_id,value_date,SUM(net_amount+total_tax) as debit')
+            ->whereNull('company_id')
+            ->where('p.employee_id', $employeeId)
+            ->groupBy('pv.id')
+            ->get()
+            ->toArray();
+
+
+        $rv = DB::table('treasury_receipt_vouchers as rv')->join('treasury_receipt_payees as r', 'rv.id', '=', 'r.receipt_voucher_id')
+            ->selectRaw('payment_description as narration,deptal_id,value_date,SUM(total_amount) as credit')
+            ->whereNull('company_id')
+            ->where('r.employee_id', $employeeId)
+            ->groupBy('rv.id')
+            ->get()
+            ->toArray();;
+
+
+        $data = array_merge($pv, $rv);
+
+        $finalData = null;
+        foreach ($data as &$d) {
+            $d = (array)$d;
+            if (isset($d['debit'])) {
+                $d['credit'] = 0;
+                $d['balance'] = $d['debit'] - $d['credit'];
+            }
+
+            if (isset($d['credit'])) {
+                $d['debit'] = 0;
+                $d['balance'] = $d['debit'] - $d['credit'];
+            }
+
+            $finalData[] = $d;
+        }
+
+
+        return $finalData;
+    }
 }
 
 

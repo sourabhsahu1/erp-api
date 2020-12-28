@@ -50,4 +50,11 @@ class ReportController extends BaseController
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
 
+
+    public function advanceLedger(Request $request)
+    {
+        $this->jobMethod = "advanceLedger";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
 }
