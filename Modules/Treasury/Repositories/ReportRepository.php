@@ -712,20 +712,25 @@ class ReportRepository extends EloquentBaseRepository
 
         $data = array_merge($pv, $rv);
 
+        if (count($data) <= 0) {
+            throw new AppException('no data exists');
+        }
+
         $finalData = null;
-        foreach ($data as &$d) {
+        foreach ($data as $d) {
             $d = (array)$d;
+            $temp = $d;
             if (isset($d['debit'])) {
-                $d['credit'] = 0;
-                $d['balance'] = $d['debit'] - $d['credit'];
+                $temp['credit'] = 0.0;
+                $temp['balance'] = $d['debit'] - $temp['credit'];
             }
 
             if (isset($d['credit'])) {
-                $d['debit'] = 0;
-                $d['balance'] = $d['debit'] - $d['credit'];
+                $temp['debit'] = 0.0;
+                $temp['balance'] = $temp['debit'] - $d['credit'];
             }
 
-            $finalData[] = $d;
+            $finalData[] = $temp;
         }
 
 
