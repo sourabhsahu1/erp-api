@@ -1069,6 +1069,8 @@ class ReportRepository extends EloquentBaseRepository
     {
         $ifrNotes = IfrNote::where('type', $params['inputs']['type'])->get();
 
+        $applicationOfFunds  = null;
+
         if ($params['inputs']['type'] == AppConstant::REPORT_APPLICATION_OF_FUND) {
             foreach ($ifrNotes as $key => $note) {
 
