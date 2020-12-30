@@ -12,6 +12,7 @@ use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\AdminSegment;
 use Modules\Finance\Models\Currency;
+use Modules\Finance\Models\IfrNote;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JvTrailBalanceReport;
 use Modules\Finance\Models\NotesTrailBalanceReport;
@@ -780,9 +781,15 @@ class ReportRepository extends EloquentBaseRepository
         $reportType = !isset($params['inputs']['report_type']) ? 'SEMESTER' : !isset($params['inputs']['report_type']);
         $report = !isset($params['inputs']['report']) ? 2 : !isset($params['inputs']['report']);
         $adminSegmentId = !isset($params['inputs']['admin_segment_id']) ? 1 : $params['inputs']['admin_segment_id'];
-        $isProgram = filter_var(isset($params['inputs']['is_program']) ? isset($params['inputs']['is_program']) : false, FILTER_VALIDATE_BOOLEAN);
+//        $isProgram = filter_var(isset($params['inputs']['is_program']) ? isset($params['inputs']['is_program']) : false, FILTER_VALIDATE_BOOLEAN);
+
+        $isProgram = isset($params['inputs']['program_segment_id']) ? true: false;
+
+
+
         $months = [];
 
+//        dd($isProgram);
         switch ($reportType) {
 
             case AppConstant::REPORT_TYPE_QUARTER:
@@ -804,10 +811,14 @@ class ReportRepository extends EloquentBaseRepository
                 }
         }
 
+
+        $params['inputs']['program_segment_id'] = isset($params['inputs']['program_segment_id']) ? $params['inputs']['program_segment_id'] : 4;
+        $params['inputs']['economic_segment_id'] = isset($params['inputs']['economic_segment_id']) ? $params['inputs']['economic_segment_id'] : 2;
+
         if ($isProgram) {
-            $economicParents = $this->getAllChildren(4);
+            $economicParents = $this->getAllChildren($params['inputs']['program_segment_id']);
         } else {
-            $economicParents = $this->getAllChildren(2);
+            $economicParents = $this->getAllChildren($params['inputs']['economic_segment_id']);
         }
 
         $adminSegmentChildIds = $this->getAllChildrenId($adminSegmentId);
@@ -1035,7 +1046,82 @@ class ReportRepository extends EloquentBaseRepository
         }
 
 
-
         return $data;
+    }
+
+
+    public function saveIfrNotes($data)
+    {
+
+        $note = IfrNote::orderBy('created_at', 'desc')->orderBy('id', 'desc')->first();
+        if (is_null($note)) {
+            $data['data']['note_id'] = 'N1';
+        } else {
+            $num = explode('N', $note->note_id)[1] + 1;
+            $data['data']['note_id'] = 'N' . $num;
+        }
+        $ifrNote = IfrNote::create($data['data']);
+        return $ifrNote;
+    }
+
+
+    public function getIfrNotes($params)
+    {
+        $ifrNotes = IfrNote::where('type', $params['inputs']['type'])->get();
+
+        if ($params['inputs']['type'] == AppConstant::REPORT_APPLICATION_OF_FUND) {
+            foreach ($ifrNotes as $key => $note) {
+
+                $parentEconomic = AdminSegment::find($note->economic_segment_id);
+                $data['inputs'] = [
+                    'economic_segment_id' => $parentEconomic->parent_id
+                ];
+                $parentApplicationOfFunds = $this->applicationOfFund($data);
+                $finalParent = null;
+                foreach ($parentApplicationOfFunds as $applicationOfFund) {
+                    if ($applicationOfFund['id'] == $note->economic_segment_id) {
+                        $finalParent = $applicationOfFund;
+                    }
+                }
+
+                $data['inputs'] = [
+                    'economic_segment_id' => $note->economic_segment_id
+                ];
+
+                $applicationOfFunds[$key] = $finalParent;
+                $applicationOfFunds[$key]['note_id'] = $note->note_id;
+                $applicationOfFunds[$key]['children'] = $this->applicationOfFund($data);
+            }
+            return $applicationOfFunds;
+
+        } elseif ($params['inputs']['type'] == AppConstant::REPORT_USES_OF_FUND) {
+
+            foreach ($ifrNotes as $key => $note) {
+
+                $parentEconomic = AdminSegment::find($note->economic_segment_id);
+                $data['inputs'] = [
+                    'economic_segment_id' => $parentEconomic->parent_id
+                ];
+                $parentApplicationOfFunds = $this->sourcesUserOfFund($data);
+                $finalParent = null;
+                foreach ($parentApplicationOfFunds as $applicationOfFund) {
+                    if ($applicationOfFund['id'] == $note->economic_segment_id) {
+                        $finalParent = $applicationOfFund;
+                    }
+                }
+
+                $data['inputs'] = [
+                    'economic_segment_id' => $note->economic_segment_id
+                ];
+
+                $applicationOfFunds[$key] = $finalParent;
+                $applicationOfFunds[$key]['note_id'] = $note->note_id;
+                $applicationOfFunds[$key]['children'] = $this->sourcesUserOfFund($data);
+            }
+
+            return ;
+        }
+
+
     }
 }

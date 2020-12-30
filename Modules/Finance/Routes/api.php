@@ -48,3 +48,5 @@ Route::get('finance/financial-performance', 'ReportController@getFinancialPerfor
 Route::get('finance/statement-of-position', 'ReportController@getStatementOfPosition');
 Route::delete('finance/notes', 'ReportController@deleteNotes');
 Route::get('download/notes', 'ReportController@downloadNotes');
+Route::get('finance/ifr-notes','ReportController@getIfrNotes');
+Route::post('finance/ifr-notes','ReportController@saveIfrNotes');
