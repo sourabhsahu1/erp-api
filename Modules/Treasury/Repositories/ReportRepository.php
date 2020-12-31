@@ -72,6 +72,7 @@ class ReportRepository extends EloquentBaseRepository
                 ->whereDate('value_date', '<=', $toDate);
         }
 
+        $pv->where('payment_vouchers.status', AppConstant::VOUCHER_STATUS_CLOSED);
 
         if (isset($params['inputs']['admin_segment_id']) && isset($params['inputs']['employee_id'])) {
             $pv->whereHas('payee_vouchers', function ($query) use ($params) {
@@ -146,6 +147,9 @@ class ReportRepository extends EloquentBaseRepository
             $pv->whereDate('value_date', '>=', $fromDate)
                 ->whereDate('value_date', '<=', $toDate);
         }
+
+        $pv->where('payment_vouchers.status', AppConstant::VOUCHER_STATUS_CLOSED);
+
         if (isset($params['inputs']['admin_segment_id']) && isset($params['inputs']['employee_id'])) {
             $pv->whereHas('payee_vouchers', function ($query) use ($params) {
                 $query->where('employee_id', $params['inputs']['employee_id']);
@@ -218,7 +222,7 @@ class ReportRepository extends EloquentBaseRepository
             $pv->whereDate('value_date', '>=', $fromDate)
                 ->whereDate('value_date', '<=', $toDate);
         }
-
+        $pv->where('payment_vouchers.status', AppConstant::VOUCHER_STATUS_CLOSED);
         if (isset($params['inputs']['admin_segment_id']) && isset($params['inputs']['employee_id'])) {
             $pv->whereHas('payee_vouchers', function ($query) use ($params) {
                 $query->where('employee_id', $params['inputs']['employee_id']);
@@ -292,6 +296,8 @@ class ReportRepository extends EloquentBaseRepository
             $pv->whereDate('value_date', '>=', $fromDate)
                 ->whereDate('value_date', '<=', $toDate);
         }
+
+        $pv->where('payment_vouchers.status', AppConstant::VOUCHER_STATUS_CLOSED);
 
         if (isset($params['inputs']['admin_segment_id']) && isset($params['inputs']['employee_id'])) {
             $pv->whereHas('payee_vouchers', function ($query) use ($params) {
@@ -696,6 +702,7 @@ class ReportRepository extends EloquentBaseRepository
             ->selectRaw('payment_description  as narration,deptal_id,value_date,SUM(net_amount+total_tax) as debit')
             ->whereNull('company_id')
             ->where('p.employee_id', $employeeId)
+            ->where('pv.status', AppConstant::VOUCHER_STATUS_CLOSED)
             ->groupBy('pv.id')
             ->get()
             ->toArray();
@@ -705,6 +712,7 @@ class ReportRepository extends EloquentBaseRepository
             ->selectRaw('payment_description as narration,deptal_id,value_date,SUM(total_amount) as credit')
             ->whereNull('company_id')
             ->where('r.employee_id', $employeeId)
+            ->where('rv.status', AppConstant::VOUCHER_STATUS_CLOSED)
             ->groupBy('rv.id')
             ->get()
             ->toArray();;
