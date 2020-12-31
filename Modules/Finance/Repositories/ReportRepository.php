@@ -783,8 +783,7 @@ class ReportRepository extends EloquentBaseRepository
         $adminSegmentId = !isset($params['inputs']['admin_segment_id']) ? 1 : $params['inputs']['admin_segment_id'];
 //        $isProgram = filter_var(isset($params['inputs']['is_program']) ? isset($params['inputs']['is_program']) : false, FILTER_VALIDATE_BOOLEAN);
 
-        $isProgram = isset($params['inputs']['program_segment_id']) ? true: false;
-
+        $isProgram = isset($params['inputs']['program_segment_id']) ? true : false;
 
 
         $months = [];
@@ -1069,7 +1068,7 @@ class ReportRepository extends EloquentBaseRepository
     {
         $ifrNotes = IfrNote::where('type', $params['inputs']['type'])->get();
 
-        $applicationOfFunds  = null;
+        $applicationOfFunds = null;
 
         if ($params['inputs']['type'] == AppConstant::REPORT_APPLICATION_OF_FUND) {
             foreach ($ifrNotes as $key => $note) {
@@ -1100,28 +1099,95 @@ class ReportRepository extends EloquentBaseRepository
 
             foreach ($ifrNotes as $key => $note) {
 
-                $parentEconomic = AdminSegment::find($note->economic_segment_id);
-                $data['inputs'] = [
-                    'economic_segment_id' => $parentEconomic->parent_id
-                ];
+
+                if ($note->uses_of_fund_type == 'SOURCES') {
+                    if (isset($note->economic_segment_id)) {
+                        $parentEconomic = AdminSegment::find($note->economic_segment_id);
+                        $data['inputs'] = [
+                            'economic_segment_id' => $parentEconomic->parent_id
+                        ];
+                    } elseif (isset($note->program_segment_id)) {
+                        $parentEconomic = AdminSegment::find($note->program_segment_id);
+                        $data['inputs'] = [
+                            'program_segment_id' => $parentEconomic->parent_id
+                        ];
+                    }
+
+                } elseif ($note->uses_of_fund_type == 'USES') {
+                    $parentEconomic = AdminSegment::find($note->economic_segment_id);
+                    $data['inputs'] = [
+                        'economic_segment_id' => $parentEconomic->parent_id
+                    ];
+                }
+
                 $parentApplicationOfFunds = $this->sourcesUserOfFund($data);
+
                 $finalParent = null;
-                foreach ($parentApplicationOfFunds as $applicationOfFund) {
-                    if ($applicationOfFund['id'] == $note->economic_segment_id) {
-                        $finalParent = $applicationOfFund;
+
+
+                if ($note->uses_of_fund_type == 'SOURCES') {
+                    foreach ($parentApplicationOfFunds[0]['items'] as $applicationOfFund) {
+                        if (isset($note->economic_segment_id)) {
+                            if ($applicationOfFund['id'] == $note->economic_segment_id) {
+                                $finalParent = $applicationOfFund;
+                            }
+                        } elseif (isset($note->program_segment_id)) {
+                            if ($applicationOfFund['id'] == $note->program_segment_id) {
+                                $finalParent = $applicationOfFund;
+                            }
+                        }
+
+                    }
+
+                } elseif ($note->uses_of_fund_type == 'USES') {
+                    foreach ($parentApplicationOfFunds[1]['items'] as $applicationOfFund) {
+                        if ($applicationOfFund['id'] == $note->economic_segment_id) {
+                            $finalParent = $applicationOfFund;
+                        }
                     }
                 }
 
-                $data['inputs'] = [
-                    'economic_segment_id' => $note->economic_segment_id
-                ];
+
+
+                if ($note->uses_of_fund_type == 'SOURCES') {
+                    if (isset($note->economic_segment_id)) {
+                        $data['inputs'] = [
+                            'economic_segment_id' => $note->economic_segment_id
+                        ];
+                    } elseif (isset($note->program_segment_id)) {
+                        $data['inputs'] = [
+                            'program_segment_id' => $note->program_segment_id
+                        ];
+                    }
+
+                } elseif ($note->uses_of_fund_type == 'USES') {
+                    $data['inputs'] = [
+                        'economic_segment_id' => $note->economic_segment_id
+                    ];
+                }
+
+
+
 
                 $applicationOfFunds[$key] = $finalParent;
                 $applicationOfFunds[$key]['note_id'] = $note->note_id;
-                $applicationOfFunds[$key]['children'] = $this->sourcesUserOfFund($data);
+
+
+
+                if ($note->uses_of_fund_type == 'SOURCES') {
+                    if (isset($note->economic_segment_id)) {
+                        $applicationOfFunds[$key]['children'] = $this->sourcesUserOfFund($data)[0]['items'];
+                    } elseif (isset($note->program_segment_id)) {
+                        $applicationOfFunds[$key]['children'] = $this->sourcesUserOfFund($data)[0]['items'];
+                    }
+
+                } elseif ($note->uses_of_fund_type == 'USES') {
+                    $applicationOfFunds[$key]['children'] = $this->sourcesUserOfFund($data)[1]['items'];
+                }
             }
 
-            return ;
+
+            return $applicationOfFunds;
         }
 
 

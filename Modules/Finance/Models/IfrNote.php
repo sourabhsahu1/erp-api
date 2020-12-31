@@ -17,6 +17,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $economic_segment_id
  * @property int $program_segment_id
  * @property string $note_id
+ * @property string $uses_of_fund_type
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
@@ -36,7 +37,8 @@ class IfrNote extends Eloquent
 		'type',
 		'economic_segment_id',
 		'program_segment_id',
-		'note_id'
+		'note_id',
+		'uses_of_fund_type'
 	];
 
 	public function economic_segment()

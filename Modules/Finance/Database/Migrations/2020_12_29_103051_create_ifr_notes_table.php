@@ -21,6 +21,7 @@ class CreateIfrNotesTable extends Migration
             $table->foreign('economic_segment_id')->references('id')->on('admin_segments');
             $table->foreign('program_segment_id')->references('id')->on('admin_segments');
             $table->string('note_id');
+            $table->string('uses_of_fund_type')->nullable();
             $table->timestamps();
         });
     }
