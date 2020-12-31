@@ -72,7 +72,7 @@ class ReportRepository extends EloquentBaseRepository
                 ->whereDate('value_date', '<=', $toDate);
         }
 
-        $pv->where('payment_vouchers.status', AppConstant::VOUCHER_STATUS_CLOSED);
+        $pv->where('treasury_payment_vouchers.status', AppConstant::VOUCHER_STATUS_CLOSED);
 
         if (isset($params['inputs']['admin_segment_id']) && isset($params['inputs']['employee_id'])) {
             $pv->whereHas('payee_vouchers', function ($query) use ($params) {
@@ -148,7 +148,7 @@ class ReportRepository extends EloquentBaseRepository
                 ->whereDate('value_date', '<=', $toDate);
         }
 
-        $pv->where('payment_vouchers.status', AppConstant::VOUCHER_STATUS_CLOSED);
+        $pv->where('treasury_payment_vouchers.status', AppConstant::VOUCHER_STATUS_CLOSED);
 
         if (isset($params['inputs']['admin_segment_id']) && isset($params['inputs']['employee_id'])) {
             $pv->whereHas('payee_vouchers', function ($query) use ($params) {
@@ -222,7 +222,7 @@ class ReportRepository extends EloquentBaseRepository
             $pv->whereDate('value_date', '>=', $fromDate)
                 ->whereDate('value_date', '<=', $toDate);
         }
-        $pv->where('payment_vouchers.status', AppConstant::VOUCHER_STATUS_CLOSED);
+        $pv->where('treasury_payment_vouchers.status', AppConstant::VOUCHER_STATUS_CLOSED);
         if (isset($params['inputs']['admin_segment_id']) && isset($params['inputs']['employee_id'])) {
             $pv->whereHas('payee_vouchers', function ($query) use ($params) {
                 $query->where('employee_id', $params['inputs']['employee_id']);
@@ -297,7 +297,7 @@ class ReportRepository extends EloquentBaseRepository
                 ->whereDate('value_date', '<=', $toDate);
         }
 
-        $pv->where('payment_vouchers.status', AppConstant::VOUCHER_STATUS_CLOSED);
+        $pv->where('treasury_payment_vouchers.status', AppConstant::VOUCHER_STATUS_CLOSED);
 
         if (isset($params['inputs']['admin_segment_id']) && isset($params['inputs']['employee_id'])) {
             $pv->whereHas('payee_vouchers', function ($query) use ($params) {
