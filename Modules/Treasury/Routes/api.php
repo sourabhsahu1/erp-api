@@ -56,4 +56,8 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::get('download/payment-vouchers','ReportController@downloadReportPv');
     Route::get('download/receipt-vouchers','ReportController@downloadReportRv');
 
+    //Mandate
+    Route::get('mandate','MandateController@index');
+    Route::post('mandate','MandateController@store');
+    Route::put('mandate/{id}','MandateController@update');
 });
