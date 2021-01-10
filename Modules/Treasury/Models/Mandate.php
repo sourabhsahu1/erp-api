@@ -10,7 +10,7 @@ namespace Modules\Treasury\Models;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class TreasuryMandate
+ * Class Mandate
  * 
  * @property int $id
  * @property int $cashbook_id

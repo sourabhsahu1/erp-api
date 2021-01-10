@@ -55,6 +55,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Modules\Treasury\Models\ScheduleEconomic $schedule_economic
  * @property \Modules\Treasury\Models\PayeeVoucher $payee_vouchers
  * @property \Modules\Treasury\Models\VoucherSourceUnit $treasury_voucher_source_unit
+ * @property \Modules\Treasury\Models\RetireVoucher $retire_vouchers
  *
  * @package Modules\Treasury\Models
  */
@@ -232,5 +233,9 @@ class PaymentVoucher extends Eloquent
         return $this->hasOne(PayeeVoucher::class,'payment_voucher_id')
             ->selectRaw('payment_voucher_id, sum(total_tax) as tax')
             ->groupBy('payment_voucher_id');
+    }
+
+    public function retire_vouchers() {
+        return $this->hasOne(RetireVoucher::class, 'payment_voucher_id');
     }
 }
