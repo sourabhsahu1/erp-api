@@ -16,4 +16,10 @@ class MandateController extends BaseController
     protected $updateJob = BaseJob::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
+    protected $indexWith = [
+        'cashbook',
+        'first_authorised',
+        'second_authorised',
+        'prepared'
+    ];
 }

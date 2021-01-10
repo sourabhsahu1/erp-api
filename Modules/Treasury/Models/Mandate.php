@@ -19,11 +19,11 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $value_date
  * @property string $instructions
  * @property string $status
- * @property int $first_authorised_by
+ * @property int $first_authorised
  * @property \Carbon\Carbon $first_authorised_date
- * @property int $second_authorised_by
+ * @property int $second_authorised
  * @property \Carbon\Carbon $second_authorised_date
- * @property int $prepared_by
+ * @property int $prepared
  * @property \Carbon\Carbon $prepared_date
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -75,6 +75,23 @@ class Mandate extends Eloquent
 	{
 		return $this->belongsTo(\Modules\Treasury\Models\Cashbook::class, 'cashbook_id');
 	}
+
+
+    public function first_authorised()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'first_authorised_by');
+    }
+
+
+    public function second_authorised()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'second_authorised_by');
+    }
+
+    public function prepared()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'prepared_by');
+    }
 
 	public function payment_vouchers()
 	{
