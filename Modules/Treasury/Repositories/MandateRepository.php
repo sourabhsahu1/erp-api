@@ -36,10 +36,13 @@ class MandateRepository extends EloquentBaseRepository
 
 
 
-        $paymentVouchers = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers'])
-            ->update([
-                'mandate_id' => $mandate->id
-            ]);
+        if (isset($data['data']['payment_vouchers'])) {
+            $paymentVouchers = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers'])
+                ->update([
+                    'mandate_id' => $mandate->id
+                ]);
+        }
+
         return $mandate;
     }
 
@@ -57,6 +60,12 @@ class MandateRepository extends EloquentBaseRepository
                 $data['data']['second_authorised_date'] = Carbon::now()->toDateString();
             }
         }
+
+        $paymentVouchers = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers'])
+            ->update([
+                'mandate_id' => $data['data']['id']
+            ]);
+
         return parent::update($data);
     }
 

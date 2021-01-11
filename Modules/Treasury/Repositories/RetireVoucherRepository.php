@@ -5,6 +5,7 @@ namespace Modules\Treasury\Repositories;
 
 
 use App\Constants\AppConstant;
+use Carbon\Carbon;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Treasury\Models\PaymentVoucher;
 use Modules\Treasury\Models\RetireVoucher;
@@ -35,7 +36,25 @@ class RetireVoucherRepository extends EloquentBaseRepository
             'checking_officer',
             'financial_controller',
             'retire_vouchers.economic_segment'
+        ])->whereIn('type', [
+            AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER,
+            AppConstant::VOUCHER_TYPE_STANDING_VOUCHER,
+            AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER
         ]);
         return parent::getAll($params, $query);
     }
+
+    public function create($data)
+    {
+
+        foreach ($data['data']['liabilities'] as $key => &$liability) {
+            $liability['payment_voucher_id'] = $data['data']['payment_voucher_id'];
+            $liability['created_at'] = Carbon::now()->toDateTimeString();
+            $liability['updated_at'] = Carbon::now()->toDateTimeString();
+        }
+        $data['data'] = $data['data']['liabilities'];
+
+        return parent::insert($data);
+    }
+
 }
