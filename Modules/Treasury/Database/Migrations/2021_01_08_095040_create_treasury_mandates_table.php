@@ -32,6 +32,7 @@ class CreateTreasuryMandatesTable extends Migration
             $table->date('second_authorised_date')->nullable();
             $table->unsignedBigInteger('prepared_by');
             $table->date('prepared_date');
+            $table->date('closed_date')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('first_authorised_by')->references('id')->on('hr_employees');
