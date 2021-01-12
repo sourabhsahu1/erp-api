@@ -238,7 +238,7 @@ class PaymentVoucher extends Eloquent
             ->groupBy('payment_voucher_id');
     }
 
-    public function retire_vouchers() {
+    public function retire_voucher() {
         return $this->hasOne(RetireVoucher::class, 'payment_voucher_id');
     }
 }

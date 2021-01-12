@@ -32,34 +32,25 @@ class RetireVoucher extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
-	protected $casts = [
-		'payment_voucher_id' => 'int',
-		'amount' => 'int',
-		'economic_segment_id' => 'int'
-	];
+    protected $table = "treasury_retire_vouchers";
 
-	protected $table = "treasury_retire_vouchers";
+    protected $casts = [
+        'payment_voucher_id' => 'int'
+    ];
 
-	protected $dates = [
-		'liability_value_date'
-	];
-
-	protected $fillable = [
-		'payment_voucher_id',
-		'liability_value_date',
-		'amount',
-		'economic_segment_id',
-		'details',
-		'status'
-	];
-
-	public function economic_segment()
-	{
-		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'economic_segment_id');
-	}
+    protected $fillable = [
+        'payment_voucher_id',
+        'status'
+    ];
 
 	public function payment_voucher()
 	{
 		return $this->belongsTo(\Modules\Treasury\Models\PaymentVoucher::class, 'payment_voucher_id');
 	}
+
+
+    public function retire_liabilities()
+    {
+        return $this->hasMany(\Modules\Treasury\Models\RetireLiability::class, 'retire_voucher_id');
+    }
 }

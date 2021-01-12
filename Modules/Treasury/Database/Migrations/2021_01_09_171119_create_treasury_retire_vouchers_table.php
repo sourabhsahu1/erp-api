@@ -17,10 +17,6 @@ class CreateTreasuryRetireVouchersTable extends Migration
         Schema::create('treasury_retire_vouchers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('payment_voucher_id');
-            $table->date('liability_value_date');
-            $table->unsignedBigInteger('amount');
-            $table->unsignedInteger('economic_segment_id')->nullable();
-            $table->string('details');
             $table->enum('status',[
                 AppConstant::RETIRE_VOUCHER_NEW,
                 AppConstant::RETIRE_VOUCHER_APPROVED,
@@ -33,7 +29,6 @@ class CreateTreasuryRetireVouchersTable extends Migration
             ]);
             $table->timestamps();
             $table->foreign('payment_voucher_id')->references('id')->on('treasury_payment_vouchers');
-            $table->foreign('economic_segment_id')->references('id')->on('admin_segments');
             $table->softDeletes();
         });
     }
