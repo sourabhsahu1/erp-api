@@ -39,10 +39,12 @@ class MandateRepository extends EloquentBaseRepository
         if (isset($data['data']['payment_vouchers'])) {
             $data['data']['payment_vouchers'] = json_decode($data['data']['payment_vouchers'], true);
             $paymentV = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers'])
-                ->where('status', AppConstant::VOUCHER_STATUS_ON_MANDATE)->get();
+                ->whereIn('status', [
+                    AppConstant::VOUCHER_STATUS_AUDITED
+                ])->get();
 
             if ($paymentV->isEmpty()) {
-                throw new AppException('payment vouchers are not mandate');
+                throw new AppException('payment vouchers are not audited');
             }
             $paymentVouchers = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers'])
                 ->update([
