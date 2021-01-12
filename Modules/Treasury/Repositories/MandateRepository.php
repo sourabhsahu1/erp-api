@@ -37,6 +37,7 @@ class MandateRepository extends EloquentBaseRepository
         $mandate = parent::create($data);
 
         if (isset($data['data']['payment_vouchers'])) {
+            $data['data']['payment_vouchers'] = json_decode($data['data']['payment_vouchers'], true);
             $paymentV = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers'])
                 ->where('status', AppConstant::VOUCHER_STATUS_ON_MANDATE)->get();
 
@@ -75,14 +76,15 @@ class MandateRepository extends EloquentBaseRepository
                     'status' => AppConstant::VOUCHER_STATUS_POSTED_TO_GL
                 ]);
 
-
                 //todo jv from pv
 
-                JournalVoucher::create([]);
+//                JournalVoucher::create([]);
             }
         }
 
         if (isset($data['data']['payment_vouchers'])) {
+
+            $data['data']['payment_vouchers'] = json_decode($data['data']['payment_vouchers'], true);
             $paymentVouchers = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers'])
                 ->update([
                     'mandate_id' => $data['data']['id']
