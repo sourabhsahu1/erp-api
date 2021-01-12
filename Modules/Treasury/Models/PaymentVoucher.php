@@ -20,6 +20,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $voucher_number
  * @property \Carbon\Carbon $value_date
  * @property int $payment_approve_id
+ * @property int $mandate_id
  * @property string $payee
  * @property string $type
  * @property string $status
@@ -71,6 +72,7 @@ class PaymentVoucher extends Eloquent
         'voucher_number' => 'int',
         'payment_approve_id' => 'int',
         'currency_id' => 'int',
+        'mandate_id' => 'int',
         'x_rate' => 'float',
         'official_x_rate' => 'float',
         'aie_id' => 'int',
@@ -100,6 +102,7 @@ class PaymentVoucher extends Eloquent
         'payee',
         'type',
         'status',
+        'mandate_id',
         'currency_id',
         'payment_description',
         'x_rate',

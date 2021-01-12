@@ -6,7 +6,9 @@ namespace Modules\Treasury\Repositories;
 
 use App\Constants\AppConstant;
 use Illuminate\Support\Carbon;
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Finance\Models\JournalVoucher;
 use Modules\Treasury\Models\Mandate;
 use Modules\Treasury\Models\PaymentVoucher;
 use Modules\Treasury\Models\ReceiptVoucher;
@@ -34,9 +36,13 @@ class MandateRepository extends EloquentBaseRepository
         $data['data']['prepared_date'] = Carbon::now()->toDateString();
         $mandate = parent::create($data);
 
-
-
         if (isset($data['data']['payment_vouchers'])) {
+            $paymentV = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers'])
+                ->where('status', AppConstant::VOUCHER_STATUS_ON_MANDATE)->get();
+
+            if ($paymentV->isEmpty()) {
+                throw new AppException('payment vouchers are not mandate');
+            }
             $paymentVouchers = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers'])
                 ->update([
                     'mandate_id' => $mandate->id
@@ -58,13 +64,30 @@ class MandateRepository extends EloquentBaseRepository
             if ($data['data']['status'] == AppConstant::ON_MANDATE_2ND_AUTHORISED) {
                 $data['data']['second_authorised_by'] = $data['data']['user_id'];
                 $data['data']['second_authorised_date'] = Carbon::now()->toDateString();
+
+                $paymentVouc = PaymentVoucher::where('mandate_id', $data['data']['id'])->update([
+                    'status' => AppConstant::VOUCHER_STATUS_CLOSED
+                ]);
+            }
+
+            if ($data['data']['status'] == AppConstant::ON_MANDATE_POSTED_TO_GL) {
+                $paymentVouc = PaymentVoucher::where('mandate_id', $data['data']['id'])->update([
+                    'status' => AppConstant::VOUCHER_STATUS_POSTED_TO_GL
+                ]);
+
+
+                //todo jv from pv
+
+                JournalVoucher::create([]);
             }
         }
 
-        $paymentVouchers = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers'])
-            ->update([
-                'mandate_id' => $data['data']['id']
-            ]);
+        if (isset($data['data']['payment_vouchers'])) {
+            $paymentVouchers = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers'])
+                ->update([
+                    'mandate_id' => $data['data']['id']
+                ]);
+        }
 
         return parent::update($data);
     }
