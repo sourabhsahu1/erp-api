@@ -5,6 +5,7 @@ namespace Modules\Treasury\Http\Controllers;
 
 
 use App\Http\Controllers\BaseController;
+use Illuminate\Http\Request;
 use Luezoid\Laravelcore\Jobs\BaseJob;
 use Modules\Treasury\Repositories\MandateRepository;
 
@@ -44,4 +45,11 @@ class MandateController extends BaseController
         'payment_vouchers.checking_officer',
         'payment_vouchers.financial_controller'
     ];
+
+
+    public function mandateUpdate(Request $request)
+    {
+        $this->jobMethod = 'mandateUpdate';
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
 }

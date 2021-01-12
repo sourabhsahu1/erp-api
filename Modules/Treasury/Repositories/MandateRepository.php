@@ -92,7 +92,7 @@ class MandateRepository extends EloquentBaseRepository
 
                 //todo jv from pv
 
-                JournalVoucher::create([]);
+//                JournalVoucher::create([]);
             }
         }
 
@@ -106,6 +106,44 @@ class MandateRepository extends EloquentBaseRepository
         }
 
         return parent::update($data);
+    }
+
+    public function mandateUpdate($data) {
+        $data['data']['mandate_ids'] = json_decode($data['data']['mandate_ids']);
+
+        foreach ($data['data']['mandate_ids'] as $mandate_id) {
+            if (isset($data['data']['status'])) {
+                if ($data['data']['status'] == AppConstant::ON_MANDATE_1ST_AUTHORISED) {
+                    $data['data']['first_authorised_by'] = $data['data']['user_id'];
+                    $data['data']['first_authorised_date'] = Carbon::now()->toDateString();
+                }
+
+                if ($data['data']['status'] == AppConstant::ON_MANDATE_2ND_AUTHORISED) {
+                    $data['data']['second_authorised_by'] = $data['data']['user_id'];
+                    $data['data']['second_authorised_date'] = Carbon::now()->toDateString();
+
+                    //payment voucher to be closed when on mandate 2nd auth
+                    PaymentVoucher::where('mandate_id', $mandate_id)->update([
+                        'status' => AppConstant::VOUCHER_STATUS_CLOSED
+                    ]);
+                }
+
+                if ($data['data']['status'] == AppConstant::ON_MANDATE_POSTED_TO_GL) {
+                    //payment voucher to be post to gl when on mandate post to gl
+
+                    PaymentVoucher::where('mandate_id', $mandate_id)->update([
+                        'status' => AppConstant::VOUCHER_STATUS_POSTED_TO_GL
+                    ]);
+
+                    //todo jv from pv
+
+//                    JournalVoucher::create([]);
+                }
+            }
+
+            $data['id'] = $mandate_id;
+            parent::update($data);
+        }
     }
 
 }

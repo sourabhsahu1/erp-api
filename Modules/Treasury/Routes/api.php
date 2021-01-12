@@ -61,6 +61,7 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::get('mandate','MandateController@index');
     Route::post('mandate','MandateController@store');
     Route::put('mandate/{id}','MandateController@update');
+    Route::post('mandate-update','MandateController@mandateUpdate');
 
     Route::get('retire-voucher','RetireVoucherController@index');
     Route::post('retire-voucher','RetireVoucherController@store');
