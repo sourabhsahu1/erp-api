@@ -6,6 +6,7 @@ namespace Modules\Treasury\Repositories;
 
 use App\Constants\AppConstant;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Treasury\Models\PaymentVoucher;
@@ -89,4 +90,11 @@ class RetireVoucherRepository extends EloquentBaseRepository
         return RetireVoucher::with('retire_liabilities')->find($retireV->first()->id);
     }
 
+    public function statusRetireVoucher()
+    {
+        $status = DB::table('treasury_status_retire_voucher')->get();
+        return [
+            'status' => $status
+        ];
+    }
 }

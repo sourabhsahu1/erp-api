@@ -5,6 +5,7 @@ namespace Modules\Treasury\Http\Controllers;
 
 
 use App\Http\Controllers\BaseController;
+use Illuminate\Http\Request;
 use Luezoid\Laravelcore\Jobs\BaseJob;
 use Modules\Treasury\Repositories\RetireVoucherRepository;
 
@@ -16,4 +17,10 @@ class RetireVoucherController extends BaseController
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
 
+
+    public function statusRetireVoucher(Request $request)
+    {
+        $this->jobMethod = "statusRetireVoucher";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
 }

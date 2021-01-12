@@ -33,6 +33,7 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::get('payment-vouchers/{payment_voucher_id}/schedule-economic','ScheduleEconomicsController@getPaymentVoucherScheduleEconomic');
     Route::get('source-units/{id}/types','PaymentVoucherController@typePaymentVoucher');
     Route::get('payment-voucher-status', 'PaymentVoucherController@statusPaymentVoucher');
+    Route::get('retire-voucher-status', 'RetireVoucherController@statusRetireVoucher');
 
 
 
