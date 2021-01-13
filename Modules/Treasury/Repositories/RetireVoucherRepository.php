@@ -43,7 +43,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
             AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER,
             AppConstant::VOUCHER_TYPE_STANDING_VOUCHER,
             AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER
-        ]);
+        ])->where('status', AppConstant::VOUCHER_STATUS_CLOSED);
         return parent::getAll($params, $query);
     }
 
@@ -79,15 +79,14 @@ class RetireVoucherRepository extends EloquentBaseRepository
     public function update($data)
     {
 
-        $retireV = RetireVoucher::where('payment_voucher_id', $data['data']['id']);
+        $data['data']['payment_voucher_ids'] = json_decode($data['data']['payment_voucher_ids'], true);
+        $retireV = RetireVoucher::whereIn('payment_voucher_id', $data['data']['payment_voucher_ids']);
 
-        if ($retireV->first()) {
-            $retireV->update(['status' => $data['data']['status']]);
-        }else{
+        if ($retireV->get()->isEmpty()) {
             throw new AppException('Cannot find Retire Voucher');
+        } else {
+            $retireV->update(['status' => $data['data']['status']]);
         }
-
-        return RetireVoucher::with('retire_liabilities')->find($retireV->first()->id);
     }
 
     public function statusRetireVoucher()

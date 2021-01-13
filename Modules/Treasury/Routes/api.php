@@ -65,5 +65,5 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
 
     Route::get('retire-voucher','RetireVoucherController@index');
     Route::post('retire-voucher','RetireVoucherController@store');
-    Route::put('retire-voucher/{id}','RetireVoucherController@update');
+    Route::post('retire-voucher-update','RetireVoucherController@update');
 });
