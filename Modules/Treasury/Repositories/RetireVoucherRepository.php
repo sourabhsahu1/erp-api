@@ -44,7 +44,10 @@ class RetireVoucherRepository extends EloquentBaseRepository
             AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER,
             AppConstant::VOUCHER_TYPE_STANDING_VOUCHER,
             AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER
-        ])->where('status', AppConstant::VOUCHER_STATUS_CLOSED);
+        ])->whereIn('status', [
+            AppConstant::VOUCHER_STATUS_CLOSED,
+            AppConstant::VOUCHER_STATUS_POSTED_TO_GL
+        ]);
 
 
         if (isset($params['inputs']['retire_status'])) {
