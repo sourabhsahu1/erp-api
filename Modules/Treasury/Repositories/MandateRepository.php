@@ -56,15 +56,31 @@ class MandateRepository extends EloquentBaseRepository
         $mandate = parent::create($data);
 
         if (isset($data['data']['payment_vouchers'])) {
+
+
             $data['data']['payment_vouchers'] = json_decode($data['data']['payment_vouchers'], true);
+
+
+
             $paymentV = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers'])
                 ->whereIn('status', [
                     AppConstant::VOUCHER_STATUS_AUDITED
                 ])->get();
 
+
+
             if ($paymentV->isEmpty()) {
                 throw new AppException('payment vouchers are not audited');
             }
+
+            /** @var PaymentVoucher $payment */
+            foreach ($paymentV as $payment) {
+                if(strtotime($data['data']['value_date']) < strtotime($payment->value_date)) {
+                    throw new AppException('mandate date cannot be before than PV\'s value date');
+                }
+
+            }
+
             $paymentVouchers = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers'])
                 ->update([
                     'mandate_id' => $mandate->id,
