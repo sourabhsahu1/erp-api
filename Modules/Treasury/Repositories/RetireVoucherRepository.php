@@ -20,6 +20,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
     public function getAll($params = [], $query = null)
     {
         $this->model = PaymentVoucher::class;
+
         $query = PaymentVoucher::with([
             'program_segment',
             'economic_segment',
@@ -44,6 +45,15 @@ class RetireVoucherRepository extends EloquentBaseRepository
             AppConstant::VOUCHER_TYPE_STANDING_VOUCHER,
             AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER
         ])->where('status', AppConstant::VOUCHER_STATUS_CLOSED);
+
+
+        if (isset($params['inputs']['retire_status'])) {
+            $query->whereHas('retire_voucher', function ($query) use ($params) {
+                $query->where('status', $params['inputs']['retire_status']);
+            });
+        }
+
+
         return parent::getAll($params, $query);
     }
 
