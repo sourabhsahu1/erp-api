@@ -55,6 +55,15 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 $query->where('status', $params['inputs']['retire_status']);
             });
         }
+        if (isset($params['inputs']['voucher_source_unit_id'])) {
+            $query->where('voucher_source_unit_id', $params['inputs']['voucher_source_unit_id']);
+        }
+
+        if (isset($params['inputs']['search'])) {
+            $query->where('deptal_id', $params['inputs']['search'])
+            ->orWhereYear('value_date',$params['inputs']['search'])
+            ;
+        }
 
 
         return parent::getAll($params, $query);
@@ -98,7 +107,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
         if ($retireV->get()->isEmpty()) {
             throw new AppException('Cannot find Retire Voucher');
         } else {
-            $retireV->update(['status' => $data['data']['status']]);
+            $retireV->update(['status' => $data['data']['retire_status']]);
         }
     }
 
