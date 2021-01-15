@@ -50,9 +50,9 @@ class RetireVoucherRepository extends EloquentBaseRepository
         ]);
 
 
-        if (isset($params['inputs']['status'])) {
+        if (isset($params['inputs']['retire_status'])) {
             $query->whereHas('retire_voucher', function ($query) use ($params) {
-                $query->where('status', $params['inputs']['status']);
+                $query->where('status', $params['inputs']['retire_status']);
             });
         }
         if (isset($params['inputs']['voucher_source_unit_id'])) {
