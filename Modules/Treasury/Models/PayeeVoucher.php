@@ -18,6 +18,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $company_id
  * @property float $net_amount
  * @property float $total_tax
+ * @property array $tax_ids
  * @property string $details
  * @property \Carbon\Carbon $year
  * @property \Carbon\Carbon $created_at

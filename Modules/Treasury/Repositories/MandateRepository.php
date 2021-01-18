@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\CompanySetting;
+use Modules\Admin\Models\Tax;
 use Modules\Finance\Models\Currency;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JournalVoucherDetail;
@@ -192,6 +193,35 @@ class MandateRepository extends EloquentBaseRepository
                             $jvD = null;
                             $totalNetAmount = 0;
                             foreach ($paymentVoucher->payee_vouchers as $payee_voucher) {
+
+                                foreach (json_decode($payee_voucher->tax_ids, true) as $tax_id) {
+                                    /** @var Tax $tax */
+                                    $tax = Tax::find($tax_id);
+                                    if ($tax) {
+                                        $jvD[] = [
+                                            'journal_voucher_id' => $jv->id,
+                                            'currency' => $currency->code_currency,
+                                            'x_rate_local' => $paymentVoucher->x_rate,
+                                            'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
+                                            'account_name' => $paymentVoucher->deptal_id,
+                                            'line_reference' => $paymentVoucher->deptal_id,
+                                            'line_value' => ($tax->tax * $payee_voucher->net_amount) / 100,
+                                            'admin_segment_id' => $paymentVoucher->admin_segment_id,
+                                            'fund_segment_id' => $paymentVoucher->fund_segment_id,
+                                            'economic_segment_id' => $tax->department_id,
+                                            'programme_segment_id' => $paymentVoucher->program_segment_id,
+                                            'functional_segment_id' => $paymentVoucher->functional_segment_id,
+                                            'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
+                                            'line_value_type' => 'CREDIT',
+                                            'lv_line_value' => ($tax->tax * $payee_voucher->net_amount * $paymentVoucher->x_rate) / 100,
+                                            'local_currency' => $companySetting->local_currency,
+                                            'created_at' => Carbon::now()->toDateTimeString(),
+                                            'updated_at' => Carbon::now()->toDateTimeString()
+                                        ];
+                                    }
+
+
+                                }
                                 /** @var ScheduleEconomic $schedule_economic */
                                 foreach ($payee_voucher->schedule_economics as $schedule_economic) {
 
