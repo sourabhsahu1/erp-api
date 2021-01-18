@@ -61,8 +61,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
         if (isset($params['inputs']['search'])) {
             $query->where('deptal_id', $params['inputs']['search'])
-            ->orWhereYear('value_date',$params['inputs']['search'])
-            ;
+                ->orWhereYear('value_date', $params['inputs']['search']);
         }
 
 
@@ -70,41 +69,50 @@ class RetireVoucherRepository extends EloquentBaseRepository
     }
 
 
-    public function getLiabilities($params) {
-       $retireVouchers =  RetireVoucher::with([
-           'payment_voucher',
-           'retire_liabilities.economic_segment'
-       ])->where('id', $params['inputs']['retire_voucher_id'])->get();
+    public function getLiabilities($params)
+    {
+        $retireVouchers = RetireVoucher::with([
+            'payment_voucher',
+            'retire_liabilities.economic_segment'
+        ])->where('id', $params['inputs']['retire_voucher_id'])->get();
 
-       return $retireVouchers;
+        return $retireVouchers;
     }
 
 
     public function create($data)
     {
 
-        $retireV = RetireVoucher::create([
-            'payment_voucher_id' => $data['data']['payment_voucher_id'],
-            'status' => AppConstant::RETIRE_VOUCHER_NEW
-        ]);
+        DB::beginTransaction();
+        try {
+            $retireV = RetireVoucher::create([
+                'payment_voucher_id' => $data['data']['payment_voucher_id'],
+                'status' => AppConstant::RETIRE_VOUCHER_NEW
+            ]);
 
-        foreach ($data['data']['liabilities'] as $key => $liability) {
-            $d['retire_voucher_id'] = $retireV->id;
-            $d['liability_value_date'] = $liability['liability_value_date'];
-            $d['amount'] = $liability['amount'];
-            $d['economic_segment_id'] = $liability['economic_segment_id'];
-            $d['details'] = $liability['details'];
-            $d['created_at'] = Carbon::now()->toDateTimeString();
-            $d['updated_at'] = Carbon::now()->toDateTimeString();
+            RetireLiability::where('retire_voucher_id', $retireV->id)->delete();
 
-            unset($data);
-            $liabilities[] = $d;
+            foreach ($data['data']['liabilities'] as $key => $liability) {
+                $d['retire_voucher_id'] = $retireV->id;
+                $d['liability_value_date'] = $liability['liability_value_date'];
+                $d['amount'] = $liability['amount'];
+                $d['economic_segment_id'] = $liability['economic_segment_id'];
+                $d['details'] = $liability['details'];
+                $d['created_at'] = Carbon::now()->toDateTimeString();
+                $d['updated_at'] = Carbon::now()->toDateTimeString();
+
+                unset($data);
+                $liabilities[] = $d;
+            }
+
+            if (count($liabilities) > 0) {
+                RetireLiability::insert($liabilities);
+            }
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw $exception;
         }
-
-        if (count($liabilities) > 0) {
-            RetireLiability::insert($liabilities);
-        }
-
         return RetireVoucher::with('retire_liabilities')->find($retireV->id);
     }
 
