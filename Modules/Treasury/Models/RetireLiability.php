@@ -34,7 +34,8 @@ class RetireLiability extends Eloquent
 	protected $casts = [
 		'amount' => 'int',
 		'economic_segment_id' => 'int',
-		'retire_voucher_id' => 'int'
+		'retire_voucher_id' => 'int',
+		'liability_value_date' => 'datetime:Y-m-d',
 	];
 
     protected $table = "treasury_retire_liabilities";
