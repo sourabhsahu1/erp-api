@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\AppConstant;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -25,6 +26,14 @@ class CreateTreasuryPaymentApprovalsTable extends Migration
             $table->date('authorised_date')->nullable();
             $table->string('remark');
             $table->unsignedBigInteger('amount');
+            $table->unsignedBigInteger('amount_used')->nullable();
+            $table->enum('status',[
+                AppConstant::PAYMENT_APPROVAL_NEW,
+                AppConstant::PAYMENT_APPROVAL_CHECKED,
+                AppConstant::PAYMENT_APPROVAL_APPROVED_AND_READY,
+                AppConstant::PAYMENT_APPROVAL_FULLY_USED,
+                AppConstant::PAYMENT_APPROVAL_READY_FOR_PV
+            ]);
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('admin_segment_id')->references('id')->on('admin_segments');

@@ -22,7 +22,9 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $value_date
  * @property \Carbon\Carbon $authorised_date
  * @property string $remark
+ * @property string $status
  * @property int $amount
+ * @property int $amount_used
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
@@ -49,7 +51,8 @@ class PaymentApproval extends Eloquent
         'employee_id' => 'int',
         'company_id' => 'int',
         'currency_id' => 'int',
-        'amount' => 'int'
+        'amount' => 'int',
+        'amount_used' => 'int'
     ];
 
     protected $dates = [
@@ -67,7 +70,9 @@ class PaymentApproval extends Eloquent
         'value_date',
         'authorised_date',
         'remark',
-        'amount'
+        'amount',
+        'status',
+        'amount_used'
     ];
 
     public function admin_segment()
