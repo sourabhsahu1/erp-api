@@ -69,6 +69,17 @@ class RetireVoucherRepository extends EloquentBaseRepository
         return parent::getAll($params, $query);
     }
 
+
+    public function getLiabilities($params) {
+       $retireVouchers =  RetireVoucher::with([
+           'payment_voucher',
+           'retire_liabilities.economic_segment'
+       ])->where('id', $params['inputs']['retire_voucher_id'])->get();
+
+       return $retireVouchers;
+    }
+
+
     public function create($data)
     {
 

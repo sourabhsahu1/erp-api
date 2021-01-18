@@ -43,6 +43,7 @@ class PayeeVoucher extends Eloquent
 		'company_id' => 'int',
 		'net_amount' => 'float',
 		'total_tax' => 'float'
+//        'tax_ids' => 'array'
 	];
 
 	protected $dates = [
@@ -56,7 +57,8 @@ class PayeeVoucher extends Eloquent
 		'net_amount',
 		'total_tax',
 		'year',
-		'details'
+		'details',
+        'tax_ids'
 	];
 
 	public function admin_company()

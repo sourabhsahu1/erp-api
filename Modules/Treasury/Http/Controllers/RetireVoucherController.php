@@ -23,4 +23,10 @@ class RetireVoucherController extends BaseController
         $this->jobMethod = "statusRetireVoucher";
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
+
+    public function getLiabilities(Request $request)
+    {
+        $this->jobMethod = "getLiabilities";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
 }

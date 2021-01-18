@@ -16,8 +16,6 @@ class PayeeVoucherRepository extends EloquentBaseRepository
 
     public function create($data)
     {
-
-
         if (isset($data['data']['employee_id'])) {
 
             $empBank = EmployeeBankDetail::where('employee_id', $data['data']['employee_id'])->first();
