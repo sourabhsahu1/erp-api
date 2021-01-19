@@ -5,8 +5,10 @@ namespace Modules\Treasury\Repositories;
 
 
 use App\Constants\AppConstant;
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Treasury\Models\PaymentApproval;
+use Modules\Treasury\Models\PaymentApprovalPayee;
 
 class PaymentApprovalRepository extends EloquentBaseRepository
 {
@@ -43,6 +45,25 @@ class PaymentApprovalRepository extends EloquentBaseRepository
 
     public function update($data)
     {
+
+        $pa = PaymentApproval::whereIn('id', json_decode($data['data']['payment_approval_ids'], true));
+
+        foreach (json_decode($data['data']['payment_approval_ids'], true) as $payment_approval_id) {
+
+            $pa = PaymentApproval::where('id', $payment_approval_id)->first();
+            $payeeVoucherIds = PaymentApprovalPayee::where('payment_approval_id', $pa->id)->pluck('id')->all();
+
+            if (is_null($payeeVoucherIds)) {
+                throw new AppException('Payee not added');
+            }
+        }
+        $pa->update([
+            'status' => $data['data']['status']
+        ]);
+        return [
+            'data' => 'Status Updated Successfully'
+        ];
+
         PaymentApproval::whereIn('id', json_decode($data['data']['payment_approval_ids'], true))->update([
             'status' => $data['data']['status']
         ]);
