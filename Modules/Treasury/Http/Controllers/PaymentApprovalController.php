@@ -23,7 +23,10 @@ class PaymentApprovalController extends BaseController
         'currency',
         'authorised_by',
         'prepared_by',
-        'payment_approval_payees',
+        'payment_approval_payees.company.company_bank.bank',
+        'payment_approval_payees.company.company_bank.bank_branch',
+        'payment_approval_payees.employee.employee_bank.bank',
+        'payment_approval_payees.employee.employee_bank.branches',
         'payment_vouchers'
     ];
 }

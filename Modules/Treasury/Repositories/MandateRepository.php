@@ -7,6 +7,7 @@ namespace Modules\Treasury\Repositories;
 use App\Constants\AppConstant;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\CompanySetting;
@@ -16,6 +17,8 @@ use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JournalVoucherDetail;
 use Modules\Treasury\Models\Mandate;
 use Modules\Treasury\Models\PayeeVoucher;
+use Modules\Treasury\Models\PaymentApproval;
+use Modules\Treasury\Models\PaymentApprovalPayee;
 use Modules\Treasury\Models\PaymentVoucher;
 use Modules\Treasury\Models\ReceiptVoucher;
 use Modules\Treasury\Models\ScheduleEconomic;
@@ -151,6 +154,47 @@ class MandateRepository extends EloquentBaseRepository
                         PaymentVoucher::where('mandate_id', $mandate_id)->update([
                             'status' => AppConstant::VOUCHER_STATUS_CLOSED
                         ]);
+
+
+                        /** @var CompanySetting $companySetting */
+                        $companySetting = CompanySetting::find(1);
+
+                        if ($companySetting->is_payment_approval == false) {
+                            $paymentVouchers = PaymentVoucher::with(['payee_vouchers.schedule_economics'])->where('mandate_id', $mandate_id)->get();
+
+                            /** @var PaymentVoucher $paymentVoucher */
+                            foreach ($paymentVouchers as $paymentVoucher) {
+                                /** @var PayeeVoucher $payee_voucher */
+                                $paymentApproval = PaymentApproval::create([
+                                    'admin_segment_id' => $paymentVoucher->admin_segment_id,
+                                    'fund_segment_id' => $paymentVoucher->fund_segment_id,
+                                    'economic_segment_id' => $paymentVoucher->economic_segment_id,
+                                    'employee_customer' => $paymentVoucher->payee,
+                                    'prepared_by_id' => $paymentVoucher->paying_officer_id,
+                                    'currency_id' => $paymentVoucher->currency_id,
+                                    'value_date' => $paymentVoucher->value_date,
+                                    'authorised_date' => $paymentVoucher->value_date,
+                                    'remark' => $paymentVoucher->payment_description,
+                                    'status' => AppConstant::PAYMENT_APPROVAL_FULLY_USED
+                                ]);
+
+                                foreach ($paymentVoucher->payee_vouchers as $payee_voucher) {
+                                    $paymentApprovalPayee[] = [
+                                        'payment_approval_id' => $paymentApproval->id,
+                                        'year' => $payee_voucher->year,
+                                        'details' => $payee_voucher->details,
+                                        'employee_id' => $payee_voucher->employee_id ?? null,
+                                        'company_id' => $payee_voucher->company_id ?? null,
+                                        'net_amount' => $payee_voucher->net_amount,
+                                        'total_tax' => $payee_voucher->total_tax,
+                                        'tax_ids' => $payee_voucher->tax_ids
+                                    ];
+                                }
+                                if (count($paymentApprovalPayee) > 0)
+                                    PaymentApprovalPayee::insert($paymentApprovalPayee);
+                            }
+                        }
+
                     }
 
                     if ($data['data']['status'] == AppConstant::ON_MANDATE_POSTED_TO_GL) {
@@ -193,7 +237,6 @@ class MandateRepository extends EloquentBaseRepository
                             $jvD = null;
                             $totalNetAmount = 0;
                             foreach ($paymentVoucher->payee_vouchers as $payee_voucher) {
-
                                 foreach (json_decode($payee_voucher->tax_ids, true) as $tax_id) {
                                     /** @var Tax $tax */
                                     $tax = Tax::find($tax_id);
@@ -219,8 +262,6 @@ class MandateRepository extends EloquentBaseRepository
                                             'updated_at' => Carbon::now()->toDateTimeString()
                                         ];
                                     }
-
-
                                 }
                                 /** @var ScheduleEconomic $schedule_economic */
                                 foreach ($payee_voucher->schedule_economics as $schedule_economic) {

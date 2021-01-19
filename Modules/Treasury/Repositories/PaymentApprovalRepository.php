@@ -26,7 +26,10 @@ class PaymentApprovalRepository extends EloquentBaseRepository
                 'currency',
                 'authorised_by',
                 'prepared_by',
-                'payment_approval_payees',
+                'payment_approval_payees.company.company_bank.bank',
+                'payment_approval_payees.company.company_bank.bank_branch',
+                'payment_approval_payees.employee.employee_bank.bank',
+                'payment_approval_payees.employee.employee_bank.branches',
                 'payment_vouchers'
             ])->whereIn('status', [
                 AppConstant::PAYMENT_APPROVAL_READY_FOR_PV,
