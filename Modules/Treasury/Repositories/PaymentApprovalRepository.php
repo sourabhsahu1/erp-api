@@ -43,6 +43,9 @@ class PaymentApprovalRepository extends EloquentBaseRepository
     {
         $data['data']['prepared_by_id'] = $data['data']['user_id'];
         $data['data']['status'] = 'NEW';
+
+
+
         return parent::create($data);
     }
 

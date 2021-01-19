@@ -21,6 +21,7 @@ class CreatePaymentApprovalPayeesTable extends Migration
             $table->unsignedBigInteger('employee_id')->nullable();
             $table->unsignedBigInteger('company_id')->nullable();
             $table->decimal('net_amount',18,2);
+            $table->decimal('remaining_amount',18,2);
             $table->decimal('total_tax',18,2);
             $table->json('tax_ids')->nullable();
             $table->timestamps();

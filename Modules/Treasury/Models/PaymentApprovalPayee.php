@@ -19,6 +19,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $employee_id
  * @property int $company_id
  * @property float $net_amount
+ * @property float $remaining_amount
  * @property float $total_tax
  * @property array $tax_ids
  * @property \Carbon\Carbon $created_at
@@ -37,6 +38,7 @@ class PaymentApprovalPayee extends Eloquent
 		'employee_id' => 'int',
 		'company_id' => 'int',
 		'net_amount' => 'float',
+		'remaining_amount' => 'float',
 		'total_tax' => 'float',
 //		'tax_ids' => 'json'
 	];
@@ -52,6 +54,7 @@ class PaymentApprovalPayee extends Eloquent
 		'employee_id',
 		'company_id',
 		'net_amount',
+		'remaining_amount',
 		'total_tax',
 		'tax_ids'
 	];

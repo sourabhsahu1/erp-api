@@ -16,6 +16,8 @@ class PaymentApprovalPayeesRepository extends EloquentBaseRepository
 
     public function create($data)
     {
+
+        $data['data']['remaining_amount'] = $data['data']['net_amount'];
         if (isset($data['data']['employee_id'])) {
 
             $empBank = EmployeeBankDetail::where('employee_id', $data['data']['employee_id'])->first();

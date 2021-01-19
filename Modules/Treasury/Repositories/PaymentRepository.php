@@ -6,11 +6,14 @@ namespace Modules\Treasury\Repositories;
 
 use App\Constants\AppConstant;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\CompanySetting;
+use Modules\Admin\Models\Tax;
 use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentApproval;
+use Modules\Treasury\Models\PaymentApprovalPayee;
 use Modules\Treasury\Models\PaymentVoucher;
 use Modules\Treasury\Models\ScheduleEconomic;
 use Modules\Treasury\Models\VoucherSourceUnit;
@@ -24,24 +27,86 @@ class PaymentRepository extends EloquentBaseRepository
 
         $paymentV = PaymentVoucher::latest()->orderby('id', 'desc')->first();
 
-        if (is_null($paymentV)) {
-            $data['data']['deptal_id'] = 1;
-        } else {
-            $data['data']['deptal_id'] = $paymentV->deptal_id + 1;
-        }
-        $data['data']['status'] = 'NEW';
+        DB::beginTransaction();
+        try {
 
 
-        /** @var CompanySetting $companySetting */
-        $companySetting = CompanySetting::find(1);
-        if ($companySetting->is_payment_approval == true) {
-            if (!isset($data['data']['payment_approve_id'])) {
-                throw new AppException('Payment Approve Id is required');
+            if (is_null($paymentV)) {
+                $data['data']['deptal_id'] = 1;
+            } else {
+                $data['data']['deptal_id'] = $paymentV->deptal_id + 1;
             }
-//            $paymentVoucher =  parent::create($data);
-//            $paymentApproval = PaymentApproval::where('id',$data['data']['payment_approve_id'])->update();
+            $data['data']['status'] = 'NEW';
+
+
+            /** @var CompanySetting $companySetting */
+            $companySetting = CompanySetting::find(1);
+            $data['data']['is_payment_approval'] = $companySetting->is_payment_approval;
+            if ($companySetting->is_payment_approval == true) {
+                if (!isset($data['data']['payment_approve_id'])) {
+                    throw new AppException('Payment Approve Id is required');
+                }
+                /** @var PaymentVoucher $paymentVoucher */
+                $paymentVoucher = parent::create($data);
+
+                $paymentApproval = PaymentApproval::with([
+                    'payment_approval_payees'
+                ])->find($paymentVoucher->payment_approve_id);
+
+                /** @var PaymentApprovalPayee $approval_payee */
+                foreach ($paymentApproval->payment_approval_payees as $approval_payee) {
+                    $employeeId = $approval_payee->employee_id;
+                    $companyId = $approval_payee->company_id;
+                    foreach ($data['data']['payees'] as $payee) {
+
+                        if (($payee['id'] === $employeeId) || ($payee['id'] === $companyId)) {
+                            //todo payee create and deduction in payment approval payee amount
+                            $taxes  = Tax::whereIn('id', json_decode($approval_payee->tax_ids, true))->pluck('tax')->all();
+
+                            $totalTax = array_sum($taxes);
+                            //check to make sure amount is well balanced in both
+                            $remainingAmount = $approval_payee->remaining_amount - $payee['amount'];
+                            Log::info($remainingAmount);
+                            if ($remainingAmount < 0) {
+                                continue;
+                                //or throw exception
+                            }
+
+                            $payeeVoucher = PayeeVoucher::create([
+                                'payment_voucher_id' => $paymentVoucher->id,
+                                'employee_id' => $employeeId,
+                                'company_id' => $companyId,
+                                'net_amount' => $payee['amount'],
+                                'total_tax' => ($totalTax*$payee['amount'])/100,
+                                'year' => $approval_payee->year,
+                                'details' => $approval_payee->details,
+                                'tax_ids' => $approval_payee->tax_ids
+                            ]);
+
+
+
+                            PaymentApprovalPayee::where('id', $approval_payee->id)->update([
+                                'remaining_amount' => $remainingAmount
+                            ]);
+                        }else {
+                            throw new AppException('couldn\'t add any payees');
+                        }
+                    }
+                }
+
+
+                DB::commit();
+                return $paymentVoucher;
+            }
+
+            $paymentVoucher = parent::create($data);
+
+            DB::commit();
+            return $paymentVoucher;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw $exception;
         }
-        return parent::create($data);
     }
 
     public function update($data)
