@@ -16,10 +16,17 @@ class PaymentApprovalRepository extends EloquentBaseRepository
 
     public function getAll($params = [], $query = null)
     {
-
-
         if (isset($params['inputs']['in_use'])) {
-            $query = PaymentApproval::whereIn('status', [
+            $query = PaymentApproval::with([
+                'admin_segment',
+                'fund_segment',
+                'economic_segment',
+                'currency',
+                'authorised_by',
+                'prepared_by',
+                'payment_approval_payees',
+                'payment_vouchers'
+            ])->whereIn('status', [
                 AppConstant::PAYMENT_APPROVAL_READY_FOR_PV,
                 AppConstant::PAYMENT_APPROVAL_APPROVED_AND_READY
             ]);
@@ -29,6 +36,7 @@ class PaymentApprovalRepository extends EloquentBaseRepository
 
     public function create($data)
     {
+        $data['data']['prepared_by_id'] = $data['data']['user_id'];
         $data['data']['status'] = 'NEW';
         return parent::create($data);
     }

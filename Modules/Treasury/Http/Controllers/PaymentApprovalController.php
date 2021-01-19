@@ -20,8 +20,10 @@ class PaymentApprovalController extends BaseController
         'admin_segment',
         'fund_segment',
         'economic_segment',
-        'company',
         'currency',
-        'employee'
+        'authorised_by',
+        'prepared_by',
+        'payment_approval_payees',
+        'payment_vouchers'
     ];
 }

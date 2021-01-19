@@ -31,9 +31,9 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Modules\Admin\Models\AdminSegment $admin_segment
  * @property \Modules\Admin\Models\AdminSegment $fund_segment
  * @property \Modules\Admin\Models\AdminSegment $economic_segment
- * @property \Modules\Admin\Models\Company $company
  * @property \Modules\Finance\Models\Currency $currency
- * @property \Modules\Hr\Models\Employee $employee
+ * @property \Modules\Hr\Models\Employee $prepared_by
+ * @property \Modules\Hr\Models\Employee $authorised_by
  * @property \Illuminate\Database\Eloquent\Collection $payment_approval_payees
  * @property \Illuminate\Database\Eloquent\Collection $treasury_payment_vouchers
  *
@@ -88,19 +88,19 @@ class PaymentApproval extends Eloquent
         return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'economic_segment_id');
     }
 
-    public function company()
-    {
-        return $this->belongsTo(\Modules\Admin\Models\Company::class, 'company_id');
-    }
-
     public function currency()
     {
         return $this->belongsTo(\Modules\Finance\Models\Currency::class);
     }
 
-    public function employee()
+    public function prepared_by()
     {
-        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'employee_id');
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'prepared_by_id');
+    }
+
+    public function authorised_by()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'authorised_by_id');
     }
 
 
