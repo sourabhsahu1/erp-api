@@ -19,14 +19,16 @@ class CreateTreasuryPaymentApprovalsTable extends Migration
             $table->unsignedInteger('admin_segment_id');
             $table->unsignedInteger('fund_segment_id');
             $table->unsignedInteger('economic_segment_id');
-            $table->unsignedBigInteger('employee_id')->nullable();
-            $table->unsignedBigInteger('company_id')->nullable();
+            $table->enum('employee_customer',[
+                AppConstant::COMPANY_TYPE_CUSTOMER,
+                AppConstant::PAYEE_EMPLOYEE
+            ]);
+            $table->unsignedBigInteger('prepared_by_id')->nullable();
+            $table->unsignedBigInteger('authorised_by_id')->nullable();
             $table->unsignedBigInteger('currency_id')->nullable();
             $table->date('value_date');
             $table->date('authorised_date')->nullable();
             $table->string('remark');
-            $table->unsignedBigInteger('amount');
-            $table->unsignedBigInteger('amount_used')->nullable();
             $table->enum('status',[
                 AppConstant::PAYMENT_APPROVAL_NEW,
                 AppConstant::PAYMENT_APPROVAL_CHECKED,
@@ -39,8 +41,8 @@ class CreateTreasuryPaymentApprovalsTable extends Migration
             $table->foreign('admin_segment_id')->references('id')->on('admin_segments');
             $table->foreign('fund_segment_id')->references('id')->on('admin_segments');
             $table->foreign('economic_segment_id')->references('id')->on('admin_segments');
-            $table->foreign('employee_id')->references('id')->on('hr_employees');
-            $table->foreign('company_id')->references('id')->on('admin_companies');
+            $table->foreign('prepared_by_id')->references('id')->on('hr_employees');
+            $table->foreign('authorised_by_id')->references('id')->on('hr_employees');
             $table->foreign('currency_id')->references('id')->on('currencies');
         });
     }

@@ -16,15 +16,14 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $admin_segment_id
  * @property int $fund_segment_id
  * @property int $economic_segment_id
- * @property int $employee_id
- * @property int $company_id
+ * @property string $employee_customer
+ * @property int $prepared_by_id
+ * @property int $authorised_by_id
  * @property int $currency_id
  * @property \Carbon\Carbon $value_date
  * @property \Carbon\Carbon $authorised_date
  * @property string $remark
  * @property string $status
- * @property int $amount
- * @property int $amount_used
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
@@ -35,6 +34,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Modules\Admin\Models\Company $company
  * @property \Modules\Finance\Models\Currency $currency
  * @property \Modules\Hr\Models\Employee $employee
+ * @property \Illuminate\Database\Eloquent\Collection $payment_approval_payees
+ * @property \Illuminate\Database\Eloquent\Collection $treasury_payment_vouchers
  *
  * @package Modules\Treasury\Models
  */
@@ -48,11 +49,9 @@ class PaymentApproval extends Eloquent
         'admin_segment_id' => 'int',
         'fund_segment_id' => 'int',
         'economic_segment_id' => 'int',
-        'employee_id' => 'int',
-        'company_id' => 'int',
-        'currency_id' => 'int',
-        'amount' => 'int',
-        'amount_used' => 'int'
+        'prepared_by_id' => 'int',
+        'authorised_by_id' => 'int',
+        'currency_id' => 'int'
     ];
 
     protected $dates = [
@@ -64,15 +63,14 @@ class PaymentApproval extends Eloquent
         'admin_segment_id',
         'fund_segment_id',
         'economic_segment_id',
-        'employee_id',
-        'company_id',
+        'employee_customer',
+        'prepared_by_id',
+        'authorised_by_id',
         'currency_id',
         'value_date',
         'authorised_date',
         'remark',
-        'amount',
-        'status',
-        'amount_used'
+        'status'
     ];
 
     public function admin_segment()
@@ -103,5 +101,17 @@ class PaymentApproval extends Eloquent
     public function employee()
     {
         return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'employee_id');
+    }
+
+
+    public function payment_approval_payees()
+    {
+        return $this->hasMany(\Modules\Treasury\Models\PaymentApprovalPayee::class, 'payment_approval_id');
+    }
+
+
+    public function payment_vouchers()
+    {
+        return $this->hasMany(\Modules\Treasury\Models\PaymentVoucher::class, 'payment_approve_id');
     }
 }

@@ -18,6 +18,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $local_currency
  * @property string $international_currency
  * @property bool $auto_post
+ * @property bool $is_payment_approval
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
@@ -32,7 +33,8 @@ class CompanySetting extends Eloquent
 
 	protected $casts = [
 		'company_information_id' => 'int',
-		'auto_post' => 'bool'
+		'auto_post' => 'bool',
+		'is_payment_approval' => 'bool'
 	];
 
 	protected $fillable = [
@@ -40,7 +42,8 @@ class CompanySetting extends Eloquent
 		'country',
 		'local_currency',
         'international_currency',
-		'auto_post'
+		'auto_post',
+		'is_payment_approval'
 	];
 
 	public function company_information()

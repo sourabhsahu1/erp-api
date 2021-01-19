@@ -8,7 +8,9 @@ use App\Constants\AppConstant;
 use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Admin\Models\CompanySetting;
 use Modules\Treasury\Models\PayeeVoucher;
+use Modules\Treasury\Models\PaymentApproval;
 use Modules\Treasury\Models\PaymentVoucher;
 use Modules\Treasury\Models\ScheduleEconomic;
 use Modules\Treasury\Models\VoucherSourceUnit;
@@ -19,6 +21,7 @@ class PaymentRepository extends EloquentBaseRepository
 
     public function create($data)
     {
+
         $paymentV = PaymentVoucher::latest()->orderby('id', 'desc')->first();
 
         if (is_null($paymentV)) {
@@ -28,6 +31,16 @@ class PaymentRepository extends EloquentBaseRepository
         }
         $data['data']['status'] = 'NEW';
 
+
+        /** @var CompanySetting $companySetting */
+        $companySetting = CompanySetting::find(1);
+        if ($companySetting->is_payment_approval == true) {
+            if (!isset($data['data']['payment_approve_id'])) {
+                throw new AppException('Payment Approve Id is required');
+            }
+//            $paymentVoucher =  parent::create($data);
+//            $paymentApproval = PaymentApproval::where('id',$data['data']['payment_approve_id'])->update();
+        }
         return parent::create($data);
     }
 
@@ -93,12 +106,9 @@ class PaymentRepository extends EloquentBaseRepository
                 throw new AppException('Schedule Economic not added');
             }
         }
-
-
         $pv->update([
             'status' => $data['data']['status']
         ]);
-
         return [
             'data' => 'Status Updated Successfully'
         ];
