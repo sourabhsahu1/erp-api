@@ -88,6 +88,8 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
             $retireV = RetireVoucher::where('payment_voucher_id', $data['data']['payment_voucher_id'])->first();
 
+            $pv = PaymentVoucher::with('total_amount')->find($data['data']['payment_voucher_id']);
+//            dd($pv->total_amount->amount);
             if (is_null($retireV)) {
                 $retireV = RetireVoucher::create([
                     'payment_voucher_id' => $data['data']['payment_voucher_id'],
@@ -97,6 +99,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
             RetireLiability::where('retire_voucher_id', $retireV->id)->delete();
 
+            $totalAmount = 0;
             foreach ($data['data']['liabilities'] as $key => $liability) {
                 $d['retire_voucher_id'] = $retireV->id;
                 $d['liability_value_date'] = $liability['liability_value_date'];
@@ -106,8 +109,13 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 $d['created_at'] = Carbon::now()->toDateTimeString();
                 $d['updated_at'] = Carbon::now()->toDateTimeString();
 
+                $totalAmount = $totalAmount + $liability['amount'];
                 unset($data);
                 $liabilities[] = $d;
+            }
+
+            if ($totalAmount > $pv->total_amount->amount) {
+                throw new AppException('liability amount should be equal or less than gross amount');
             }
 
             if (count($liabilities) > 0) {
