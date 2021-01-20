@@ -10,6 +10,7 @@ use Modules\Admin\Models\CompanyBank;
 use Modules\Hr\Models\EmployeeBankDetail;
 use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentApprovalPayee;
+use Modules\Treasury\Models\PaymentVoucher;
 
 class PayeeVoucherRepository extends EloquentBaseRepository
 {
@@ -24,27 +25,20 @@ class PayeeVoucherRepository extends EloquentBaseRepository
 
 
             if (isset($data['data']['employee_id'])) {
-
                 $empBank = EmployeeBankDetail::where('employee_id', $data['data']['employee_id'])->first();
-
                 if (is_null($empBank)) {
                     throw new AppException('Bank Required to Add Payee Employee');
                 }
                 EmployeeBankDetail::where('id', $data['data']['payee_bank_id'])->update([
                     'is_active' => true
                 ]);
-
-
             }
 
             if (isset($data['data']['company_id'])) {
-
                 $compBank = CompanyBank::where('company_id', $data['data']['company_id'])->first();
-
                 if (is_null($compBank)) {
                     throw new AppException('Bank Required to Add Payee Company');
                 }
-
                 CompanyBank::where('id', $data['data']['payee_bank_id'])->update([
                     'is_active' => true
                 ]);
@@ -55,39 +49,47 @@ class PayeeVoucherRepository extends EloquentBaseRepository
             /** @var PayeeVoucher $payee */
 
 
-            $approvalPayees = PaymentApprovalPayee::whereHas('payment_approval', function ($q) use ($data) {
-                $q->whereHas('payment_vouchers', function ($q) use ($data) {
-                    $q->where('id', $data['data']['payment_voucher_id']);
-                });
-            })->get();
+            /** @var PaymentVoucher $pv */
+            $pv = PaymentVoucher::find($data['data']['payment_voucher_id']);
 
-            if ($approvalPayees->isEmpty()) {
-                throw new AppException('no approval payee added');
-            }
 
-            $sum = 0;
-            foreach ($approvalPayees as $approvalPayee) {
-                $sum = $approvalPayee->remaining_amount + $sum;
-            }
+            if ($pv->is_payment_approval == true) {
+                $approvalPayees = PaymentApprovalPayee::whereHas('payment_approval', function ($q) use ($data) {
+                    $q->whereHas('payment_vouchers', function ($q) use ($data) {
+                        $q->where('id', $data['data']['payment_voucher_id']);
+                    });
+                })->get();
 
-            if ($data['data']['net_amount'] > $sum) {
-                throw new AppException('Insufficient Amount in Payee Approval');
-            }
-
-            $payee = parent::create($data);
-            foreach ($approvalPayees as $approvalPayee) {
-                $remainingAmount = $approvalPayee->remaining_amount - $data['data']['net_amount'];
-                if ($remainingAmount < 0) {
-                    $paymentApprovalPayee = PaymentApprovalPayee::where('id', $approvalPayee->id)->update([
-                        'remaining_amount' => 0
-                    ]);
-                    $data['data']['net_amount'] = $data['data']['net_amount'] - $approvalPayee->remaining_amount;
-                } elseif ($remainingAmount >= 0) {
-
-                    $paymentApprovalPayee = PaymentApprovalPayee::where('id', $approvalPayee->id)->update([
-                        'remaining_amount' => $remainingAmount
-                    ]);
+                if ($approvalPayees->isEmpty()) {
+                    throw new AppException('no approval payee added');
                 }
+
+                $sum = 0;
+                foreach ($approvalPayees as $approvalPayee) {
+                    $sum = $approvalPayee->remaining_amount + $sum;
+                }
+
+                if ($data['data']['net_amount'] > $sum) {
+                    throw new AppException('Insufficient Amount in Payee Approval');
+                }
+
+                $payee = parent::create($data);
+                foreach ($approvalPayees as $approvalPayee) {
+                    $remainingAmount = $approvalPayee->remaining_amount - $data['data']['net_amount'];
+                    if ($remainingAmount < 0) {
+                        $paymentApprovalPayee = PaymentApprovalPayee::where('id', $approvalPayee->id)->update([
+                            'remaining_amount' => 0
+                        ]);
+                        $data['data']['net_amount'] = $data['data']['net_amount'] - $approvalPayee->remaining_amount;
+                    } elseif ($remainingAmount >= 0) {
+
+                        $paymentApprovalPayee = PaymentApprovalPayee::where('id', $approvalPayee->id)->update([
+                            'remaining_amount' => $remainingAmount
+                        ]);
+                    }
+                }
+            }else{
+                $payee = parent::create($data);
             }
 
             DB::commit();
