@@ -85,10 +85,15 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
         DB::beginTransaction();
         try {
-            $retireV = RetireVoucher::create([
-                'payment_voucher_id' => $data['data']['payment_voucher_id'],
-                'status' => AppConstant::RETIRE_VOUCHER_NEW
-            ]);
+
+            $retireV = RetireVoucher::where('payment_voucher_id', $data['data']['payment_voucher_id'])->first();
+
+            if (is_null($retireV)) {
+                $retireV = RetireVoucher::create([
+                    'payment_voucher_id' => $data['data']['payment_voucher_id'],
+                    'status' => AppConstant::RETIRE_VOUCHER_NEW
+                ]);
+            }
 
             RetireLiability::where('retire_voucher_id', $retireV->id)->delete();
 
