@@ -89,7 +89,7 @@ class PaymentRepository extends EloquentBaseRepository
                                 'remaining_amount' => $remainingAmount
                             ]);
                         }else {
-                            throw new AppException('couldn\'t add any payees');
+                            continue;
                         }
                     }
                 }
@@ -245,5 +245,26 @@ class PaymentRepository extends EloquentBaseRepository
         return [
             'status' => $status
         ];
+    }
+
+
+    public function storePvAdvances($data) {
+
+        $paymentV = PaymentVoucher::latest()->orderby('id', 'desc')->first();
+
+            if (is_null($paymentV)) {
+                $data['data']['deptal_id'] = 1;
+            } else {
+                $data['data']['deptal_id'] = $paymentV->deptal_id + 1;
+            }
+            $data['data']['status'] = 'CLOSED';
+
+    }
+
+
+
+    public function getPvAdvances($params) {
+
+        dd($params);
     }
 }

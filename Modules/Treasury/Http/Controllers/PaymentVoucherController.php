@@ -38,7 +38,6 @@ class PaymentVoucherController extends BaseController
     ];
 
 
-
     public function updateStatus(Request $request)
     {
         $this->jobMethod = "updateStatus";
@@ -55,6 +54,18 @@ class PaymentVoucherController extends BaseController
     public function statusPaymentVoucher(Request $request)
     {
         $this->jobMethod = "statusPaymentVoucher";
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
+    public function storePvAdvances(Request $request)
+    {
+        $this->jobMethod = "storePvAdvances";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
+    public function getPvAdvances(Request $request)
+    {
+        $this->jobMethod = "getPvAdvances";
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
 }

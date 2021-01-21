@@ -74,7 +74,11 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::post('payment-approval', 'PaymentApprovalController@store');
     Route::post('payment-approval-update', 'PaymentApprovalController@update');
 
-    //payment approval payees
-
+    //Payment Approval Payees
     Route::resource('payment-approval/{payment_approval_id}/schedule-payees', 'PaymentApprovalPayeeController');
+
+    //Previous Year Advances
+    Route::post('payment-vouchers/previous-advances', 'PaymentVoucherController@storePvAdvances');
+    Route::get('payment-vouchers/previous-advances', 'PaymentVoucherController@getPvAdvances');
+
 });
