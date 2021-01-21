@@ -28,9 +28,9 @@ class AlterPaymentVoucherAddRelationTable extends Migration
     public function down()
     {
         Schema::table('treasury_payment_vouchers', function (Blueprint $table) {
-            $table->dropColumn('is_previous_year_advance');
+//            $table->dropColumn('is_previous_year_advance');
             $table->dropForeign(    'treasury_payment_vouchers_payment_approve_id_foreign');
-            $table->foreign('cashbook_id')->references('id')->on('treasury_cashbooks');
+//            $table->foreign('cashbook_id')->references('id')->on('treasury_cashbooks');
         });
     }
 }

@@ -11,6 +11,9 @@ use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\CompanySetting;
 use Modules\Admin\Models\Tax;
+use Modules\Finance\Models\Currency;
+use Modules\Treasury\Models\Aie;
+use Modules\Treasury\Models\Cashbook;
 use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentApproval;
 use Modules\Treasury\Models\PaymentApprovalPayee;
@@ -61,7 +64,7 @@ class PaymentRepository extends EloquentBaseRepository
 
                         if (($payee['id'] === $employeeId) || ($payee['id'] === $companyId)) {
                             //todo payee create and deduction in payment approval payee amount
-                            $taxes  = Tax::whereIn('id', json_decode($approval_payee->tax_ids, true))->pluck('tax')->all();
+                            $taxes = Tax::whereIn('id', json_decode($approval_payee->tax_ids, true))->pluck('tax')->all();
 
                             $totalTax = array_sum($taxes);
                             //check to make sure amount is well balanced in both
@@ -77,18 +80,17 @@ class PaymentRepository extends EloquentBaseRepository
                                 'employee_id' => $employeeId,
                                 'company_id' => $companyId,
                                 'net_amount' => $payee['amount'],
-                                'total_tax' => ($totalTax*$payee['amount'])/100,
+                                'total_tax' => ($totalTax * $payee['amount']) / 100,
                                 'year' => $approval_payee->year,
                                 'details' => $approval_payee->details,
                                 'tax_ids' => $approval_payee->tax_ids
                             ]);
 
 
-
                             PaymentApprovalPayee::where('id', $approval_payee->id)->update([
                                 'remaining_amount' => $remainingAmount
                             ]);
-                        }else {
+                        } else {
                             continue;
                         }
                     }
@@ -248,22 +250,36 @@ class PaymentRepository extends EloquentBaseRepository
     }
 
 
-    public function storePvAdvances($data) {
+    public function storePvAdvances($data)
+    {
 
         $paymentV = PaymentVoucher::latest()->orderby('id', 'desc')->first();
 
-            if (is_null($paymentV)) {
-                $data['data']['deptal_id'] = 1;
-            } else {
-                $data['data']['deptal_id'] = $paymentV->deptal_id + 1;
-            }
-            $data['data']['status'] = 'CLOSED';
+        if (is_null($paymentV)) {
+            $data['data']['deptal_id'] = 1;
+        } else {
+            $data['data']['deptal_id'] = $paymentV->deptal_id + 1;
+        }
 
+        /** @var Cashbook $cashbook */
+        $cashbook = Cashbook::find($data['data']['cashbook_id']);
+        $data['data']['status'] = 'CLOSED';
+        $data['data']['is_previous_year_advance'] = true;
+        $data['data']['currency_id'] = $cashbook->currency_id;
+
+        $aie = Aie::first();
+        //dont have any so assigning randomly
+        $data['data']['aie_id'] = $aie->id;
+
+
+       $pv = parent::create($data);
+
+       return $pv;
     }
 
 
-
-    public function getPvAdvances($params) {
+    public function getPvAdvances($params)
+    {
 
         dd($params);
     }
