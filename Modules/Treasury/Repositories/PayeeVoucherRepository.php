@@ -112,11 +112,4 @@ class PayeeVoucherRepository extends EloquentBaseRepository
         return parent::getAll($params, $query);
     }
 
-
-    public function storePvAdvancesPayees($data) {
-
-
-        dd($data);
-    }
-
 }

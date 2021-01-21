@@ -79,6 +79,7 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
 
     //Previous Year Advances
     Route::post('payment-vouchers/previous-advances', 'PaymentVoucherController@storePvAdvances');
+    Route::post('payment-vouchers/previous-advances-update', 'PaymentVoucherController@statusUpdatePreviousYearAdvance');
     Route::get('payment-vouchers/previous-advances', 'PaymentVoucherController@getPvAdvances');
 
 });

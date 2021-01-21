@@ -63,6 +63,12 @@ class PaymentVoucherController extends BaseController
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 
+    public function statusUpdatePreviousYearAdvance(Request $request)
+    {
+        $this->jobMethod = "statusUpdatePreviousYearAdvance";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
     public function getPvAdvances(Request $request)
     {
         $this->jobMethod = "getPvAdvances";

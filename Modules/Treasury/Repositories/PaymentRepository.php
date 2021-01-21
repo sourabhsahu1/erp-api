@@ -5,6 +5,7 @@ namespace Modules\Treasury\Repositories;
 
 
 use App\Constants\AppConstant;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Luezoid\Laravelcore\Exceptions\AppException;
@@ -18,6 +19,8 @@ use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentApproval;
 use Modules\Treasury\Models\PaymentApprovalPayee;
 use Modules\Treasury\Models\PaymentVoucher;
+use Modules\Treasury\Models\RetireLiability;
+use Modules\Treasury\Models\RetireVoucher;
 use Modules\Treasury\Models\ScheduleEconomic;
 use Modules\Treasury\Models\VoucherSourceUnit;
 
@@ -312,5 +315,52 @@ class PaymentRepository extends EloquentBaseRepository
              $tax->selectRaw('SUM(total_tax)');
          }]);*/
         return parent::getAll($params, $query);
+    }
+
+
+    public function statusUpdatePreviousYearAdvance($data) {
+        $pv = PaymentVoucher::whereIn('id', json_decode($data['data']['payment_voucher_ids'],true));
+
+        foreach (json_decode($data['data']['payment_voucher_ids'],true) as $payment_voucher_id) {
+
+            $pv = PaymentVoucher::with('total_amount')->where('id', $payment_voucher_id)->first();
+//dd($pv);
+            $payeeVoucherIds = PayeeVoucher::where('payment_voucher_id', $pv->id)->pluck('id')->all();
+
+            if (is_null($payeeVoucherIds)) {
+                throw new AppException('Payee not added');
+            }
+
+//            $scheduleVoucher = ScheduleEconomic::whereIn('payee_voucher_id', $payeeVoucherIds)->first();
+//
+//            if (is_null($scheduleVoucher)) {
+//                throw new AppException('Schedule Economic not added');
+//            }
+
+            $retireVoucher = RetireVoucher::create([
+                'payment_voucher_id' => $pv->id,
+                'status' => AppConstant::RETIRE_VOUCHER_NEW
+            ]);
+
+            $retireLiability = RetireLiability::create([
+                'liability_value_date' => $pv->value_date,
+                'amount' => $pv->total_amount->amount,
+                'economic_segment_id' => $pv->economic_segment_id,
+                'retire_voucher_id' => $retireVoucher->id,
+                'details' => $pv->payment_description,
+                'created_at' => Carbon::now()->toDateTimeString(),
+                'updated_at' => Carbon::now()->toDateTimeString()
+            ]);
+
+        }
+
+
+
+        $pv->update([
+            'status' => AppConstant::VOUCHER_STATUS_CLOSED
+        ]);
+        return [
+            'data' => 'Status Updated Successfully'
+        ];
     }
 }

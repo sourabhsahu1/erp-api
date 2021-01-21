@@ -25,10 +25,4 @@ class PayeeVoucherController extends BaseController
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 
-
-    public function getPvAdvances(Request $request)
-    {
-        $this->jobMethod = "getPvAdvances";
-        return $this->handleCustomEndPoint(BaseJob::class, $request);
-    }
 }
