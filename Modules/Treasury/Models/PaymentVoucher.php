@@ -73,6 +73,7 @@ class PaymentVoucher extends Eloquent
         'voucher_number' => 'int',
         'payment_approve_id' => 'int',
         'currency_id' => 'int',
+        'cashbook_id' => 'int',
         'mandate_id' => 'int',
         'x_rate' => 'float',
         'official_x_rate' => 'float',
@@ -87,6 +88,7 @@ class PaymentVoucher extends Eloquent
         'checking_officer_id' => 'int',
         'paying_officer_id' => 'int',
         'financial_controller_id' => 'int',
+        'is_previous_year_advance' => 'boolean',
         'value_date' =>'datetime:Y-m-d'
     ];
 
@@ -107,6 +109,7 @@ class PaymentVoucher extends Eloquent
         'status',
         'mandate_id',
         'currency_id',
+        'cashbook_id',
         'payment_description',
         'x_rate',
         'official_x_rate',
@@ -119,7 +122,8 @@ class PaymentVoucher extends Eloquent
         'geo_code_segment_id',
         'checking_officer_id',
         'paying_officer_id',
-        'financial_controller_id'
+        'financial_controller_id',
+        'is_previous_year_advance'
     ];
 
     protected $appends = ['year', 'types','is_checked', 'is_payed', 'is_audited','is_approved'];

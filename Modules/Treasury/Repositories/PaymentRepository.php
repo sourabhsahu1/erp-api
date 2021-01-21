@@ -263,7 +263,7 @@ class PaymentRepository extends EloquentBaseRepository
 
         /** @var Cashbook $cashbook */
         $cashbook = Cashbook::find($data['data']['cashbook_id']);
-        $data['data']['status'] = 'CLOSED';
+        $data['data']['status'] = 'NEW';
         $data['data']['is_previous_year_advance'] = true;
         $data['data']['currency_id'] = $cashbook->currency_id;
 
@@ -271,9 +271,7 @@ class PaymentRepository extends EloquentBaseRepository
         //dont have any so assigning randomly
         $data['data']['aie_id'] = $aie->id;
 
-
        $pv = parent::create($data);
-
        return $pv;
     }
 
@@ -281,6 +279,38 @@ class PaymentRepository extends EloquentBaseRepository
     public function getPvAdvances($params)
     {
 
-        dd($params);
+        $query = PaymentVoucher::with([
+            'program_segment',
+            'economic_segment',
+            'functional_segment',
+            'geo_code_segment',
+            'admin_segment',
+            'fund_segment',
+            'aie',
+            'currency',
+            'voucher_source_unit',
+            'total_amount',
+            'total_tax',
+            'payee_vouchers.admin_company.company_bank.bank_branch.hr_bank',
+            'payee_vouchers.employee.employee_bank.branches.hr_bank',
+            'schedule_economic.economic_segment',
+            'paying_officer',
+            'checking_officer',
+            'financial_controller'
+        ]);
+
+        $query->where('is_previous_year_advance', true);
+
+        if (isset($params['inputs']['voucher_source_unit_id'])) {
+            $query->where('voucher_source_unit_id', $params['inputs']['voucher_source_unit_id']);
+        }
+
+        if (isset($params['inputs']['status'])) {
+            $query->where('status', $params['inputs']['status']);
+        }
+        /* $query->with(['total_tax' => function ($tax) {
+             $tax->selectRaw('SUM(total_tax)');
+         }]);*/
+        return parent::getAll($params, $query);
     }
 }

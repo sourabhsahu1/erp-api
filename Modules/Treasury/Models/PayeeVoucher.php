@@ -59,7 +59,12 @@ class PayeeVoucher extends Eloquent
 		'total_tax',
 		'year',
 		'details',
-        'tax_ids'
+        'tax_ids',
+        'pay_mode',
+        'instrument_number',
+        'instrument_type',
+        'instrument_teller_number',
+        'instrument_issued_by'
 	];
 
 	public function admin_company()
