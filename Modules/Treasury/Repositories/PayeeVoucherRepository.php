@@ -23,34 +23,35 @@ class PayeeVoucherRepository extends EloquentBaseRepository
         DB::beginTransaction();
         try {
 
+            /** @var PaymentVoucher $pv */
+            $pv = PaymentVoucher::find($data['data']['payment_voucher_id']);
 
-            if (isset($data['data']['employee_id'])) {
-                $empBank = EmployeeBankDetail::where('employee_id', $data['data']['employee_id'])->first();
-                if (is_null($empBank)) {
-                    throw new AppException('Bank Required to Add Payee Employee');
+
+            if ($pv->is_previous_year_advance == false) {
+                if (isset($data['data']['employee_id'])) {
+                    $empBank = EmployeeBankDetail::where('employee_id', $data['data']['employee_id'])->first();
+                    if (is_null($empBank)) {
+                        throw new AppException('Bank Required to Add Payee Employee');
+                    }
+
+                    EmployeeBankDetail::where('id', $data['data']['payee_bank_id'])->update([
+                        'is_active' => true
+                    ]);
+                } elseif (isset($data['data']['company_id'])) {
+                    $compBank = CompanyBank::where('company_id', $data['data']['company_id'])->first();
+                    if (is_null($compBank)) {
+                        throw new AppException('Bank Required to Add Payee Company');
+                    }
+                    CompanyBank::where('id', $data['data']['payee_bank_id'])->update([
+                        'is_active' => true
+                    ]);
                 }
-                EmployeeBankDetail::where('id', $data['data']['payee_bank_id'])->update([
-                    'is_active' => true
-                ]);
             }
 
-            if (isset($data['data']['company_id'])) {
-                $compBank = CompanyBank::where('company_id', $data['data']['company_id'])->first();
-                if (is_null($compBank)) {
-                    throw new AppException('Bank Required to Add Payee Company');
-                }
-                CompanyBank::where('id', $data['data']['payee_bank_id'])->update([
-                    'is_active' => true
-                ]);
-            }
 
             //todo logic to write approval deduction
 
             /** @var PayeeVoucher $payee */
-
-
-            /** @var PaymentVoucher $pv */
-            $pv = PaymentVoucher::find($data['data']['payment_voucher_id']);
 
 
             if ($pv->is_payment_approval == true) {
@@ -88,7 +89,7 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                         ]);
                     }
                 }
-            }else{
+            } else {
                 $payee = parent::create($data);
             }
 

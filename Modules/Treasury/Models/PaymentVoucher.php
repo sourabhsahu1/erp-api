@@ -21,6 +21,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $value_date
  * @property int $payment_approve_id
  * @property boolean $is_payment_approval
+ * @property boolean $is_previous_year_advance
  * @property int $mandate_id
  * @property string $payee
  * @property string $type
