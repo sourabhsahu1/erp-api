@@ -143,9 +143,18 @@ class   PaymentRepository extends EloquentBaseRepository
         ]);
 
         if (isset($params['inputs']['is_personal_advance_unit'])) {
-            $query->whereHas('voucher_source_unit', function ($query) use ($params) {
-                $query->where('is_personal_advance_unit', true);
-            });
+            if ($params['inputs']['is_personal_advance_unit'] == true) {
+
+                $query->whereHas('voucher_source_unit', function ($query) use ($params) {
+                    $query->where('is_personal_advance_unit', true);
+                });
+            }
+            if ($params['inputs']['is_personal_advance_unit'] == false) {
+
+                $query->whereHas('voucher_source_unit', function ($query) use ($params) {
+                    $query->where('is_personal_advance_unit', false);
+                });
+            }
         }
 
         if (isset($params['inputs']['voucher_source_unit_id'])) {
@@ -290,8 +299,8 @@ class   PaymentRepository extends EloquentBaseRepository
         //dont have any so assigning randomly
         $data['data']['aie_id'] = $aie->id;
 
-       $pv = parent::create($data);
-       return $pv;
+        $pv = parent::create($data);
+        return $pv;
     }
 
 
@@ -334,10 +343,11 @@ class   PaymentRepository extends EloquentBaseRepository
     }
 
 
-    public function statusUpdatePreviousYearAdvance($data) {
-        $pv = PaymentVoucher::whereIn('id', json_decode($data['data']['payment_voucher_ids'],true));
+    public function statusUpdatePreviousYearAdvance($data)
+    {
+        $pv = PaymentVoucher::whereIn('id', json_decode($data['data']['payment_voucher_ids'], true));
 
-        foreach (json_decode($data['data']['payment_voucher_ids'],true) as $payment_voucher_id) {
+        foreach (json_decode($data['data']['payment_voucher_ids'], true) as $payment_voucher_id) {
 
             $pv = PaymentVoucher::with('total_amount')->where('id', $payment_voucher_id)->first();
 //dd($pv);
@@ -369,7 +379,6 @@ class   PaymentRepository extends EloquentBaseRepository
             ]);
 
         }
-
 
 
         $pv->update([
