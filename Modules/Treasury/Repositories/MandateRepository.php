@@ -94,29 +94,11 @@ class MandateRepository extends EloquentBaseRepository
     public function update($data)
     {
 
-        if (isset($data['data']['status'])) {
-            if ($data['data']['status'] == AppConstant::ON_MANDATE_1ST_AUTHORISED) {
-                $data['data']['first_authorised_by'] = $data['data']['user_id'];
-                $data['data']['first_authorised_date'] = Carbon::now()->toDateString();
-            }
+        $mandate = Mandate::find($data['data']['id']);
 
-            if ($data['data']['status'] == AppConstant::ON_MANDATE_2ND_AUTHORISED) {
-                $data['data']['second_authorised_by'] = $data['data']['user_id'];
-                $data['data']['second_authorised_date'] = Carbon::now()->toDateString();
-
-                PaymentVoucher::where('mandate_id', $data['data']['id'])->update([
-                    'status' => AppConstant::VOUCHER_STATUS_CLOSED
-                ]);
-            }
-
-            if ($data['data']['status'] == AppConstant::ON_MANDATE_POSTED_TO_GL) {
-                PaymentVoucher::where('mandate_id', $data['data']['id'])->update([
-                    'status' => AppConstant::VOUCHER_STATUS_POSTED_TO_GL
-                ]);
-
-                //todo jv from pv
-
-//                JournalVoucher::create([]);
+        if ($mandate->status != AppConstant::ON_MANDATE_NEW) {
+            if ($data['data']['status'] != AppConstant::RETIRE_VOUCHER_NEW) {
+                throw new AppException('Cannot update Mandate Status is not NEW');
             }
         }
 
@@ -236,6 +218,7 @@ class MandateRepository extends EloquentBaseRepository
 
                             $jvD = null;
                             $totalNetAmount = 0;
+                            $totalTax = 0;
                             foreach ($paymentVoucher->payee_vouchers as $payee_voucher) {
                                 foreach (json_decode($payee_voucher->tax_ids, true) as $tax_id) {
                                     /** @var Tax $tax */
@@ -256,7 +239,7 @@ class MandateRepository extends EloquentBaseRepository
                                             'functional_segment_id' => $paymentVoucher->functional_segment_id,
                                             'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
                                             'line_value_type' => 'CREDIT',
-                                            'lv_line_value' => ($tax->tax * $payee_voucher->net_amount * $paymentVoucher->x_rate) / 100,
+                                            'lv_line_value' => ($tax->tax * $payee_voucher->net_amount) / 100,
                                             'local_currency' => $companySetting->local_currency,
                                             'created_at' => Carbon::now()->toDateTimeString(),
                                             'updated_at' => Carbon::now()->toDateTimeString()
@@ -281,7 +264,7 @@ class MandateRepository extends EloquentBaseRepository
                                         'functional_segment_id' => $paymentVoucher->functional_segment_id,
                                         'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
                                         'line_value_type' => 'DEBIT',
-                                        'lv_line_value' => $schedule_economic->amount * $paymentVoucher->x_rate,
+                                        'lv_line_value' => $schedule_economic->amount,
                                         'local_currency' => $companySetting->local_currency,
                                         'created_at' => Carbon::now()->toDateTimeString(),
                                         'updated_at' => Carbon::now()->toDateTimeString()
@@ -291,6 +274,8 @@ class MandateRepository extends EloquentBaseRepository
                                     $totalNetAmount = $totalNetAmount + $schedule_economic->amount;
 
                                 }
+
+                                $totalTax = $totalTax + $payee_voucher->total_tax;
                             }
 
                             //entry for credit
@@ -310,7 +295,7 @@ class MandateRepository extends EloquentBaseRepository
                                 'functional_segment_id' => $paymentVoucher->functional_segment_id,
                                 'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
                                 'line_value_type' => 'CREDIT',
-                                'lv_line_value' => $totalNetAmount * $paymentVoucher->x_rate,
+                                'lv_line_value' => $totalNetAmount + $totalTax,
                                 'local_currency' => $companySetting->local_currency,
                                 'created_at' => Carbon::now()->toDateTimeString(),
                                 'updated_at' => Carbon::now()->toDateTimeString()

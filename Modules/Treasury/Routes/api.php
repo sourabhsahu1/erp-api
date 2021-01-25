@@ -20,7 +20,11 @@ Route::middleware('auth:api')->get('/treasury', function (Request $request) {
 
 Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::resource('default-settings', 'DefaultSettingController');
-    Route::resource('cashbooks', 'CashbookController');
+//    Route::resource('cashbooks', 'CashbookController');
+    Route::get('cashbooks', 'CashbookController@index');
+    Route::post('cashbooks', 'CashbookController@store');
+    Route::put('cashbooks/{id}', 'CashbookController@update');
+    Route::delete('cashbooks/{id}', 'CashbookController@destroy');
     Route::resource('aies', 'AieController');
     Route::resource('source-units', 'VoucherSourceUnitController');
     Route::get('cashbook-types', 'CashbookController@getCashbookTypes');
@@ -81,5 +85,9 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::post('payment-vouchers/previous-advances', 'PaymentVoucherController@storePvAdvances');
     Route::post('payment-vouchers/previous-advances-update', 'PaymentVoucherController@statusUpdatePreviousYearAdvance');
     Route::get('payment-vouchers/previous-advances', 'PaymentVoucherController@getPvAdvances');
+
+
+    //downlaod reports
+    Route::get('mandate/download', 'MandateController@downloadMandateReport');
 
 });

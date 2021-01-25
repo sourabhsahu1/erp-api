@@ -49,7 +49,6 @@ class CashbookRepository extends EloquentBaseRepository
         DB::beginTransaction();
         try {
             $cashbook = parent::update($data);
-
             CashbookMonthlyBalance::where('cashbook_id', $data['id'])->delete();
 
             foreach ($cashbookMonthly as $key => &$item) {

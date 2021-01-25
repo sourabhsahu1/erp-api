@@ -19,17 +19,18 @@ class ReceiptPayeeRepository extends EloquentBaseRepository
     {
 
         if (isset($data['data']['employee_id'])) {
+
             $empBank = EmployeeBankDetail::where('employee_id', $data['data']['employee_id'])->first();
             if (is_null($empBank)) {
                 throw new AppException('Bank Required to Add Payee Employee');
             }
-        }
-
-        if (isset($data['data']['company_id'])) {
+        }elseif (isset($data['data']['company_id'])) {
             $compBank = CompanyBank::where('company_id', $data['data']['company_id'])->first();
             if (is_null($compBank)) {
                 throw new AppException('Bank Required to Add Payee Company');
             }
+        }else {
+            throw new AppException("Payer Id Can't be null");
         }
         $payeeBank = parent::create($data);
         return $payeeBank;

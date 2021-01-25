@@ -5,6 +5,7 @@ namespace Modules\Treasury\Http\Controllers;
 
 
 use App\Http\Controllers\BaseController;
+use App\Services\WKHTMLPDfConverter;
 use Illuminate\Http\Request;
 use Luezoid\Laravelcore\Jobs\BaseJob;
 use Modules\Treasury\Repositories\MandateRepository;
@@ -51,5 +52,22 @@ class MandateController extends BaseController
     {
         $this->jobMethod = 'mandateUpdate';
         return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
+
+    public function downloadMandateReport($params) {
+
+        $fileName = 'employee-details' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
+        $filePath = "pdf/";
+        if (strtolower($params['inputs']['type']) == 'short') {
+            app()->make(WKHTMLPDfConverter::class)
+                ->convert(view('reports.employee-short-report', ['data' => $data])->render(), $fileName);
+        }
+        if (strtolower($params['inputs']['type']) == 'extended') {
+            app()->make(WKHTMLPDfConverter::class)
+                ->convert(view('reports.employee-full-report', ['data' => $data])->render(), $fileName);
+        }
+
+        return ['url' => url($filePath . $fileName)];
     }
 }
