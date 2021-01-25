@@ -143,14 +143,12 @@ class   PaymentRepository extends EloquentBaseRepository
         ]);
 
         if (isset($params['inputs']['is_personal_advance_unit'])) {
-            if ($params['inputs']['is_personal_advance_unit'] == true) {
-
+            if ($params['inputs']['is_personal_advance_unit'] == "true") {
                 $query->whereHas('voucher_source_unit', function ($query) use ($params) {
                     $query->where('is_personal_advance_unit', true);
                 });
             }
-            if ($params['inputs']['is_personal_advance_unit'] == false) {
-
+            if ($params['inputs']['is_personal_advance_unit'] == "false") {
                 $query->whereHas('voucher_source_unit', function ($query) use ($params) {
                     $query->where('is_personal_advance_unit', false);
                 });
