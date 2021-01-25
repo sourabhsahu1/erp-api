@@ -24,7 +24,7 @@ use Modules\Treasury\Models\RetireVoucher;
 use Modules\Treasury\Models\ScheduleEconomic;
 use Modules\Treasury\Models\VoucherSourceUnit;
 
-class PaymentRepository extends EloquentBaseRepository
+class   PaymentRepository extends EloquentBaseRepository
 {
     public $model = PaymentVoucher::class;
 
@@ -142,6 +142,12 @@ class PaymentRepository extends EloquentBaseRepository
             'financial_controller'
         ]);
 
+        if (isset($params['inputs']['is_personal_advance_unit'])) {
+            $query->whereHas('voucher_source_unit', function ($query) use ($params) {
+                $query->where('is_personal_advance_unit', true);
+            });
+        }
+
         if (isset($params['inputs']['voucher_source_unit_id'])) {
             $query->where('voucher_source_unit_id', $params['inputs']['voucher_source_unit_id']);
         }
@@ -257,6 +263,16 @@ class PaymentRepository extends EloquentBaseRepository
     {
 
         $paymentV = PaymentVoucher::latest()->orderby('id', 'desc')->first();
+
+        /** @var VoucherSourceUnit $sourceUnit */
+        $sourceUnit = VoucherSourceUnit::find($data['data']['voucher_source_unit_id']);
+
+        if (is_null($sourceUnit)) {
+            throw new AppException('Voucher Source Unit not exit');
+        }
+        if ($sourceUnit->is_personal_advance_unit == false) {
+            throw new AppException('Cannot Pv of Non Advances');
+        }
 
         if (is_null($paymentV)) {
             $data['data']['deptal_id'] = 1;

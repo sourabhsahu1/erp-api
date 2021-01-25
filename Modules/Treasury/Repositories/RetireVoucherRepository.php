@@ -44,9 +44,6 @@ class RetireVoucherRepository extends EloquentBaseRepository
             AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER,
             AppConstant::VOUCHER_TYPE_STANDING_VOUCHER,
             AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER
-        ])->whereIn('status', [
-            AppConstant::VOUCHER_STATUS_CLOSED,
-            AppConstant::VOUCHER_STATUS_POSTED_TO_GL
         ]);
 
 
@@ -136,6 +133,13 @@ class RetireVoucherRepository extends EloquentBaseRepository
         $data['data']['payment_voucher_ids'] = json_decode($data['data']['payment_voucher_ids'], true);
         $retireV = RetireVoucher::whereIn('payment_voucher_id', $data['data']['payment_voucher_ids']);
 
+        $paymentVouchers = PaymentVoucher::whereIn('id', $data['data']['payment_voucher_ids'])->get();
+        /** @var PaymentVoucher $paymentVoucher */
+        foreach ($paymentVouchers as $paymentVoucher) {
+            if (($paymentVoucher->status != AppConstant::VOUCHER_STATUS_CLOSED)|| ($paymentVoucher->status != AppConstant::VOUCHER_STATUS_POSTED_TO_GL)) {
+                throw new AppException('Payment Voucher Id '.$paymentVoucher->id. ' not CLOSED or POSTED TO GL  yet');
+            }
+        }
         if ($retireV->get()->isEmpty()) {
             throw new AppException('Cannot find Retire Voucher');
         } else {
@@ -149,5 +153,20 @@ class RetireVoucherRepository extends EloquentBaseRepository
         return [
             'status' => $status
         ];
+    }
+
+
+    public function updateLiabilities($data)
+    {
+        $data['id']= $data['data']['id'];
+
+        $retireVoucher = RetireVoucher::find($data['data']['retire_voucher_id']);
+
+        if ($retireVoucher->status != AppConstant::RETIRE_VOUCHER_NEW) {
+            throw new AppException('Cannot add liability Retire Voucher Status is not New');
+        }
+        $this->model = RetireLiability::class;
+        return parent::update($data);
+
     }
 }

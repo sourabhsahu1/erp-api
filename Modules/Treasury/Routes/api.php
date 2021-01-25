@@ -72,6 +72,7 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::post('retire-voucher-update', 'RetireVoucherController@update');
 
     Route::get('retire-voucher/{retire_voucher_id}/liabilities', 'RetireVoucherController@getLiabilities');
+    Route::put('retire-voucher/{retire_voucher_id}/liabilities/{id}', 'RetireVoucherController@updateLiabilities');
 
     //Payment Approval
     Route::get('payment-approval', 'PaymentApprovalController@index');
