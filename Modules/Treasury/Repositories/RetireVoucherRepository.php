@@ -157,6 +157,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
         /** @var PaymentVoucher $paymentVoucher */
         foreach ($paymentVouchers as $paymentVoucher) {
 
+            Log::info($paymentVoucher);
             /** @var RetireVoucher $retireVoucher */
             $retireVoucher = RetireVoucher::with('retire_liabilities')->where('payment_voucher_id', $paymentVoucher->id)->first();
 
