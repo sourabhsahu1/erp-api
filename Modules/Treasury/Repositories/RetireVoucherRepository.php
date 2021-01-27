@@ -155,6 +155,14 @@ class RetireVoucherRepository extends EloquentBaseRepository
         $paymentVouchers = PaymentVoucher::whereIn('id', $data['data']['payment_voucher_ids'])->get();
         /** @var PaymentVoucher $paymentVoucher */
         foreach ($paymentVouchers as $paymentVoucher) {
+
+            /** @var RetireVoucher $retireVoucher */
+            $retireVoucher = RetireVoucher::with('retire_liabilities')->where('payment_voucher_id', $paymentVoucher->id)->first();
+
+            if ($retireVoucher->retire_liabilities->isEmpty()) {
+                throw new AppException('Liability to be added in retire voucher');
+            }
+
             if (($paymentVoucher->status != AppConstant::VOUCHER_STATUS_CLOSED) || ($paymentVoucher->status != AppConstant::VOUCHER_STATUS_POSTED_TO_GL)) {
                 throw new AppException('Payment Voucher Id ' . $paymentVoucher->id . ' not CLOSED or POSTED TO GL  yet');
             }
