@@ -48,11 +48,19 @@ class PaymentApprovalPayee extends Eloquent
 //		'year'
     ];
 
-    protected $appends = ['amount'];
+    protected $appends = [
+        'amount',
+        'checked'
+    ];
 
     public function getAmountAttribute()
     {
         return $this->net_amount - $this->remaining_amount;
+    }
+
+    public function getCheckedAttribute()
+    {
+        return ($this->net_amount > $this->remaining_amount) ? true : false;
     }
 
     protected $fillable = [
