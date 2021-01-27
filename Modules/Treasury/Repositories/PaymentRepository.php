@@ -147,7 +147,8 @@ class   PaymentRepository extends EloquentBaseRepository
             'schedule_economic.economic_segment',
             'paying_officer',
             'checking_officer',
-            'financial_controller'
+            'financial_controller',
+            'payment_approval'
         ]);
 
         if (isset($params['inputs']['is_personal_advance_unit'])) {

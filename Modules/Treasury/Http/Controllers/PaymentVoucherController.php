@@ -34,7 +34,18 @@ class PaymentVoucherController extends BaseController
         'payee_vouchers',
         'paying_officer',
         'checking_officer',
-        'financial_controller'
+        'financial_controller',
+        'payment_approval',
+        'payment_approval.admin_segment',
+        'payment_approval.fund_segment',
+        'payment_approval.economic_segment',
+        'payment_approval.currency',
+        'payment_approval.authorised_by',
+        'payment_approval.prepared_by',
+        'payment_approval.payment_approval_payees.company.company_bank.bank',
+        'payment_approval.payment_approval_payees.company.company_bank.bank_branch',
+        'payment_approval.payment_approval_payees.employee.employee_bank.bank',
+        'payment_approval.payment_approval_payees.employee.employee_bank.branches'
     ];
 
 

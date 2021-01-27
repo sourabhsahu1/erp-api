@@ -59,6 +59,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Modules\Treasury\Models\PayeeVoucher $payee_vouchers
  * @property \Modules\Treasury\Models\VoucherSourceUnit $treasury_voucher_source_unit
  * @property \Modules\Treasury\Models\RetireVoucher $retire_vouchers
+ * @property \Modules\Treasury\Models\PaymentApproval $payment_approval
  *
  * @package Modules\Treasury\Models
  */
@@ -249,4 +250,9 @@ class PaymentVoucher extends Eloquent
     public function retire_voucher() {
         return $this->hasOne(RetireVoucher::class, 'payment_voucher_id');
     }
+
+    public function payment_approval() {
+        return $this->belongsTo(PaymentApproval::class, 'payment_approve_id');
+    }
+
 }
