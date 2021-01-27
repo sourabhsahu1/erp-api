@@ -80,11 +80,10 @@ class   PaymentRepository extends EloquentBaseRepository
                             $totalTax = array_sum($taxes);
                             //check to make sure amount is well balanced in both
                             $remainingAmount = $approval_payee->remaining_amount - $payee['amount'];
-                            Log::info($remainingAmount);
                             if ($remainingAmount < 0) {
                                 continue;
-                                //or throw exception
                             }
+
 
                             $payeeVoucher = PayeeVoucher::create([
                                 'payment_voucher_id' => $paymentVoucher->id,

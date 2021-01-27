@@ -7,11 +7,12 @@
 
 namespace Modules\Treasury\Models;
 
+use Illuminate\Support\Carbon;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class PaymentApprovalPayee
- * 
+ *
  * @property int $id
  * @property int $payment_approval_id
  * @property \Carbon\Carbon $year
@@ -33,31 +34,38 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  */
 class PaymentApprovalPayee extends Eloquent
 {
-	protected $casts = [
-		'payment_approval_id' => 'int',
-		'employee_id' => 'int',
-		'company_id' => 'int',
-		'net_amount' => 'float',
-		'remaining_amount' => 'float',
-		'total_tax' => 'float',
+    protected $casts = [
+        'payment_approval_id' => 'int',
+        'employee_id' => 'int',
+        'company_id' => 'int',
+        'net_amount' => 'float',
+        'remaining_amount' => 'float',
+        'total_tax' => 'float',
 //		'tax_ids' => 'json'
-	];
+    ];
 
-	protected $dates = [
+    protected $dates = [
 //		'year'
-	];
+    ];
 
-	protected $fillable = [
-		'payment_approval_id',
-		'year',
-		'details',
-		'employee_id',
-		'company_id',
-		'net_amount',
-		'remaining_amount',
-		'total_tax',
-		'tax_ids'
-	];
+    protected $appends = ['amount'];
+
+    public function getAmountAttribute()
+    {
+        return $this->net_amount - $this->remaining_amount;
+    }
+
+    protected $fillable = [
+        'payment_approval_id',
+        'year',
+        'details',
+        'employee_id',
+        'company_id',
+        'net_amount',
+        'remaining_amount',
+        'total_tax',
+        'tax_ids'
+    ];
 
     public function company()
     {
