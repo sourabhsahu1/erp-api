@@ -7,6 +7,7 @@ namespace Modules\Treasury\Repositories;
 use App\Constants\AppConstant;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Treasury\Models\PaymentVoucher;
@@ -159,6 +160,10 @@ class RetireVoucherRepository extends EloquentBaseRepository
             /** @var RetireVoucher $retireVoucher */
             $retireVoucher = RetireVoucher::with('retire_liabilities')->where('payment_voucher_id', $paymentVoucher->id)->first();
 
+            Log::info($retireVoucher);
+            if (is_null($retireVoucher)) {
+                throw new AppException('Liability to be added in retire voucher');
+            }
             if (is_null($retireVoucher->retire_liabilities)) {
                 throw new AppException('Liability to be added in retire voucher');
             }
