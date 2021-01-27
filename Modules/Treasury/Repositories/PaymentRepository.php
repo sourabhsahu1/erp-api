@@ -65,7 +65,15 @@ class   PaymentRepository extends EloquentBaseRepository
                     $companyId = $approval_payee->company_id;
                     foreach ($data['data']['payees'] as $payee) {
 
-                        if (($payee['id'] === $employeeId) || ($payee['id'] === $companyId)) {
+                        /** @var PaymentApprovalPayee $approvalPayee */
+                        $approvalPayee = PaymentApprovalPayee::find($payee['id']);
+                        if (is_null($approvalPayee->company_id)) {
+                            $payeeId = $approvalPayee->company_id;
+                        }else{
+                            $payeeId = $approvalPayee->employee_id;
+                        }
+
+                        if (($payeeId === $employeeId) || ($payeeId === $companyId)) {
                             //todo payee create and deduction in payment approval payee amount
                             $taxes = Tax::whereIn('id', json_decode($approval_payee->tax_ids, true))->pluck('tax')->all();
 
