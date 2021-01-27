@@ -69,7 +69,7 @@ class   PaymentRepository extends EloquentBaseRepository
                         $approvalPayee = PaymentApprovalPayee::find($payee['id']);
                         if (is_null($approvalPayee->company_id)) {
                             $payeeId = $approvalPayee->company_id;
-                        }else{
+                        } else {
                             $payeeId = $approvalPayee->employee_id;
                         }
 
@@ -150,6 +150,9 @@ class   PaymentRepository extends EloquentBaseRepository
             'financial_controller',
             'payment_approval'
         ]);
+
+        $query->whereNull('mandate_id')
+            ->where('is_previous_year_advance', false);
 
         if (isset($params['inputs']['is_personal_advance_unit'])) {
             if ($params['inputs']['is_personal_advance_unit'] == "true") {
