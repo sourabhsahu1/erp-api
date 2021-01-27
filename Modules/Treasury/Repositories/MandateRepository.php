@@ -69,10 +69,12 @@ class MandateRepository extends EloquentBaseRepository
                     }
                 }
 
-                $paymentV->whereIn('status', [
+               $paymentV = $paymentV->whereIn('status', [
                     AppConstant::VOUCHER_STATUS_AUDITED
                 ])->get();
 
+
+//                Log::info($paymentV);
 
                 if ($paymentV->isEmpty()) {
                     throw new AppException('payment vouchers are not audited');
@@ -83,7 +85,6 @@ class MandateRepository extends EloquentBaseRepository
                     if (strtotime($data['data']['value_date']) < strtotime($payment->value_date)) {
                         throw new AppException('mandate date cannot be before than PV\'s value date');
                     }
-
                 }
 
                 $paymentVouchers = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers'])
