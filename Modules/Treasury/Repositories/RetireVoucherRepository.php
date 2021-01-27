@@ -48,9 +48,17 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
 
         if (isset($params['inputs']['retire_status'])) {
-            $query->whereHas('retire_voucher', function ($query) use ($params) {
-                $query->where('status', $params['inputs']['retire_status']);
-            });
+
+            if ($params['inputs']['retire_status'] == AppConstant::RETIRE_VOUCHER_NEW) {
+                $query->whereHas('retire_voucher', function ($query) use ($params) {
+                    $query->where('status', AppConstant::RETIRE_VOUCHER_NEW);
+                })->orDoesntHave('retire_voucher');
+            }else {
+                $query->whereHas('retire_voucher', function ($query) use ($params) {
+                    $query->where('status', $params['inputs']['retire_status']);
+                });
+            }
+
         }
         if (isset($params['inputs']['voucher_source_unit_id'])) {
             $query->where('voucher_source_unit_id', $params['inputs']['voucher_source_unit_id']);
@@ -85,8 +93,18 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
             $retireV = RetireVoucher::where('payment_voucher_id', $data['data']['payment_voucher_id'])->first();
 
+            /** @var PaymentVoucher $pv */
             $pv = PaymentVoucher::with('total_amount')->find($data['data']['payment_voucher_id']);
+
+            if (is_null($pv)) {
+                throw new AppException('Payment Voucher either deleted or not Exist');
+            }
 //            dd($pv->total_amount->amount);
+
+            if (is_null($pv->total_amount)) {
+                throw new AppException('Payee not added for payment voucher Id '.$pv->id);
+            }
+
             if (is_null($retireV)) {
                 $retireV = RetireVoucher::create([
                     'payment_voucher_id' => $data['data']['payment_voucher_id'],
@@ -111,7 +129,8 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 $liabilities[] = $d;
             }
 
-            if ($totalAmount > $pv->total_amount->amount) {
+
+            if ($totalAmount > (float)$pv->total_amount->amount) {
                 throw new AppException('liability amount should be equal or less than gross amount');
             }
 
@@ -136,8 +155,8 @@ class RetireVoucherRepository extends EloquentBaseRepository
         $paymentVouchers = PaymentVoucher::whereIn('id', $data['data']['payment_voucher_ids'])->get();
         /** @var PaymentVoucher $paymentVoucher */
         foreach ($paymentVouchers as $paymentVoucher) {
-            if (($paymentVoucher->status != AppConstant::VOUCHER_STATUS_CLOSED)|| ($paymentVoucher->status != AppConstant::VOUCHER_STATUS_POSTED_TO_GL)) {
-                throw new AppException('Payment Voucher Id '.$paymentVoucher->id. ' not CLOSED or POSTED TO GL  yet');
+            if (($paymentVoucher->status != AppConstant::VOUCHER_STATUS_CLOSED) || ($paymentVoucher->status != AppConstant::VOUCHER_STATUS_POSTED_TO_GL)) {
+                throw new AppException('Payment Voucher Id ' . $paymentVoucher->id . ' not CLOSED or POSTED TO GL  yet');
             }
         }
         if ($retireV->get()->isEmpty()) {
@@ -158,7 +177,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
     public function updateLiabilities($data)
     {
-        $data['id']= $data['data']['id'];
+        $data['id'] = $data['data']['id'];
 
         $retireVoucher = RetireVoucher::find($data['data']['retire_voucher_id']);
 
