@@ -159,6 +159,9 @@ class RetireVoucherRepository extends EloquentBaseRepository
             /** @var RetireVoucher $retireVoucher */
             $retireVoucher = RetireVoucher::with('retire_liabilities')->where('payment_voucher_id', $paymentVoucher->id)->first();
 
+            if (is_null($retireVoucher->retire_liabilities)) {
+                throw new AppException('Liability to be added in retire voucher');
+            }
             if ($retireVoucher->retire_liabilities->isEmpty()) {
                 throw new AppException('Liability to be added in retire voucher');
             }
