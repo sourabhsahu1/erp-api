@@ -78,7 +78,8 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     //Payment Approval
     Route::get('payment-approval', 'PaymentApprovalController@index');
     Route::post('payment-approval', 'PaymentApprovalController@store');
-    Route::post('payment-approval-update', 'PaymentApprovalController@update');
+    Route::put('payment-approval/{id}', 'PaymentApprovalController@update');
+    Route::post('payment-approval-update', 'PaymentApprovalController@updateStatus');
 
     //Payment Approval Payees
     Route::resource('payment-approval/{payment_approval_id}/schedule-payees', 'PaymentApprovalPayeeController');

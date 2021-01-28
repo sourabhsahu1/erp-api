@@ -5,6 +5,7 @@ namespace Modules\Treasury\Http\Controllers;
 
 
 use App\Http\Controllers\BaseController;
+use Illuminate\Http\Request;
 use Luezoid\Laravelcore\Jobs\BaseJob;
 use Modules\Treasury\Repositories\PaymentApprovalRepository;
 
@@ -29,4 +30,10 @@ class PaymentApprovalController extends BaseController
         'payment_approval_payees.employee.employee_bank.branches',
         'payment_vouchers'
     ];
+
+    public function updateStatus(Request $request)
+    {
+        $this->jobMethod = "updateStatus";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
 }

@@ -49,30 +49,38 @@ class PaymentApprovalRepository extends EloquentBaseRepository
         return parent::create($data);
     }
 
-    public function update($data)
+    public function updateStatus($data)
     {
-
-        $pa = PaymentApproval::whereIn('id', json_decode($data['data']['payment_approval_ids'], true));
 
         foreach (json_decode($data['data']['payment_approval_ids'], true) as $payment_approval_id) {
 
-            $pa = PaymentApproval::where('id', $payment_approval_id)->first();
-            $payeeVoucherIds = PaymentApprovalPayee::where('payment_approval_id', $pa->id)->pluck('id')->all();
+            $payeeVoucher = PaymentApprovalPayee::where('payment_approval_id', $payment_approval_id)->get();
 
-            if (is_null($payeeVoucherIds)) {
-                throw new AppException('Payee not added');
+            if ($payeeVoucher->isEmpty()) {
+                throw new AppException('Payee not added for Payment Approval Id ' . $payment_approval_id);
             }
         }
+
+        $pa = PaymentApproval::whereIn('id', json_decode($data['data']['payment_approval_ids'], true));
         $pa->update([
             'status' => $data['data']['status']
         ]);
         return [
             'data' => 'Status Updated Successfully'
         ];
+    }
 
-        PaymentApproval::whereIn('id', json_decode($data['data']['payment_approval_ids'], true))->update([
-            'status' => $data['data']['status']
-        ]);
+
+    public function update($data)
+    {
+
+        $paymentApproval = PaymentApproval::find($data['id']);
+
+        if ($paymentApproval->status != AppConstant::PAYMENT_APPROVAL_NEW) {
+            throw new AppException('Only New Status can be edited');
+        }
+        $data['data']['status'] = $paymentApproval->status;
+        return parent::update($data);
     }
 
 }

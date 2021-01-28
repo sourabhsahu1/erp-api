@@ -150,9 +150,6 @@ class   PaymentRepository extends EloquentBaseRepository
             'payment_approval'
         ]);
 
-        $query->whereNull('mandate_id')
-            ->where('is_previous_year_advance', false);
-
         if (isset($params['inputs']['is_personal_advance_unit'])) {
             if ($params['inputs']['is_personal_advance_unit'] == "true") {
                 $query->whereHas('voucher_source_unit', function ($query) use ($params) {
@@ -161,7 +158,9 @@ class   PaymentRepository extends EloquentBaseRepository
             }
             if ($params['inputs']['is_personal_advance_unit'] == "false") {
                 $query->whereHas('voucher_source_unit', function ($query) use ($params) {
-                    $query->where('is_personal_advance_unit', false);
+                    $query->where('is_personal_advance_unit', false)
+                        ->whereNull('mandate_id');
+
                 });
             }
         }
