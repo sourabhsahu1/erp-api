@@ -533,6 +533,9 @@ class   PaymentRepository extends EloquentBaseRepository
             throw new AppException('Cannot delete status is not NEW');
         }
         $data['id'] = $data['data']['id'];
+
+        PayeeVoucher::where('payment_voucher_id', $data['data']['id'])->delete();
+
         return parent::delete($data);
     }
 

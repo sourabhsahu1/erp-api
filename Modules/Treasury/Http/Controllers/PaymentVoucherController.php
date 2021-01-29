@@ -88,6 +88,7 @@ class PaymentVoucherController extends BaseController
 
     public function deletePreviousYearAdvance(Request $request)
     {
+        $this->customMessage = "Resource deleted successfully";
         $this->jobMethod = "deletePreviousYearAdvance";
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }

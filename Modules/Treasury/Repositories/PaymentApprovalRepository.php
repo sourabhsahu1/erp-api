@@ -83,4 +83,16 @@ class PaymentApprovalRepository extends EloquentBaseRepository
         return parent::update($data);
     }
 
+    public function delete($data)
+    {
+
+        $paymentApproval = PaymentApproval::find($data['id']);
+
+        if ($paymentApproval->status != AppConstant::PAYMENT_APPROVAL_NEW) {
+            throw new AppException('Only New Status can be Delete');
+        }
+        $data['data']['status'] = $paymentApproval->status;
+        return parent::delete($data);
+    }
+
 }
