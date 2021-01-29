@@ -25,6 +25,7 @@ class CreatePaymentApprovalPayeesTable extends Migration
             $table->decimal('total_tax',18,2);
             $table->json('tax_ids')->nullable();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('payment_approval_id')->references('id')->on('treasury_payment_approvals');
             $table->foreign('employee_id')->references('id')->on('hr_employees');
             $table->foreign('company_id')->references('id')->on('admin_companies');

@@ -75,7 +75,6 @@ class PaymentApprovalRepository extends EloquentBaseRepository
     {
 
         $paymentApproval = PaymentApproval::find($data['id']);
-
         if ($paymentApproval->status != AppConstant::PAYMENT_APPROVAL_NEW) {
             throw new AppException('Only New Status can be edited');
         }
@@ -85,9 +84,7 @@ class PaymentApprovalRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-
         $paymentApproval = PaymentApproval::find($data['id']);
-
         if ($paymentApproval->status != AppConstant::PAYMENT_APPROVAL_NEW) {
             throw new AppException('Only New Status can be Delete');
         }

@@ -4,10 +4,12 @@
 namespace Modules\Treasury\Repositories;
 
 
+use App\Constants\AppConstant;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\CompanyBank;
 use Modules\Hr\Models\EmployeeBankDetail;
+use Modules\Treasury\Models\PaymentApproval;
 use Modules\Treasury\Models\PaymentApprovalPayee;
 
 class PaymentApprovalPayeesRepository extends EloquentBaseRepository
@@ -58,5 +60,30 @@ class PaymentApprovalPayeesRepository extends EloquentBaseRepository
             'employee.employee_bank.branches'
         ]);
         return parent::getAll($params, $query);
+    }
+
+
+    public function update($data)
+    {
+        $paymentApproval = PaymentApproval::find($data['data']['payment_approval_id']);
+
+        if ($paymentApproval->status != AppConstant::PAYMENT_APPROVAL_NEW) {
+            throw new AppException('Can Update only when Payment Approval Status is New');
+        }
+        $data['data']['remaining_amount'] = $data['data']['net_amount'];
+        return parent::update($data);
+    }
+
+
+
+    public function delete($data)
+    {
+        $paymentApproval = PaymentApproval::find($data['data']['payment_approval_id']);
+
+        if ($paymentApproval->status == AppConstant::PAYMENT_APPROVAL_NEW) {
+            throw new AppException('Can Delete only when Payment Approval Status is New');
+        }
+        $data['id'] = $data['data']['schedule_payee'];
+        return parent::delete($data);
     }
 }

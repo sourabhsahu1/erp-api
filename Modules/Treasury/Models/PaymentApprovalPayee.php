@@ -25,7 +25,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property array $tax_ids
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- *
+ * @property string $deleted_at
  * @property \Modules\Admin\Models\Company $company
  * @property \Modules\Hr\Models\Employee $employee
  * @property \Modules\Treasury\Models\PaymentApproval $payment_approval
@@ -34,6 +34,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  */
 class PaymentApprovalPayee extends Eloquent
 {
+    use \Illuminate\Database\Eloquent\SoftDeletes;
     protected $casts = [
         'payment_approval_id' => 'int',
         'employee_id' => 'int',
