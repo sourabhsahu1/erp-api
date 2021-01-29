@@ -4,11 +4,13 @@
 namespace Modules\Treasury\Repositories;
 
 
+use App\Constants\AppConstant;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\CompanyBank;
 use Modules\Hr\Models\EmployeeBankDetail;
 use Modules\Treasury\Models\ReceiptPayee;
+use Modules\Treasury\Models\ReceiptVoucher;
 
 class ReceiptPayeeRepository extends EloquentBaseRepository
 {
@@ -48,4 +50,26 @@ class ReceiptPayeeRepository extends EloquentBaseRepository
         return parent::getAll($params, $query);
     }
 
+
+    public function update($data)
+    {
+        $receiptVoucher = ReceiptVoucher::find($data['data']['receipt_voucher_id']);
+
+        if ($receiptVoucher->status != AppConstant::PAYMENT_APPROVAL_NEW) {
+            throw new AppException('Can Update only when Receipt Voucher Status is New');
+        }
+
+        return parent::update($data);
+    }
+
+    public function delete($data)
+    {
+        $receiptVoucher = ReceiptVoucher::find($data['data']['receipt_voucher_id']);
+
+        if ($receiptVoucher->status != AppConstant::PAYMENT_APPROVAL_NEW) {
+            throw new AppException('Can Delete only when Receipt Voucher Status is New');
+        }
+        $data['id'] = $data['data']['schedule_payee'];
+        return parent::delete($data);
+    }
 }

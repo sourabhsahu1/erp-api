@@ -80,7 +80,7 @@ class PaymentApprovalPayeesRepository extends EloquentBaseRepository
     {
         $paymentApproval = PaymentApproval::find($data['data']['payment_approval_id']);
 
-        if ($paymentApproval->status == AppConstant::PAYMENT_APPROVAL_NEW) {
+        if ($paymentApproval->status != AppConstant::PAYMENT_APPROVAL_NEW) {
             throw new AppException('Can Delete only when Payment Approval Status is New');
         }
         $data['id'] = $data['data']['schedule_payee'];
