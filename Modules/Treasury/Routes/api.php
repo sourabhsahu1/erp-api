@@ -49,9 +49,12 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::get('source-units/{id}/rv-types', 'ReceiptVoucherController@typePaymentVoucher');
     Route::post('receipt-vouchers', 'ReceiptVoucherController@store');
     Route::put('receipt-vouchers/{id}', 'ReceiptVoucherController@update');
+    Route::delete('receipt-vouchers/{id}', 'ReceiptVoucherController@destroy');
     Route::get('receipt-vouchers', 'ReceiptVoucherController@index');
     Route::post('receipt-vouchers/update-status', 'ReceiptVoucherController@updateStatus');
+
     Route::resource('receipt-vouchers/{receipt_voucher_id}/schedule-payees', 'ReceiptPayeeController');
+
     Route::resource('receipt-payees/{receipt_payee_id}/schedule-economic', 'ReceiptScheduleEconomicController');
     Route::get('receipt-vouchers/{receipt_voucher_id}/schedule-economic', 'ReceiptScheduleEconomicController@getReceiptVoucherScheduleEconomic');
     Route::get('receipt-voucher-status', 'ReceiptVoucherController@statusReceiptVoucher');
