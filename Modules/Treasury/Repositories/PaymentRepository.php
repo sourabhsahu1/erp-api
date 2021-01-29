@@ -191,11 +191,10 @@ class   PaymentRepository extends EloquentBaseRepository
                         }
                     }
                 }
-            }else{
+            } else {
 
 
             }
-
 
 
             return $paymentVoucher;
@@ -525,4 +524,26 @@ class   PaymentRepository extends EloquentBaseRepository
             'data' => 'Status Updated Successfully'
         ];
     }
+
+
+    public function deletePreviousYearAdvance($data)
+    {
+        $paymentVoucher = PaymentVoucher::find($data['data']['id']);
+        if ($paymentVoucher->status != AppConstant::VOUCHER_STATUS_NEW) {
+            throw new AppException('Cannot delete status is not NEW');
+        }
+        $data['id'] = $data['data']['id'];
+        return parent::delete($data);
+    }
+
+    public function updatePreviousYearAdvance($data)
+    {
+        $paymentVoucher = PaymentVoucher::find($data['data']['id']);
+        if ($paymentVoucher->status != AppConstant::VOUCHER_STATUS_NEW) {
+            throw new AppException('Cannot Update status is not NEW');
+        }
+        $data['id'] = $data['data']['id'];
+        return parent::update($data);
+    }
+
 }
