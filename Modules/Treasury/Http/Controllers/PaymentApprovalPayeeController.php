@@ -24,6 +24,7 @@ class PaymentApprovalPayeeController extends BaseController
 
     public function destroy(Request $request, $id)
     {
+        $this->customMessage = "Resource deleted successfully";
         $this->jobMethod = "delete";
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }

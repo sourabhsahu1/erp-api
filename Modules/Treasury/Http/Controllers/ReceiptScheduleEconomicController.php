@@ -14,10 +14,11 @@ class ReceiptScheduleEconomicController extends BaseController
     protected $repository = ReceiptScheduleEconomicRepository::class;
     protected $createJob = BaseJob::class;
     protected $updateJob = BaseJob::class;
-    protected $deleteJob = BaseJob::class;
+//    protected $deleteJob = BaseJob::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
-    protected $deleteJobMethod = "delete";
+
+//    protected $deleteJobMethod = "delete";
 
     function getReceiptVoucherScheduleEconomic(Request $request)
     {
@@ -30,4 +31,13 @@ class ReceiptScheduleEconomicController extends BaseController
         'receipt_payee',
         'receipt_voucher'
     ];
+
+
+    public function destroy(Request $request, $id)
+    {
+        $this->customMessage = "Resource deleted successfully";
+        $this->jobMethod = "delete";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
 }

@@ -4,13 +4,14 @@
 namespace Modules\Treasury\Repositories;
 
 
+use App\Constants\AppConstant;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Treasury\Models\ReceiptPayee;
 use Modules\Treasury\Models\ReceiptScheduleEconomic;
 use Modules\Treasury\Models\ReceiptVoucher;
 
-class ReceiptScheduleEconomicRepository extends  EloquentBaseRepository
+class ReceiptScheduleEconomicRepository extends EloquentBaseRepository
 {
     public $model = ReceiptScheduleEconomic::class;
 
@@ -64,7 +65,6 @@ class ReceiptScheduleEconomicRepository extends  EloquentBaseRepository
     }
 
 
-
     public function getReceiptVoucherScheduleEconomic($params)
     {
 
@@ -80,5 +80,47 @@ class ReceiptScheduleEconomicRepository extends  EloquentBaseRepository
             $query->where('receipt_payee_id', $params['inputs']['receipt_payee_id']);
         }
         return parent::getAll($params, $query);
+    }
+
+
+    public function update($data)
+    {
+
+        /** @var ReceiptPayee $receiptPayee */
+        $receiptPayee = ReceiptPayee::find($data['data']['receipt_payee_id']);
+
+        if ($receiptPayee) {
+            /** @var ReceiptVoucher $receiptVoucher */
+            $receiptVoucher = ReceiptVoucher::find($receiptPayee->receipt_voucher_id);
+
+            if ($receiptVoucher->status != 'NEW') {
+                throw new AppException('Cannot Update status is not NEW');
+            }
+        }else {
+            throw new AppException('Payer not exist');
+        }
+
+        return parent::update($data);
+    }
+
+
+    public function delete($data)
+    {
+
+        /** @var ReceiptPayee $receiptPayee */
+        $receiptPayee = ReceiptPayee::find($data['data']['receipt_payee_id']);
+
+        if ($receiptPayee) {
+            /** @var ReceiptVoucher $receiptVoucher */
+            $receiptVoucher = ReceiptVoucher::find($receiptPayee->receipt_voucher_id);
+            if ($receiptVoucher->status != 'NEW') {
+                throw new AppException('Cannot delete status is not NEW');
+            }
+        }else {
+            throw new AppException('Payer not exist');
+        }
+
+        $data['id'] = $data['data']['schedule_economic'];
+        return parent::delete($data);
     }
 }

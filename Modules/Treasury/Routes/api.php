@@ -56,6 +56,7 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::resource('receipt-vouchers/{receipt_voucher_id}/schedule-payees', 'ReceiptPayeeController');
 
     Route::resource('receipt-payees/{receipt_payee_id}/schedule-economic', 'ReceiptScheduleEconomicController');
+
     Route::get('receipt-vouchers/{receipt_voucher_id}/schedule-economic', 'ReceiptScheduleEconomicController@getReceiptVoucherScheduleEconomic');
     Route::get('receipt-voucher-status', 'ReceiptVoucherController@statusReceiptVoucher');
 
