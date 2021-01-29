@@ -31,6 +31,7 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
 
     Route::post('payment-vouchers', 'PaymentVoucherController@store');
     Route::put('payment-vouchers/{id}', 'PaymentVoucherController@update');
+    Route::delete('payment-vouchers/{id}', 'PaymentVoucherController@destroy');
     Route::get('payment-vouchers', 'PaymentVoucherController@index');
     Route::post('payment-vouchers/update-status', 'PaymentVoucherController@updateStatus');
     Route::resource('payment-vouchers/{payment_voucher_id}/schedule-payees', 'PayeeVoucherController');

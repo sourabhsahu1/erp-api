@@ -68,9 +68,9 @@ class   PaymentRepository extends EloquentBaseRepository
                         /** @var PaymentApprovalPayee $approvalPayee */
                         $approvalPayee = PaymentApprovalPayee::find($payee['id']);
                         if (is_null($approvalPayee->company_id)) {
-                            $payeeId = $approvalPayee->company_id;
-                        } else {
                             $payeeId = $approvalPayee->employee_id;
+                        } else {
+                            $payeeId = $approvalPayee->company_id;
                         }
 
                         if (($payeeId === $employeeId) || ($payeeId === $companyId)) {
@@ -123,11 +123,120 @@ class   PaymentRepository extends EloquentBaseRepository
 
     public function update($data)
     {
+        /** @var PaymentVoucher $paymentVoucher */
+        $paymentVoucher = PaymentVoucher::with('payee_vouchers')->find($data['id']);
 
+        $data['data']['status'] = $paymentVoucher->status;
+        $data['data']['type'] = $paymentVoucher->type;
+        if ($paymentVoucher->is_payment_approval === true) {
+            $paymentVoucher = parent::update($data);
+
+            $paymentApproval = PaymentApproval::with([
+                'payment_approval_payees'
+            ])->find($paymentVoucher->payment_approve_id);
+
+            /** @var PaymentApprovalPayee $approval_payee */
+            foreach ($paymentApproval->payment_approval_payees as $approval_payee) {
+                $employeeId = $approval_payee->employee_id;
+                $companyId = $approval_payee->company_id;
+                foreach ($data['data']['payees'] as $payee) {
+
+                    /** @var PaymentApprovalPayee $approvalPayee */
+                    $approvalPayee = PaymentApprovalPayee::find($payee['id']);
+                    if (!$approvalPayee) {
+                        throw new AppException("Approval Payee not exist");
+                    } elseif (is_null($approvalPayee->company_id)) {
+                        $payeeId = $approvalPayee->employee_id;
+                    } else {
+                        $payeeId = $approvalPayee->company_id;
+                    }
+                    if (($payeeId === $employeeId) || ($payeeId === $companyId)) {
+                        //todo payee create and deduction in payment approval payee amount
+                        $taxes = Tax::whereIn('id', json_decode($approval_payee->tax_ids, true))->pluck('tax')->all();
+
+                        $totalTax = array_sum($taxes);
+                        //check to make sure amount is well balanced in both
+                        $remainingAmount = $approval_payee->remaining_amount - $payee['amount'];
+                        if ($remainingAmount == 0) {
+                            throw new AppException('Payment Approval has zero amount');
+                        }
+
+                        if ($remainingAmount < 0) {
+                            continue;
+                        }
+
+                        $payeeVoucher = PayeeVoucher::where('payment_voucher_id', $paymentVoucher->id)
+                            ->where('employee_id', $employeeId)
+                            ->where('company_id', $companyId)
+                            ->first();
+
+                        $updatedRemainingAmount = $payee['amount'] - $payeeVoucher->net_amount;
+
+                        PayeeVoucher::where('payment_voucher_id', $paymentVoucher->id)
+                            ->where('employee_id', $employeeId)
+                            ->where('company_id', $companyId)
+                            ->update([
+                                'net_amount' => $payee['amount'],
+                                'total_tax' => ($totalTax * $payee['amount']) / 100,
+                            ]);
+
+                        PaymentApprovalPayee::where('id', $approval_payee->id)->update([
+                            'remaining_amount' => $approvalPayee->remaining_amount - $updatedRemainingAmount
+                        ]);
+                    } else {
+                        continue;
+                    }
+                }
+            }
+
+
+            return $paymentVoucher;
+        }
         return parent::update($data);
     }
 
-    public function getAll($params = [], $query = null)
+    public function delete($data)
+    {
+
+        /** @var PaymentVoucher $paymentVoucher */
+        $paymentVoucher = PaymentVoucher::with('payee_vouchers')->find($data['id']);
+        if ($paymentVoucher->status !== AppConstant::VOUCHER_STATUS_NEW) {
+            throw new AppException('Cannot delete status is not New');
+        } else {
+            if ($paymentVoucher->is_payment_approval === true) {
+                $paymentApproval = PaymentApproval::with([
+                    'payment_approval_payees'
+                ])->find($paymentVoucher->payment_approve_id);
+
+                /** @var PaymentApprovalPayee $approval_payee */
+
+                foreach ($paymentApproval->payment_approval_payees as $approval_payee) {
+                    $employeeId = $approval_payee->employee_id;
+                    $companyId = $approval_payee->company_id;
+                    /** @var PayeeVoucher $payee */
+                    foreach ($paymentVoucher->payee_vouchers as $payee) {
+
+                        PaymentApprovalPayee::where('id', $approval_payee->id)->update([
+                            'remaining_amount' => $approval_payee->remaining_amount + $payee->net_amount
+                        ]);
+
+                        PayeeVoucher::where('employee_id', $employeeId)
+                            ->where('company_id', $companyId)
+                            ->where('payment_voucher_id', $payee->payment_voucher_id)
+                            ->delete();
+
+                    }
+                }
+                parent::delete($data);
+            }
+        }
+
+
+        return parent::delete($data); // TODO: Change the autogenerated stub
+    }
+
+    public
+    function getAll($params = [], $query = null)
     {
         $query = PaymentVoucher::with([
             'program_segment',
@@ -179,7 +288,8 @@ class   PaymentRepository extends EloquentBaseRepository
     }
 
 
-    public function updateStatus($data)
+    public
+    function updateStatus($data)
     {
 
         $pv = PaymentVoucher::whereIn('id', $data['data']['payment_voucher_ids']);
@@ -207,7 +317,8 @@ class   PaymentRepository extends EloquentBaseRepository
         ];
     }
 
-    public function typePaymentVoucher($params)
+    public
+    function typePaymentVoucher($params)
     {
         /** @var VoucherSourceUnit $vsu */
         $vsu = VoucherSourceUnit::where('id', $params['inputs']['id'])->first();
@@ -267,7 +378,8 @@ class   PaymentRepository extends EloquentBaseRepository
 
     }
 
-    public function statusPaymentVoucher()
+    public
+    function statusPaymentVoucher()
     {
         $status = DB::table('treasury_status_payment_voucher')->get();
         return [
@@ -276,7 +388,8 @@ class   PaymentRepository extends EloquentBaseRepository
     }
 
 
-    public function storePvAdvances($data)
+    public
+    function storePvAdvances($data)
     {
 
         $paymentV = PaymentVoucher::latest()->orderby('id', 'desc')->first();
@@ -312,7 +425,8 @@ class   PaymentRepository extends EloquentBaseRepository
     }
 
 
-    public function getPvAdvances($params)
+    public
+    function getPvAdvances($params)
     {
 
         $query = PaymentVoucher::with([
@@ -351,7 +465,8 @@ class   PaymentRepository extends EloquentBaseRepository
     }
 
 
-    public function statusUpdatePreviousYearAdvance($data)
+    public
+    function statusUpdatePreviousYearAdvance($data)
     {
         $pv = PaymentVoucher::whereIn('id', json_decode($data['data']['payment_voucher_ids'], true));
 
