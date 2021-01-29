@@ -147,7 +147,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
     }
 
 
-    public function update($data)
+    public function updateStatus($data)
     {
 
         $data['data']['payment_voucher_ids'] = json_decode($data['data']['payment_voucher_ids'], true);

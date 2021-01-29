@@ -13,5 +13,9 @@ class ReceiptPayeeController extends BaseController
 
     protected $repository = ReceiptPayeeRepository::class;
     protected $createJob = BaseJob::class;
+    protected $updateJob = BaseJob::class;
+    protected $deleteJob = BaseJob::class;
     protected $storeJobMethod = "create";
+    protected $updateJobMethod = "update";
+    protected $deleteJobMethod = "delete";
 }

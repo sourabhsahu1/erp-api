@@ -129,65 +129,73 @@ class   PaymentRepository extends EloquentBaseRepository
         $data['data']['status'] = $paymentVoucher->status;
         $data['data']['type'] = $paymentVoucher->type;
         if ($paymentVoucher->is_payment_approval === true) {
-            $paymentVoucher = parent::update($data);
+
 
             $paymentApproval = PaymentApproval::with([
                 'payment_approval_payees'
             ])->find($paymentVoucher->payment_approve_id);
 
-            /** @var PaymentApprovalPayee $approval_payee */
-            foreach ($paymentApproval->payment_approval_payees as $approval_payee) {
-                $employeeId = $approval_payee->employee_id;
-                $companyId = $approval_payee->company_id;
-                foreach ($data['data']['payees'] as $payee) {
+            $paymentVoucher = parent::update($data);
 
-                    /** @var PaymentApprovalPayee $approvalPayee */
-                    $approvalPayee = PaymentApprovalPayee::find($payee['id']);
-                    if (!$approvalPayee) {
-                        throw new AppException("Approval Payee not exist");
-                    } elseif (is_null($approvalPayee->company_id)) {
-                        $payeeId = $approvalPayee->employee_id;
-                    } else {
-                        $payeeId = $approvalPayee->company_id;
-                    }
-                    if (($payeeId === $employeeId) || ($payeeId === $companyId)) {
-                        //todo payee create and deduction in payment approval payee amount
-                        $taxes = Tax::whereIn('id', json_decode($approval_payee->tax_ids, true))->pluck('tax')->all();
+            if ($paymentApproval) {
+                /** @var PaymentApprovalPayee $approval_payee */
+                foreach ($paymentApproval->payment_approval_payees as $approval_payee) {
+                    $employeeId = $approval_payee->employee_id;
+                    $companyId = $approval_payee->company_id;
+                    foreach ($data['data']['payees'] as $payee) {
 
-                        $totalTax = array_sum($taxes);
-                        //check to make sure amount is well balanced in both
-                        $remainingAmount = $approval_payee->remaining_amount - $payee['amount'];
-                        if ($remainingAmount == 0) {
-                            throw new AppException('Payment Approval has zero amount');
+                        /** @var PaymentApprovalPayee $approvalPayee */
+                        $approvalPayee = PaymentApprovalPayee::find($payee['id']);
+                        if (!$approvalPayee) {
+                            throw new AppException("Approval Payee not exist");
+                        } elseif (is_null($approvalPayee->company_id)) {
+                            $payeeId = $approvalPayee->employee_id;
+                        } else {
+                            $payeeId = $approvalPayee->company_id;
                         }
+                        if (($payeeId === $employeeId) || ($payeeId === $companyId)) {
+                            //todo payee create and deduction in payment approval payee amount
+                            $taxes = Tax::whereIn('id', json_decode($approval_payee->tax_ids, true))->pluck('tax')->all();
 
-                        if ($remainingAmount < 0) {
+                            $totalTax = array_sum($taxes);
+                            //check to make sure amount is well balanced in both
+                            $remainingAmount = $approval_payee->remaining_amount - $payee['amount'];
+                            if ($remainingAmount == 0) {
+                                throw new AppException('Payment Approval has zero amount');
+                            }
+
+                            if ($remainingAmount < 0) {
+                                continue;
+                            }
+
+                            $payeeVoucher = PayeeVoucher::where('payment_voucher_id', $paymentVoucher->id)
+                                ->where('employee_id', $employeeId)
+                                ->where('company_id', $companyId)
+                                ->first();
+
+                            $updatedRemainingAmount = $payee['amount'] - $payeeVoucher->net_amount;
+
+                            PayeeVoucher::where('payment_voucher_id', $paymentVoucher->id)
+                                ->where('employee_id', $employeeId)
+                                ->where('company_id', $companyId)
+                                ->update([
+                                    'net_amount' => $payee['amount'],
+                                    'total_tax' => ($totalTax * $payee['amount']) / 100,
+                                ]);
+
+                            PaymentApprovalPayee::where('id', $approval_payee->id)->update([
+                                'remaining_amount' => $approvalPayee->remaining_amount - $updatedRemainingAmount
+                            ]);
+                        } else {
                             continue;
                         }
-
-                        $payeeVoucher = PayeeVoucher::where('payment_voucher_id', $paymentVoucher->id)
-                            ->where('employee_id', $employeeId)
-                            ->where('company_id', $companyId)
-                            ->first();
-
-                        $updatedRemainingAmount = $payee['amount'] - $payeeVoucher->net_amount;
-
-                        PayeeVoucher::where('payment_voucher_id', $paymentVoucher->id)
-                            ->where('employee_id', $employeeId)
-                            ->where('company_id', $companyId)
-                            ->update([
-                                'net_amount' => $payee['amount'],
-                                'total_tax' => ($totalTax * $payee['amount']) / 100,
-                            ]);
-
-                        PaymentApprovalPayee::where('id', $approval_payee->id)->update([
-                            'remaining_amount' => $approvalPayee->remaining_amount - $updatedRemainingAmount
-                        ]);
-                    } else {
-                        continue;
                     }
                 }
+            }else{
+
+
             }
+
 
 
             return $paymentVoucher;
@@ -215,6 +223,12 @@ class   PaymentRepository extends EloquentBaseRepository
                     $companyId = $approval_payee->company_id;
                     /** @var PayeeVoucher $payee */
                     foreach ($paymentVoucher->payee_vouchers as $payee) {
+
+                        //todo chcek for empid and comany id
+
+                        if (($payee->employee_id === $approval_payee->employee_id) || ($payee->company_id === $approval_payee->company_id)) {
+
+                        }
 
                         PaymentApprovalPayee::where('id', $approval_payee->id)->update([
                             'remaining_amount' => $approval_payee->remaining_amount + $payee->net_amount

@@ -16,8 +16,10 @@ class MandateController extends BaseController
     protected $repository = MandateRepository::class;
     protected $createJob = BaseJob::class;
     protected $updateJob = BaseJob::class;
+    protected $deleteJob = BaseJob::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
+    protected $deleteJobMethod = "delete";
     protected $indexWith = [
         'cashbook.cashbook_monthly_balances',
         'cashbook.bank_branch',

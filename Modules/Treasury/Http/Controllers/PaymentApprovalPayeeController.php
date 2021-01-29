@@ -14,6 +14,8 @@ class PaymentApprovalPayeeController extends BaseController
     protected $repository = PaymentApprovalPayeesRepository::class;
     protected $createJob = BaseJob::class;
     protected $updateJob = BaseJob::class;
+    protected $deleteJob = BaseJob::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
+    protected $deleteJobMethod = "delete";
 }

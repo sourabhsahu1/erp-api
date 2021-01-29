@@ -13,7 +13,11 @@ class ReceiptScheduleEconomicController extends BaseController
 {
     protected $repository = ReceiptScheduleEconomicRepository::class;
     protected $createJob = BaseJob::class;
+    protected $updateJob = BaseJob::class;
+    protected $deleteJob = BaseJob::class;
     protected $storeJobMethod = "create";
+    protected $updateJobMethod = "update";
+    protected $deleteJobMethod = "delete";
 
     function getReceiptVoucherScheduleEconomic(Request $request)
     {

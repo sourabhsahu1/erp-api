@@ -14,9 +14,10 @@ class RetireVoucherController extends BaseController
     protected $repository = RetireVoucherRepository::class;
     protected $createJob = BaseJob::class;
     protected $updateJob = BaseJob::class;
+    protected $deleteJob = BaseJob::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
-
+    protected $deleteJobMethod = "delete";
 
     public function statusRetireVoucher(Request $request)
     {
@@ -33,6 +34,13 @@ class RetireVoucherController extends BaseController
     public function updateLiabilities(Request $request)
     {
         $this->jobMethod = "updateLiabilities";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
+
+    public function updateStatus(Request $request)
+    {
+        $this->jobMethod = "updateStatus";
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 }

@@ -306,7 +306,7 @@ class MandateRepository extends EloquentBaseRepository
                                 'functional_segment_id' => $paymentVoucher->functional_segment_id,
                                 'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
                                 'line_value_type' => 'CREDIT',
-                                'lv_line_value' => $totalNetAmount + $totalTax,
+                                'lv_line_value' => $totalNetAmount,
                                 'local_currency' => $companySetting->local_currency,
                                 'created_at' => Carbon::now()->toDateTimeString(),
                                 'updated_at' => Carbon::now()->toDateTimeString()

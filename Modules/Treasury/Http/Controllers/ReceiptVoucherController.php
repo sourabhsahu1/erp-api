@@ -13,7 +13,11 @@ class ReceiptVoucherController extends BaseController
 {
     protected $repository = ReceiptVoucherRepository::class;
     protected $createJob = BaseJob::class;
+    protected $updateJob = BaseJob::class;
+    protected $deleteJob = BaseJob::class;
     protected $storeJobMethod = "create";
+    protected $updateJobMethod = "update";
+    protected $deleteJobMethod = "delete";
 
     protected $indexWith = [
         'program_segment',
