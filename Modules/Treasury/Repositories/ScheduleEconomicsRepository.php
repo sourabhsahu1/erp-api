@@ -8,6 +8,8 @@ use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentVoucher;
+use Modules\Treasury\Models\ReceiptPayee;
+use Modules\Treasury\Models\ReceiptVoucher;
 use Modules\Treasury\Models\ScheduleEconomic;
 
 class ScheduleEconomicsRepository extends EloquentBaseRepository
@@ -77,5 +79,44 @@ class ScheduleEconomicsRepository extends EloquentBaseRepository
             $query->where('payee_voucher_id', $params['inputs']['payee_voucher_id']);
         }
         return parent::getAll($params, $query);
+    }
+
+    public function update($data)
+    {
+        /** @var PayeeVoucher $payeeVoucher */
+        $payeeVoucher = PayeeVoucher::find($data['data']['payee_voucher_id']);
+
+        if ($payeeVoucher) {
+            /** @var PaymentVoucher $paymentVoucher */
+            $paymentVoucher = PaymentVoucher::find($payeeVoucher->payment_voucher_id);
+
+            if ($paymentVoucher->status != 'NEW') {
+                throw new AppException('Cannot Update status is not NEW');
+            }
+        }else {
+            throw new AppException('Payee not exist');
+        }
+
+        return parent::update($data);
+    }
+
+    public function delete($data)
+    {
+        /** @var PayeeVoucher $payeeVoucher */
+        $payeeVoucher = PayeeVoucher::find($data['data']['payee_voucher_id']);
+
+        if ($payeeVoucher) {
+            /** @var PaymentVoucher $paymentVoucher */
+            $paymentVoucher = PaymentVoucher::find($payeeVoucher->payment_voucher_id);
+
+            if ($paymentVoucher->status != 'NEW') {
+                throw new AppException('Cannot Delete status is not NEW');
+            }
+        }else {
+            throw new AppException('Payee not exist');
+        }
+
+        $data['id'] = $data['data']['schedule_economic'];
+        return parent::delete($data);
     }
 }
