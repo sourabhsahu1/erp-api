@@ -88,7 +88,7 @@
                             </td>
                             <td style="border: 1px solid #a0a0a0; width: 300px; text-align: center">
                                 <div style="font-size: 18px;">
-                                    <label>{{$data->default_setting->accountHead->name ?? " "}}</label>
+                                    <label>{{$data->default_setting->account_head->name ?? " "}}</label>
                                 </div>
                             </td>
                         </tr>
@@ -339,7 +339,7 @@
             <table style="width: 50%; margin-top: 50px; border: 1px solid #a0a0a0">
                 <tr>
                     <td>Payable at :</td>
-                    <td class="shadow-1px">{{$data->default_setting->accountHead->name ?? " "}}</td>
+                    <td class="shadow-1px">{{$data->default_setting->account_head->name ?? " "}}</td>
                 </tr>
                 <tr>
                     <td>Signature</td>
@@ -351,7 +351,7 @@
                 </tr>
                 <tr>
                     <td>Station</td>
-                    <td class="shadow-1px">{{$data->default_setting->accountHead->name ?? " "}}</td>
+                    <td class="shadow-1px">{{$data->default_setting->account_head->name ?? " "}}</td>
                 </tr>
                 <tr>
                     <td>Date</td>
@@ -405,7 +405,7 @@
                         <table style="width: 100%">
                             <tr>
                                 <td style="width: 25%"><span style="margin-left: 10px">Place</span></td>
-                                <td style="width: 25%" class="shadow-1px">{{$data->default_setting->accountHead->name ?? " "}}</td>
+                                <td style="width: 25%" class="shadow-1px">{{$data->default_setting->account_head->name ?? " "}}</td>
                                 <td style="width: 25%; text-align: right">Date</td>
                                 <td style="width: 25%" class="shadow-1px"></td>
                             </tr>
