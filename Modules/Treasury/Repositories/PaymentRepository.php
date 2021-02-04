@@ -623,7 +623,7 @@ class   PaymentRepository extends EloquentBaseRepository
         return ['url' => url($filePath . $fileName)];
     }
 
-    public function downloadPaymentReport($data)
+    public function downloadPaymentReport($params)
     {
         $fileName = 'mandate' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
         $filePath = "pdf/";
@@ -646,7 +646,7 @@ class   PaymentRepository extends EloquentBaseRepository
             'paying_officer',
             'checking_officer',
             'financial_controller'
-        ])->find($data['data']['id']);
+        ])->find($params['inputs']['id']);
 
 
         $payees = " ";
@@ -680,8 +680,14 @@ class   PaymentRepository extends EloquentBaseRepository
         $paymentV->count_payee = $count;
         $paymentV->address = $address;
 
-        app()->make(WKHTMLPDfConverter::class)
-            ->convert(view('reports.payment-voucher-report', ['data' => $paymentV])->render(), $fileName);
+        if (isset($params['inputs']['bs'])) {
+            app()->make(WKHTMLPDfConverter::class)
+                ->convertBrowserShot(view('reports.payment-voucher-report', ['data' => $paymentV])->render(), $fileName);
+        } else {
+            app()->make(WKHTMLPDfConverter::class)
+                ->convert(view('reports.payment-voucher-report', ['data' => $paymentV])->render(), $fileName);
+        }
+
 
         return ['url' => url($filePath . $fileName)];
     }
