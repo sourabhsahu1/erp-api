@@ -49,6 +49,34 @@ class MandateController extends BaseController
         'payment_vouchers.financial_controller'
     ];
 
+    protected $showWith = [
+        'cashbook.cashbook_monthly_balances',
+        'cashbook.bank_branch',
+        'cashbook.bank',
+        'cashbook.currency',
+        'cashbook.economic_segment',
+        'cashbook.fund_owned',
+        'first_authorised',
+        'second_authorised',
+        'prepared',
+        'payment_vouchers.program_segment',
+        'payment_vouchers.economic_segment',
+        'payment_vouchers.functional_segment',
+        'payment_vouchers.geo_code_segment',
+        'payment_vouchers.admin_segment',
+        'payment_vouchers.fund_segment',
+        'payment_vouchers.aie',
+        'payment_vouchers.currency',
+        'payment_vouchers.voucher_source_unit',
+        'payment_vouchers.total_amount',
+        'payment_vouchers.total_tax',
+        'payment_vouchers.payee_vouchers.admin_company.company_bank.bank_branch.hr_bank',
+        'payment_vouchers.payee_vouchers.employee.employee_bank.branches.hr_bank',
+        'payment_vouchers.schedule_economic.economic_segment',
+        'payment_vouchers.paying_officer',
+        'payment_vouchers.checking_officer',
+        'payment_vouchers.financial_controller'
+    ];
 
     public function mandateUpdate(Request $request)
     {
@@ -57,19 +85,16 @@ class MandateController extends BaseController
     }
 
 
-    public function downloadMandateReport($params) {
-
-        $fileName = 'employee-details' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
-        $filePath = "pdf/";
-        if (strtolower($params['inputs']['type']) == 'short') {
-            app()->make(WKHTMLPDfConverter::class)
-                ->convert(view('reports.employee-short-report', ['data' => $data])->render(), $fileName);
-        }
-        if (strtolower($params['inputs']['type']) == 'extended') {
-            app()->make(WKHTMLPDfConverter::class)
-                ->convert(view('reports.employee-full-report', ['data' => $data])->render(), $fileName);
-        }
-
-        return ['url' => url($filePath . $fileName)];
+    public function downloadMandateReport(Request $request)
+    {
+        $this->jobMethod = "downloadMandateReport";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
+
+    public function downloadMandateTaxReport(Request $request)
+    {
+        $this->jobMethod = "downloadMandateTaxReport";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
 }

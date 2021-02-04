@@ -5,6 +5,7 @@ namespace Modules\Treasury\Repositories;
 
 
 use App\Constants\AppConstant;
+use App\Services\WKHTMLPDfConverter;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -69,7 +70,7 @@ class MandateRepository extends EloquentBaseRepository
                     }
                 }
 
-               $paymentV = $paymentV->whereIn('status', [
+                $paymentV = $paymentV->whereIn('status', [
                     AppConstant::VOUCHER_STATUS_AUDITED
                 ])->get();
 
@@ -326,6 +327,91 @@ class MandateRepository extends EloquentBaseRepository
         }
 
         return ['data' => 'Success'];
+    }
+
+
+    public function downloadMandateReport($data)
+    {
+        $fileName = 'mandate' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
+        $filePath = "pdf/";
+
+        $mandate = Mandate::with([
+            'cashbook.cashbook_monthly_balances',
+            'cashbook.bank_branch',
+            'cashbook.bank',
+            'cashbook.currency',
+            'cashbook.economic_segment',
+            'cashbook.fund_owned',
+            'first_authorised',
+            'second_authorised',
+            'prepared',
+            'payment_vouchers.program_segment',
+            'payment_vouchers.economic_segment',
+            'payment_vouchers.functional_segment',
+            'payment_vouchers.geo_code_segment',
+            'payment_vouchers.admin_segment',
+            'payment_vouchers.fund_segment',
+            'payment_vouchers.aie',
+            'payment_vouchers.currency',
+            'payment_vouchers.voucher_source_unit',
+            'payment_vouchers.total_amount',
+            'payment_vouchers.total_tax',
+            'payment_vouchers.payee_vouchers.admin_company.company_bank.bank_branch.hr_bank',
+            'payment_vouchers.payee_vouchers.employee.employee_bank.branches.hr_bank',
+            'payment_vouchers.schedule_economic.economic_segment',
+            'payment_vouchers.paying_officer',
+            'payment_vouchers.checking_officer',
+            'payment_vouchers.financial_controller'
+        ])->find($data['data']['id']);
+
+//        dd($mandate);
+        app()->make(WKHTMLPDfConverter::class)
+            ->convert(view('reports.mandate-report', ['data' => $mandate])->render(), $fileName);
+
+        return ['url' => url($filePath . $fileName)];
+    }
+
+
+    public function downloadMandateTaxReport($data)
+    {
+        $fileName = 'mandate' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
+        $filePath = "pdf/";
+
+        $mandate = Mandate::with([
+            'cashbook.cashbook_monthly_balances',
+            'cashbook.bank_branch',
+            'cashbook.bank',
+            'cashbook.currency',
+            'cashbook.economic_segment',
+            'cashbook.fund_owned',
+            'first_authorised',
+            'second_authorised',
+            'prepared',
+            'payment_vouchers.program_segment',
+            'payment_vouchers.economic_segment',
+            'payment_vouchers.functional_segment',
+            'payment_vouchers.geo_code_segment',
+            'payment_vouchers.admin_segment',
+            'payment_vouchers.fund_segment',
+            'payment_vouchers.aie',
+            'payment_vouchers.currency',
+            'payment_vouchers.voucher_source_unit',
+            'payment_vouchers.total_amount',
+            'payment_vouchers.total_tax',
+            'payment_vouchers.payee_vouchers.admin_company.company_bank.bank_branch.hr_bank',
+            'payment_vouchers.payee_vouchers.employee.employee_bank.branches.hr_bank',
+            'payment_vouchers.schedule_economic.economic_segment',
+            'payment_vouchers.paying_officer',
+            'payment_vouchers.checking_officer',
+            'payment_vouchers.financial_controller'
+        ])->find($data['data']['id']);
+
+
+//        dd($mandate);
+        app()->make(WKHTMLPDfConverter::class)
+            ->convert(view('reports.mandate-tax-report', ['data' => $mandate])->render(), $fileName);
+
+        return ['url' => url($filePath . $fileName)];
     }
 
 }

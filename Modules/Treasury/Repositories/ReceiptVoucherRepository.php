@@ -5,6 +5,7 @@ namespace Modules\Treasury\Repositories;
 
 
 use App\Constants\AppConstant;
+use App\Services\WKHTMLPDfConverter;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
@@ -307,4 +308,19 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
             ]
         ];
     }
+
+    public function downloadReceiptReport($params)
+    {
+
+        $fileName = 'mandate' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
+        $filePath = "pdf/";
+
+        if (strtolower($params['inputs']['type']) == 'extended') {
+            app()->make(WKHTMLPDfConverter::class)
+                ->convert(view('reports.employee-full-report', ['data' => $data])->render(), $fileName);
+        }
+
+        return ['url' => url($filePath . $fileName)];
+    }
+
 }

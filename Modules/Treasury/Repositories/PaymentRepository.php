@@ -5,6 +5,7 @@ namespace Modules\Treasury\Repositories;
 
 
 use App\Constants\AppConstant;
+use App\Services\WKHTMLPDfConverter;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -15,6 +16,7 @@ use Modules\Admin\Models\Tax;
 use Modules\Finance\Models\Currency;
 use Modules\Treasury\Models\Aie;
 use Modules\Treasury\Models\Cashbook;
+use Modules\Treasury\Models\DefaultSetting;
 use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentApproval;
 use Modules\Treasury\Models\PaymentApprovalPayee;
@@ -134,7 +136,6 @@ class   PaymentRepository extends EloquentBaseRepository
             $paymentApproval = PaymentApproval::with([
                 'payment_approval_payees'
             ])->find($paymentVoucher->payment_approve_id);
-
 
 
             if ($paymentApproval) {
@@ -555,6 +556,134 @@ class   PaymentRepository extends EloquentBaseRepository
         }
         $data['id'] = $data['data']['id'];
         return parent::update($data);
+    }
+
+
+    public function downloadPaymentTaxReport($data)
+    {
+
+        $fileName = 'mandate' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
+        $filePath = "pdf/";
+
+        $paymentV = PaymentVoucher::with([
+            'program_segment',
+            'economic_segment',
+            'functional_segment',
+            'geo_code_segment',
+            'admin_segment',
+            'fund_segment',
+            'aie',
+            'currency',
+            'voucher_source_unit',
+            'total_amount',
+            'total_tax',
+            'payee_vouchers.admin_company.company_bank.bank_branch.hr_bank',
+            'payee_vouchers.employee.employee_bank.branches.hr_bank',
+            'schedule_economic.economic_segment',
+            'paying_officer',
+            'checking_officer',
+            'financial_controller'
+        ])->find($data['data']['id']);
+
+
+        $payees = " ";
+        $address = " ";
+        $count = 1;
+        /** @var PayeeVoucher $payee_voucher */
+        foreach ($paymentV->payee_vouchers as $payee_voucher) {
+            if ($payee_voucher->employee_id) {
+                $count += 1;
+                $payees = $payee_voucher->employee->first_name . ';';
+                $address = $payee_voucher->employee->employee_contact_details->country->name . ';';
+            } else {
+                $count += 1;
+                $payees = $payee_voucher->admin_company->name . ';';
+                $address = $payee_voucher->admin_company->country . ';';
+            }
+
+        }
+        $paymentV->default_setting = DefaultSetting::with(['checking_officer',
+            'financial_controller',
+            'paying_officer',
+            'account_head',
+            'program_segment',
+            'economic_segment',
+            'functional_segment',
+            'geo_code_segment',
+            'admin_segment',
+            'fund_segment',
+            'sub_organisation'])->find(1);
+        $paymentV->one_payee = $payees;
+        $paymentV->count_payee = $count;
+        $paymentV->address = $address;
+
+        app()->make(WKHTMLPDfConverter::class)
+            ->convert(view('reports.payment-voucher-tax-report', ['data' => $paymentV])->render(), $fileName);
+
+        return ['url' => url($filePath . $fileName)];
+    }
+
+    public function downloadPaymentReport($data)
+    {
+        $fileName = 'mandate' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
+        $filePath = "pdf/";
+
+        $paymentV = PaymentVoucher::with([
+            'program_segment',
+            'economic_segment',
+            'functional_segment',
+            'geo_code_segment',
+            'admin_segment',
+            'fund_segment',
+            'aie',
+            'currency',
+            'voucher_source_unit',
+            'total_amount',
+            'total_tax',
+            'payee_vouchers.admin_company.company_bank.bank_branch.hr_bank',
+            'payee_vouchers.employee.employee_bank.branches.hr_bank',
+            'schedule_economic.economic_segment',
+            'paying_officer',
+            'checking_officer',
+            'financial_controller'
+        ])->find($data['data']['id']);
+
+
+        $payees = " ";
+        $address = " ";
+        $count = 1;
+        /** @var PayeeVoucher $payee_voucher */
+        foreach ($paymentV->payee_vouchers as $payee_voucher) {
+            if ($payee_voucher->employee_id) {
+                $count += 1;
+                $payees = $payee_voucher->employee->first_name . ';';
+                $address = $payee_voucher->employee->employee_contact_details->country->name . ';';
+            } else {
+                $count += 1;
+                $payees = $payee_voucher->admin_company->name . ';';
+                $address = $payee_voucher->admin_company->country . ';';
+            }
+
+        }
+        $paymentV->default_setting = DefaultSetting::with(['checking_officer',
+            'financial_controller',
+            'paying_officer',
+            'account_head',
+            'program_segment',
+            'economic_segment',
+            'functional_segment',
+            'geo_code_segment',
+            'admin_segment',
+            'fund_segment',
+            'sub_organisation'])->find(1);
+        $paymentV->one_payee = $payees;
+        $paymentV->count_payee = $count;
+        $paymentV->address = $address;
+
+        app()->make(WKHTMLPDfConverter::class)
+            ->convert(view('reports.payment-voucher-report', ['data' => $paymentV])->render(), $fileName);
+
+        return ['url' => url($filePath . $fileName)];
     }
 
 }

@@ -99,6 +99,17 @@ class PaymentVoucherController extends BaseController
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
 
+    public function downloadPaymentReport(Request $request)
+    {
+        $this->jobMethod = "downloadPaymentReport";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
+    public function downloadPaymentTaxReport(Request $request)
+    {
+        $this->jobMethod = "downloadPaymentTaxReport";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
 
 
 }

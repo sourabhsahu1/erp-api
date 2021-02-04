@@ -170,12 +170,6 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 throw new AppException('Liability to be added in retire voucher');
             }
 
-//            Log::info(($paymentVoucher->status ));
-//            Log::info(($paymentVoucher->status != AppConstant::VOUCHER_STATUS_CLOSED));
-//            Log::info(($paymentVoucher->status != AppConstant::VOUCHER_STATUS_POSTED_TO_GL));
-//            Log::info(($paymentVoucher->status != AppConstant::VOUCHER_STATUS_CLOSED) || ($paymentVoucher->status != AppConstant::VOUCHER_STATUS_POSTED_TO_GL));
-
-//            dd($paymentVoucher);
             if (!($paymentVoucher->status === AppConstant::VOUCHER_STATUS_CLOSED || $paymentVoucher->status === AppConstant::VOUCHER_STATUS_POSTED_TO_GL)) {
                 throw new AppException('Payment Voucher Id ' . $paymentVoucher->id . ' not CLOSED or POSTED TO GL  yet');
             }
