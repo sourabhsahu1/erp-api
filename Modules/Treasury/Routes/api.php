@@ -109,9 +109,10 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::get('mandate/{id}/download', 'MandateController@downloadMandateReport');
     Route::get('mandate-tax/{id}/download', 'MandateController@downloadMandateTaxReport');
     Route::get('payment-voucher-tax/{id}/download', 'PaymentVoucherController@downloadPaymentTaxReport');
-    Route::get('payment-voucher/{id}/download', 'PaymentVoucherController@downloadPaymentReport');
+    Route::get('receipt-voucher/{id}/download', 'ReceiptVoucherController@downloadReceiptReport');
 });
+Route::get('payment-voucher/{id}/download', 'PaymentVoucherController@downloadPaymentReport');
 
 
 
-Route::get('receipt-voucher/{id}/download', 'ReceiptVoucherController@downloadReceiptReport');
+

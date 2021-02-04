@@ -130,7 +130,7 @@
                             <td>
                                 <table style="width: 100%">
                                     <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->economic_segment->name ?? " "}}</td>
+                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->admin_segment->name ?? " "}}</td>
 {{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">5</td>--}}
 {{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
 {{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}

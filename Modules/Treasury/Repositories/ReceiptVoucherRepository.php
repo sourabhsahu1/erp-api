@@ -14,6 +14,7 @@ use Modules\Admin\Models\CompanySetting;
 use Modules\Finance\Models\Currency;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JournalVoucherDetail;
+use Modules\Treasury\Models\DefaultSetting;
 use Modules\Treasury\Models\ReceiptPayee;
 use Modules\Treasury\Models\ReceiptScheduleEconomic;
 use Modules\Treasury\Models\ReceiptVoucher;
@@ -309,16 +310,62 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
         ];
     }
 
-    public function downloadReceiptReport($params)
+    public function downloadReceiptReport($data)
     {
 
         $fileName = 'mandate' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
         $filePath = "pdf/";
 
-        if (strtolower($params['inputs']['type']) == 'extended') {
-            app()->make(WKHTMLPDfConverter::class)
-                ->convert(view('reports.employee-full-report', ['data' => $data])->render(), $fileName);
+        /** @var ReceiptVoucher $receipt */
+        $receipt = ReceiptVoucher::with([
+            'program_segment',
+            'economic_segment',
+            'functional_segment',
+            'geo_code_segment',
+            'admin_segment',
+            'fund_segment',
+            'employee',
+            'receipt_payees',
+            'receipt_schedule_economic',
+            'voucher_source_unit',
+            'total_amount'
+        ])->find($data['data']['id']);
+
+        $final_text = " ";
+        $count = 1;
+
+        /** @var ReceiptPayee $receipt_payee */
+
+        if (is_null($receipt) || is_null($receipt->receipt_payees)) {
+            throw new AppException("Payers not found , Cannot create View file");
         }
+
+        foreach ($receipt->receipt_payees as $receipt_payee) {
+            if ($receipt_payee->employee_id) {
+                $count += 1;
+                $final_text = $final_text . $receipt_payee->details . '[' . $receipt_payee->employee->first_name . ']' . ' ;';
+            } else {
+                $count += 1;
+                $final_text = $final_text . $receipt_payee->details . '[' . $receipt_payee->admin_company->name . ']' . ' ;';
+            }
+        }
+
+        $receipt->default_setting = DefaultSetting::with(['checking_officer',
+            'financial_controller',
+            'paying_officer',
+            'account_head',
+            'program_segment',
+            'economic_segment',
+            'functional_segment',
+            'geo_code_segment',
+            'admin_segment',
+            'fund_segment',
+            'sub_organisation'])->find(1);
+
+        $receipt->final_text = $final_text;
+
+        app()->make(WKHTMLPDfConverter::class)
+            ->convert(view('reports.receipt-voucher-report', ['data' => $receipt])->render(), $fileName);
 
         return ['url' => url($filePath . $fileName)];
     }

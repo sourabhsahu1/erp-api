@@ -20,14 +20,14 @@
         <div>
             <h2 style="text-align: center; margin-top: 0;">DSCHC</h2>
             <h2 style="text-align: center; margin-bottom: 0;">Delta State Contributory Health Commission</h2>
-            <h2 style="text-align: center; margin-bottom: 0;">Payment Voucher</h2>
+            <h2 style="text-align: center; margin-bottom: 0;">Paying in Form</h2>
         </div>
         <table style="margin-top: 30px; width: 100%">
             <tr>
                 <td>
                     <div style="font-size: 18px">
                         <label>Deptal No: </label>
-                        <input type="text"/>
+                        <input type="text" value="{{$data->deptal_id}}"/>
                     </div>
                 </td>
             </tr>
@@ -58,14 +58,14 @@
                             <td style="border: 1px solid #a0a0a0; width: 300px; text-align: center">
                                 <table style="width: 100%">
                                     <tr>
-                                        <td class="shadow-1px">R</td>
-                                        <td class="shadow-1px">E</td>
-                                        <td class="shadow-1px">X</td>
-                                        <td class="shadow-1px">1</td>
-                                        <td class="shadow-1px">0</td>
-                                        <td class="shadow-1px">0</td>
-                                        <td class="shadow-1px">0</td>
-                                        <td class="shadow-1px">5</td>
+                                        <td class="shadow-1px">{{$data->id}}</td>
+{{--                                        <td class="shadow-1px">E</td>--}}
+{{--                                        <td class="shadow-1px">X</td>--}}
+{{--                                        <td class="shadow-1px">1</td>--}}
+{{--                                        <td class="shadow-1px">0</td>--}}
+{{--                                        <td class="shadow-1px">0</td>--}}
+{{--                                        <td class="shadow-1px">0</td>--}}
+{{--                                        <td class="shadow-1px">5</td>--}}
                                     </tr>
                                 </table>
                             </td>
@@ -80,7 +80,7 @@
                             </td>
                             <td style="border: 1px solid #a0a0a0; width: 300px; text-align: center">
                                 <div style="font-size: 18px;">
-                                    <label>ASABA</label>
+                                    <label>{{$data->default_setting->account_head->name ?? " "}}</label>
                                 </div>
                             </td>
                         </tr>
@@ -90,7 +90,7 @@
                             </td>
                             <td style="border: 1px solid #a0a0a0; width: 300px; text-align: center">
                                 <div style="font-size: 18px;">
-                                    <label>DELTA STATE CONTRIBUTORY HEALTH COMMISSION HQ</label>
+                                    <label>{{$data->admin_segment->name ?? " "}}</label>
                                 </div>
                             </td>
                         </tr>
@@ -100,7 +100,7 @@
                             </td>
                             <td style="border: 1px solid #a0a0a0; width: 300px; text-align: center">
                                 <div style="font-size: 18px;">
-                                    <label>CONSOLIDATED REVENUE FUND CHARGE - SALARIES</label>
+                                    <label>{{$data->economic_segment->name ?? " "}}</label>
                                 </div>
                             </td>
                         </tr>
@@ -122,13 +122,13 @@
                             <td>
                                 <table style="width: 100%">
                                     <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">5</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>
+                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->admin_segment->combined_code ?? " "}}</td>
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">5</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
                                         <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
                                         <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
                                         <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
@@ -139,14 +139,14 @@
                             <td>
                                 <table style="width: 100%">
                                     <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">3</td>
+                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->economic_segment->combined_code ?? " "}}</td>
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">3</td>--}}
                                         <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
                                     </tr>
                                 </table>
@@ -178,13 +178,13 @@
                             <td>
                                 <table style="width: 100%">
                                     <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">5</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>
+                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->functional_segment->combined_code ?? " "}}</td>
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">5</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
                                         <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
                                         <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
                                         <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
@@ -195,14 +195,14 @@
                             <td>
                                 <table style="width: 100%">
                                     <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">3</td>
+                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->program_segment->combined_code ?? " "}}</td>
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">3</td>--}}
                                         <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
                                     </tr>
                                 </table>
@@ -210,13 +210,13 @@
                             <td>
                                 <table style="width: 100%">
                                     <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">5</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>
+                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->fund_segment->combined_code ?? " "}}</td>
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">5</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
                                         <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
                                         <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
                                         <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
@@ -227,13 +227,13 @@
                             <td>
                                 <table style="width: 100%">
                                     <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">5</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>
+                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->geo_code_segment->combined_code ?? " "}}</td>
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">5</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
                                         <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
                                         <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
                                         <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
@@ -256,21 +256,21 @@
                             <td>
                                 <table style="width: 100%">
                                     <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">8</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">9</td>
+                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->value_date}}</td>
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">8</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
+{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">9</td>--}}
                                     </tr>
                                 </table>
                             </td>
                             <td>
                                 <table style="width: 100%">
                                     <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2,000,000</td>
+                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->total_amount->amount ?? " "}}</td>
                                         <td style="border: 1px solid #a0a0a0; text-align: center;">00</td>
                                     </tr>
                                 </table>
@@ -287,7 +287,8 @@
             </tr>
             <tr>
                 <td style="width: 20%">Please receive the sum of:</td>
-                <td style="width: 80%" class="shadow-1px">Two million Naira Only</td>
+                <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
+                <td style="width: 80%" class="shadow-1px">{{ucfirst($f->format($data->total_amount->amount))}} Only</td>
             </tr>
             <tr>
                 <td colspan="2" class="shadow-1px" style="height: 20px"></td>
@@ -307,7 +308,7 @@
                         <tr>
                             <td class="shadow-1px" style="width: 30%"></td>
                             <td style="width: 5%; text-align: center">Being</td>
-                            <td style="width: 60%" class="shadow-1px"></td>
+                            <td style="width: 60%" class="shadow-1px">{{$data->final_text}}</td>
                         </tr>
                     </table>
                 </td>
@@ -334,7 +335,7 @@
 
         <table style="width: 100%; margin-top: 50px">
             <tr>
-                <td class="shadow-1px" style="width: 15%">N2,000,000,00K</td>
+                <td class="shadow-1px" style="width: 15%">{{$data->total_amount->amount}}</td>
                 <td style="width: 70%"></td>
                 <td class="shadow-1px" style="width: 15%; height: 20px"></td>
             </tr>

@@ -30,7 +30,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $deleted_at
  * 
  * @property \Modules\Admin\Models\Company $admin_company
- * @property \Modules\Hr\Models\Employee $hr_employee
+ * @property \Modules\Hr\Models\Employee $employee
  * @property \Modules\Treasury\Models\ReceiptVoucher $treasury_receipt_voucher
  * @property \Illuminate\Database\Eloquent\Collection $treasury_receipt_schedule_economics
  *
