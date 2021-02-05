@@ -37,8 +37,6 @@ class   PaymentRepository extends EloquentBaseRepository
 
         DB::beginTransaction();
         try {
-
-
             if (is_null($paymentV)) {
                 $data['data']['deptal_id'] = 1;
             } else {
@@ -84,6 +82,14 @@ class   PaymentRepository extends EloquentBaseRepository
                             $remainingAmount = $approval_payee->remaining_amount - $payee['amount'];
                             if ($remainingAmount < 0) {
                                 continue;
+                            }
+                            if ($remainingAmount = 0) {
+                                $paymentApproval->status = AppConstant::PAYMENT_APPROVAL_FULLY_USED;
+                                $paymentApproval->save();
+                            }
+                            if ($remainingAmount > 0) {
+                                $paymentApproval->status = AppConstant::PAYMENT_APPROVAL_READY_FOR_PV;
+                                $paymentApproval->save();
                             }
 
 
@@ -234,6 +240,8 @@ class   PaymentRepository extends EloquentBaseRepository
                                     'remaining_amount' => $approval_payee->remaining_amount + $payee->net_amount
                                 ]);
 
+                                $paymentApproval->status = AppConstant::PAYMENT_APPROVAL_READY_FOR_PV;
+                                $paymentApproval->save();
                                 PayeeVoucher::where('employee_id', $employeeId)
                                     ->where('company_id', $companyId)
                                     ->where('payment_voucher_id', $payee->payment_voucher_id)
