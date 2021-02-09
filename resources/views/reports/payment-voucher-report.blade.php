@@ -335,7 +335,7 @@
                     <td class="shadow-1px">{{$data->aie->aie_number}}</td>
                 </tr>
             </table>
-            <table style="width: 50%; margin-top: 50px;">
+            <table style="width: 45%; margin-top: 50px;">
                 <tr>
                     <td style="text-align: center">Certificate</td>
                 </tr>
