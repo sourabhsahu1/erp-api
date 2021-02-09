@@ -136,13 +136,12 @@ class   PaymentRepository extends EloquentBaseRepository
 
         $data['data']['status'] = $paymentVoucher->status;
         $data['data']['type'] = $paymentVoucher->type;
-        if ($paymentVoucher->is_payment_approval === true) {
 
+        if ($paymentVoucher->is_payment_approval === true) {
 
             $paymentApproval = PaymentApproval::with([
                 'payment_approval_payees'
             ])->find($paymentVoucher->payment_approve_id);
-
 
             if ($paymentApproval) {
                 /** @var PaymentApprovalPayee $approval_payee */
@@ -170,6 +169,7 @@ class   PaymentRepository extends EloquentBaseRepository
                             if ($remainingAmount == 0) {
                                 throw new AppException('Payment Approval has zero amount');
                             }
+                            $pv = parent::update($data);
 
                             if ($remainingAmount < 0) {
                                 continue;
@@ -193,6 +193,8 @@ class   PaymentRepository extends EloquentBaseRepository
                             PaymentApprovalPayee::where('id', $approval_payee->id)->update([
                                 'remaining_amount' => $approvalPayee->remaining_amount - $updatedRemainingAmount
                             ]);
+
+
                         } else {
                             continue;
                         }
