@@ -300,8 +300,12 @@
             </tr>
             </tbody>
         </table>
-        <div style="display: flex">
-            <table style="width: 50%; margin-top: 50px; border: 1px solid #a0a0a0">
+        <table style="width: 100%">
+            <tr>
+                <td style="width: 50%">
+
+
+            <table style="width: 100%; margin-top: 50px; border: 1px solid #a0a0a0">
                 <tr>
                     <td>Payable at :</td>
                     <td class="shadow-1px">{{$data->default_setting->account_head->name ?? " "}}</td>
@@ -335,60 +339,65 @@
                     <td class="shadow-1px">{{$data->aie->aie_number}}</td>
                 </tr>
             </table>
-            <table style="width: 45%; margin-top: 50px;">
-                <tr>
-                    <td style="text-align: center">Certificate</td>
-                </tr>
-                <tr>
-                    <td>
-                        <p style="margin-left: 10px">I certify that the above amount is correct, and was incurred under
-                            the
-                            Authority Quoted, that the
-                            services that have been duly performed; that rate piece charged is according to regulations.
-                            Contact
-                            is fair and reasonable.</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="display: flex">
+            </td>
+                <td style="width: 50%">
+                    <table style="width: 100%; margin-top: 50px;">
+                        <tr>
+                            <td style="text-align: center">Certificate</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p style="margin-left: 10px">I certify that the above amount is correct, and was incurred under
+                                    the
+                                    Authority Quoted, that the
+                                    services that have been duly performed; that rate piece charged is according to regulations.
+                                    Contact
+                                    is fair and reasonable.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="display: flex">
                         <span style="margin-left: 10px">That the amount of : <span class="text-bold"
                                                                                    style="margin-left:10px">{{ucfirst($f->format($data->total_amount->amount))}} Naira Only.</span></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span style="margin-left: 10px">may be paid under the Classification Quoted</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span class="text-bold" style="margin-left: 10px">{{$data->checking_officer->first_name}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <table style="width: 100%">
-                            <tr>
-                                <td style="width: 25%"><span style="margin-left: 10px">Place</span></td>
-                                <td style="width: 25%" class="shadow-1px">{{$data->default_setting->account_head->name ?? " "}}</td>
-                                <td style="width: 25%; text-align: right">Date</td>
-                                <td style="width: 25%" class="shadow-1px"></td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <table style="width: 100%">
-                            <tr>
-                                <td><span style="margin-left: 10px">Designation</span></td>
-                                <td class="shadow-1px" style="width: 50%"></td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <span style="margin-left: 10px">may be paid under the Classification Quoted</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <span class="text-bold" style="margin-left: 10px">{{$data->checking_officer->first_name}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table style="width: 100%">
+                                    <tr>
+                                        <td style="width: 25%"><span style="margin-left: 10px">Place</span></td>
+                                        <td style="width: 25%" class="shadow-1px">{{$data->default_setting->account_head->name ?? " "}}</td>
+                                        <td style="width: 25%; text-align: right">Date</td>
+                                        <td style="width: 25%" class="shadow-1px"></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table style="width: 100%">
+                                    <tr>
+                                        <td><span style="margin-left: 10px">Designation</span></td>
+                                        <td class="shadow-1px" style="width: 50%"></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+
+        </table>
+
         <table style="width: 100%">
             <tr>
                 <td>
