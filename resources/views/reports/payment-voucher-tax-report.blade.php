@@ -164,7 +164,7 @@
                 </td>
             </tr>
         </table>
-        <table style="margin-top: 50px; width: 100%">
+        <table style="margin-top: 10px; width: 100%">
             <tr>
                 <td>
                     <table style="width: 100%">
@@ -290,7 +290,7 @@
                 </td>
             </tr>
         </table>
-        <table style="width: 100%; margin-top: 50px">
+        <table style="width: 100%; margin-top: 10px">
             <tr>
                 <td style="width: 10%">Payee</td>
                 <td><input type="text" style="width: 95%" value="{{$data->one_payee . $data->count_payee}}"></td>
@@ -300,7 +300,7 @@
                 <td style="width: 80%"><input type="text" style="width: 95%" value="{{$data->address}}"></td>
             </tr>
         </table>
-        <table style="width: 100%; margin-top: 50px; border: 1px solid #a0a0a0">
+        <table style="width: 100%; margin-top: 10px; border: 1px solid #a0a0a0">
             <thead>
             <tr>
                 <th style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">Date</th>
@@ -374,7 +374,7 @@
                     </table>
                 </td>
                 <td>
-                    <table style="width: 100%; margin-top: 50px;">
+                    <table style="width: 100%; margin-top: 10px;">
                         <tr>
                             <td style="text-align: center">Certificate</td>
                         </tr>
