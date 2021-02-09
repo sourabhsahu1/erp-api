@@ -16,7 +16,7 @@
 </head>
 <body>
 <div style="width: 90%; height: auto; border: 1px solid #000; margin: 0px auto;">
-    <div style="width: 100%; padding-top: 50px; padding-bottom: 50px">
+    <div style="width: 100%; padding-top: 20px; padding-bottom: 30px">
         <div>
             <h2 style="text-align: center; margin-top: 0;">DSCHC</h2>
             <h2 style="text-align: center; margin-bottom: 0;">Delta State Contributory Health Commission</h2>
