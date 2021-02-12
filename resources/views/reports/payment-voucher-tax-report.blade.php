@@ -393,7 +393,7 @@
                         <tr>
                             <td style="display: flex">
                         <span style="margin-left: 10px">That the amount of : <span class="text-bold"
-                                                                                   style="margin-left:10px">{{ucfirst($f->format($data->total_amount->amount))}} Naira Only.</span></span>
+                                                                                   style="margin-left:10px">{{isset($data->total_amount->amount) ? ucfirst($f->format($data->total_amount->amount)) . 'Naira Only.': ' '}} </span></span>
                             </td>
                         </tr>
                         <tr>
