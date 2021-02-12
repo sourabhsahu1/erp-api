@@ -327,10 +327,10 @@
                 <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
                 <td style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">
                     Checked and Insert Amount in words
-                    passed for : {{ucfirst($f->format($data->total_amount->amount))}} Naira Only
+                    passed for : {{isset($data->total_amount) ? ucfirst($f->format($data->total_amount->amount)) . 'Naira Only.': ' '}}
                 </td>
                 <td style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">Total</td>
-                <td style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">{{$data->total_amount->amount}}</td>
+                <td style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">{{$data->total_amount->amount ?? ' '}}</td>
                 <td style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">00</td>
             </tr>
             </tbody>
@@ -392,8 +392,11 @@
                         </tr>
                         <tr>
                             <td style="display: flex">
-                        <span style="margin-left: 10px">That the amount of : <span class="text-bold"
-                                                                                   style="margin-left:10px">{{isset($data->total_amount->amount) ? ucfirst($f->format($data->total_amount->amount)) . 'Naira Only.': ' '}} </span></span>
+                        <span style="margin-left: 10px">That the amount of :
+                            <span class="text-bold" style="margin-left:10px">
+                                {{isset($data->total_amount) ? ucfirst($f->format($data->total_amount->amount)) . 'Naira Only.': ' '}}
+                            </span>
+                        </span>
                             </td>
                         </tr>
                         <tr>
