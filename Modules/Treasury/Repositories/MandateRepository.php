@@ -62,13 +62,13 @@ class MandateRepository extends EloquentBaseRepository
 
                 $paymentV = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers']);
 
-                foreach ($paymentV->get() as $value) {
-                    /** @var VoucherSourceUnit $vsu */
-                    $vsu = VoucherSourceUnit::find($value->voucher_source_unit_id);
-                    if ($vsu->is_personal_advance_unit == true) {
-                        throw new AppException('Advance Vouchers not Allowed');
-                    }
-                }
+//                foreach ($paymentV->get() as $value) {
+//                    /** @var VoucherSourceUnit $vsu */
+//                    $vsu = VoucherSourceUnit::find($value->voucher_source_unit_id);
+//                    if ($vsu->is_personal_advance_unit == true) {
+//                        throw new AppException('Advance Vouchers not Allowed');
+//                    }
+//                }
 
                 $paymentV = $paymentV->whereIn('status', [
                     AppConstant::VOUCHER_STATUS_AUDITED

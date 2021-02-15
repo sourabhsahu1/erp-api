@@ -306,6 +306,12 @@ class   PaymentRepository extends EloquentBaseRepository
             }
         }
 
+        if (isset($params['inputs']['available'])) {
+            $query->whereHas('voucher_source_unit', function ($query) use ($params) {
+                $query->whereNull('mandate_id');
+            });
+        }
+
         if (isset($params['inputs']['voucher_source_unit_id'])) {
             $query->where('voucher_source_unit_id', $params['inputs']['voucher_source_unit_id']);
         }
