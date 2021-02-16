@@ -5,22 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receipt Voucher - Paying in Form</title>
     <style>
-        .shadow-1px {
-            border: 1px solid #a0a0a0;
+        input {
+            border: none !important;
+            box-shadow: 0 1px 0 0 #000;
         }
 
-        .text-bold {
-            font-weight: 600;
+        .width-100-per {
+            width: 100% !important;
+        }
+
+        .text-center {
+            text-align: center !important;
+        }
+
+        .table-bordered {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        .width-10px {
+            width: 10px;
         }
     </style>
 </head>
 <body>
-<div style="width: 80%; height: auto; border: 1px solid #000; margin: 0px auto;">
+<div style="width: 90%; height: auto; margin: 0px auto;">
     <div style="width: 100%; padding-top: 50px; padding-bottom: 50px">
         <div>
-            <h2 style="text-align: center; margin-top: 0;">DSCHC</h2>
-            <h2 style="text-align: center; margin-bottom: 0;">Delta State Contributory Health Commission</h2>
-            <h2 style="text-align: center; margin-bottom: 0;">Paying in Form</h2>
+            <h2 style="text-align: center; margin-top: -30px;">(DSCHC)</h2>
+            <h2 style="text-align: center; margin-top: -20px; margin-bottom: 0;">Delta State Contributory Health Commission</h2>
+            <h2 style="text-align: center; margin-top: 0; margin-bottom: 0;">PAYING-IN-FORM</h2>
         </div>
         <table style="margin-top: 30px; width: 100%">
             <tr>
@@ -30,6 +44,8 @@
                         <input type="text" value="{{$data->deptal_id}}"/>
                     </div>
                 </td>
+                <td>
+                </td>
             </tr>
         </table>
         <table style="margin-top: 30px; width: 100%">
@@ -37,68 +53,56 @@
                 <td>
                     <table>
                         <tr>
-                            <td style="border: 1px solid #a0a0a0; width: 120px; text-align: center">
-                                <div style="font-size: 18px;">
-                                    <label>Detail Type</label>
-                                </div>
-                            </td>
-                            <td style="border: 1px solid #a0a0a0; width: 300px; text-align: center">
-                                <div style="font-size: 18px;">
-                                    <label>Voucher Number</label>
-                                </div>
-                            </td>
-                            <td style="width: 43%; text-align: center"></td>
-                        </tr>
-                        <tr>
-                            <td style="border: 1px solid #a0a0a0; width: 120px; text-align: center">
-                                <div style="font-size: 18px;">
-                                    <label>VOI</label>
-                                </div>
-                            </td>
-                            <td style="border: 1px solid #a0a0a0; width: 300px; text-align: center">
-                                <table style="width: 100%">
+                            <td style="width: 500px; text-align: center">
+                                <table class="width-100-per table-bordered" style="margin-left: -3px">
                                     <tr>
-                                        <td class="shadow-1px">{{$data->id}}</td>
-{{--                                        <td class="shadow-1px">E</td>--}}
-{{--                                        <td class="shadow-1px">X</td>--}}
-{{--                                        <td class="shadow-1px">1</td>--}}
-{{--                                        <td class="shadow-1px">0</td>--}}
-{{--                                        <td class="shadow-1px">0</td>--}}
-{{--                                        <td class="shadow-1px">0</td>--}}
-{{--                                        <td class="shadow-1px">5</td>--}}
+                                        <td class="text-center table-bordered"><label>Detail Type</label></td>
+                                        <td class="text-center table-bordered" colspan="8"><label>Voucher Number</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="table-bordered"><label>VOI</label></td>
+                                        <td class="table-bordered">{{$data->id}}</td>
+                                        <!-- <td class="table-bordered">E</td>
+                                        <td class="table-bordered">X</td>
+                                        <td class="table-bordered">1</td>
+                                        <td class="table-bordered">0</td>
+                                        <td class="table-bordered">0</td>
+                                        <td class="table-bordered">0</td>
+                                        <td class="table-bordered">5</td> -->
                                     </tr>
                                 </table>
                             </td>
                         </tr>
                     </table>
                 </td>
-                <td style="border: 1px solid #a0a0a0; text-align: center">
-                    <table style="width: 100%">
+                <td style="text-align: center">
+                    <table style="width: 100%" class="table-bordered">
                         <tr>
-                            <td style="border: 1px solid #a0a0a0; width: 120px; text-align: center;">
+                            <td style="width: 120px; text-align: center;" class="table-bordered">
                                 <label>Station</label>
                             </td>
-                            <td style="border: 1px solid #a0a0a0; width: 300px; text-align: center">
+                            <td style="width: 300px; text-align: center" class="table-bordered">
                                 <div style="font-size: 18px;">
                                     <label>{{$data->default_setting->account_head->name ?? " "}}</label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
-                            <td style="border: 1px solid #a0a0a0; width: 120px; text-align: center;">
+                            <td style="width: 120px; text-align: center;" class="table-bordered">
                                 <label>Admin</label>
                             </td>
-                            <td style="border: 1px solid #a0a0a0; width: 300px; text-align: center">
+                            <td style="width: 300px; text-align: center" class="table-bordered">
                                 <div style="font-size: 18px;">
                                     <label>{{$data->admin_segment->name ?? " "}}</label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
-                            <td style="border: 1px solid #a0a0a0; width: 120px; text-align: center;">
+                            <td style="width: 120px; text-align: center;" class="table-bordered">
                                 <label>Economic</label>
                             </td>
-                            <td style="border: 1px solid #a0a0a0; width: 300px; text-align: center">
+                            <td style="width: 300px; text-align: center" class="table-bordered">
                                 <div style="font-size: 18px;">
                                     <label>{{$data->economic_segment->name ?? " "}}</label>
                                 </div>
@@ -109,169 +113,129 @@
             </tr>
             <tr>
                 <td>
-                    <table style="width: 100%">
+                    <table style="width: 100%; margin-top: -20px;" class="table-bordered">
                         <tr>
-                            <td style="border: 1px solid #a0a0a0; text-align: center; width: 50%">
+                            <td style="text-align: center; width: 50%" class="table-bordered" colspan="11">
                                 <label>Administrative Segment</label>
                             </td>
-                            <td style="border: 1px solid #a0a0a0; text-align: center; width: 50%">
+                            <td style="text-align: center; width: 50%" class="table-bordered" colspan="9">
                                 <label>Economic Segment</label>
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                                <table style="width: 100%">
-                                    <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->admin_segment->combined_code ?? " "}}</td>
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">5</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td>
-                                <table style="width: 100%">
-                                    <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->economic_segment->combined_code ?? " "}}</td>
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">3</td>--}}
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                    </tr>
-                                </table>
-                            </td>
+                            <td class="table-bordered width-10px" style="text-align: center;">{{$data->admin_segment->combined_code ?? " "}}</td>
+                            <!-- <td class="table-bordered width-10px" style="text-align: center;">5</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">2</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">2</td>
+                            <td class="table-bordered width-10px" style="text-align: center;"></td> -->
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
+                            <td class="table-bordered width-10px" style="text-align: center;">   {{$data->economic_segment->combined_code ?? " "}}</td>
+                            <!-- <td class="table-bordered width-10px" style="text-align: center;">1</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">3</td> -->
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
                         </tr>
                     </table>
                 </td>
             </tr>
         </table>
-        <table style="width: 100%">
+        <table style="margin-top:-7px; width: 100%">
             <tr>
                 <td>
-                    <table style="width: 100%">
+                    <table style="width: 100%" class="table-bordered">
                         <tr>
-                            <td style="border: 1px solid #a0a0a0; text-align: center; width: 25%">
+                            <td class="table-bordered" style="text-align: center; width: 25%" colspan="11">
                                 <label>Functional Segment</label>
                             </td>
-                            <td style="border: 1px solid #a0a0a0; text-align: center; width: 25%">
+                            <td class="table-bordered" style="text-align: center; width: 25%" colspan="9">
                                 <label>Programme Segment</label>
                             </td>
-                            <td style="border: 1px solid #a0a0a0; text-align: center; width: 25%">
+                            <td class="table-bordered" style="text-align: center; width: 25%" colspan="11">
                                 <label>Fund Segment</label>
                             </td>
-                            <td style="border: 1px solid #a0a0a0; text-align: center; width: 25%">
+                            <td class="table-bordered" style="text-align: center; width: 25%" colspan="11">
                                 <label>Geo Code Segment</label>
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                                <table style="width: 100%">
-                                    <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->functional_segment->combined_code ?? " "}}</td>
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">5</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td>
-                                <table style="width: 100%">
-                                    <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->program_segment->combined_code ?? " "}}</td>
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">3</td>--}}
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td>
-                                <table style="width: 100%">
-                                    <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->fund_segment->combined_code ?? " "}}</td>
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">5</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td>
-                                <table style="width: 100%">
-                                    <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->geo_code_segment->combined_code ?? " "}}</td>
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">5</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;"></td>
-                                    </tr>
-                                </table>
-                            </td>
+                            <td class="table-bordered width-10px" style="text-align: center;"> {{$data->functional_segment->combined_code ?? " "}}</td>
+                            <!-- <td class="table-bordered width-10px" style="text-align: center;">5</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">2</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">2</td>
+                            <td class="table-bordered width-10px" style="text-align: center;"></td> -->
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
+
+                            <td class="table-bordered width-10px" style="text-align: center;">{{$data->program_segment->combined_code ?? " "}}</td>
+                            <!-- <td class="table-bordered width-10px" style="text-align: center;">1</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">3</td> -->
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
+
+                            <td class="table-bordered width-10px" style="text-align: center;">{{$data->fund_segment->combined_code ?? " "}}</td>
+                            <!-- <td class="table-bordered width-10px" style="text-align: center;">5</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">2</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">2</td> -->
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
+
+                            <td class="table-bordered width-10px" style="text-align: center;">{{$data->geo_code_segment->combined_code ?? " "}}</td>
+                            <!-- <td class="table-bordered width-10px" style="text-align: center;">5</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">2</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
+                            <td class="table-bordered width-10px" style="text-align: center;">2</td> -->
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
                         </tr>
                     </table>
-                    <table style="width: 50%">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table>
                         <tr>
-                            <td style="border: 1px solid #a0a0a0; text-align: center; width: 50%">
-                                <label>Date</label>
-                            </td>
-                            <td style="border: 1px solid #a0a0a0; text-align: center; width: 50%">
-                                <label>Amount (Naira)</label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <table style="width: 100%">
+                            <td style="width: 500px; text-align: center">
+                                <table class="width-100-per table-bordered" style="margin-left: -3px; margin-top: -8px">
                                     <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->value_date}}</td>
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">8</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">2</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">0</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">1</td>--}}
-{{--                                        <td style="border: 1px solid #a0a0a0; text-align: center;">9</td>--}}
+                                        <td class="text-center table-bordered" colspan="6"><label>Date</label></td>
+                                        <td class="text-center table-bordered" colspan="2"><label>Amount (Naira)</label>
+                                        </td>
                                     </tr>
-                                </table>
-                            </td>
-                            <td>
-                                <table style="width: 100%">
                                     <tr>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">{{$data->total_amount->amount ?? " "}}</td>
-                                        <td style="border: 1px solid #a0a0a0; text-align: center;">00</td>
+                                        <td class="table-bordered">  {{$data->value_date}}</td>
+                                        <!-- <td class="table-bordered">1</td>
+                                        <td class="table-bordered">2</td>
+                                        <td class="table-bordered">0</td>
+                                        <td class="table-bordered">1</td>
+                                        <td class="table-bordered">9</td> -->
+                                        <td class="table-bordered"> {{$data->total_amount->amount ?? " "}}</td>
+                                        <td class="table-bordered">00</td>
                                     </tr>
                                 </table>
                             </td>
@@ -280,71 +244,84 @@
                 </td>
             </tr>
         </table>
-        <table style="width: 100%;">
+        <table style="width: 100%; margin-top: 10px">
             <tr>
-                <td style="width: 10%">To Sub-Accountant</td>
+                <td>To Sub-Accountant</td>
                 <td>DSCHC</td>
             </tr>
             <tr>
-                <td style="width: 20%">Please receive the sum of:</td>
+                <td style="width: 10%">Please receive the sum of:</td>
                 <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
-                <td style="width: 80%" class="shadow-1px">{{ucfirst($f->format($data->total_amount->amount))}} Only</td>
+                <td style="width: 90%"><input type="text" style="width: 100%" value="{{ucfirst($f->format($data->total_amount->amount))}} Only"/></td>
             </tr>
             <tr>
-                <td colspan="2" class="shadow-1px" style="height: 20px"></td>
+                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td colspan="2" class="shadow-1px" style="height: 20px"></td>
+                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td colspan="2" class="shadow-1px" style="height: 20px"></td>
+                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td colspan="2" class="shadow-1px" style="height: 20px"></td>
+                <td><input type="text" style="width: 100%"></td>
+                <!-- <td>Being<input type="text" style="width: 95%; margin-left: 15px" value="Test Narration Text for RV (Received from: TREASURY SINGLE ACCOUNT (CBN), [CASHBOOK][+ 1 Other])"></td> -->
+                <td>Being<input type="text" style="width: 95%; margin-left: 15px" value="{{$data->final_text}}"></td>
             </tr>
             <tr>
-                <td colspan="2">
-                    <table style="width: 100%">
-                        <tr>
-                            <td class="shadow-1px" style="width: 30%"></td>
-                            <td style="width: 5%; text-align: center">Being</td>
-                            <td style="width: 60%" class="shadow-1px">{{$data->final_text}}</td>
-                        </tr>
-                    </table>
-                </td>
+                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td colspan="2" class="shadow-1px" style="height: 20px"></td>
+                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td colspan="2" class="shadow-1px" style="height: 20px"></td>
+                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td colspan="2" class="shadow-1px" style="height: 20px"></td>
+                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td colspan="2" class="shadow-1px" style="height: 20px"></td>
+                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td colspan="2" class="shadow-1px" style="height: 20px"></td>
+                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td colspan="2" class="shadow-1px" style="height: 20px"></td>
+                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
             </tr>
         </table>
-
-        <table style="width: 100%; margin-top: 50px">
+        <table style="width: 100%; margin-top: 60px">
             <tr>
-                <td class="shadow-1px" style="width: 15%">{{$data->total_amount->amount}}</td>
-                <td style="width: 70%"></td>
-                <td class="shadow-1px" style="width: 15%; height: 20px"></td>
+                <td style="width: 10%; font-weight: 600" colspan="3">{{$data->total_amount->amount}}</td>
             </tr>
             <tr>
-                <td colspan="2" style="text-align: right">Witness to mark</td>
-                <td class="shadow-1px" style="width: 15%; height: 20px"></td>
+                <td style="width: 10%; font-weight: 600"><input type="text" style="width: 100%"></td>
+                <td style="width: 80%"></td>
+                <td style="width: 10%; font-weight: 600"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td colspan="3" style="text-align: center">Person making this payment is to be given a receipt from a book of numbered Receipt and to sign Counterfoil Book*</td>
+                <td style="width: 10%; font-weight: 600; text-align: center">Date</td>
+                <td style="width: 80%"></td>
+                <td style="width: 10%; font-weight: 600; text-align: center"><small>(Signature Mark of Payer)</small></td>
+            </tr>
+            <tr>
+                <td style="width: 10%; font-weight: 600; text-align: center"></td>
+                <td style="width: 70%; text-align: right">Witness to Mark:</td>
+                <td style="width: 20%; font-weight: 600; text-align: center"><input type="text" style="width: 100%"></td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align: center">
+                    <span>Person making this payment is to be given a receipt from a book of numbered Receipt and to sign Coounterfoil Book</span>
+                </td>
             </tr>
         </table>
     </div>

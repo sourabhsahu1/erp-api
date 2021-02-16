@@ -664,7 +664,6 @@ class   PaymentRepository extends EloquentBaseRepository
             'financial_controller'
         ])->find($params['inputs']['id']);
 
-
         $payees = " ";
         $address = " ";
         $count = 1;
