@@ -16,6 +16,8 @@ class TreasuryDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        // $this->call("OthersTableSeeder");
+         $this->call("TreasuryCashbookTypesTableSeeder");
+         $this->call("TreasuryStatusPaymentVoucherTableSeeder");
+         $this->call("TreasuryStatusRetireVoucherTableSeeder");
     }
 }
