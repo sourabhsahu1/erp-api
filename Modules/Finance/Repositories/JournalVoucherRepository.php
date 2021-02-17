@@ -227,8 +227,13 @@ class JournalVoucherRepository extends EloquentBaseRepository
         }
 
 
-        if (isset($params['inputs']['source'])) {
-            $query->where('source_app', $params['inputs']['source']);
+        if (isset($params['inputs']['source_app'])) {
+            if($params['inputs']['source_app'] == 'GENERAL_LEDGER') {
+                $query->where('source_app', 'PLINYEGL');
+            }elseif($params['inputs']['source_app'] == 'E_VOUCHER_TREASURY') {
+                $query->where('source_app', 'E-Voucher (Treasury)');
+            }
+
         }
 
         if (isset($params['inputs']['from']) && isset($params['inputs']['to'])) {
