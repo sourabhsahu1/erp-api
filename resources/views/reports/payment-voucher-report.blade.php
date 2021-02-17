@@ -217,7 +217,7 @@
                                         @foreach(str_split(str_replace('-','',\Illuminate\Support\Carbon::parse($data->value_date)->toDateString())) as $var)
                                         <td class="table-bordered">{{$var}}</td>
                                         @endforeach
-                                        <td class="table-bordered">"{{data->total_amount->amount ?? ' '}}"</td>
+                                        <td class="table-bordered">{{$data->total_amount->amount ?? ' '}}</td>
                                         <td class="table-bordered">00</td>
                                     </tr>
                                 </table>
