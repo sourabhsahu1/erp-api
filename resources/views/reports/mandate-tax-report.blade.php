@@ -10,6 +10,17 @@
             border: 1px solid #a0a0a0;
         }
 
+        input {
+            border: none !important;
+            border-bottom: 1px solid #000 !important; 
+            /* box-shadow: 0 1px 0 0 #000; */
+        }
+
+        .border-bottom-only {
+            border: none !important;
+            border-bottom: 1px solid #000 !important; 
+        }
+
         .table-bordered {
             border: 1px solid black;
             border-collapse: collapse;
@@ -86,14 +97,14 @@
             <table style="width: 100%; margin-top: 10px" class="table-bordered">
                 <thead>
                     <tr>
-                        <th style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">S.No</th>
-                        <th style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">BENEFICIERY</th>
-                        <th style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">BANK</th>
-                        <th style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">SORT CODE</th>
-                        <th style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">ACCOUNT NUMBER</th>
-                        <th style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">A/C TYPE</th>
-                        <th style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">AMOUNT [N]</th>
-                        <th style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">PURPOSE</th>
+                        <th style="text-align: center;" class="shadow-1px">S.No</th>
+                        <th style="text-align: center;" class="shadow-1px">BENEFICIERY</th>
+                        <th style="text-align: center;" class="shadow-1px">BANK</th>
+                        <th style="text-align: center;" class="shadow-1px">SORT CODE</th>
+                        <th style="text-align: center;" class="shadow-1px">ACCOUNT NUMBER</th>
+                        <th style="text-align: center;" class="shadow-1px">A/C TYPE</th>
+                        <th style="text-align: center;" class="shadow-1px">AMOUNT [N]</th>
+                        <th style="text-align: center;" class="shadow-1px">PURPOSE</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -108,20 +119,20 @@
                     $totalSum = $totalSum + $payee->net_amount ?? 0;
                     ?>
                     <tr>
-                        <td style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">{{$count}}</td>
-                        <td style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">{{$payee->employee_id ?
+                        <td style="text-align: center;" class="shadow-1px">{{$count}}</td>
+                        <td style="text-align: center;" class="shadow-1px">{{$payee->employee_id ?
                             $payee->employee->first_name : $payee->admin_company->name}}</td>
-                        <td style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">{{$payee->admin_company?
+                        <td style="text-align: center;" class="shadow-1px">{{$payee->admin_company?
                             $payee->admin_company->company_bank->bank_branch->hr_bank->name :
                             $payee->employee->employee_bank->branches->hr_bank->name}}</td>
-                        <td style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">
+                        <td style="text-align: center;" class="shadow-1px">
                             {{$payee->admin_company->company_bank->bank_branch->sort_code ?? " "}}</td>
-                        <td style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">
+                        <td style="text-align: center;" class="shadow-1px">
                             {{$payee->admin_company->company_bank->bank_account_number ?? " "}}</td>
-                        <td style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">
+                        <td style="text-align: center;" class="shadow-1px">
                             {{$payee->admin_company->company_bank->type_of_bank_account ?? " "}}</td>
-                        <td style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">{{$payee->net_amount ?? " "}}</td>
-                        <td style="text-align: center; box-shadow: 0 0 0 1px #a0a0a0">{{$payee->details ?? " "}}</td>
+                        <td style="text-align: center;" class="shadow-1px">{{$payee->net_amount ?? " "}}</td>
+                        <td style="text-align: center;" class="shadow-1px">{{$payee->details ?? " "}}</td>
                     </tr>
                     @endforeach
                     @endforeach
@@ -159,17 +170,17 @@
                                 <td style="width: 25%">
                                     Signature
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000">{{$data->second_authorised->first_name}}</td>
+                                <td style="width: 25%;" class="border-bottom-only">{{$data->second_authorised->first_name}}</td>
                                 <td style="width: 25%; text-align: right">
                                     Date
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000"> {{\Illuminate\Support\Carbon::parse($data->second_authorised_date)->toDateString()}}</td>
+                                <td style="width: 25%;" class="border-bottom-only"> {{\Illuminate\Support\Carbon::parse($data->second_authorised_date)->toDateString()}}</td>
                             </tr>
                             <tr>
                                 <td style="width: 25%">
                                     <p style="margin-bottom: -25px">Name</p>
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000" colspan="2">{{$data->second_authorised->first_name}}</td>
+                                <td style="width: 25%;" class="border-bottom-only" colspan="2">{{$data->second_authorised->first_name}}</td>
                                 <td rowspan="2">
                                     <table class="shadow-1px"
                                         style="width: 100%; text-align: center; padding: 40px; margin-top: 10px; margin-left: 15px">
@@ -185,7 +196,7 @@
                                 <td>
                                     <p style="margin-bottom: -25px">GSM No.</p>
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000" colspan="2"></td>
+                                <td style="width: 25%;" class="border-bottom-only" colspan="2"></td>
                             </tr>
                         </table>
                     </td>
@@ -203,17 +214,17 @@
                                 <td style="width: 25%">
                                     Signature
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000">{{$data->first_authorised->first_name}}</td>
+                                <td style="width: 25%;" class="border-bottom-only">{{$data->first_authorised->first_name}}</td>
                                 <td style="width: 25%; text-align: right">
                                     Date
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000"> {{\Illuminate\Support\Carbon::parse($data->first_authorised_date)->toDateString()}}</td>
+                                <td style="width: 25%;" class="border-bottom-only"> {{\Illuminate\Support\Carbon::parse($data->first_authorised_date)->toDateString()}}</td>
                             </tr>
                             <tr>
                                 <td style="width: 25%">
                                     <p style="margin-bottom: -25px">Name</p>
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000" colspan="2">{{$data->first_authorised->first_name}}</td>
+                                <td style="width: 25%;" class="border-bottom-only" colspan="2">{{$data->first_authorised->first_name}}</td>
                                 <td rowspan="2">
                                     <table class="shadow-1px"
                                         style="width: 100%; text-align: center; padding: 40px; margin-top: 10px; margin-left: 0">
@@ -229,7 +240,7 @@
                                 <td>
                                     <p style="margin-bottom: -25px">GSM No.</p>
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000" colspan="2"></td>
+                                <td style="width: 25%;" class="border-bottom-only" colspan="2"></td>
                             </tr>
                         </table>
                     </td>
@@ -248,17 +259,17 @@
                                 <td style="width: 25%">
                                     Signature
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000"></td>
+                                <td style="width: 25%;" class="border-bottom-only"></td>
                                 <td style="width: 25%; text-align: right">
                                     Date
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000"></td>
+                                <td style="width: 25%;" class="border-bottom-only"></td>
                             </tr>
                             <tr>
                                 <td style="width: 25%">
                                     <p style="margin-bottom: -25px">Name</p>
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000" colspan="2"></td>
+                                <td style="width: 25%;" class="border-bottom-only" colspan="2"></td>
                                 <td rowspan="2">
                                     <table class="shadow-1px"
                                         style="width: 100%; text-align: center; padding: 40px; margin-top: 10px; margin-left: 15px">
@@ -274,7 +285,7 @@
                                 <td>
                                     <p style="margin-bottom: -25px">GSM No.</p>
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000" colspan="2"></td>
+                                <td style="width: 25%;" class="border-bottom-only" colspan="2"></td>
                             </tr>
                         </table>
                     </td>
@@ -292,17 +303,17 @@
                                 <td style="width: 25%">
                                     Signature
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000"></td>
+                                <td style="width: 25%;" class="border-bottom-only"></td>
                                 <td style="width: 25%; text-align: right">
                                     Date
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000"></td>
+                                <td style="width: 25%;" class="border-bottom-only"></td>
                             </tr>
                             <tr>
                                 <td style="width: 25%">
                                     <p style="margin-bottom: -25px">Name</p>
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000" colspan="2"></td>
+                                <td style="width: 25%;" class="border-bottom-only" colspan="2"></td>
                                 <td rowspan="2">
                                     <table class="shadow-1px"
                                         style="width: 100%; text-align: center; padding: 40px; margin-top: 10px; margin-left: 0">
@@ -318,7 +329,7 @@
                                 <td>
                                     <p style="margin-bottom: -25px">GSM No.</p>
                                 </td>
-                                <td style="width: 25%; box-shadow: 0 1px 0 0 #000" colspan="2"></td>
+                                <td style="width: 25%;" class="border-bottom-only" colspan="2"></td>
                             </tr>
                         </table>
                     </td>

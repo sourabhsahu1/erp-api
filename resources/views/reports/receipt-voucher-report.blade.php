@@ -7,7 +7,13 @@
     <style>
         input {
             border: none !important;
-            box-shadow: 0 1px 0 0 #000;
+            border-bottom: 1px solid #000 !important; 
+            /* box-shadow: 0 1px 0 0 #000; */
+        }
+
+        .border-bottom-only {
+            border: none !important;
+            border-bottom: 1px solid #000 !important; 
         }
 
         .width-100-per {
@@ -223,60 +229,65 @@
                     </table>
                 </td>
             </tr>
-        </table>
-        <table style="width: 100%; margin-top: 10px">
+        </tasble>
+        <table style=width: 100%>
             <tr>
                 <td>To Sub-Accountant</td>
-                <td>DSCHC</td>
+                <td><span style="margin-top: 10px; font-weight: 600">DSCHC</span></td>
+            </tr>
+        </table>
+        <table style="width: 100%">
+            <tr>
+                <td style="width: 25%">Please receive the sum of:</td>
+                <?php $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
+                <td style="width: 80%"><input type="text" style="width: 100%" value="{{ucfirst($f->format($data->total_amount->amount))}} Only"/></td>
+            </tr>
+        </table>
+        <table style="width: 100%; margin-top: 0px">
+            <tr>
+                <td style="width: 100%;" colspan="3"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td style="width: 10%">Please receive the sum of:</td>
-                <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
-                <td style="width: 90%"><input type="text" style="width: 100%" value="{{ucfirst($f->format($data->total_amount->amount))}} Only"/></td>
+                <td style="width: 100%;" colspan="3"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
+                <td style="width: 100%;" colspan="3"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
-            </tr>
-            <tr>
-                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
-            </tr>
-            <tr>
-                <td><input type="text" style="width: 100%"></td>
+                <td style="width:20%"><input type="text" style="width: 100%"></td>
                 <!-- <td>Being<input type="text" style="width: 95%; margin-left: 15px" value="Test Narration Text for RV (Received from: TREASURY SINGLE ACCOUNT (CBN), [CASHBOOK][+ 1 Other])"></td> -->
-                <td>Being<input type="text" style="width: 95%; margin-left: 15px" value="{{$data->final_text}}"></td>
+                <td style="width: 10%;" class="text-center">Being</td>
+                <td style="width:70%"><input type="text" style="width: 100%" value=" {{$data->final_text}}"></td>
             </tr>
             <tr>
-                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
+                <td style="width: 100%;" colspan="3"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
+                <td style="width: 100%;" colspan="3"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
+                <td style="width: 100%;" colspan="3"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
+                <td style="width: 100%;" colspan="3"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
+                <td style="width: 100%;" colspan="3"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
+                <td style="width: 100%;" colspan="3"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
+                <td style="width: 100%;" colspan="3"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
+                <td style="width: 100%;" colspan="3"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
+                <td style="width: 100%;" colspan="3"><input type="text" style="width: 100%"></td>
             </tr>
             <tr>
-                <td style="width: 100%;" colspan="2"><input type="text" style="width: 100%"></td>
+                <td style="width: 100%;" colspan="3"><input type="text" style="width: 100%"></td>
             </tr>
         </table>
         <table style="width: 100%; margin-top: 60px">

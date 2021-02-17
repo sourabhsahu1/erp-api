@@ -81,7 +81,7 @@ class   PaymentRepository extends EloquentBaseRepository
                             //check to make sure amount is well balanced in both
                             $remainingAmount = $approval_payee->remaining_amount - $payee['amount'];
                             if ($remainingAmount < 0) {
-                                continue;
+                                throw new AppException('Remaining amount is zero');
                             }
                             if ($remainingAmount = 0) {
                                 $paymentApproval->status = AppConstant::PAYMENT_APPROVAL_FULLY_USED;

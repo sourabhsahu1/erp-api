@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-wi  dth, initial-scale=1.0">
     <title>Payment Voucher - Tax Voucher</title>
     <style>
         .text-bold {
@@ -11,7 +11,13 @@
 
         input {
             border: none !important;
-            box-shadow: 0 1px 0 0 #000;
+            border-bottom: 1px solid #000 !important; 
+            /* box-shadow: 0 1px 0 0 #000; */
+        }
+
+        .border-bottom-only {
+            border: none !important;
+            border-bottom: 1px solid #000 !important; 
         }
 
         .width-100-per {
@@ -51,9 +57,9 @@
                 <td>
                 </td>
                 <td>
-                    <div style="text-align: right; font-size: 1px">
+                    <div style="text-align: right; font-size: 17px">
                         <label>Checked and passed for payment at : </label>
-                        <input type="text" value="{{$data->updated_at}}"/>
+                        <input type="text" value="{{\Illuminate\Support\Carbon::parse($data->value_date)->toDateString()}}"/>
                     </div>
                 </td>
             </tr>
@@ -63,7 +69,7 @@
                 <td>
                     <table>
                         <tr>
-                            <td style="width: 500px; text-align: center">
+                            <td style="width: 250px; text-align: center">
                                 <table class="width-100-per table-bordered" style="margin-left: -3px">
                                     <tr>
                                         <td class="text-center table-bordered"><label>Detail Type</label></td>
@@ -76,7 +82,7 @@
                                         <!-- <td class="table-bordered">E</td>
                                         <td class="table-bordered">X</td>
                                         <td class="table-bordered">1</td>
-                                        <td class="table-bordered">0</td>
+                                        <td class="table-bordered">0</td>   
                                         <td class="table-bordered">0</td>
                                         <td class="table-bordered">0</td>
                                         <td class="table-bordered">5</td> -->
@@ -87,7 +93,7 @@
                     </table>
                 </td>
                 <td style="text-align: center">
-                    <table style="width: 100%" class="table-bordered">
+                    <table style="width: 100%; margin-top: 15px" class="table-bordered">
                         <tr>
                             <td style="width: 120px; text-align: center;" class="table-bordered">
                                 <label>Station</label>
@@ -211,7 +217,7 @@
                                     <tr>
                                         <td class="text-center table-bordered" colspan="{{strlen(str_replace('-','',\Illuminate\Support\Carbon::parse($data->value_date)->toDateString()))}}"><label>Date</label></td>
                                         <td class="text-center table-bordered" colspan="2"><label>Amount (Naira)</label>
-                                        </td>
+                                        </td>   
                                     </tr>
                                     <tr>
                                         @foreach(str_split(str_replace('-','',\Illuminate\Support\Carbon::parse($data->value_date)->toDateString())) as $var)
@@ -263,7 +269,7 @@
                 <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
                 <td class="table-bordered" style="text-align: center;">
                     Checked and Insert Amount in words
-                    passed for : {{isset($data->total_tax) ? ucfirst($f->format($data->total_tax->tax)) . 'Naira Only.': ' '}}
+                    passed for : {{isset($data->total_tax->tax) ? ucfirst($f->format($data->total_tax->tax)) . 'Naira Only.': ' '}}
                 </td>
                 <td class="table-bordered" style="text-align: center;">Total</td>
                 <td class="table-bordered" style="text-align: center;">{{$data->total_tax->tax ?? ' '}}</td>
@@ -274,36 +280,35 @@
         <table>
             <tr>
                 <td style="width: 50%">
-                    <table style="width: 100%; margin-top: 50px; border: 1px solid #a0a0a0; padding: 20px">
+                    <table style="width: 100%; margin-top: -5px; border: 1px solid #a0a0a0; padding: 20px">
                         <tr>
                             <td style="padding: 5px" colspan="2">Payable at :</td>
-                            <td colspan="2" class="text-center" style="box-shadow: 0 1px 0 0 #000; padding: 5px">{{$data->default_setting->account_head->name ?? " "}}
+                            <td colspan="2" class="text-center border-bottom-only" style="padding: 5px">{{$data->default_setting->account_head->name ?? " "}}
                             </td>
                         </tr>
                         <tr>
                             <td style="padding: 5px" colspan="2">Signature</td>
-                            <td colspan="2" class="text-center" style="box-shadow: 0 1px 0 0 #000; padding: 5px"></td>
+                            <td colspan="2" class="text-center border-bottom-only" style="padding: 5px"></td>
                         </tr>
                         <tr>
                             <td style="padding: 5px" colspan="2">Name in Block letters</td>
-                            <td colspan="2" class="text-center" style="box-shadow: 0 1px 0 0 #000; padding: 5px">
-                            {{$data->checking_officer->first_name}}  
+                            <td colspan="2" class="text-center border-bottom-only" style="padding: 5px">
+                            {{$data->checking_officer->first_name}}                            
                             </td>
                         </tr>
                         <tr>
                             <td style="padding: 5px">Station</td>
-                            <td class="text-center" style="box-shadow: 0 1px 0 0 #000; padding: 5px">{{$data->default_setting->account_head->name  ?? " "}}</td>
+                            <td class="text-center border-bottom-only" style="padding: 5px">{{$data->default_setting->account_head->name  ?? " "}}</td>
                             <td style="padding: 5px">Date</td>
-                            <td class="text-center" style="box-shadow: 0 1px 0 0 #000; width: 235px; padding: 5px"></td>
+                            <td class="text-center border-bottom-only" style="width: 185px; padding: 5px"></td>
                         </tr>
                         <tr>
                             <td colspan="2">Checking Officer's Signature</td>
-                            <td colspan="2" class="text-center" style="box-shadow: 0 1px 0 0 #000; padding: 5px"></td>
+                            <td colspan="2" class="text-center border-bottom-only" style="padding: 5px"></td>
                         </tr>
                         <tr>
                             <td colspan="2">Name in Block letters</td>
-                            <td colspan="2" class="text-center" style="box-shadow: 0 1px 0 0 #000; padding: 5px">
-                            {{$data->checking_officer->first_name}}
+                            <td colspan="2" class="text-center border-bottom-only" style="padding: 5px">{{$data->checking_officer->first_name}}
                             </td>
                         </tr>
                         <tr>
@@ -313,7 +318,7 @@
                     </table>
                 </td>
                 <td style="width: 50%">
-                    <table style="width: 100%; margin-top: 50px;">
+                    <table style="width: 100%; margin-top: -2px;">
                         <tr>
                             <td style="text-align: center">Certificate</td>
                         </tr>
@@ -332,8 +337,14 @@
                         <tr>
                             <td style="display: flex">
 		                        <span style="margin-left: 10px">That the amount of : <span class="text-bold"
-                                                                                           style="margin-left:10px">{{isset($data->total_tax) ? ucfirst($f->format($data->total_tax->tax)) . 'Naira Only.': ' '}}</span></span>
+                                                                                           style="margin-left:10px; font-size: 13px">{{isset($data->total_tax) ? ucfirst($f->format($data->total_tax->tax)) . ' Naira Only.': ' '}}</span></span>
                             </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
                         </tr>
                         <tr>
                             <td colspan="2">
@@ -341,7 +352,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2" style="box-shadow: 0 1px 0 0 #000">
+                            <td colspan="2" class="border-bottom-only">
                                 <span class="text-bold" style="margin-left: 10px;">{{$data->checking_officer->first_name}}</span>
                             </td>
                         </tr>
@@ -353,9 +364,9 @@
                                 <table style="width: 100%; margin-top: 20px">
                                     <tr>
                                         <td style="width: 10%"><span style="margin-left: 10px">Place</span></td>
-                                        <td style="width: 50%; box-shadow: 0 1px 0 0 #000">{{$data->default_setting->account_head->name ?? " "}}</td>
+                                        <td style="width: 50%;" class="border-bottom-only text-center">{{$data->default_setting->account_head->name ?? " "}}</td>
                                         <td style="width: 10%; text-align: right">Date</td>
-                                        <td style="width: 30%; box-shadow: 0 1px 0 0 #000"></td>
+                                        <td style="width: 30%;" class="border-bottom-only"></td>
                                     </tr>
                                 </table>
                             </td>
@@ -365,7 +376,7 @@
                                 <table style="width: 100%">
                                     <tr>
                                         <td style="width: 10%"><span style="margin-left: 10px">Designation</span></td>
-                                        <td style="width: 80%; box-shadow: 0 1px 0 0 #000"></td>
+                                        <td style="width: 80%;" class="border-bottom-only"></td>
                                     </tr>
                                 </table>
                             </td>
@@ -382,22 +393,24 @@
                 <td style="text-align: right">
                     the sum of
                 </td>
-                <td style="box-shadow: 0 1px 0 0 #000; width: 50%">
+                <td class="border-bottom-only" style="width: 50%">
                 </td>
             </tr>
         </table>
         <table style="width: 100%">
             <tr>
-                <td style="box-shadow: 0 1px 0 0 #000; width: 50%">asdasd</td>
+                <td class="border-bottom-only" style="width: 50%">asdasd</td>
                 <td style="width: 50%;">in the full settlement of the Amount.</td>
             </tr>
         </table>
-        <table style="width: 100%; margin-top: 25px; margin-bottom: 20px">
+        <table style="width: 100%; margin-top: 20px; margin-bottom: 20px">
             <tr>
-                <td></td>
+                <td style="width: 75%"></td>
+                <td class="border-bottom-only" style="width: 25%"></td>
             </tr>
             <tr>
-                <td style="text-align: right;">
+                <td style="width: 75%"></td>
+                <td style="text-align: center; width: 25%">
                     <span style="margin-right: 10px">Signature</span>
                 </td>
             </tr>
@@ -406,3 +419,5 @@
 </div>
 </body>
 </html>
+
+
