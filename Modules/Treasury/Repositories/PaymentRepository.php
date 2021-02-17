@@ -26,7 +26,7 @@ use Modules\Treasury\Models\RetireVoucher;
 use Modules\Treasury\Models\ScheduleEconomic;
 use Modules\Treasury\Models\VoucherSourceUnit;
 
-class   PaymentRepository extends EloquentBaseRepository
+class PaymentRepository extends EloquentBaseRepository
 {
     public $model = PaymentVoucher::class;
 
@@ -73,6 +73,8 @@ class   PaymentRepository extends EloquentBaseRepository
                             $payeeId = $approvalPayee->company_id;
                         }
 
+                        Log::info(($payeeId === $employeeId) || ($payeeId === $companyId));
+                        Log::info($payeeId .' '. $employeeId .' '. $companyId);
                         if (($payeeId === $employeeId) || ($payeeId === $companyId)) {
                             //todo payee create and deduction in payment approval payee amount
                             $taxes = Tax::whereIn('id', json_decode($approval_payee->tax_ids, true))->pluck('tax')->all();
@@ -80,6 +82,8 @@ class   PaymentRepository extends EloquentBaseRepository
                             $totalTax = array_sum($taxes);
                             //check to make sure amount is well balanced in both
                             $remainingAmount = $approval_payee->remaining_amount - $payee['amount'];
+
+                            Log::info($remainingAmount);
                             if ($remainingAmount < 0) {
                                 throw new AppException('Remaining amount is zero');
                             }
@@ -109,18 +113,16 @@ class   PaymentRepository extends EloquentBaseRepository
                                 'remaining_amount' => $remainingAmount
                             ]);
                         } else {
+                            Log::info('else statement');
                             continue;
                         }
                     }
                 }
-
-
                 DB::commit();
                 return $paymentVoucher;
             }
 
             $paymentVoucher = parent::create($data);
-
             DB::commit();
             return $paymentVoucher;
         } catch (\Exception $exception) {
