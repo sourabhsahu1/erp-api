@@ -48,7 +48,7 @@ class PaymentRepository extends EloquentBaseRepository
             /** @var CompanySetting $companySetting */
             $companySetting = CompanySetting::find(1);
             $data['data']['is_payment_approval'] = $companySetting->is_payment_approval;
-            Log::info($data['data']['is_payment_approval']);
+
             if ($companySetting->is_payment_approval == true) {
                 Log::info($companySetting->is_payment_approval);
                 if (!isset($data['data']['payment_approve_id'])) {
@@ -61,7 +61,6 @@ class PaymentRepository extends EloquentBaseRepository
                     'payment_approval_payees'
                 ])->find($paymentVoucher->payment_approve_id);
 
-                Log::info($paymentApproval);
                 /** @var PaymentApprovalPayee $approval_payee */
                 foreach ($paymentApproval->payment_approval_payees as $approval_payee) {
                     $employeeId = $approval_payee->employee_id;
@@ -76,8 +75,6 @@ class PaymentRepository extends EloquentBaseRepository
                             $payeeId = $approvalPayee->company_id;
                         }
 
-                        Log::info(($payeeId === $employeeId) || ($payeeId === $companyId));
-                        Log::info($payeeId .' '. $employeeId .' '. $companyId);
                         if (($payeeId === $employeeId) || ($payeeId === $companyId)) {
                             //todo payee create and deduction in payment approval payee amount
                             $taxes = Tax::whereIn('id', json_decode($approval_payee->tax_ids, true))->pluck('tax')->all();
@@ -86,11 +83,10 @@ class PaymentRepository extends EloquentBaseRepository
                             //check to make sure amount is well balanced in both
                             $remainingAmount = $approval_payee->remaining_amount - $payee['amount'];
 
-                            Log::info($remainingAmount);
                             if ($remainingAmount < 0) {
                                 throw new AppException('Remaining amount is zero');
                             }
-                            if ($remainingAmount = 0) {
+                            if ($remainingAmount === 0) {
                                 $paymentApproval->status = AppConstant::PAYMENT_APPROVAL_FULLY_USED;
                                 $paymentApproval->save();
                             }
@@ -110,7 +106,6 @@ class PaymentRepository extends EloquentBaseRepository
                                 'details' => $approval_payee->details,
                                 'tax_ids' => $approval_payee->tax_ids
                             ]);
-
 
                             PaymentApprovalPayee::where('id', $approval_payee->id)->update([
                                 'remaining_amount' => $remainingAmount
