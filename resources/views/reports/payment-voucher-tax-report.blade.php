@@ -125,33 +125,25 @@
                 <td>
                     <table style="width: 100%; margin-top: -20px;" class="table-bordered">
                         <tr>
-                            <td style="text-align: center; width: 50%" class="table-bordered" colspan="11">
+                            <td style="text-align: center; width: 50%" class="table-bordered" colspan="{{strlen(str_replace('-','',$data->admin_segment->combined_code)) + 4}}">
                                 <label>Administrative Segment</label>
                             </td>
-                            <td style="text-align: center; width: 50%" class="table-bordered" colspan="9">
+                            <td style="text-align: center; width: 50%" class="table-bordered" colspan="{{strlen(str_replace('-','',$data->economic_segment->combined_code)) + 1}}">
                                 <label>Economic Segment</label>
                             </td>
                         </tr>
                         <tr>
-                            <td class="table-bordered width-10px" style="text-align: center;">{{$data->admin_segment->name ?? " "}}</td>
-                            <!-- <td class="table-bordered width-10px" style="text-align: center;">5</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">2</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">2</td> -->
+                            @foreach(str_split(str_replace('-','',$data->admin_segment->combined_code)) as $var)
+                                <td class="table-bordered width-10px" style="text-align: center;">{{$var}}</td>
+                            @endforeach
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
-                            <td class="table-bordered width-10px" style="text-align: center;">{{$data->economic_segment->name ?? " "}}</td>
-                            <!-- <td class="table-bordered width-10px" style="text-align: center;">1</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">3</td> -->
+                             
+                            @foreach(str_split(str_replace('-','',$data->economic_segment->combined_code)) as $var)
+                                <td class="table-bordered width-10px" style="text-align: center;">{{$var}}</td>
+                            @endforeach
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
                         </tr>
                     </table>
@@ -163,62 +155,46 @@
                 <td>
                     <table style="width: 100%" class="table-bordered">
                         <tr>
-                            <td class="table-bordered" style="text-align: center; width: 25%" colspan="11">
+                            <td class="table-bordered" style="text-align: center; width: 25%" colspan="{{strlen(str_replace('-','',$data->functional_segment->combined_code)) + 3}}">
                                 <label>Functional Segment</label>
                             </td>
-                            <td class="table-bordered" style="text-align: center; width: 25%" colspan="9">
+                            <td class="table-bordered" style="text-align: center; width: 25%" colspan="{{strlen(str_replace('-','',$data->program_segment->combined_code)) + 1}}">
                                 <label>Programme Segment</label>
                             </td>
-                            <td class="table-bordered" style="text-align: center; width: 25%" colspan="11">
+                            <td class="table-bordered" style="text-align: center; width: 25%" colspan="{{strlen(str_replace('-','',$data->fund_segment->combined_code)) + 4}}">
                                 <label>Fund Segment</label>
                             </td>
-                            <td class="table-bordered" style="text-align: center; width: 25%" colspan="11">
+                            <td class="table-bordered" style="text-align: center; width: 25%" colspan="{{strlen(str_replace('-','',$data->geo_code_segment->combined_code)) + 4}}">
                                 <label>Geo Code Segment</label>
                             </td>
                         </tr>
                         <tr>
-                            <td class="table-bordered width-10px" style="text-align: center;">{{$data->functional_segment->name ?? " "}}</td>
-                            <!-- <td class="table-bordered width-10px" style="text-align: center;">5</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">2</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">2</td> -->
+                            @foreach(str_split(str_replace('-','',$data->functional_segment->combined_code)) as $var)
+                                <td class="table-bordered width-10px" style="text-align: center;">{{$var}}</td>
+                            @endforeach
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
 
-                            <td class="table-bordered width-10px" style="text-align: center;">{{$data->program_segment->name ?? " "}}</td>
-                            <!-- <td class="table-bordered width-10px" style="text-align: center;">1</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">3</td> -->
+                            @foreach(str_split(str_replace('-','',$data->program_segment->combined_code)) as $var)
+                                <td class="table-bordered width-10px" style="text-align: center;">{{$var}}</td>
+                            @endforeach
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
 
-                            <td class="table-bordered width-10px" style="text-align: center;">{{$data->fund_segment->name ?? " "}}</td>
-                            <!-- <td class="table-bordered width-10px" style="text-align: center;">5</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">2</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">2</td> -->
+                            
+                            @foreach(str_split(str_replace('-','',$data->fund_segment->combined_code)) as $var)
+                                <td class="table-bordered width-10px" style="text-align: center;">{{$var}}</td>
+                            @endforeach
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
 
-                            <td class="table-bordered width-10px" style="text-align: center;">{{$data->geo_code_segment->name ?? " "}}</td>
-                            <!-- <td class="table-bordered width-10px" style="text-align: center;">5</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">2</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">1</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">0</td>
-                            <td class="table-bordered width-10px" style="text-align: center;">2</td>
-                            <td class="table-bordered width-10px" style="text-align: center;"></td> -->
+                            @foreach(str_split(str_replace('-','',$data->geo_code_segment->combined_code)) as $var)
+                                <td class="table-bordered width-10px" style="text-align: center;">{{$var}}</td>
+                            @endforeach
+                            <td class="table-bordered width-10px" style="text-align: center;"></td>
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
                             <td class="table-bordered width-10px" style="text-align: center;"></td>
@@ -233,18 +209,15 @@
                             <td style="width: 500px; text-align: center">
                                 <table class="width-100-per table-bordered" style="margin-left: -3px; margin-top: -8px">
                                     <tr>
-                                        <td class="text-center table-bordered" colspan="6"><label>Date</label></td>
+                                        <td class="text-center table-bordered" colspan="{{strlen(str_replace('-','',\Illuminate\Support\Carbon::parse($data->value_date)->toDateString()))}}"><label>Date</label></td>
                                         <td class="text-center table-bordered" colspan="2"><label>Amount (Naira)</label>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="table-bordered">{{$data->value_date}}</td>
-                                        <!-- <td class="table-bordered">1</td>
-                                        <td class="table-bordered">2</td>
-                                        <td class="table-bordered">0</td>
-                                        <td class="table-bordered">1</td>
-                                        <td class="table-bordered">9</td> -->
-                                        <td class="table-bordered">"{{$data->total_tax->tax ?? ' '}}"</td>
+                                        @foreach(str_split(str_replace('-','',\Illuminate\Support\Carbon::parse($data->value_date)->toDateString())) as $var)
+                                        <td class="table-bordered">{{$var}}</td>
+                                        @endforeach
+                                        <td class="table-bordered">{{$data->total_tax->tax ?? ' '}}</td>
                                         <td class="table-bordered">00</td>
                                     </tr>
                                 </table>
@@ -280,7 +253,7 @@
                 <td class="table-bordered" style="text-align: center;">{{$payee->created_at}}</td>
                 <td class="table-bordered" style="text-align: center;">{{$payee->detail}}</td>
                 <td class="table-bordered" style="text-align: center;">{{1}}</td>
-                <td class="table-bordered" style="text-align: center;">{{$payee->net_amount}}</td>
+                <td class="table-bordered" style="text-align: center;">{{$payee->total_tax}}</td>
                 <td class="table-bordered" style="text-align: center;">00</td>
             </tr>
             @endforeach
@@ -290,10 +263,10 @@
                 <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
                 <td class="table-bordered" style="text-align: center;">
                     Checked and Insert Amount in words
-                    passed for : {{isset($data->total_amount) ? ucfirst($f->format($data->total_amount->amount)) . 'Naira Only.': ' '}}
+                    passed for : {{isset($data->total_tax) ? ucfirst($f->format($data->total_tax->tax)) . 'Naira Only.': ' '}}
                 </td>
                 <td class="table-bordered" style="text-align: center;">Total</td>
-                <td class="table-bordered" style="text-align: center;">{{$data->total_amount->amount ?? ' '}}</td>
+                <td class="table-bordered" style="text-align: center;">{{$data->total_tax->tax ?? ' '}}</td>
                 <td class="table-bordered" style="text-align: center;">00</td>
             </tr>
             </tbody>
@@ -359,7 +332,7 @@
                         <tr>
                             <td style="display: flex">
 		                        <span style="margin-left: 10px">That the amount of : <span class="text-bold"
-                                                                                           style="margin-left:10px">{{isset($data->total_amount) ? ucfirst($f->format($data->total_amount->amount)) . 'Naira Only.': ' '}}</span></span>
+                                                                                           style="margin-left:10px">{{isset($data->total_tax) ? ucfirst($f->format($data->total_tax->tax)) . 'Naira Only.': ' '}}</span></span>
                             </td>
                         </tr>
                         <tr>
