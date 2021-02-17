@@ -287,6 +287,7 @@
 
             <tr>
                 <td class="table-bordered" style="text-align: center;"></td>
+                <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
                 <td class="table-bordered" style="text-align: center;">
                     Checked and Insert Amount in words
                     passed for : {{isset($data->total_amount) ? ucfirst($f->format($data->total_amount->amount)) . 'Naira Only.': ' '}}
