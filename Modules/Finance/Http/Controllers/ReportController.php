@@ -74,4 +74,28 @@ class ReportController extends BaseController
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
     }
 
+
+    public function applicationOfFund(Request $request)
+    {
+        $this->jobMethod = 'applicationOfFund';
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
+    public function sourcesUserOfFund(Request $request)
+    {
+        $this->jobMethod = 'sourcesUserOfFund';
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
+    public function saveIfrNotes(Request $request)
+    {
+        $this->jobMethod = 'saveIfrNotes';
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
+    public function getIfrNotes(Request $request)
+    {
+        $this->jobMethod = 'getIfrNotes';
+        return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
 }

@@ -11,12 +11,14 @@ use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\AdminSegment;
+use Modules\Finance\Models\Currency;
+use Modules\Finance\Models\IfrNote;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JvTrailBalanceReport;
 use Modules\Finance\Models\NotesTrailBalanceReport;
-use PhpOffice\PhpSpreadsheet\IOFactory;
+use Modules\Treasury\Models\Cashbook;
+use Modules\Treasury\Models\CashbookMonthlyBalance;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class ReportRepository extends EloquentBaseRepository
 {
@@ -551,5 +553,643 @@ class ReportRepository extends EloquentBaseRepository
 //            $writer->save($filePath);
             return ['url' => url($filePath)];
         }
+    }
+
+    public function applicationOfFund($params)
+    {
+        $reportType = !isset($params['inputs']['report_type']) ? 'SEMESTER' : !isset($params['inputs']['report_type']);
+        $report = !isset($params['inputs']['report']) ? 2 : !isset($params['inputs']['report']);
+        $economicSegmentId = !isset($params['inputs']['economic_segment_id']) ? 8 : $params['inputs']['economic_segment_id'];
+        $adminSegmentId = !isset($params['inputs']['admin_segment_id']) ? 1 : $params['inputs']['admin_segment_id'];
+        $fundSegmentId = !isset($params['inputs']['fund_segment_id']) ? 5 : $params['inputs']['fund_segment_id'];
+
+        $economicParents = $this->getAllChildren($economicSegmentId);
+        $adminSegmentChildIds = $this->getAllChildrenId($adminSegmentId);
+        $fundSegmentChildIds = $this->getAllChildrenId($fundSegmentId);
+        $months = [];
+        $previousMonth = [];
+
+        switch ($reportType) {
+            case AppConstant::REPORT_TYPE_MONTHLY:
+                $months = [$report];
+                $previousMonth = ((int)$report - 1) === 0 ? [] : [((int)$report - 1)];
+                break;
+            case AppConstant::REPORT_TYPE_QUARTER:
+                if ($report == 1) {
+                    $months = [1, 2, 3];
+                } else if ($report == 2) {
+                    $months = [4, 5, 6];
+                    $previousMonth = [1, 2, 3];
+                } else if ($report == 3) {
+                    $months = [7, 8, 9];
+                    $previousMonth = [4, 5, 6];
+                } else {
+                    $months = [10, 11, 12];
+                    $previousMonth = [7, 8, 9];
+                }
+                break;
+            default:
+                if ($report == 1) {
+                    $months = [1, 2, 3, 4, 5, 6];
+                } else {
+                    $months = [7, 8, 9, 10, 11, 12];
+                    $previousMonth = [1, 2, 3, 4, 5, 6];
+                }
+        }
+
+        foreach ($economicParents as &$economicParent) {
+            $this->parseEconomic($economicParent);
+            $economicParent['actual'] = 0;
+            $economicParent['budget'] = 0;
+            $economicParent['variance'] = 0;
+            $economicParent['cumulative_actual'] = 0;
+            $economicParent['cumulative_budget'] = 0;
+            $economicParent['cumulative_variance'] = 0;
+            $economicParent['previous_actual'] = 0;
+            $economicParent['previous_budget'] = 0;
+            $economicParent['previous_variance'] = 0;
+
+            if (count($months)) {
+                $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
+                    ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
+                    ->selectRaw('name, jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
+                    ->whereIn('jd.admin_segment_id', $adminSegmentChildIds)
+                    ->whereIn('jd.economic_segment_id', $economicParent['child_ids'])
+                    ->whereIn('jd.fund_segment_id', $fundSegmentChildIds)
+                    ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+                    ->groupby(DB::raw('name,jd.economic_segment_id,line_value_type'))
+                    ->whereRaw('MONTH(jd.created_at) in (' . implode(',', $months) . ')')
+                    ->get()
+                    ->toArray();
+                $creditAmount = 0;
+                $debitAmount = 0;
+                foreach ($jvS as $jv) {
+                    if ($jv['line_value_type'] === 'DEBIT') {
+                        $debitAmount = $jv['sum'];
+                    } else if ($jv['line_value_type'] === 'CREDIT') {
+                        $creditAmount = $jv['sum'];
+                    }
+                }
+
+                $economicParent['actual'] = $debitAmount - $creditAmount;
+
+                $budgets = AdminSegment::join('budget', 'budget.economic_segment_id', 'admin_segments.id')
+                    ->join('budget_breakups', 'budget_breakups.budget_id', 'budget.id')
+                    ->selectRaw('admin_segments.name, budget.economic_segment_id, sum(budget_breakups.main_budget) sum')
+                    ->whereIn('budget.admin_segment_id', $adminSegmentChildIds)
+                    ->whereIn('budget.economic_segment_id', $economicParent['child_ids'])
+                    ->whereIn('budget.fund_segment_id', $fundSegmentChildIds)
+                    ->whereNull('budget.program_segment_id')
+                    ->groupby(DB::raw('admin_segments.id,budget.economic_segment_id'))
+                    ->whereIn('budget_breakups.month', $previousMonth)
+                    ->get()
+                    ->toArray();
+
+                $budgetAmount = 0;
+                foreach ($budgets as $budget) {
+                    $budgetAmount += $budget['sum'];
+                }
+
+                $economicParent['budget'] = $budgetAmount;
+                $economicParent['variance'] = $economicParent['budget'] - $economicParent['actual'];
+            }
+
+            if (count($previousMonth)) {
+                $jvS = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
+                    ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
+                    ->selectRaw('name, jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
+                    ->whereIn('jd.admin_segment_id', $adminSegmentChildIds)
+                    ->whereIn('jd.economic_segment_id', $economicParent['child_ids'])
+                    ->whereIn('jd.fund_segment_id', $fundSegmentChildIds)
+                    ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+                    ->groupby(DB::raw('name,jd.economic_segment_id,line_value_type'))
+                    ->whereRaw('MONTH(jd.created_at) in (' . implode(',', $previousMonth) . ')')
+                    ->get()
+                    ->toArray();
+                $creditAmount = 0;
+                $debitAmount = 0;
+                foreach ($jvS as $jv) {
+                    if ($jv['line_value_type'] === 'DEBIT') {
+                        $debitAmount = $jv['sum'];
+                    } else if ($jv['line_value_type'] === 'CREDIT') {
+                        $creditAmount = $jv['sum'];
+                    }
+                }
+
+                $economicParent['previous_actual'] = $debitAmount - $creditAmount;
+
+                $budgets = AdminSegment::join('budget', 'budget.economic_segment_id', 'admin_segments.id')
+                    ->join('budget_breakups', 'budget_breakups.budget_id', 'budget.id')
+                    ->selectRaw('admin_segments.name, budget.economic_segment_id, sum(budget_breakups.main_budget) sum')
+                    ->whereIn('budget.admin_segment_id', $adminSegmentChildIds)
+                    ->whereIn('budget.economic_segment_id', $economicParent['child_ids'])
+                    ->whereIn('budget.fund_segment_id', $fundSegmentChildIds)
+                    ->whereNull('budget.program_segment_id')
+                    ->groupby(DB::raw('admin_segments.id,budget.economic_segment_id'))
+                    ->whereIn('budget_breakups.month', $previousMonth)
+                    ->get()
+                    ->toArray();
+
+                $budgetAmount = 0;
+                foreach ($budgets as $budget) {
+                    $budgetAmount += $budget['sum'];
+                }
+                $economicParent['cumulative_actual'] = $economicParent['actual'] + $economicParent['previous_actual'];
+                $economicParent['cumulative_budget'] = $economicParent['budget'] + $economicParent['previous_budget'];
+                $economicParent['cumulative_variance'] = $economicParent['variance'] + $economicParent['previous_variance'];
+
+                $economicParent['previous_budget'] = $budgetAmount;
+                $economicParent['previous_variance'] = $economicParent['budget'] - $economicParent['actual'];
+            }
+
+
+            unset($economicParent['child_ids']);
+            unset($economicParent['children']);
+        }
+
+        return $economicParents;
+    }
+
+    public function parseEconomic(&$economic)
+    {
+        $economic['child_ids'] = [];
+
+        foreach ($economic['children'] as &$child) {
+            $economic['child_ids'][] = $child['id'];
+            if (count($child['children'])) {
+                $childIds = $this->parseEconomic($child);
+                $economic['child_ids'] = array_merge($economic['child_ids'], $childIds);
+            }
+        }
+
+        return $economic['child_ids'];
+    }
+
+
+    private function getChildId2(&$data)
+    {
+        $childIds = [];
+        $childIds[] = $data['id'];
+
+
+        foreach ($data['children'] as &$child) {
+
+            $child['child_ids'] = $this->getChildId2($child);
+            $childIds = array_merge($childIds, $child['child_ids']);
+        }
+
+        return $childIds;
+    }
+
+
+    public function getAllChildrenId($id)
+    {
+        $segments = AdminSegment::with('children');
+        $economicChilds = AdminSegment::where('parent_id', $id)->get()->pluck('id');
+
+        if (isset($params['inputs']['parent_id'])) {
+            $segments->where('parent_id', $id);
+        } else {
+            $segments->whereIn('id', $economicChilds);
+        }
+
+        $segments = $segments->get()->toArray();
+        $childIds = [];
+
+        foreach ($segments as &$segment) {
+            $segment['child_ids'] = [];
+            $segment['child_ids'] = $this->getChildId2($segment);
+            $childIds = array_merge($childIds, $segment['child_ids']);
+            unset($segment['children']);
+        }
+
+        return $childIds;
+    }
+
+    public function getAllChildren($id)
+    {
+        return AdminSegment::where('parent_id', $id)->with('children')->get()->toArray();
+    }
+
+
+    public function sourcesUserOfFund($params)
+    {
+        // todo get user's local and international currency
+        $localCurrency = Currency::find(1);
+        $internationalCurrency = Currency::find(2);
+
+        $reportType = !isset($params['inputs']['report_type']) ? 'SEMESTER' : !isset($params['inputs']['report_type']);
+        $report = !isset($params['inputs']['report']) ? 2 : !isset($params['inputs']['report']);
+        $adminSegmentId = !isset($params['inputs']['admin_segment_id']) ? 1 : $params['inputs']['admin_segment_id'];
+//        $isProgram = filter_var(isset($params['inputs']['is_program']) ? isset($params['inputs']['is_program']) : false, FILTER_VALIDATE_BOOLEAN);
+
+        $isProgram = isset($params['inputs']['program_segment_id']) ? true : false;
+
+
+        $months = [];
+
+//        dd($isProgram);
+        switch ($reportType) {
+
+            case AppConstant::REPORT_TYPE_QUARTER:
+                if ($report == 1) {
+                    $months = [1, 2, 3];
+                } else if ($report == 2) {
+                    $months = [4, 5, 6];
+                } else if ($report == 3) {
+                    $months = [7, 8, 9];
+                } else {
+                    $months = [10, 11, 12];
+                }
+                break;
+            default:
+                if ($report == 1) {
+                    $months = [1, 2, 3, 4, 5, 6];
+                } else {
+                    $months = [7, 8, 9, 10, 11, 12];
+                }
+        }
+
+
+        $params['inputs']['program_segment_id'] = isset($params['inputs']['program_segment_id']) ? $params['inputs']['program_segment_id'] : 4;
+        $params['inputs']['economic_segment_id'] = isset($params['inputs']['economic_segment_id']) ? $params['inputs']['economic_segment_id'] : 2;
+
+        if ($isProgram) {
+            $economicParents = $this->getAllChildren($params['inputs']['program_segment_id']);
+        } else {
+            $economicParents = $this->getAllChildren($params['inputs']['economic_segment_id']);
+        }
+
+        $adminSegmentChildIds = $this->getAllChildrenId($adminSegmentId);
+
+        $data = [
+            [
+                'section' => 'Sources', 'item' => 'Total Receipts', 'cumulative_local' => 0, 'cumulative_international' => 0,
+                'actual_local' => 0, 'actual_international' => 0, 'future_local' => 0, 'future_international' => 0, 'items' => []
+            ],
+            [
+                'section' => 'Uses', 'item' => 'Not Change is Cash', 'cumulative_local' => 0, 'cumulative_international' => 0,
+                'actual_local' => 0, 'actual_international' => 0, 'future_local' => 0, 'future_international' => 0, 'items' => []
+            ],
+            [
+                'section' => 'Opening Bank Balance', 'item' => 'Net Cash Available', 'cumulative_local' => 0, 'cumulative_international' => 0,
+                'actual_local' => 0, 'actual_international' => 0, 'future_local' => 0, 'future_international' => 0, 'items' => []
+            ],
+            [
+                'section' => 'Closing Bank Balance', 'item' => 'Total Closing Balance', 'cumulative_local' => 0, 'cumulative_international' => 0,
+                'actual_local' => 0, 'actual_international' => 0, 'future_local' => 0, 'future_international' => 0, 'items' => []
+            ]
+        ];
+
+        // todo add currency symbol
+        foreach ($economicParents as &$economicParent) {
+            $this->parseEconomic($economicParent);
+            $economicParent['actual_local'] = 0;
+            $economicParent['actual_international'] = 0;
+            $economicParent['cumulative_local'] = 0;
+            $economicParent['cumulative_international'] = 0;
+            $economicParent['future_local'] = 0;
+            $economicParent['future_international'] = 0;
+
+            $budgetQuery = AdminSegment::join('budget', 'budget.economic_segment_id', 'admin_segments.id')
+                ->join('budget_breakups', 'budget_breakups.budget_id', 'budget.id')
+                ->join('currencies as c', 'budget.currency_id', 'c.id')
+                ->whereIn('budget.admin_segment_id', $adminSegmentChildIds)
+//                    ->whereNull('budget.program_segment_id')
+                ->whereIn('budget.economic_segment_id', $economicParent['child_ids']);
+
+            if ($isProgram) {
+                $budgetQuery->whereNull('economic_segment_id')
+                    ->selectRaw('admin_segments.name, budget.program_segment_id, c.plural_currency_name, c.currency_sign, sum(budget_breakups.main_budget*x_rate_local) sum,sum(budget_breakups.main_budget*x_rate_to_international) sum_international')
+                    ->groupby(DB::raw('admin_segments.id, budget.program_segment_id, c.plural_currency_name, c.currency_sign'));
+            } else {
+                $budgetQuery->whereNull('program_segment_id')
+                    ->selectRaw('admin_segments.name, budget.economic_segment_id, c.plural_currency_name, c.currency_sign, sum(budget_breakups.main_budget*x_rate_local) sum,sum(budget_breakups.main_budget*x_rate_to_international) sum_international')
+                    ->groupby(DB::raw('admin_segments.id, budget.economic_segment_id, c.plural_currency_name, c.currency_sign'));
+            }
+
+            if (count($months)) {
+                $budgets = (clone $budgetQuery)
+                    ->whereIn('budget_breakups.month', $months)
+                    ->get()->toArray();
+
+                foreach ($budgets as $budget) {
+                    $economicParent['actual_local'] += $budget['sum'];
+                    $economicParent['actual_local'] = round($economicParent['actual_local'], 2);
+                    $economicParent['actual_international'] += $budget['sum_international'];
+                    $economicParent['actual_international'] = round($economicParent['actual_international'], 2);
+                }
+            }
+
+            // Cumulative data
+            $budgets = (clone $budgetQuery)->get()->toArray();
+
+            foreach ($budgets as $budget) {
+                $economicParent['cumulative_local'] += $budget['sum'];
+                $economicParent['cumulative_local'] = round($economicParent['cumulative_local'], 2);
+
+                $economicParent['cumulative_international'] += $budget['sum_international'];
+                $economicParent['cumulative_international'] = round($economicParent['cumulative_international'], 2);
+            }
+
+            unset($economicParent['child_ids']);
+            unset($economicParent['children']);
+            $data[0]['actual_local'] += $economicParent['actual_local'];
+            $data[0]['actual_international'] += $economicParent['actual_international'];
+            $data[0]['cumulative_local'] += $economicParent['cumulative_local'];
+            $data[0]['cumulative_international'] += $economicParent['cumulative_international'];
+            $data[0]['future_local'] += $economicParent['future_local'];
+            $data[0]['future_international'] += $economicParent['future_international'];
+            $data[0]['items'][] = $economicParent;
+        }
+
+        // Calculating Uses
+        $economicChildren = $this->getAllChildren(8);
+
+        foreach ($economicChildren as &$economicParent) {
+            $this->parseEconomic($economicParent);
+            $economicParent['actual_local'] = 0;
+            $economicParent['actual_international'] = 0;
+            $economicParent['cumulative_local'] = 0;
+            $economicParent['cumulative_international'] = 0;
+            $economicParent['future_local'] = 0;
+            $economicParent['future_international'] = 0;
+
+            // todo remove currency join and add POSTED in jv
+            $jvQuery = AdminSegment::join('journal_voucher_details as jd', 'admin_segments.id', '=', 'jd.economic_segment_id')
+                ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
+                ->join('currencies as c', 'jd.currency', 'c.code_currency')
+                ->selectRaw('name, c.currency_sign as international_sign, c.code_currency as international_code ,jd.economic_segment_id, sum(lv_line_value*x_rate_local) local_sum,jd.local_currency, sum(lv_line_value*bank_x_rate_to_usd) international_sum,line_value_type')
+                ->whereIn('jd.admin_segment_id', $adminSegmentChildIds)
+                ->whereIn('jd.economic_segment_id', $economicParent['child_ids'])
+//                    ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+                ->groupby(DB::raw('name,jd.economic_segment_id,line_value_type ,c.currency_sign,c.code_currency,jd.local_currency'));
+
+            if (count($months)) {
+                $jvS = (clone $jvQuery)
+                    ->whereRaw('MONTH(jd.created_at) in (' . implode(',', $months) . ')')
+                    ->get()
+                    ->toArray();
+
+                foreach ($jvS as $jv) {
+                    if ($jv['line_value_type'] === 'DEBIT') {
+                        $economicParent['actual_local'] -= $jv['local_sum'];
+                        $economicParent['actual_international'] -= $jv['international_sum'];
+                    } else {
+                        $economicParent['actual_local'] += $jv['local_sum'];
+                        $economicParent['actual_international'] += $jv['international_sum'];
+                    }
+
+                    $economicParent['actual_local'] = round($economicParent['actual_local'], 2);
+                    $economicParent['actual_international'] = round($economicParent['actual_international'], 2);
+                }
+            }
+
+            $jvS = (clone $jvQuery)->get()->toArray();
+
+            foreach ($jvS as $jv) {
+                if ($jv['line_value_type'] === 'DEBIT') {
+                    $economicParent['actual_local'] -= $jv['local_sum'];
+                    $economicParent['actual_international'] -= $jv['international_sum'];
+                } else {
+                    $economicParent['actual_local'] += $jv['local_sum'];
+                    $economicParent['actual_international'] += $jv['international_sum'];
+                }
+
+                $economicParent['actual_local'] = round($economicParent['actual_local'], 2);
+                $economicParent['actual_international'] = round($economicParent['actual_international'], 2);
+            }
+
+            unset($economicParent['child_ids']);
+            unset($economicParent['children']);
+            $data[1]['actual_local'] += $economicParent['actual_local'];
+            $data[1]['actual_international'] += $economicParent['actual_international'];
+            $data[1]['cumulative_local'] += $economicParent['cumulative_local'];
+            $data[1]['cumulative_international'] += $economicParent['cumulative_international'];
+            $data[1]['future_local'] += $economicParent['future_local'];
+            $data[1]['future_international'] += $economicParent['future_international'];
+            $data[1]['items'][] = $economicParent;
+        }
+
+
+        // todo NOTE International currency is missing from CASHBOOK
+        // Cashbook
+        $cashBooks = Cashbook::get()->toArray();
+
+        foreach ($cashBooks as &$cashBook) {
+            $cashBook['name'] = $cashBook['cashbook_title'];
+            $cashBook['actual_local'] = 0;
+            $cashBook['actual_international'] = 0;
+            $cashBook['cumulative_local'] = 0;
+            $cashBook['cumulative_international'] = 0;
+            $cashBook['future_local'] = 0;
+            $cashBook['future_international'] = 0;
+
+            if (count($months)) {
+                $monthlyBalance = CashbookMonthlyBalance::where('month', $months[count($months) - 1])->first();
+                if ($monthlyBalance) {
+                    $monthlyBalance = $monthlyBalance->toArray();
+                    $cashBook['actual_local'] = $monthlyBalance['balance'] * $cashBook['x_rate_local_currency'];
+                    $cashBook['actual_international'] = $monthlyBalance['balance'];
+                }
+            }
+
+            $monthlyBalance = CashbookMonthlyBalance::where('month', Carbon::now()->month)->first();
+            if ($monthlyBalance) {
+                $monthlyBalance = $monthlyBalance->toArray();
+                $cashBook['cumulative_local'] = $monthlyBalance['balance'] * $cashBook['x_rate_local_currency'];
+                $cashBook['cumulative_international'] = $monthlyBalance['balance'];
+            }
+
+
+            $data[2]['actual_local'] += $cashBook['actual_local'];
+            $data[2]['actual_international'] += $cashBook['actual_international'];
+            $data[2]['cumulative_local'] += $cashBook['cumulative_local'];
+            $data[2]['cumulative_international'] += $cashBook['cumulative_international'];
+            $data[2]['future_local'] += $cashBook['future_local'];
+            $data[2]['future_international'] += $cashBook['future_international'];
+            $data[2]['items'][] = $cashBook;
+
+
+            $cashBook['actual_local'] = 0;
+            $cashBook['actual_international'] = 0;
+            $cashBook['cumulative_local'] = 0;
+            $cashBook['cumulative_international'] = 0;
+            $cashBook['future_local'] = 0;
+            $cashBook['future_international'] = 0;
+
+            if (count($months)) {
+                $monthlyBalance = CashbookMonthlyBalance::where('month', $months[count($months) - 2])->first();
+                if ($monthlyBalance) {
+                    $monthlyBalance = $monthlyBalance->toArray();
+                    $cashBook['actual_local'] = $monthlyBalance['balance'] * $cashBook['x_rate_local_currency'];
+                    $cashBook['actual_international'] = $monthlyBalance['balance'];
+                }
+            }
+
+            $monthlyBalance = CashbookMonthlyBalance::where('month', Carbon::now()->month - 1)->first();
+            if ($monthlyBalance) {
+                $monthlyBalance = $monthlyBalance->toArray();
+                $cashBook['cumulative_local'] = $monthlyBalance['balance'] * $cashBook['x_rate_local_currency'];
+                $cashBook['cumulative_international'] = $monthlyBalance['balance'];
+            }
+
+
+            $data[3]['actual_local'] += $cashBook['actual_local'];
+            $data[3]['actual_international'] += $cashBook['actual_international'];
+            $data[3]['cumulative_local'] += $cashBook['cumulative_local'];
+            $data[3]['cumulative_international'] += $cashBook['cumulative_international'];
+            $data[3]['future_local'] += $cashBook['future_local'];
+            $data[3]['future_international'] += $cashBook['future_international'];
+            $data[3]['items'][] = $cashBook;
+        }
+
+
+        return $data;
+    }
+
+
+    public function saveIfrNotes($data)
+    {
+
+        $note = IfrNote::orderBy('created_at', 'desc')->orderBy('id', 'desc')->first();
+        if (is_null($note)) {
+            $data['data']['note_id'] = 'N1';
+        } else {
+            $num = explode('N', $note->note_id)[1] + 1;
+            $data['data']['note_id'] = 'N' . $num;
+        }
+        $ifrNote = IfrNote::create($data['data']);
+        return $ifrNote;
+    }
+
+
+    public function getIfrNotes($params)
+    {
+        $ifrNotes = IfrNote::where('type', $params['inputs']['type'])->get();
+
+        $applicationOfFunds = null;
+
+        if ($params['inputs']['type'] == AppConstant::REPORT_APPLICATION_OF_FUND) {
+            foreach ($ifrNotes as $key => $note) {
+
+                $parentEconomic = AdminSegment::find($note->economic_segment_id);
+                $data['inputs'] = [
+                    'economic_segment_id' => $parentEconomic->parent_id
+                ];
+                $parentApplicationOfFunds = $this->applicationOfFund($data);
+                $finalParent = null;
+                foreach ($parentApplicationOfFunds as $applicationOfFund) {
+                    if ($applicationOfFund['id'] == $note->economic_segment_id) {
+                        $finalParent = $applicationOfFund;
+                    }
+                }
+
+                $data['inputs'] = [
+                    'economic_segment_id' => $note->economic_segment_id
+                ];
+
+                $applicationOfFunds[$key] = $finalParent;
+                $applicationOfFunds[$key]['note_id'] = $note->note_id;
+                $applicationOfFunds[$key]['children'] = $this->applicationOfFund($data);
+            }
+            return $applicationOfFunds;
+
+        } elseif ($params['inputs']['type'] == AppConstant::REPORT_USES_OF_FUND) {
+
+            foreach ($ifrNotes as $key => $note) {
+
+
+                if ($note->uses_of_fund_type == 'SOURCES') {
+                    if (isset($note->economic_segment_id)) {
+                        $parentEconomic = AdminSegment::find($note->economic_segment_id);
+                        $data['inputs'] = [
+                            'economic_segment_id' => $parentEconomic->parent_id
+                        ];
+                    } elseif (isset($note->program_segment_id)) {
+                        $parentEconomic = AdminSegment::find($note->program_segment_id);
+                        $data['inputs'] = [
+                            'program_segment_id' => $parentEconomic->parent_id
+                        ];
+                    }
+
+                } elseif ($note->uses_of_fund_type == 'USES') {
+                    $parentEconomic = AdminSegment::find($note->economic_segment_id);
+                    $data['inputs'] = [
+                        'economic_segment_id' => $parentEconomic->parent_id
+                    ];
+                }
+
+                $parentApplicationOfFunds = $this->sourcesUserOfFund($data);
+
+                $finalParent = null;
+
+
+                if ($note->uses_of_fund_type == 'SOURCES') {
+                    foreach ($parentApplicationOfFunds[0]['items'] as $applicationOfFund) {
+                        if (isset($note->economic_segment_id)) {
+                            if ($applicationOfFund['id'] == $note->economic_segment_id) {
+                                $finalParent = $applicationOfFund;
+                            }
+                        } elseif (isset($note->program_segment_id)) {
+                            if ($applicationOfFund['id'] == $note->program_segment_id) {
+                                $finalParent = $applicationOfFund;
+                            }
+                        }
+
+                    }
+
+                } elseif ($note->uses_of_fund_type == 'USES') {
+                    foreach ($parentApplicationOfFunds[1]['items'] as $applicationOfFund) {
+                        if ($applicationOfFund['id'] == $note->economic_segment_id) {
+                            $finalParent = $applicationOfFund;
+                        }
+                    }
+                }
+
+
+
+                if ($note->uses_of_fund_type == 'SOURCES') {
+                    if (isset($note->economic_segment_id)) {
+                        $data['inputs'] = [
+                            'economic_segment_id' => $note->economic_segment_id
+                        ];
+                    } elseif (isset($note->program_segment_id)) {
+                        $data['inputs'] = [
+                            'program_segment_id' => $note->program_segment_id
+                        ];
+                    }
+
+                } elseif ($note->uses_of_fund_type == 'USES') {
+                    $data['inputs'] = [
+                        'economic_segment_id' => $note->economic_segment_id
+                    ];
+                }
+
+
+
+
+                $applicationOfFunds[$key] = $finalParent;
+                $applicationOfFunds[$key]['note_id'] = $note->note_id;
+
+
+
+                if ($note->uses_of_fund_type == 'SOURCES') {
+                    if (isset($note->economic_segment_id)) {
+                        $applicationOfFunds[$key]['children'] = $this->sourcesUserOfFund($data)[0]['items'];
+                    } elseif (isset($note->program_segment_id)) {
+                        $applicationOfFunds[$key]['children'] = $this->sourcesUserOfFund($data)[0]['items'];
+                    }
+
+                } elseif ($note->uses_of_fund_type == 'USES') {
+                    $applicationOfFunds[$key]['children'] = $this->sourcesUserOfFund($data)[1]['items'];
+                }
+            }
+
+
+            return $applicationOfFunds;
+        }
+
+
     }
 }

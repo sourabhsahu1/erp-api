@@ -64,7 +64,7 @@ class UserRepository extends EloquentBaseRepository
                 ->get();
         }
 
-       // dd($permissions);
+        // dd($permissions);
         $selfData->permissions = $permissions;
 
         return $selfData->toArray();

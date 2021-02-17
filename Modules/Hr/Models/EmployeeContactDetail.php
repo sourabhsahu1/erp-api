@@ -31,6 +31,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $updated_at
  *
  * @property \Modules\Hr\Models\Lga $lga
+ * @property \Modules\Hr\Models\Country $country
  * @property \Modules\Hr\Models\Employee $hr_employee
  *
  * @package Modules\Hr\Models
