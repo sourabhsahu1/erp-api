@@ -48,7 +48,9 @@ class PaymentRepository extends EloquentBaseRepository
             /** @var CompanySetting $companySetting */
             $companySetting = CompanySetting::find(1);
             $data['data']['is_payment_approval'] = $companySetting->is_payment_approval;
+            Log::info($data['data']['is_payment_approval']);
             if ($companySetting->is_payment_approval == true) {
+                Log::info($companySetting->is_payment_approval);
                 if (!isset($data['data']['payment_approve_id'])) {
                     throw new AppException('Payment Approve Id is required');
                 }
@@ -59,6 +61,7 @@ class PaymentRepository extends EloquentBaseRepository
                     'payment_approval_payees'
                 ])->find($paymentVoucher->payment_approve_id);
 
+                Log::info($paymentApproval);
                 /** @var PaymentApprovalPayee $approval_payee */
                 foreach ($paymentApproval->payment_approval_payees as $approval_payee) {
                     $employeeId = $approval_payee->employee_id;
