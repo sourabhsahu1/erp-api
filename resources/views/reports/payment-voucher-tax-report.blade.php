@@ -37,13 +37,13 @@
     <div style="width: 100%; padding-top: 50px; padding-bottom: 50px">
         <div>
             <h2 style="text-align: center; margin-top: -30px;">DSCHC</h2>
-            <h2 style="text-align: center; margin-top: -20px; margin-bottom: 0;">Delta State Contributory Health Commission</h2>
+            <h2 style="text-align: center; margin-top: -20px; margin-bottom: 0;">{{$data->admin_segment->name ?? " "}}</h2>
             <h2 style="text-align: center; margin-top: 0; margin-bottom: 0;">Payment Voucher</h2>
         </div>
         <table style="margin-top: 30px; width: 100%">
             <tr>
                 <td>
-                    <div style="font-size: 18px">
+                    <div style="font-size: 17px">
                         <label>Deptal No: </label>
                         <input type="text" value="{{$data->deptal_id}}"/>
                     </div>
@@ -51,7 +51,7 @@
                 <td>
                 </td>
                 <td>
-                    <div style="text-align: right; font-size: 18px">
+                    <div style="text-align: right; font-size: 1px">
                         <label>Checked and passed for payment at : </label>
                         <input type="text" value="{{$data->updated_at}}"/>
                     </div>
@@ -250,7 +250,7 @@
             <tbody>
             @foreach($data->payee_vouchers as $payee)
             <tr>
-                <td class="table-bordered" style="text-align: center;">{{$payee->created_at}}</td>
+                <td class="table-bordered" style="text-align: center;">{{\Illuminate\Support\Carbon::parse($payee->created_at)->toDateString()}}</td>
                 <td class="table-bordered" style="text-align: center;">{{$payee->detail}}</td>
                 <td class="table-bordered" style="text-align: center;">{{1}}</td>
                 <td class="table-bordered" style="text-align: center;">{{$payee->total_tax}}</td>

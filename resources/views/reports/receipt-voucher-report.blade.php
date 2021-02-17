@@ -33,7 +33,7 @@
     <div style="width: 100%; padding-top: 50px; padding-bottom: 50px">
         <div>
             <h2 style="text-align: center; margin-top: -30px;">(DSCHC)</h2>
-            <h2 style="text-align: center; margin-top: -20px; margin-bottom: 0;">Delta State Contributory Health Commission</h2>
+            <h2 style="text-align: center; margin-top: -20px; margin-bottom: 0;">{{$data->admin_segment->name ?? " "}}</h2>
             <h2 style="text-align: center; margin-top: 0; margin-bottom: 0;">PAYING-IN-FORM</h2>
         </div>
         <table style="margin-top: 30px; width: 100%">
