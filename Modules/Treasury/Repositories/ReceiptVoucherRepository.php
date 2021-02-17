@@ -313,7 +313,7 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
     public function downloadReceiptReport($data)
     {
 
-        $fileName = 'mandate' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
+        $fileName = 'receipt-voucher' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
         $filePath = "pdf/";
 
         /** @var ReceiptVoucher $receipt */

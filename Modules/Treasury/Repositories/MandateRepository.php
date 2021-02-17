@@ -374,7 +374,7 @@ class MandateRepository extends EloquentBaseRepository
 
     public function downloadMandateTaxReport($data)
     {
-        $fileName = 'mandate' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
+        $fileName = 'mandate-cbn' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
         $filePath = "pdf/";
 
         $mandate = Mandate::with([

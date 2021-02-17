@@ -578,7 +578,7 @@ class   PaymentRepository extends EloquentBaseRepository
     public function downloadPaymentTaxReport($data)
     {
 
-        $fileName = 'mandate' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
+        $fileName = 'payment-voucher-tax' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
         $filePath = "pdf/";
 
         $paymentV = PaymentVoucher::with([
@@ -641,7 +641,7 @@ class   PaymentRepository extends EloquentBaseRepository
 
     public function downloadPaymentReport($params)
     {
-        $fileName = 'mandate' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
+        $fileName = 'payment-voucher' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
         $filePath = "pdf/";
 
         $paymentV = PaymentVoucher::with([
