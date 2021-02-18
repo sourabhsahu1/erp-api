@@ -2,5 +2,6 @@
     "Hr": true,
     "Admin": true,
     "Inventory": true,
-    "Finance": true
+    "Finance": true,
+    "Treasury": true
 }
