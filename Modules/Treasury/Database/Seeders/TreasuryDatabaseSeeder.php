@@ -19,5 +19,6 @@ class TreasuryDatabaseSeeder extends Seeder
          $this->call("TreasuryCashbookTypesTableSeeder");
          $this->call("TreasuryStatusPaymentVoucherTableSeeder");
          $this->call("TreasuryStatusRetireVoucherTableSeeder");
+         $this->call("TreasuryVoucherSourceUnitsTableSeeder");
     }
 }
