@@ -15,9 +15,9 @@ class CreateTreasuryDefaultSettingsTable extends Migration
     {
         Schema::create('treasury_default_settings', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('account_head_id');
+            $table->unsignedInteger('account_head_id');
             //todo sub_organisation_id ?
-            $table->unsignedBigInteger('sub_organisation_id');
+            $table->unsignedInteger('sub_organisation_id');
             $table->unsignedInteger('admin_segment_id');
             $table->unsignedInteger('fund_segment_id');
             $table->unsignedInteger('economic_segment_id')->nullable();
