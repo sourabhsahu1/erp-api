@@ -180,6 +180,7 @@ class MandateRepository extends EloquentBaseRepository
                                         'employee_id' => $payee_voucher->employee_id ?? null,
                                         'company_id' => $payee_voucher->company_id ?? null,
                                         'net_amount' => $payee_voucher->net_amount,
+                                        'remaining_amount' => $payee_voucher->net_amount,
                                         'total_tax' => $payee_voucher->total_tax,
                                         'tax_ids' => $payee_voucher->tax_ids
                                     ];
