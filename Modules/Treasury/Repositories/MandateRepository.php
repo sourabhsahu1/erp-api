@@ -259,7 +259,11 @@ class MandateRepository extends EloquentBaseRepository
                                     }
                                 }
                                 /** @var ScheduleEconomic $schedule_economic */
+
                                 foreach ($payee_voucher->schedule_economics as $schedule_economic) {
+
+                                    $tax = Tax::wherein('id', json_decode($payee_voucher->tax_ids, true))->pluck('tax')->all();
+                                    $totalTaxForSE = array_sum($tax);
 
                                     $jvD[] = [
                                         'journal_voucher_id' => $jv->id,
@@ -276,7 +280,7 @@ class MandateRepository extends EloquentBaseRepository
                                         'functional_segment_id' => $paymentVoucher->functional_segment_id,
                                         'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
                                         'line_value_type' => 'DEBIT',
-                                        'lv_line_value' => $schedule_economic->amount,
+                                        'lv_line_value' => $schedule_economic->amount + $schedule_economic->amount * $totalTaxForSE,
                                         'local_currency' => $companySetting->local_currency,
                                         'created_at' => Carbon::now()->toDateTimeString(),
                                         'updated_at' => Carbon::now()->toDateTimeString()

@@ -44,7 +44,8 @@ class RetireVoucherRepository extends EloquentBaseRepository
         ])->whereIn('type', [
             AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER,
             AppConstant::VOUCHER_TYPE_STANDING_VOUCHER,
-            AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER
+            AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER,
+            AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER
         ]);
 
 
@@ -54,7 +55,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 $query->whereHas('retire_voucher', function ($query) use ($params) {
                     $query->where('status', AppConstant::RETIRE_VOUCHER_NEW);
                 })->orDoesntHave('retire_voucher');
-            }else {
+            } else {
                 $query->whereHas('retire_voucher', function ($query) use ($params) {
                     $query->where('status', $params['inputs']['retire_status']);
                 });
@@ -103,7 +104,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
 //            dd($pv->total_amount->amount);
 
             if (is_null($pv->total_amount)) {
-                throw new AppException('Payee not added for payment voucher Id '.$pv->id);
+                throw new AppException('Payee not added for payment voucher Id ' . $pv->id);
             }
 
             if (is_null($retireV)) {
@@ -153,9 +154,20 @@ class RetireVoucherRepository extends EloquentBaseRepository
         $data['data']['payment_voucher_ids'] = json_decode($data['data']['payment_voucher_ids'], true);
         $retireV = RetireVoucher::whereIn('payment_voucher_id', $data['data']['payment_voucher_ids']);
 
-        $paymentVouchers = PaymentVoucher::whereIn('id', $data['data']['payment_voucher_ids'])->get();
+        $paymentVouchers = PaymentVoucher::with([
+            'voucher_source_unit'
+        ])->whereIn('id', $data['data']['payment_voucher_ids'])->get();
+
         /** @var PaymentVoucher $paymentVoucher */
         foreach ($paymentVouchers as $paymentVoucher) {
+            ///if not personal advance voucehr we are getting
+            $pv=  PaymentVoucher::where('id',$paymentVoucher->id)->whereHas('voucher_source_unit', function ($query) {
+                $query->where('is_personal_advance_unit', false);
+            })->first();
+
+            if ($pv) {
+                throw new AppException('Only advances type voucher can be retired');
+            }
 
             /** @var RetireVoucher $retireVoucher */
             $retireVoucher = RetireVoucher::with('retire_liabilities')->where('payment_voucher_id', $paymentVoucher->id)->first();
@@ -169,7 +181,6 @@ class RetireVoucherRepository extends EloquentBaseRepository
             if ($retireVoucher->retire_liabilities->isEmpty()) {
                 throw new AppException('Liability to be added in retire voucher');
             }
-
             if (!($paymentVoucher->status === AppConstant::VOUCHER_STATUS_CLOSED || $paymentVoucher->status === AppConstant::VOUCHER_STATUS_POSTED_TO_GL)) {
                 throw new AppException('Payment Voucher Id ' . $paymentVoucher->id . ' not CLOSED or POSTED TO GL  yet');
             }

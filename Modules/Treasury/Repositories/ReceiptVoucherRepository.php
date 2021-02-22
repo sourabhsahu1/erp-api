@@ -158,7 +158,7 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
 
         DB::beginTransaction();
         try {
-            if (isset($data['data']['status'])) {
+            if (isset($data['data']['status']) && $data['data']['status'] == AppConstant::RECEIPT_VOUCHER_STATUS_POSTED_TO_GL) {
                 $retireVouchers = ReceiptVoucher::with(['receipt_payees.treasury_receipt_schedule_economics'])->whereIn('id', $data['data']['receipt_voucher_ids'])->get();
 
                 $companySetting = CompanySetting::find(1);
@@ -208,8 +208,8 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
                                 'programme_segment_id' => $retireVoucher->program_segment_id,
                                 'functional_segment_id' => $retireVoucher->functional_segment_id,
                                 'geo_code_segment_id' => $retireVoucher->geo_code_segment_id,
-                                'line_value_type' => 'DEBIT',
-                                'lv_line_value' => $schedule_economic->amount * $retireVoucher->x_rate,
+                                'line_value_type' => 'CREDIT',
+                                'lv_line_value' => $schedule_economic->amount,
                                 'local_currency' => $companySetting->local_currency,
                                 'created_at' => Carbon::now()->toDateTimeString(),
                                 'updated_at' => Carbon::now()->toDateTimeString()
@@ -236,8 +236,8 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
                         'programme_segment_id' => $retireVoucher->program_segment_id,
                         'functional_segment_id' => $retireVoucher->functional_segment_id,
                         'geo_code_segment_id' => $retireVoucher->geo_code_segment_id,
-                        'line_value_type' => 'CREDIT',
-                        'lv_line_value' => $totalNetAmount * $retireVoucher->x_rate,
+                        'line_value_type' => 'DEBIT',
+                        'lv_line_value' => $totalNetAmount,
                         'local_currency' => $companySetting->local_currency,
                         'created_at' => Carbon::now()->toDateTimeString(),
                         'updated_at' => Carbon::now()->toDateTimeString()
