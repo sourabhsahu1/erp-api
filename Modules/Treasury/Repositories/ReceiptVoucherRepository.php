@@ -158,99 +158,100 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
 
         DB::beginTransaction();
         try {
-            if (isset($data['data']['status']) && $data['data']['status'] == AppConstant::RECEIPT_VOUCHER_STATUS_POSTED_TO_GL) {
-                $retireVouchers = ReceiptVoucher::with(['receipt_payees.treasury_receipt_schedule_economics'])->whereIn('id', $data['data']['receipt_voucher_ids'])->get();
+            if (isset($data['data']['status'])) {
+                if ($data['data']['status'] == AppConstant::RECEIPT_VOUCHER_STATUS_POSTED_TO_GL) {
+                    $retireVouchers = ReceiptVoucher::with(['receipt_payees.treasury_receipt_schedule_economics'])->whereIn('id', $data['data']['receipt_voucher_ids'])->get();
 
-                $companySetting = CompanySetting::find(1);
-                foreach ($retireVouchers as $retireVoucher) {
+                    $companySetting = CompanySetting::find(1);
+                    foreach ($retireVouchers as $retireVoucher) {
 
-                    $currencyId = $retireVoucher->cashbook->currency_id;
-                    $currency = Currency::find($currencyId);
+                        $currencyId = $retireVoucher->cashbook->currency_id;
+                        $currency = Currency::find($currencyId);
 
-                    $jv = JournalVoucher::create([
-                        'source_app' => 'E-Voucher (Treasury)',
-                        'batch_number' => 1,
-                        'jv_value_date' => Carbon::now()->toDateTimeString(),
-                        'fund_segment_id' => $retireVoucher->fund_segment_id,
-                        'jv_reference' => $retireVoucher->source_department,
-                        'status' => AppConstant::VOUCHER_STATUS_NEW,
-                        'transaction_details' => $retireVoucher->payment_description,
-                        'prepared_value_date' => Carbon::now()->toDateTimeString(),
-                        'prepared_transaction_date' => Carbon::now()->toDateTimeString(),
-                        'checked_value_date' => null,
-                        'checked_transaction_date' => null,
-                        'posted_value_date' => null,
-                        'posted_transaction_date' => null,
-                        'prepared_user_id' => null,
-                        'checked_user_id' => null,
-                        'posted_user_id' => null
-                    ]);
+                        $jv = JournalVoucher::create([
+                            'source_app' => 'E-Voucher (Treasury)',
+                            'batch_number' => 1,
+                            'jv_value_date' => Carbon::now()->toDateTimeString(),
+                            'fund_segment_id' => $retireVoucher->fund_segment_id,
+                            'jv_reference' => $retireVoucher->source_department,
+                            'status' => AppConstant::VOUCHER_STATUS_NEW,
+                            'transaction_details' => $retireVoucher->payment_description,
+                            'prepared_value_date' => Carbon::now()->toDateTimeString(),
+                            'prepared_transaction_date' => Carbon::now()->toDateTimeString(),
+                            'checked_value_date' => null,
+                            'checked_transaction_date' => null,
+                            'posted_value_date' => null,
+                            'posted_transaction_date' => null,
+                            'prepared_user_id' => null,
+                            'checked_user_id' => null,
+                            'posted_user_id' => null
+                        ]);
 
-                    /** @var ReceiptPayee $receipt_payee */
+                        /** @var ReceiptPayee $receipt_payee */
 
-                    $jvD = null;
-                    $totalNetAmount = 0;
-                    foreach ($retireVoucher->receipt_payees as $receipt_payee) {
-                        /** @var ReceiptScheduleEconomic $schedule_economic */
-                        foreach ($receipt_payee->treasury_receipt_schedule_economics as $schedule_economic) {
+                        $jvD = null;
+                        $totalNetAmount = 0;
+                        foreach ($retireVoucher->receipt_payees as $receipt_payee) {
+                            /** @var ReceiptScheduleEconomic $schedule_economic */
+                            foreach ($receipt_payee->treasury_receipt_schedule_economics as $schedule_economic) {
 
-                            $jvD[] = [
-                                'journal_voucher_id' => $jv->id,
-                                'currency' => $currency->code_currency,
-                                'x_rate_local' => $retireVoucher->x_rate,
-                                'bank_x_rate_to_usd' => $retireVoucher->official_x_rate,
-                                'account_name' => $retireVoucher->deptal_id,
-                                'line_reference' => $retireVoucher->deptal_id,
-                                'line_value' => $schedule_economic->amount,
-                                'admin_segment_id' => $retireVoucher->admin_segment_id,
-                                'fund_segment_id' => $retireVoucher->fund_segment_id,
-                                'economic_segment_id' => $schedule_economic->economic_segment_id,
-                                'programme_segment_id' => $retireVoucher->program_segment_id,
-                                'functional_segment_id' => $retireVoucher->functional_segment_id,
-                                'geo_code_segment_id' => $retireVoucher->geo_code_segment_id,
-                                'line_value_type' => 'CREDIT',
-                                'lv_line_value' => $schedule_economic->amount,
-                                'local_currency' => $companySetting->local_currency,
-                                'created_at' => Carbon::now()->toDateTimeString(),
-                                'updated_at' => Carbon::now()->toDateTimeString()
-                            ];
+                                $jvD[] = [
+                                    'journal_voucher_id' => $jv->id,
+                                    'currency' => $currency->code_currency,
+                                    'x_rate_local' => $retireVoucher->x_rate,
+                                    'bank_x_rate_to_usd' => $retireVoucher->official_x_rate,
+                                    'account_name' => $retireVoucher->deptal_id,
+                                    'line_reference' => $retireVoucher->deptal_id,
+                                    'line_value' => $schedule_economic->amount,
+                                    'admin_segment_id' => $retireVoucher->admin_segment_id,
+                                    'fund_segment_id' => $retireVoucher->fund_segment_id,
+                                    'economic_segment_id' => $schedule_economic->economic_segment_id,
+                                    'programme_segment_id' => $retireVoucher->program_segment_id,
+                                    'functional_segment_id' => $retireVoucher->functional_segment_id,
+                                    'geo_code_segment_id' => $retireVoucher->geo_code_segment_id,
+                                    'line_value_type' => 'CREDIT',
+                                    'lv_line_value' => $schedule_economic->amount,
+                                    'local_currency' => $companySetting->local_currency,
+                                    'created_at' => Carbon::now()->toDateTimeString(),
+                                    'updated_at' => Carbon::now()->toDateTimeString()
+                                ];
 
-                            $totalNetAmount = $totalNetAmount + $schedule_economic->amount;
+                                $totalNetAmount = $totalNetAmount + $schedule_economic->amount;
 
+                            }
                         }
+
+                        //entry for credit
+                        //todo credit updation pending in cashbook on respected economic segment
+                        JournalVoucherDetail::create([
+                            'journal_voucher_id' => $jv->id,
+                            'currency' => $currency->code_currency,
+                            'x_rate_local' => $retireVoucher->x_rate,
+                            'bank_x_rate_to_usd' => $retireVoucher->official_x_rate,
+                            'account_name' => $retireVoucher->deptal_id,
+                            'line_reference' => $retireVoucher->deptal_id,
+                            'line_value' => $totalNetAmount,
+                            'admin_segment_id' => $retireVoucher->admin_segment_id,
+                            'fund_segment_id' => $retireVoucher->fund_segment_id,
+                            'economic_segment_id' => $retireVoucher->economic_segment_id,
+                            'programme_segment_id' => $retireVoucher->program_segment_id,
+                            'functional_segment_id' => $retireVoucher->functional_segment_id,
+                            'geo_code_segment_id' => $retireVoucher->geo_code_segment_id,
+                            'line_value_type' => 'DEBIT',
+                            'lv_line_value' => $totalNetAmount,
+                            'local_currency' => $companySetting->local_currency,
+                            'created_at' => Carbon::now()->toDateTimeString(),
+                            'updated_at' => Carbon::now()->toDateTimeString()
+                        ]);
+                        JournalVoucherDetail::insert($jvD);
                     }
 
-                    //entry for credit
-                    //todo credit updation pending in cashbook on respected economic segment
-                    JournalVoucherDetail::create([
-                        'journal_voucher_id' => $jv->id,
-                        'currency' => $currency->code_currency,
-                        'x_rate_local' => $retireVoucher->x_rate,
-                        'bank_x_rate_to_usd' => $retireVoucher->official_x_rate,
-                        'account_name' => $retireVoucher->deptal_id,
-                        'line_reference' => $retireVoucher->deptal_id,
-                        'line_value' => $totalNetAmount,
-                        'admin_segment_id' => $retireVoucher->admin_segment_id,
-                        'fund_segment_id' => $retireVoucher->fund_segment_id,
-                        'economic_segment_id' => $retireVoucher->economic_segment_id,
-                        'programme_segment_id' => $retireVoucher->program_segment_id,
-                        'functional_segment_id' => $retireVoucher->functional_segment_id,
-                        'geo_code_segment_id' => $retireVoucher->geo_code_segment_id,
-                        'line_value_type' => 'DEBIT',
-                        'lv_line_value' => $totalNetAmount,
-                        'local_currency' => $companySetting->local_currency,
-                        'created_at' => Carbon::now()->toDateTimeString(),
-                        'updated_at' => Carbon::now()->toDateTimeString()
+                    $rv->update([
+                        'status' => $data['data']['status']
                     ]);
-                    JournalVoucherDetail::insert($jvD);
                 }
-
-                $rv->update([
-                    'status' => $data['data']['status']
-                ]);
-            } else {
-                throw new AppException('Status is required');
             }
+
             DB::commit();
         } catch (\Exception $exception) {
             DB::rollBack();
