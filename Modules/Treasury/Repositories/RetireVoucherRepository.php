@@ -5,12 +5,22 @@ namespace Modules\Treasury\Repositories;
 
 
 use App\Constants\AppConstant;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Admin\Models\CompanySetting;
+use Modules\Finance\Models\Currency;
+use Modules\Finance\Models\JournalVoucher;
+use Modules\Finance\Models\JournalVoucherDetail;
+use Modules\Treasury\Models\Cashbook;
+use Modules\Treasury\Models\Mandate;
+use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentVoucher;
+use Modules\Treasury\Models\ReceiptPayee;
+use Modules\Treasury\Models\ReceiptScheduleEconomic;
+use Modules\Treasury\Models\ReceiptVoucher;
 use Modules\Treasury\Models\RetireLiability;
 use Modules\Treasury\Models\RetireVoucher;
 
@@ -101,7 +111,6 @@ class RetireVoucherRepository extends EloquentBaseRepository
             if (is_null($pv)) {
                 throw new AppException('Payment Voucher either deleted or not Exist');
             }
-//            dd($pv->total_amount->amount);
 
             if (is_null($pv->total_amount)) {
                 throw new AppException('Payee not added for payment voucher Id ' . $pv->id);
@@ -114,9 +123,11 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 ]);
             }
 
+
             RetireLiability::where('retire_voucher_id', $retireV->id)->delete();
 
             $totalAmount = 0;
+            $economicSegment = null;
             foreach ($data['data']['liabilities'] as $key => $liability) {
                 $d['retire_voucher_id'] = $retireV->id;
                 $d['liability_value_date'] = $liability['liability_value_date'];
@@ -125,7 +136,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 $d['details'] = $liability['details'];
                 $d['created_at'] = Carbon::now()->toDateTimeString();
                 $d['updated_at'] = Carbon::now()->toDateTimeString();
-
+                $economicSegment[] = $liability['economic_segment_id'];
                 $totalAmount = $totalAmount + $liability['amount'];
                 unset($data);
                 $liabilities[] = $d;
@@ -134,6 +145,15 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
             if ($totalAmount > (float)$pv->total_amount->amount) {
                 throw new AppException('liability amount should be equal or less than gross amount');
+            }
+
+
+            if (count($economicSegment) > 0) {
+                $cashbook = Cashbook::whereIn('economic_segment_id', $economicSegment)->pluck('economic_segment_id')->all();
+                $cashbook = array_unique($cashbook);
+                if (count($cashbook) !== 1) {
+                    throw new AppException('Economic segments selected , Associated to more than one cashbook');
+                }
             }
 
             if (count($liabilities) > 0) {
@@ -154,42 +174,280 @@ class RetireVoucherRepository extends EloquentBaseRepository
         $data['data']['payment_voucher_ids'] = json_decode($data['data']['payment_voucher_ids'], true);
         $retireV = RetireVoucher::whereIn('payment_voucher_id', $data['data']['payment_voucher_ids']);
 
-        $paymentVouchers = PaymentVoucher::with([
-            'voucher_source_unit'
-        ])->whereIn('id', $data['data']['payment_voucher_ids'])->get();
+        DB::beginTransaction();
+        try {
+            $paymentVouchers = PaymentVoucher::with([
+                'voucher_source_unit',
+                'payee_vouchers.schedule_economics'
+            ])->whereIn('id', $data['data']['payment_voucher_ids'])->get();
+            /** @var CompanySetting $companySetting */
+            $companySetting = CompanySetting::find(1);
+            /** @var PaymentVoucher $paymentVoucher */
+            foreach ($paymentVouchers as $paymentVoucher) {
+                ///if not personal advance voucehr we are getting
+                $pv = PaymentVoucher::where('id', $paymentVoucher->id)->whereHas('voucher_source_unit', function ($query) {
+                    $query->where('is_personal_advance_unit', false);
+                })->first();
 
-        /** @var PaymentVoucher $paymentVoucher */
-        foreach ($paymentVouchers as $paymentVoucher) {
-            ///if not personal advance voucehr we are getting
-            $pv=  PaymentVoucher::where('id',$paymentVoucher->id)->whereHas('voucher_source_unit', function ($query) {
-                $query->where('is_personal_advance_unit', false);
-            })->first();
+                if ($pv) {
+                    throw new AppException('Only advances type voucher can be retired');
+                }
+                /** @var RetireVoucher $retireVoucher */
+                $retireVoucher = RetireVoucher::with('retire_liabilities')->where('payment_voucher_id', $paymentVoucher->id)->first();
 
-            if ($pv) {
-                throw new AppException('Only advances type voucher can be retired');
+                if (is_null($retireVoucher)) {
+                    throw new AppException('Liability to be added in retire voucher');
+                }
+                if (is_null($retireVoucher->retire_liabilities)) {
+                    throw new AppException('Liability to be added in retire voucher');
+                }
+                if ($retireVoucher->retire_liabilities->isEmpty()) {
+                    throw new AppException('Liability to be added in retire voucher');
+                }
+                if (!($paymentVoucher->status === AppConstant::VOUCHER_STATUS_CLOSED || $paymentVoucher->status === AppConstant::VOUCHER_STATUS_POSTED_TO_GL)) {
+                    throw new AppException('Payment Voucher Id ' . $paymentVoucher->id . ' not CLOSED or POSTED TO GL  yet');
+                }
+
+                if ($paymentVoucher->type === AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER || $paymentVoucher->type === AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER) {
+                    $type = AppConstant::VOUCHER_TYPE_NON_PERSONAL_ADVANCES_RECEIVED_VOUCHER;
+                } elseif ($paymentVoucher->type === AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER) {
+                    $type = AppConstant::VOUCHER_TYPE_SPECIAL_IMPREST_RECEIVED_VOUCHER;
+                } else {
+                    $type = AppConstant::VOUCHER_TYPE_STANDING_IMPREST_RECEIVED_VOUCHER;
+                }
+
+                /** @var Mandate $mandate */
+                $mandate = Mandate::find($paymentVoucher->mandate_id);
+                $currency = Currency::find($paymentVoucher->currency_id);
+                if ($data['data']['retire_status'] == AppConstant::RETIRE_VOUCHER_RETIRE_POSTED_TO_GL) {
+                    //todo create rv and payee
+                    /** @var ReceiptVoucher $rv */
+                    $rv = ReceiptVoucher::create([
+                        'voucher_source_unit_id' => $paymentVoucher->voucher_source_unit_id,
+                        'source_department' => $paymentVoucher->source_unit,
+                        'deptal_id' => $paymentVoucher->deptal_id,
+                        'voucher_number' => $paymentVoucher->voucher_number,
+                        'value_date' => $paymentVoucher->value_date,
+                        'receipt_number' => null,
+                        'payee' => $paymentVoucher->payee,
+                        'type' => $type,
+                        'status' => $paymentVoucher->status,
+                        'payment_description' => $paymentVoucher->payment_description,
+                        'x_rate' => $paymentVoucher->x_rate,
+                        'official_x_rate' => $paymentVoucher->official_x_rate,
+                        'admin_segment_id' => $paymentVoucher->admin_segment_id,
+                        'fund_segment_id' => $paymentVoucher->fund_segment_id,
+                        'economic_segment_id' => $paymentVoucher->economic_segment_id,
+                        'program_segment_id' => $paymentVoucher->program_segment_id,
+                        'functional_segment_id' => $paymentVoucher->fund_segment_id,
+                        'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
+                        'receiving_officer_id' => $paymentVoucher->checking_officer_id,
+                        'prepared_by_officer_id' => $paymentVoucher->checking_officer_id,
+                        'closed_by_officer_id' => $paymentVoucher->checking_officer_id,
+                        'cashbook_id' => $mandate->cashbook_id
+                    ]);
+
+                    $payees = null;
+                    /** @var PayeeVoucher $payee_voucher */
+                    foreach ($paymentVoucher->payee_vouchers as $payee_voucher) {
+                        $rvPayee = ReceiptPayee::create([
+                            'receipt_voucher_id' => $rv->id,
+                            'employee_id' => $payee_voucher->employee_id,
+                            'company_id' => $payee_voucher->company_id,
+                            'total_amount' => $payee_voucher->net_amount,
+                            'year' => $payee_voucher->year,
+                            'line_detail' => $payee_voucher->details ?? '',
+                            'pay_mode' => AppConstant::RECEIPT_PAY_MODE_CASH,
+                            'instrument_number' => '',
+                            'instrument_type' => '',
+                            'instrument_teller_number' => '',
+                            'instrument_issued_by' => '',
+                            'created_at' => Carbon::now()->toDateTimeString(),
+                            'updated_at' => Carbon::now()->toDateTimeString()
+                        ]);
+                        //create schedule economic for rv
+
+                        $receiptScheduleEconomic = null;
+                        foreach ($payee_voucher->schedule_economics as $schedule_economic) {
+                            $temp = [
+                                'receipt_payee_id' => $rvPayee->id,
+                                'receipt_voucher_id' => $rv->id,
+                                'economic_segment_id' => $schedule_economic->economic_segment_id,
+                                'amount' => $schedule_economic->amount
+                            ];
+                            $receiptScheduleEconomic[] = $temp;
+                        }
+                        ReceiptScheduleEconomic::insert($receiptScheduleEconomic);
+                    }
+
+
+                    //todo create jv and detais
+                    $jv = JournalVoucher::create([
+                        'source_app' => 'E-Voucher (Treasury)',
+                        'batch_number' => 1,
+                        'jv_value_date' => $rv->value_date,
+                        'fund_segment_id' => $rv->fund_segment_id,
+                        'jv_reference' => $rv->source_department,
+                        'status' => AppConstant::JV_STATUS_NEW,
+                        'transaction_details' => $rv->payment_description,
+                        'prepared_value_date' => Carbon::now()->toDateTimeString(),
+                        'prepared_transaction_date' => Carbon::now()->toDateTimeString(),
+                        'checked_value_date' => null,
+                        'checked_transaction_date' => null,
+                        'posted_value_date' => null,
+                        'posted_transaction_date' => null,
+                        'prepared_user_id' => null,
+                        'checked_user_id' => null,
+                        'posted_user_id' => null
+                    ]);
+
+                    $jvDetail = null;
+                    //credit entry for jv
+                    $jvDetail = JournalVoucherDetail::create([
+                        'journal_voucher_id' => $jv->id,
+                        'currency' => $currency->code_currency,
+                        'x_rate_local' => $paymentVoucher->x_rate,
+                        'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
+                        'account_name' => $paymentVoucher->deptal_id,
+                        'line_reference' => $paymentVoucher->deptal_id,
+                        'line_value' => $paymentVoucher->total_amount->amount,
+                        'admin_segment_id' => $rv->admin_segment_id,
+                        'fund_segment_id' => $rv->fund_segment_id,
+                        'economic_segment_id' => $rv->economic_segment_id,
+                        'programme_segment_id' => $rv->program_segment_id,
+                        'functional_segment_id' => $rv->functional_segment_id,
+                        'geo_code_segment_id' => $rv->geo_code_segment_id,
+                        'line_value_type' => 'CREDIT',
+                        'lv_line_value' => $paymentVoucher->total_amount->amount,
+                        'local_currency' => $companySetting->local_currency
+                    ]);
+
+                    //debit entry for jv
+
+                    $jvDetails = null;
+                    foreach ($payee_voucher->schedule_economics as $schedule_economic) {
+                        $temp = [
+                            'journal_voucher_id' => $jv->id,
+                            'currency' => $currency->code_currency,
+                            'x_rate_local' => $paymentVoucher->x_rate,
+                            'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
+                            'account_name' => $paymentVoucher->deptal_id,
+                            'line_reference' => $paymentVoucher->deptal_id,
+                            'line_value' => $schedule_economic->amount,
+                            'admin_segment_id' => $paymentVoucher->admin_segment_id,
+                            'fund_segment_id' => $paymentVoucher->fund_segment_id,
+                            'economic_segment_id' => $paymentVoucher->economic_segment_id,
+                            'programme_segment_id' => $paymentVoucher->program_segment_id,
+                            'functional_segment_id' => $paymentVoucher->functional_segment_id,
+                            'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
+                            'line_value_type' => 'DEBIT',
+                            'lv_line_value' => $schedule_economic->amount,
+                            'local_currency' => $companySetting->local_currency,
+                            'created_at' => Carbon::now()->toDateTimeString(),
+                            'updated_at' => Carbon::now()->toDateTimeString()
+                        ];
+                        $jvDetails[] = $temp;
+                    }
+                    if (count($jvDetails) > 0)
+                        JournalVoucherDetail::insert($jvDetails);
+
+                    //todo check for refund
+
+                    $query = RetireLiability::where('retire_voucher_id', $retireVoucher->id);
+                    $liabilityEcoId = $query->pluck('economic_segment_id');
+
+                    $retireLiability = $query->first();
+                    $cashbook = Cashbook::whereIn('economic_segment_id', $liabilityEcoId)->first();
+
+                    if ($cashbook) {
+
+
+                        $jvDetail = JournalVoucherDetail::create([
+                            'journal_voucher_id' => $jv->id,
+                            'currency' => $currency->code_currency,
+                            'x_rate_local' => $paymentVoucher->x_rate,
+                            'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
+                            'account_name' => $paymentVoucher->deptal_id,
+                            'line_reference' => 'Refund',
+                            'line_value' => $retireLiability->amount,
+                            'admin_segment_id' => $rv->admin_segment_id,
+                            'fund_segment_id' => $rv->fund_segment_id,
+                            'economic_segment_id' => $rv->economic_segment_id,
+                            'programme_segment_id' => $rv->program_segment_id,
+                            'functional_segment_id' => $rv->functional_segment_id,
+                            'geo_code_segment_id' => $rv->geo_code_segment_id,
+                            'line_value_type' => 'DEBIT',
+                            'lv_line_value' => $retireLiability->amount,
+                            'local_currency' => $companySetting->local_currency
+                        ]);
+
+
+                        /** @var ReceiptVoucher $rv */
+                        $rv = ReceiptVoucher::create([
+                            'voucher_source_unit_id' => $paymentVoucher->voucher_source_unit_id,
+                            'source_department' => $paymentVoucher->source_unit,
+                            'deptal_id' => $paymentVoucher->deptal_id,
+                            'voucher_number' => $paymentVoucher->voucher_number,
+                            'value_date' => $paymentVoucher->value_date,
+                            'receipt_number' => null,
+                            'payee' => $paymentVoucher->payee,
+                            'type' => $type,
+                            'status' => $paymentVoucher->status,
+                            'payment_description' => $paymentVoucher->payment_description,
+                            'x_rate' => $paymentVoucher->x_rate,
+                            'official_x_rate' => $paymentVoucher->official_x_rate,
+                            'admin_segment_id' => $paymentVoucher->admin_segment_id,
+                            'fund_segment_id' => $paymentVoucher->fund_segment_id,
+                            'economic_segment_id' => $paymentVoucher->economic_segment_id,
+                            'program_segment_id' => $paymentVoucher->program_segment_id,
+                            'functional_segment_id' => $paymentVoucher->fund_segment_id,
+                            'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
+                            'receiving_officer_id' => $paymentVoucher->checking_officer_id,
+                            'prepared_by_officer_id' => $paymentVoucher->checking_officer_id,
+                            'closed_by_officer_id' => $paymentVoucher->checking_officer_id,
+                            'cashbook_id' => $mandate->cashbook_id
+                        ]);
+
+                        $rvPayee = ReceiptPayee::create([
+                            'receipt_voucher_id' => $rv->id,
+                            'employee_id' => $paymentVoucher->payee_vouchers[0]->employee_id,
+                            'company_id' => $paymentVoucher->payee_vouchers[0]->company_id,
+                            'total_amount' => $retireLiability->amount,
+                            'year' => $paymentVoucher->payee_vouchers[0]->year,
+                            'line_detail' => 'Refund',
+                            'pay_mode' => AppConstant::RECEIPT_PAY_MODE_CASH,
+                            'instrument_number' => '',
+                            'instrument_type' => '',
+                            'instrument_teller_number' => '',
+                            'instrument_issued_by' => '',
+                            'created_at' => Carbon::now()->toDateTimeString(),
+                            'updated_at' => Carbon::now()->toDateTimeString()
+                        ]);
+                        //create schedule economic for rv
+
+                        $receiptScheduleEconomic = ReceiptScheduleEconomic::create([
+                            'receipt_payee_id' => $rvPayee->id,
+                            'receipt_voucher_id' => $rv->id,
+                            'economic_segment_id' => $retireLiability->economic_segment_id,
+                            'amount' => $retireLiability->amount
+                        ]);
+                    }
+
+
+                }
             }
 
-            /** @var RetireVoucher $retireVoucher */
-            $retireVoucher = RetireVoucher::with('retire_liabilities')->where('payment_voucher_id', $paymentVoucher->id)->first();
-
-            if (is_null($retireVoucher)) {
-                throw new AppException('Liability to be added in retire voucher');
+            if ($retireV->get()->isEmpty()) {
+                throw new AppException('Cannot find Retire Voucher');
+            } else {
+                $retireV->update([
+                        'status' => $data['data']['retire_status']]
+                );
             }
-            if (is_null($retireVoucher->retire_liabilities)) {
-                throw new AppException('Liability to be added in retire voucher');
-            }
-            if ($retireVoucher->retire_liabilities->isEmpty()) {
-                throw new AppException('Liability to be added in retire voucher');
-            }
-            if (!($paymentVoucher->status === AppConstant::VOUCHER_STATUS_CLOSED || $paymentVoucher->status === AppConstant::VOUCHER_STATUS_POSTED_TO_GL)) {
-                throw new AppException('Payment Voucher Id ' . $paymentVoucher->id . ' not CLOSED or POSTED TO GL  yet');
-            }
-        }
-
-        if ($retireV->get()->isEmpty()) {
-            throw new AppException('Cannot find Retire Voucher');
-        } else {
-            $retireV->update(['status' => $data['data']['retire_status']]);
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw $exception;
         }
     }
 

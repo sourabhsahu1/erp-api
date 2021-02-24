@@ -56,15 +56,22 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                         'is_active' => true
                     ]);
                 }
-            }
+                /** @var PayeeVoucher $payee */
+                $payee = parent::create($data);
 
-
-            //todo logic to write approval deduction
-
-            /** @var PayeeVoucher $payee */
-
-
-            if ($pv->is_payment_approval == true) {
+                $payeeApproval = PaymentApprovalPayee::create([
+                    'payment_approval_id' => $pv->payment_approve_id,
+                    'year' => $payee->year,
+                    'details' => $payee->details,
+                    'employee_id' => $payee->employee_id,
+                    'company_id' => $payee->company_id,
+                    'net_amount' => $payee->net_amount,
+                    'remaining_amount' => $payee->net_amount,
+                    'total_tax' => $payee->total_tax,
+                    'tax_ids' => $payee->tax_ids
+                ]);
+            } elseif ($pv->is_payment_approval == true) {
+                //todo logic to write approval deduction
                 $approvalPayees = PaymentApprovalPayee::whereHas('payment_approval', function ($q) use ($data) {
                     $q->whereHas('payment_vouchers', function ($q) use ($data) {
                         $q->where('id', $data['data']['payment_voucher_id']);
@@ -99,11 +106,7 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                         ]);
                     }
                 }
-            } else {
-                $payee = parent::create($data);
             }
-
-
             DB::commit();
             return $payee;
         } catch (\Exception $e) {
@@ -120,12 +123,11 @@ class PayeeVoucherRepository extends EloquentBaseRepository
 
         if (is_null($pv)) {
             throw new AppException('Payment voucher not exist for payee ');
-        }else{
+        } else {
             if ($pv->status != AppConstant::VOUCHER_STATUS_NEW) {
                 throw new AppException('Cannot Update Status of Payment Voucher is Not NEW');
             }
         }
-
 
 
         return parent::update($data);
@@ -140,7 +142,7 @@ class PayeeVoucherRepository extends EloquentBaseRepository
 
         if (is_null($pv)) {
             throw new AppException('Payment voucher not exist for payee ');
-        }else{
+        } else {
             if ($pv->status != AppConstant::VOUCHER_STATUS_NEW) {
                 throw new AppException('Cannot Delete Status of Payment Voucher is Not NEW');
             }

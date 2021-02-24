@@ -118,9 +118,27 @@ class PaymentRepository extends EloquentBaseRepository
                 }
                 DB::commit();
                 return $paymentVoucher;
+            } elseif ($companySetting->is_payment_approval == false) {
+                /** @var PaymentVoucher $paymentVoucher */
+                $paymentVoucher = parent::create($data);
+                $paymentApproval = PaymentApproval::create([
+                    'admin_segment_id' => $paymentVoucher->admin_segment_id,
+                    'fund_segment_id' => $paymentVoucher->fund_segment_id,
+                    'economic_segment_id' => $paymentVoucher->economic_segment_id,
+                    'employee_customer' => $paymentVoucher->type,
+                    'prepared_by_id' => $paymentVoucher->checking_officer_id,
+                    'authorised_by_id' => $paymentVoucher->checking_officer_id,
+                    'currency_id' => $paymentVoucher->currency_id,
+                    'value_date' => $paymentVoucher->value_date,
+                    'authorised_date' => Carbon::now()->toDateTimeString(),
+                    'remark' => $paymentVoucher->payment_description,
+                    'status' => AppConstant::PAYMENT_APPROVAL_FULLY_USED
+                ]);
+                $paymentVoucher->payment_approve_id = $paymentApproval->id;
+                $paymentApproval->save();
             }
 
-            $paymentVoucher = parent::create($data);
+
             DB::commit();
             return $paymentVoucher;
         } catch (\Exception $exception) {
