@@ -325,7 +325,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                     //debit entry for jv
 
                     $jvDetails = null;
-                    foreach ($payee_voucher->schedule_economics as $schedule_economic) {
+                    foreach ($retireVoucher->retire_liabilities as $retire_liability) {
                         $temp = [
                             'journal_voucher_id' => $jv->id,
                             'currency' => $currency->code_currency,
@@ -333,7 +333,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                             'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
                             'account_name' => $paymentVoucher->deptal_id,
                             'line_reference' => $paymentVoucher->deptal_id,
-                            'line_value' => $schedule_economic->amount,
+                            'line_value' => $retire_liability->amount,
                             'admin_segment_id' => $paymentVoucher->admin_segment_id,
                             'fund_segment_id' => $paymentVoucher->fund_segment_id,
                             'economic_segment_id' => $paymentVoucher->economic_segment_id,
@@ -341,7 +341,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                             'functional_segment_id' => $paymentVoucher->functional_segment_id,
                             'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
                             'line_value_type' => 'DEBIT',
-                            'lv_line_value' => $schedule_economic->amount,
+                            'lv_line_value' => $retire_liability->amount,
                             'local_currency' => $companySetting->local_currency,
                             'created_at' => Carbon::now()->toDateTimeString(),
                             'updated_at' => Carbon::now()->toDateTimeString()
