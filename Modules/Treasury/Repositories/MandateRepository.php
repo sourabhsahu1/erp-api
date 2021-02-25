@@ -280,7 +280,7 @@ class MandateRepository extends EloquentBaseRepository
                                         'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
                                         'account_name' => $paymentVoucher->deptal_id,
                                         'line_reference' => $paymentVoucher->deptal_id,
-                                        'line_value' => ($tax->tax * $payee_voucher->net_amount) / 100,
+                                        'line_value' => ($tax->tax ?? 1 * $payee_voucher->net_amount) / 100,
                                         'admin_segment_id' => $paymentVoucher->admin_segment_id,
                                         'fund_segment_id' => $paymentVoucher->fund_segment_id,
                                         'economic_segment_id' => $tax->department_id,
