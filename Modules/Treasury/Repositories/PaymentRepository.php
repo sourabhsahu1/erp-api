@@ -125,7 +125,7 @@ class PaymentRepository extends EloquentBaseRepository
                     'admin_segment_id' => $paymentVoucher->admin_segment_id,
                     'fund_segment_id' => $paymentVoucher->fund_segment_id,
                     'economic_segment_id' => $paymentVoucher->economic_segment_id,
-                    'employee_customer' => $paymentVoucher->type,
+                    'employee_customer' => $paymentVoucher->payee,
                     'prepared_by_id' => $paymentVoucher->checking_officer_id,
                     'authorised_by_id' => $paymentVoucher->checking_officer_id,
                     'currency_id' => $paymentVoucher->currency_id,
