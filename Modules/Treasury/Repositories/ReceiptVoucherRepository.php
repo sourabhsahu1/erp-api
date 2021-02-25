@@ -14,6 +14,7 @@ use Modules\Admin\Models\CompanySetting;
 use Modules\Finance\Models\Currency;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JournalVoucherDetail;
+use Modules\Treasury\Models\Cashbook;
 use Modules\Treasury\Models\DefaultSetting;
 use Modules\Treasury\Models\ReceiptPayee;
 use Modules\Treasury\Models\ReceiptScheduleEconomic;
@@ -166,7 +167,7 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
 
                     $companySetting = CompanySetting::find(1);
                     foreach ($retireVouchers as $retireVoucher) {
-
+                        $cashbook = Cashbook::find($retireVoucher->cashbook_id);
                         $currencyId = $retireVoucher->cashbook->currency_id;
                         $currency = Currency::find($currencyId);
 
@@ -223,7 +224,7 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
                             }
                         }
 
-                        //entry for credit
+                        //entry for cashbook credit
                         //todo credit updation pending in cashbook on respected economic segment
                         JournalVoucherDetail::create([
                             'journal_voucher_id' => $jv->id,
@@ -235,7 +236,7 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
                             'line_value' => $totalNetAmount,
                             'admin_segment_id' => $retireVoucher->admin_segment_id,
                             'fund_segment_id' => $retireVoucher->fund_segment_id,
-                            'economic_segment_id' => $retireVoucher->economic_segment_id,
+                            'economic_segment_id' => $cashbook->economic_segment_id,
                             'programme_segment_id' => $retireVoucher->program_segment_id,
                             'functional_segment_id' => $retireVoucher->functional_segment_id,
                             'geo_code_segment_id' => $retireVoucher->geo_code_segment_id,
