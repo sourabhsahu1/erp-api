@@ -16,6 +16,7 @@ use Modules\Admin\Models\Tax;
 use Modules\Finance\Models\Currency;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JournalVoucherDetail;
+use Modules\Treasury\Models\Cashbook;
 use Modules\Treasury\Models\Mandate;
 use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentApproval;
@@ -134,6 +135,12 @@ class MandateRepository extends EloquentBaseRepository
         foreach ($data['data']['mandate_ids'] as $mandate_id) {
             DB::beginTransaction();
             try {
+
+                /** @var Mandate $mandate */
+                $mandate = Mandate::find($mandate_id);
+                /** @var Cashbook $cashbook */
+                $cashbook = Cashbook::find($mandate->cashbook_id);
+
                 if (isset($data['data']['status'])) {
                     if ($data['data']['status'] == AppConstant::ON_MANDATE_1ST_AUTHORISED) {
                         $data['data']['first_authorised_by'] = $data['data']['user_id'];
@@ -233,38 +240,59 @@ class MandateRepository extends EloquentBaseRepository
                             $totalNetAmount = 0;
                             $totalTax = 0;
                             foreach ($paymentVoucher->payee_vouchers as $payee_voucher) {
-                                foreach (json_decode($payee_voucher->tax_ids, true) as $tax_id) {
-                                    /** @var Tax $tax */
-                                    $tax = Tax::find($tax_id);
-                                    if ($tax) {
-                                        $jvD[] = [
-                                            'journal_voucher_id' => $jv->id,
-                                            'currency' => $currency->code_currency,
-                                            'x_rate_local' => $paymentVoucher->x_rate,
-                                            'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
-                                            'account_name' => $paymentVoucher->deptal_id,
-                                            'line_reference' => $paymentVoucher->deptal_id,
-                                            'line_value' => ($tax->tax * $payee_voucher->net_amount) / 100,
-                                            'admin_segment_id' => $paymentVoucher->admin_segment_id,
-                                            'fund_segment_id' => $paymentVoucher->fund_segment_id,
-                                            'economic_segment_id' => $tax->department_id,
-                                            'programme_segment_id' => $paymentVoucher->program_segment_id,
-                                            'functional_segment_id' => $paymentVoucher->functional_segment_id,
-                                            'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
-                                            'line_value_type' => 'CREDIT',
-                                            'lv_line_value' => ($tax->tax * $payee_voucher->net_amount) / 100,
-                                            'local_currency' => $companySetting->local_currency,
-                                            'created_at' => Carbon::now()->toDateTimeString(),
-                                            'updated_at' => Carbon::now()->toDateTimeString()
-                                        ];
-                                    }
-                                }
+//                                foreach (json_decode($payee_voucher->tax_ids, true) as $tax_id) {
+//                                    /** @var Tax $tax */
+//                                    $tax = Tax::find($tax_id);
+//                                    if ($tax) {
+//                                        $jvD[] = [
+//                                            'journal_voucher_id' => $jv->id,
+//                                            'currency' => $currency->code_currency,
+//                                            'x_rate_local' => $paymentVoucher->x_rate,
+//                                            'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
+//                                            'account_name' => $paymentVoucher->deptal_id,
+//                                            'line_reference' => $paymentVoucher->deptal_id,
+//                                            'line_value' => ($tax->tax * $payee_voucher->net_amount) / 100,
+//                                            'admin_segment_id' => $paymentVoucher->admin_segment_id,
+//                                            'fund_segment_id' => $paymentVoucher->fund_segment_id,
+//                                            'economic_segment_id' => $tax->department_id,
+//                                            'programme_segment_id' => $paymentVoucher->program_segment_id,
+//                                            'functional_segment_id' => $paymentVoucher->functional_segment_id,
+//                                            'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
+//                                            'line_value_type' => 'CREDIT',
+//                                            'lv_line_value' => ($tax->tax * $payee_voucher->net_amount) / 100,
+//                                            'local_currency' => $companySetting->local_currency,
+//                                            'created_at' => Carbon::now()->toDateTimeString(),
+//                                            'updated_at' => Carbon::now()->toDateTimeString()
+//                                        ];
+//                                    }
+//                                }
                                 /** @var ScheduleEconomic $schedule_economic */
 
                                 foreach ($payee_voucher->schedule_economics as $schedule_economic) {
 
                                     $tax = Tax::wherein('id', json_decode($payee_voucher->tax_ids, true))->pluck('tax')->all();
                                     $totalTaxForSE = array_sum($tax);
+
+                                    $jvD[] = [
+                                        'journal_voucher_id' => $jv->id,
+                                        'currency' => $currency->code_currency,
+                                        'x_rate_local' => $paymentVoucher->x_rate,
+                                        'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
+                                        'account_name' => $paymentVoucher->deptal_id,
+                                        'line_reference' => $paymentVoucher->deptal_id,
+                                        'line_value' => ($tax->tax * $payee_voucher->net_amount) / 100,
+                                        'admin_segment_id' => $paymentVoucher->admin_segment_id,
+                                        'fund_segment_id' => $paymentVoucher->fund_segment_id,
+                                        'economic_segment_id' => $tax->department_id,
+                                        'programme_segment_id' => $paymentVoucher->program_segment_id,
+                                        'functional_segment_id' => $paymentVoucher->functional_segment_id,
+                                        'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
+                                        'line_value_type' => 'CREDIT',
+                                        'lv_line_value' => ($schedule_economic->amount * $totalTaxForSE) / 100,
+                                        'local_currency' => $companySetting->local_currency,
+                                        'created_at' => Carbon::now()->toDateTimeString(),
+                                        'updated_at' => Carbon::now()->toDateTimeString()
+                                    ];
 
                                     $jvD[] = [
                                         'journal_voucher_id' => $jv->id,
@@ -297,6 +325,9 @@ class MandateRepository extends EloquentBaseRepository
                             }
 
                             //entry for credit
+
+
+
                             //todo credit updation pending in cashbook on respected economic segment
                             JournalVoucherDetail::create([
                                 'journal_voucher_id' => $jv->id,
@@ -308,7 +339,7 @@ class MandateRepository extends EloquentBaseRepository
                                 'line_value' => $totalNetAmount,
                                 'admin_segment_id' => $paymentVoucher->admin_segment_id,
                                 'fund_segment_id' => $paymentVoucher->fund_segment_id,
-                                'economic_segment_id' => $paymentVoucher->economic_segment_id,
+                                'economic_segment_id' => $cashbook->economic_segment_id,
                                 'programme_segment_id' => $paymentVoucher->program_segment_id,
                                 'functional_segment_id' => $paymentVoucher->functional_segment_id,
                                 'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,

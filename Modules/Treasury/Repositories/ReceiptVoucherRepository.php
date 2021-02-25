@@ -160,7 +160,9 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
         try {
             if (isset($data['data']['status'])) {
                 if ($data['data']['status'] == AppConstant::RECEIPT_VOUCHER_STATUS_POSTED_TO_GL) {
-                    $retireVouchers = ReceiptVoucher::with(['receipt_payees.treasury_receipt_schedule_economics'])->whereIn('id', $data['data']['receipt_voucher_ids'])->get();
+                    $retireVouchers = ReceiptVoucher::with(['receipt_payees.treasury_receipt_schedule_economics'])
+                        ->whereIn('id', $data['data']['receipt_voucher_ids'])
+                        ->get();
 
                     $companySetting = CompanySetting::find(1);
                     foreach ($retireVouchers as $retireVoucher) {
@@ -245,11 +247,10 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
                         ]);
                         JournalVoucherDetail::insert($jvD);
                     }
-
-                    $rv->update([
-                        'status' => $data['data']['status']
-                    ]);
                 }
+                $rv->update([
+                    'status' => $data['data']['status']
+                ]);
             }
 
             DB::commit();

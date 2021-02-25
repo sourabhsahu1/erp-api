@@ -138,8 +138,6 @@ class PaymentRepository extends EloquentBaseRepository
                 $pv = PaymentVoucher::where('id', $paymentVoucher->id)->update([
                     'payment_approve_id' => $paymentApproval->id
                 ]);
-//                $paymentVoucher->payment_approve_id = $paymentApproval->id;
-//                $paymentApproval->save();
             }
 
 
