@@ -134,8 +134,12 @@ class PaymentRepository extends EloquentBaseRepository
                     'remark' => $paymentVoucher->payment_description,
                     'status' => AppConstant::PAYMENT_APPROVAL_FULLY_USED
                 ]);
-                $paymentVoucher->payment_approve_id = $paymentApproval->id;
-                $paymentApproval->save();
+
+                $pv = PaymentVoucher::where('id', $paymentVoucher->id)->update([
+                    'payment_approve_id' => $paymentApproval->id
+                ]);
+//                $paymentVoucher->payment_approve_id = $paymentApproval->id;
+//                $paymentApproval->save();
             }
 
 
