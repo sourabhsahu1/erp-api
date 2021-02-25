@@ -297,7 +297,7 @@ class MandateRepository extends EloquentBaseRepository
                             }
 
                             //entry for credit
-                            //todo credit updation pending in cashbook on respected ecnomic segment
+                            //todo credit updation pending in cashbook on respected economic segment
                             JournalVoucherDetail::create([
                                 'journal_voucher_id' => $jv->id,
                                 'currency' => $currency->code_currency,

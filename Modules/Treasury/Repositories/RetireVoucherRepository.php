@@ -325,7 +325,9 @@ class RetireVoucherRepository extends EloquentBaseRepository
                     //debit entry for jv
 
                     $jvDetails = null;
+                    $retireAmount = 0;
                     foreach ($retireVoucher->retire_liabilities as $retire_liability) {
+
                         $temp = [
                             'journal_voucher_id' => $jv->id,
                             'currency' => $currency->code_currency,
@@ -346,6 +348,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                             'created_at' => Carbon::now()->toDateTimeString(),
                             'updated_at' => Carbon::now()->toDateTimeString()
                         ];
+                        $retireAmount = $retireAmount +  $retire_liability->amount;
                         $jvDetails[] = $temp;
                     }
                     if (count($jvDetails) > 0)
@@ -360,8 +363,6 @@ class RetireVoucherRepository extends EloquentBaseRepository
                     $cashbook = Cashbook::whereIn('economic_segment_id', $liabilityEcoId)->first();
 
                     if ($cashbook) {
-
-
                         $jvDetail = JournalVoucherDetail::create([
                             'journal_voucher_id' => $jv->id,
                             'currency' => $currency->code_currency,
@@ -377,7 +378,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                             'functional_segment_id' => $rv->functional_segment_id,
                             'geo_code_segment_id' => $rv->geo_code_segment_id,
                             'line_value_type' => 'DEBIT',
-                            'lv_line_value' => $retireLiability->amount,
+                            'lv_line_value' => $paymentVoucher->total_amount->amount - $retireAmount,
                             'local_currency' => $companySetting->local_currency
                         ]);
 
@@ -429,11 +430,9 @@ class RetireVoucherRepository extends EloquentBaseRepository
                             'receipt_payee_id' => $rvPayee->id,
                             'receipt_voucher_id' => $rv->id,
                             'economic_segment_id' => $retireLiability->economic_segment_id,
-                            'amount' => $retireLiability->amount
+                            'amount' => $paymentVoucher->total_amount->amount - $retireAmount
                         ]);
                     }
-
-
                 }
             }
 
