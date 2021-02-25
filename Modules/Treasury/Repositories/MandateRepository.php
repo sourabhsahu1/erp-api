@@ -50,6 +50,11 @@ class MandateRepository extends EloquentBaseRepository
         DB::beginTransaction();
         try {
 
+//            /** @var Mandate $mandate */
+//            $mandate = Mandate::find($mandate_id);
+            /** @var Cashbook $cashbook */
+            $cashbook = Cashbook::find($data['data']['cashbook_id']);
+
             $data['data']['status'] = 'NEW';
             $data['data']['prepared_by'] = $data['data']['user_id'];
             $data['data']['prepared_date'] = Carbon::now()->toDateString();
@@ -57,19 +62,18 @@ class MandateRepository extends EloquentBaseRepository
 
             if (isset($data['data']['payment_vouchers'])) {
 
-
                 $data['data']['payment_vouchers'] = json_decode($data['data']['payment_vouchers'], true);
 
 
                 $paymentV = PaymentVoucher::whereIn('id', $data['data']['payment_vouchers']);
 
-//                foreach ($paymentV->get() as $value) {
-//                    /** @var VoucherSourceUnit $vsu */
-//                    $vsu = VoucherSourceUnit::find($value->voucher_source_unit_id);
-//                    if ($vsu->is_personal_advance_unit == true) {
-//                        throw new AppException('Advance Vouchers not Allowed');
-//                    }
-//                }
+                foreach ($paymentV->get() as $p) {
+
+                    if ($cashbook->currency_id !== $p->currency_id )
+                    {
+                        throw new AppException('Currency aren\'t matching for Payment voucher and Mandate Cashbook');
+                    }
+                }
 
                 $paymentV = $paymentV->whereIn('status', [
                     AppConstant::VOUCHER_STATUS_AUDITED
