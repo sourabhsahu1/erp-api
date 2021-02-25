@@ -256,7 +256,7 @@ class MandateRepository extends EloquentBaseRepository
                                                 'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
                                                 'account_name' => $paymentVoucher->deptal_id,
                                                 'line_reference' => $paymentVoucher->deptal_id,
-                                                'line_value' => ($tax->tax * $schedule_economic->net_amount) / 100,
+                                                'line_value' => ($tax->tax * $schedule_economic->amount) / 100,
                                                 'admin_segment_id' => $paymentVoucher->admin_segment_id,
                                                 'fund_segment_id' => $paymentVoucher->fund_segment_id,
                                                 'economic_segment_id' => $tax->department_id,
@@ -264,7 +264,7 @@ class MandateRepository extends EloquentBaseRepository
                                                 'functional_segment_id' => $paymentVoucher->functional_segment_id,
                                                 'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
                                                 'line_value_type' => 'CREDIT',
-                                                'lv_line_value' => ($tax->tax * $schedule_economic->net_amount) / 100,
+                                                'lv_line_value' => ($tax->tax * $schedule_economic->amount) / 100,
                                                 'local_currency' => $companySetting->local_currency,
                                                 'created_at' => Carbon::now()->toDateTimeString(),
                                                 'updated_at' => Carbon::now()->toDateTimeString()
