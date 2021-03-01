@@ -219,7 +219,9 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 /** @var Mandate $mandate */
                 $mandate = Mandate::find($paymentVoucher->mandate_id);
                 $currency = Currency::find($paymentVoucher->currency_id);
-                if ($data['data']['retire_status'] == AppConstant::RETIRE_VOUCHER_RETIRE_POSTED_TO_GL) {
+                if ($data['data']['retire_status'] == AppConstant::RETIRE_VOUCHER_RETIRE) {
+
+                } elseif ($data['data']['retire_status'] == AppConstant::RETIRE_VOUCHER_RETIRE_POSTED_TO_GL) {
                     //todo create rv and payee
                     /** @var ReceiptVoucher $rv */
                     $rv = ReceiptVoucher::create([
@@ -326,30 +328,54 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
                     $jvDetails = null;
                     $retireAmount = 0;
+                    /** @var RetireLiability $retire_liability */
                     foreach ($retireVoucher->retire_liabilities as $retire_liability) {
 
-                        $temp = [
-                            'journal_voucher_id' => $jv->id,
-                            'currency' => $currency->code_currency,
-                            'x_rate_local' => $paymentVoucher->x_rate,
-                            'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
-                            'account_name' => $paymentVoucher->deptal_id,
-                            'line_reference' => $paymentVoucher->deptal_id,
-                            'line_value' => $retire_liability->amount,
-                            'admin_segment_id' => $paymentVoucher->admin_segment_id,
-                            'fund_segment_id' => $paymentVoucher->fund_segment_id,
-                            'economic_segment_id' => $paymentVoucher->economic_segment_id,
-                            'programme_segment_id' => $paymentVoucher->program_segment_id,
-                            'functional_segment_id' => $paymentVoucher->functional_segment_id,
-                            'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
-                            'line_value_type' => 'DEBIT',
-                            'lv_line_value' => $retire_liability->amount,
-                            'local_currency' => $companySetting->local_currency,
-                            'created_at' => Carbon::now()->toDateTimeString(),
-                            'updated_at' => Carbon::now()->toDateTimeString()
-                        ];
-                        $retireAmount = $retireAmount +  $retire_liability->amount;
-                        $jvDetails[] = $temp;
+                        //refund entry in Jv
+                        $cashbook = Cashbook::whereIn('economic_segment_id', $retire_liability->economic_segment_id)->first();
+                        if ($cashbook) {
+                            $jvDetail = JournalVoucherDetail::create([
+                                'journal_voucher_id' => $jv->id,
+                                'currency' => $currency->code_currency,
+                                'x_rate_local' => $paymentVoucher->x_rate,
+                                'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
+                                'account_name' => $paymentVoucher->deptal_id,
+                                'line_reference' => 'Refund',
+                                'line_value' => $retire_liability->amount,
+                                'admin_segment_id' => $rv->admin_segment_id,
+                                'fund_segment_id' => $rv->fund_segment_id,
+                                'economic_segment_id' => $cashbook->economic_segment_id,
+                                'programme_segment_id' => $rv->program_segment_id,
+                                'functional_segment_id' => $rv->functional_segment_id,
+                                'geo_code_segment_id' => $rv->geo_code_segment_id,
+                                'line_value_type' => 'DEBIT',
+                                'lv_line_value' => $retire_liability->amount,
+                                'local_currency' => $companySetting->local_currency
+                            ]);
+                        } else {
+                            $temp = [
+                                'journal_voucher_id' => $jv->id,
+                                'currency' => $currency->code_currency,
+                                'x_rate_local' => $paymentVoucher->x_rate,
+                                'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
+                                'account_name' => $paymentVoucher->deptal_id,
+                                'line_reference' => $paymentVoucher->deptal_id,
+                                'line_value' => $retire_liability->amount,
+                                'admin_segment_id' => $paymentVoucher->admin_segment_id,
+                                'fund_segment_id' => $paymentVoucher->fund_segment_id,
+                                'economic_segment_id' => $retire_liability->economic_segment_id,
+                                'programme_segment_id' => $paymentVoucher->program_segment_id,
+                                'functional_segment_id' => $paymentVoucher->functional_segment_id,
+                                'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
+                                'line_value_type' => 'DEBIT',
+                                'lv_line_value' => $retire_liability->amount,
+                                'local_currency' => $companySetting->local_currency,
+                                'created_at' => Carbon::now()->toDateTimeString(),
+                                'updated_at' => Carbon::now()->toDateTimeString()
+                            ];
+                            $retireAmount = $retireAmount + $retire_liability->amount;
+                            $jvDetails[] = $temp;
+                        }
                     }
                     if (count($jvDetails) > 0)
                         JournalVoucherDetail::insert($jvDetails);
@@ -362,25 +388,27 @@ class RetireVoucherRepository extends EloquentBaseRepository
                     $retireLiability = $query->first();
                     $cashbook = Cashbook::whereIn('economic_segment_id', $liabilityEcoId)->first();
 
+//                    $remainingAmount = $paymentVoucher->total_amount->amount - $retireAmount;
+
                     if ($cashbook) {
-                        $jvDetail = JournalVoucherDetail::create([
-                            'journal_voucher_id' => $jv->id,
-                            'currency' => $currency->code_currency,
-                            'x_rate_local' => $paymentVoucher->x_rate,
-                            'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
-                            'account_name' => $paymentVoucher->deptal_id,
-                            'line_reference' => 'Refund',
-                            'line_value' => $retireLiability->amount,
-                            'admin_segment_id' => $rv->admin_segment_id,
-                            'fund_segment_id' => $rv->fund_segment_id,
-                            'economic_segment_id' => $rv->economic_segment_id,
-                            'programme_segment_id' => $rv->program_segment_id,
-                            'functional_segment_id' => $rv->functional_segment_id,
-                            'geo_code_segment_id' => $rv->geo_code_segment_id,
-                            'line_value_type' => 'DEBIT',
-                            'lv_line_value' => $paymentVoucher->total_amount->amount - $retireAmount,
-                            'local_currency' => $companySetting->local_currency
-                        ]);
+//                        $jvDetail = JournalVoucherDetail::create([
+//                            'journal_voucher_id' => $jv->id,
+//                            'currency' => $currency->code_currency,
+//                            'x_rate_local' => $paymentVoucher->x_rate,
+//                            'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
+//                            'account_name' => $paymentVoucher->deptal_id,
+//                            'line_reference' => 'Refund',
+//                            'line_value' => $retireLiability->amount,
+//                            'admin_segment_id' => $rv->admin_segment_id,
+//                            'fund_segment_id' => $rv->fund_segment_id,
+//                            'economic_segment_id' => $rv->economic_segment_id,
+//                            'programme_segment_id' => $rv->program_segment_id,
+//                            'functional_segment_id' => $rv->functional_segment_id,
+//                            'geo_code_segment_id' => $rv->geo_code_segment_id,
+//                            'line_value_type' => 'DEBIT',
+//                            'lv_line_value' => $paymentVoucher->total_amount->amount - $retireAmount,
+//                            'local_currency' => $companySetting->local_currency
+//                        ]);
 
 
                         /** @var ReceiptVoucher $rv */
