@@ -70,7 +70,6 @@ class RetireVoucherRepository extends EloquentBaseRepository
                     $query->where('status', $params['inputs']['retire_status']);
                 });
             }
-
         }
         if (isset($params['inputs']['voucher_source_unit_id'])) {
             $query->where('voucher_source_unit_id', $params['inputs']['voucher_source_unit_id']);
@@ -107,25 +106,19 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
             /** @var PaymentVoucher $pv */
             $pv = PaymentVoucher::with('total_amount')->find($data['data']['payment_voucher_id']);
-
             if (is_null($pv)) {
                 throw new AppException('Payment Voucher either deleted or not Exist');
             }
-
             if (is_null($pv->total_amount)) {
                 throw new AppException('Payee not added for payment voucher Id ' . $pv->id);
             }
-
             if (is_null($retireV)) {
                 $retireV = RetireVoucher::create([
                     'payment_voucher_id' => $data['data']['payment_voucher_id'],
                     'status' => AppConstant::RETIRE_VOUCHER_NEW
                 ]);
             }
-
-
             RetireLiability::where('retire_voucher_id', $retireV->id)->delete();
-
             $totalAmount = 0;
             $economicSegment = null;
             foreach ($data['data']['liabilities'] as $key => $liability) {
@@ -142,11 +135,9 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 $liabilities[] = $d;
             }
 
-
             if ($totalAmount > (float)$pv->total_amount->amount) {
                 throw new AppException('liability amount should be equal or less than gross amount');
             }
-
 
             if (count($economicSegment) > 0) {
                 $cashbook = Cashbook::whereIn('economic_segment_id', $economicSegment)->pluck('economic_segment_id')->all();
@@ -332,7 +323,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                     foreach ($retireVoucher->retire_liabilities as $retire_liability) {
 
                         //refund entry in Jv
-                        $cashbook = Cashbook::whereIn('economic_segment_id', $retire_liability->economic_segment_id)->first();
+                        $cashbook = Cashbook::where('economic_segment_id', $retire_liability->economic_segment_id)->first();
                         if ($cashbook) {
                             $jvDetail = JournalVoucherDetail::create([
                                 'journal_voucher_id' => $jv->id,
@@ -388,29 +379,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                     $retireLiability = $query->first();
                     $cashbook = Cashbook::whereIn('economic_segment_id', $liabilityEcoId)->first();
 
-//                    $remainingAmount = $paymentVoucher->total_amount->amount - $retireAmount;
-
                     if ($cashbook) {
-//                        $jvDetail = JournalVoucherDetail::create([
-//                            'journal_voucher_id' => $jv->id,
-//                            'currency' => $currency->code_currency,
-//                            'x_rate_local' => $paymentVoucher->x_rate,
-//                            'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
-//                            'account_name' => $paymentVoucher->deptal_id,
-//                            'line_reference' => 'Refund',
-//                            'line_value' => $retireLiability->amount,
-//                            'admin_segment_id' => $rv->admin_segment_id,
-//                            'fund_segment_id' => $rv->fund_segment_id,
-//                            'economic_segment_id' => $rv->economic_segment_id,
-//                            'programme_segment_id' => $rv->program_segment_id,
-//                            'functional_segment_id' => $rv->functional_segment_id,
-//                            'geo_code_segment_id' => $rv->geo_code_segment_id,
-//                            'line_value_type' => 'DEBIT',
-//                            'lv_line_value' => $paymentVoucher->total_amount->amount - $retireAmount,
-//                            'local_currency' => $companySetting->local_currency
-//                        ]);
-
-
                         /** @var ReceiptVoucher $rv */
                         $rv = ReceiptVoucher::create([
                             'voucher_source_unit_id' => $paymentVoucher->voucher_source_unit_id,

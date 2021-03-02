@@ -69,8 +69,7 @@ class MandateRepository extends EloquentBaseRepository
 
                 foreach ($paymentV->get() as $p) {
 
-                    if ($cashbook->currency_id !== $p->currency_id )
-                    {
+                    if ($cashbook->currency_id !== $p->currency_id) {
                         throw new AppException('Currency aren\'t matching for Payment voucher and Mandate Cashbook');
                     }
                 }
@@ -154,12 +153,23 @@ class MandateRepository extends EloquentBaseRepository
                     if ($data['data']['status'] == AppConstant::ON_MANDATE_2ND_AUTHORISED) {
                         $data['data']['second_authorised_by'] = $data['data']['user_id'];
                         $data['data']['second_authorised_date'] = Carbon::now()->toDateString();
-
                         //payment voucher to be closed when on mandate 2nd auth
                         PaymentVoucher::where('mandate_id', $mandate_id)->update([
                             'status' => AppConstant::VOUCHER_STATUS_CLOSED
                         ]);
 
+                        $paymentVouchers = PaymentVoucher::where('mandate_id', $mandate_id)->get();
+                        foreach ($paymentVouchers as $paymentVoucher) {
+                            $paymentV = PaymentVoucher::where('status',AppConstant::VOUCHER_STATUS_CLOSED)
+                                ->whereNotNull('voucher_number')
+                                ->orderby('id', 'desc')
+                                ->first();
+                            if (is_null($paymentV)) {
+                                $data['data']['voucher_number'] = 1;
+                            } else {
+                                $data['data']['voucher_number'] = $paymentV->voucher_number + 1;
+                            }
+                        }
 
                         /** @var CompanySetting $companySetting */
                         $companySetting = CompanySetting::find(1);
@@ -200,7 +210,6 @@ class MandateRepository extends EloquentBaseRepository
                                     PaymentApprovalPayee::insert($paymentApprovalPayee);
                             }
                         }
-
                     }
 
                     if ($data['data']['status'] == AppConstant::ON_MANDATE_POSTED_TO_GL) {
@@ -211,7 +220,6 @@ class MandateRepository extends EloquentBaseRepository
                         ]);
 
                         //todo jv from pv
-
                         $companySetting = CompanySetting::find(1);
 
                         $paymentVouchers = PaymentVoucher::with(['payee_vouchers.schedule_economics'])->where('mandate_id', $mandate_id)->get();
@@ -317,24 +325,18 @@ class MandateRepository extends EloquentBaseRepository
                                         'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
                                         'line_value_type' => 'DEBIT',
 
-                                        'lv_line_value' => $schedule_economic->amount + ($schedule_economic->amount * $totalTaxForSE)/100,
+                                        'lv_line_value' => $schedule_economic->amount + ($schedule_economic->amount * $totalTaxForSE) / 100,
                                         'local_currency' => $companySetting->local_currency,
                                         'created_at' => Carbon::now()->toDateTimeString(),
                                         'updated_at' => Carbon::now()->toDateTimeString()
                                     ];
 
-
                                     $totalNetAmount = $totalNetAmount + $schedule_economic->amount;
-
                                 }
-
                                 $totalTax = $totalTax + $payee_voucher->total_tax;
                             }
 
                             //entry for credit
-
-
-
                             //todo credit updation pending in cashbook on respected economic segment
                             JournalVoucherDetail::create([
                                 'journal_voucher_id' => $jv->id,
@@ -369,7 +371,6 @@ class MandateRepository extends EloquentBaseRepository
                 throw $exception;
             }
         }
-
         return ['data' => 'Success'];
     }
 
