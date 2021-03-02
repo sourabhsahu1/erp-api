@@ -211,6 +211,10 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 $mandate = Mandate::find($paymentVoucher->mandate_id);
                 $currency = Currency::find($paymentVoucher->currency_id);
                 if ($data['data']['retire_status'] == AppConstant::RETIRE_VOUCHER_RETIRE) {
+                    $retireLiabilitySum = RetireLiability::where('retire_voucher_id', $retireVoucher->id)->sum('amount');
+                    if ($retireLiabilitySum !== $paymentVoucher->total_amount->amount) {
+                        throw new AppException('Retire Liability and Payment voucher should have equal amount');
+                    }
 
                 } elseif ($data['data']['retire_status'] == AppConstant::RETIRE_VOUCHER_RETIRE_POSTED_TO_GL) {
                     //todo create rv and payee
