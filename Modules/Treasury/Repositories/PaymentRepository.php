@@ -624,19 +624,17 @@ class PaymentRepository extends EloquentBaseRepository
 
         $payees = " ";
         $address = " ";
-        $count = 1;
+        $count = -1;
         /** @var PayeeVoucher $payee_voucher */
         foreach ($paymentV->payee_vouchers as $payee_voucher) {
             if ($payee_voucher->employee_id) {
-                $count += 1;
-                $payees = $payee_voucher->employee->first_name . ';';
-                $address = $payee_voucher->employee->employee_contact_details->country->name . ';';
+                $payees = $payee_voucher->employee->first_name . ' ';
+                $address = $payee_voucher->employee->employee_contact_details->country->name;
             } else {
-                $count += 1;
-                $payees = $payee_voucher->admin_company->name . ';';
-                $address = $payee_voucher->admin_company->country . ';';
+                $payees = $payee_voucher->admin_company->name . ' ';
+                $address = $payee_voucher->admin_company->country;
             }
-
+            $count += 1;
         }
         $paymentV->default_setting = DefaultSetting::with(['checking_officer',
             'financial_controller',
@@ -649,8 +647,8 @@ class PaymentRepository extends EloquentBaseRepository
             'admin_segment',
             'fund_segment',
             'sub_organisation'])->find(1);
-        $paymentV->one_payee = $payees;
-        $paymentV->count_payee = $count;
+        $finalPayeesText = $count > 0 ? $payees .'+'.$count : $payees;
+        $paymentV->final_payees_text = $finalPayeesText;
         $paymentV->address = $address;
 
         app()->make(WKHTMLPDfConverter::class)
@@ -686,19 +684,17 @@ class PaymentRepository extends EloquentBaseRepository
 
         $payees = " ";
         $address = " ";
-        $count = 1;
+        $count = -1;
         /** @var PayeeVoucher $payee_voucher */
         foreach ($paymentV->payee_vouchers as $payee_voucher) {
             if ($payee_voucher->employee_id) {
-                $count += 1;
-                $payees = $payee_voucher->employee->first_name . ';';
-                $address = $payee_voucher->employee->employee_contact_details->country->name . ';';
+                $payees = $payee_voucher->employee->first_name . ' ';
+                $address = $payee_voucher->employee->employee_contact_details->country->name;
             } else {
-                $count += 1;
-                $payees = $payee_voucher->admin_company->name . ';';
-                $address = $payee_voucher->admin_company->country . ';';
+                $payees = $payee_voucher->admin_company->name . ' ';
+                $address = $payee_voucher->admin_company->country;
             }
-
+            $count += 1;
         }
         $paymentV->default_setting = DefaultSetting::with(['checking_officer',
             'financial_controller',
@@ -711,8 +707,8 @@ class PaymentRepository extends EloquentBaseRepository
             'admin_segment',
             'fund_segment',
             'sub_organisation'])->find(1);
-        $paymentV->one_payee = $payees;
-        $paymentV->count_payee = $count;
+        $finalPayeesText = $count > 0 ? $payees .'+'.$count : $payees;
+        $paymentV->final_payees_text = $finalPayeesText;
         $paymentV->address = $address;
 
         if (isset($params['inputs']['bs'])) {

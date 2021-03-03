@@ -14,6 +14,7 @@ use Modules\Admin\Models\CompanySetting;
 use Modules\Finance\Models\Currency;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JournalVoucherDetail;
+use Modules\Finance\Repositories\JournalVoucherRepository;
 use Modules\Treasury\Models\Cashbook;
 use Modules\Treasury\Models\Mandate;
 use Modules\Treasury\Models\PayeeVoucher;
@@ -354,7 +355,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                                 'x_rate_local' => $paymentVoucher->x_rate,
                                 'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
                                 'account_name' => $paymentVoucher->deptal_id,
-                                'line_reference' => $paymentVoucher->deptal_id,
+                                'line_reference' => $retire_liability->details,
                                 'line_value' => $retire_liability->amount,
                                 'admin_segment_id' => $paymentVoucher->admin_segment_id,
                                 'fund_segment_id' => $paymentVoucher->fund_segment_id,
@@ -434,6 +435,15 @@ class RetireVoucherRepository extends EloquentBaseRepository
                             'amount' => $paymentVoucher->total_amount->amount - $retireAmount
                         ]);
                     }
+
+                    //insert into trail report
+                    $jds = JournalVoucherDetail::where('journal_voucher_id', $jv->id)->get();
+                    foreach ($jds as $jd) {
+                        $jd = $jd->toArray();
+                        $jvRepository = new JournalVoucherRepository();
+                        $jvRepository->insertInTrailReport($jd);
+                    }
+
                 }
             }
 

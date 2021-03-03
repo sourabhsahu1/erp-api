@@ -16,6 +16,7 @@ use Modules\Admin\Models\Tax;
 use Modules\Finance\Models\Currency;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JournalVoucherDetail;
+use Modules\Finance\Repositories\JournalVoucherRepository;
 use Modules\Treasury\Models\Cashbook;
 use Modules\Treasury\Models\Mandate;
 use Modules\Treasury\Models\PayeeVoucher;
@@ -169,6 +170,9 @@ class MandateRepository extends EloquentBaseRepository
                             } else {
                                 $data['data']['voucher_number'] = $paymentV->voucher_number + 1;
                             }
+
+                            $paymentVoucher->voucher_number = $data['data']['voucher_number'];
+                            $paymentVoucher->save();
                         }
 
                         /** @var CompanySetting $companySetting */
@@ -263,7 +267,7 @@ class MandateRepository extends EloquentBaseRepository
                                                 'x_rate_local' => $paymentVoucher->x_rate,
                                                 'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
                                                 'account_name' => $paymentVoucher->deptal_id,
-                                                'line_reference' => $paymentVoucher->deptal_id,
+                                                'line_reference' => $payee_voucher->details,
                                                 'line_value' => ($tax->tax * $schedule_economic->amount) / 100,
                                                 'admin_segment_id' => $paymentVoucher->admin_segment_id,
                                                 'fund_segment_id' => $paymentVoucher->fund_segment_id,
@@ -315,7 +319,7 @@ class MandateRepository extends EloquentBaseRepository
                                         'x_rate_local' => $paymentVoucher->x_rate,
                                         'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
                                         'account_name' => $paymentVoucher->deptal_id,
-                                        'line_reference' => $paymentVoucher->deptal_id,
+                                        'line_reference' => $payee_voucher->details,
                                         'line_value' => $schedule_economic->amount,
                                         'admin_segment_id' => $paymentVoucher->admin_segment_id,
                                         'fund_segment_id' => $paymentVoucher->fund_segment_id,
@@ -344,7 +348,7 @@ class MandateRepository extends EloquentBaseRepository
                                 'x_rate_local' => $paymentVoucher->x_rate,
                                 'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
                                 'account_name' => $paymentVoucher->deptal_id,
-                                'line_reference' => $paymentVoucher->deptal_id,
+                                'line_reference' => $paymentVoucher->details,
                                 'line_value' => $totalNetAmount,
                                 'admin_segment_id' => $paymentVoucher->admin_segment_id,
                                 'fund_segment_id' => $paymentVoucher->fund_segment_id,
@@ -359,6 +363,14 @@ class MandateRepository extends EloquentBaseRepository
                                 'updated_at' => Carbon::now()->toDateTimeString()
                             ]);
                             JournalVoucherDetail::insert($jvD);
+
+                            //insert into trail report
+                            $jds = JournalVoucherDetail::where('journal_voucher_id', $jv->id)->get();
+                            foreach ($jds as $jd) {
+                                $jd = $jd->toArray();
+                                $jvRepository = new JournalVoucherRepository();
+                                $jvRepository->insertInTrailReport($jd);
+                            }
                         }
                     }
                 }
