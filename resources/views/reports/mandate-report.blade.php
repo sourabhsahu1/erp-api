@@ -83,7 +83,7 @@
                 <td style="text-align: center" colspan="3">PAYMENT MANDATE</td>
             </tr>
             <tr>
-                <td>{{"Please credit the account " . $data->cashbook->bank_account_number . " of understand
+                <td>{{"Please credit the account " . $data->cashbook->bank_account_number . " of underlisted
                         beneficieries and debit out Account No. 345678289 accordingly"}}</td>
                 <!-- <td></td>
                 <td>of understand beneficieries and debit out Account No. 345678289 accordingly</td> -->

@@ -89,7 +89,7 @@
                     <td></td>
                     <td>of understand beneficieries and debit out Account No. 345678289 accordingly</td> -->
                     <td>
-                    {{"Please credit the account " . $data->cashbook->bank_account_number . " of understand
+                    {{"Please credit the account " . $data->cashbook->bank_account_number . " of underlisted
                         beneficieries and debit out Account No. 345678289 accordingly"}}
                     </td>
                 </tr>
