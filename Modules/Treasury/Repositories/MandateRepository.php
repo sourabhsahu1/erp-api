@@ -348,7 +348,7 @@ class MandateRepository extends EloquentBaseRepository
                                 'x_rate_local' => $paymentVoucher->x_rate,
                                 'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
                                 'account_name' => $paymentVoucher->deptal_id,
-                                'line_reference' => $paymentVoucher->details,
+                                'line_reference' => $paymentVoucher->payment_description,
                                 'line_value' => $totalNetAmount,
                                 'admin_segment_id' => $paymentVoucher->admin_segment_id,
                                 'fund_segment_id' => $paymentVoucher->fund_segment_id,
