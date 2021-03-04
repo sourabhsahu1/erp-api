@@ -11,13 +11,13 @@
 
         input {
             border: none !important;
-            border-bottom: 1px solid #000 !important; 
+            border-bottom: 1px solid #000 !important;
             /* box-shadow: 0 1px 0 0 #000; */
         }
 
         .border-bottom-only {
             border: none !important;
-            border-bottom: 1px solid #000 !important; 
+            border-bottom: 1px solid #000 !important;
         }
 
         .table-bordered {
@@ -70,7 +70,7 @@
                                     Value Date
                                 </td>
                                 <td style="text-align: right">
-                                {{\Illuminate\Support\Carbon::parse($data->value_date)->toDateString()}}
+                                    {{\Illuminate\Support\Carbon::parse($data->value_date)->toDateString()}}
                                 </td>
                             </tr>
                         </table>
@@ -83,7 +83,7 @@
                 <td style="text-align: center" colspan="3">PAYMENT MANDATE</td>
             </tr>
             <tr>
-                <td>{{"Please credit the account " . $data->cashbook->bank_account_number . " of understand
+                <td>{{"Please credit the account " . $data->cashbook->bank_account_number . " of underlisted
                         beneficieries and debit out Account No. 345678289 accordingly"}}</td>
                 <!-- <td></td>
                 <td>of understand beneficieries and debit out Account No. 345678289 accordingly</td> -->
@@ -108,9 +108,9 @@
             $count = 0;
             $totalSum = 0;
             ?>
-            
+
             @foreach($data->payment_vouchers as $pv)
-                    @foreach($pv->payee_vouchers as $payee)
+                @foreach($pv->payee_vouchers as $payee)
                     <?php
                     $count = $count + 1;
                     $totalSum = $totalSum + $payee->net_amount ?? 0;
@@ -123,15 +123,22 @@
                             $payee->admin_company->company_bank->bank_branch->hr_bank->name :
                             $payee->employee->employee_bank->branches->hr_bank->name}}</td>
                         <td style="text-align: center;" class="shadow-1px">
-                            {{$payee->admin_company->company_bank->bank_branch->sort_code ?? " "}}</td>
+                            {{$payee->admin_company?
+                            $payee->admin_company->company_bank->bank_branch->sort_code :
+                            $payee->employee->employee_bank->branches->sort_code}}
+                        </td>
                         <td style="text-align: center;" class="shadow-1px">
-                            {{$payee->admin_company->company_bank->bank_account_number ?? " "}}</td>
+                            {{$payee->admin_company?
+                            $payee->admin_company->company_bank->bank_account_number :
+                            $payee->employee->employee_bank->number}}</td>
                         <td style="text-align: center;" class="shadow-1px">
-                            {{$payee->admin_company->company_bank->type_of_bank_account ?? " "}}</td>
+                            {{$payee->admin_company?
+                            $payee->admin_company->company_bank->type_of_bank_account :
+                            $payee->employee->employee_bank->type}}</td>
                         <td style="text-align: center;" class="shadow-1px">{{$payee->net_amount ?? " "}}</td>
                         <td style="text-align: center;" class="shadow-1px">{{$payee->details ?? " "}}</td>
                     </tr>
-                    @endforeach
+                @endforeach
             @endforeach
             </tbody>
         </table>
@@ -141,16 +148,16 @@
                     GRAND TOTAL (IN FIGURES)
                 </td>
                 <td style="width: 50%" class="shadow-1px">
-                {{$totalSum}}
+                    {{$totalSum}}
                 </td>
             </tr>
             <tr>
-            <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
+                <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
                 <td style="width: 50%">
                     GRAND TOTAL (IN WORDS)
                 </td>
                 <td style="width: 50%">
-                {{ucfirst($f->format($totalSum))}} Naira Only
+                    {{ucfirst($f->format($totalSum))}} Naira Only
                 </td>
             </tr>
         </table>
@@ -165,16 +172,19 @@
                             <td style="width: 25%">
                                 Signature
                             </td>
-                            <td style="width: 25%;" class="border-bottom-only" >{{$data->second_authorised->first_name}}</td>
+                            <td style="width: 25%;"
+                                class="border-bottom-only">{{$data->second_authorised->first_name}}</td>
                             <td style="width: 25%; text-align: right">
                                 Date
                             </td>
-                            <td style="width: 25%;" class="border-bottom-only">{{\Illuminate\Support\Carbon::parse($data->second_authorised_date)->toDateString()}}</td>
+                            <td style="width: 25%;"
+                                class="border-bottom-only">{{\Illuminate\Support\Carbon::parse($data->second_authorised_date)->toDateString()}}</td>
                         </tr>
                         <tr>
                             <td style="width: 25%">
                                 <p style="margin-bottom: -25px">Name</p></td>
-                            <td style="width: 25%;" class="border-bottom-only" colspan="2">{{$data->second_authorised->first_name}}</td>
+                            <td style="width: 25%;" class="border-bottom-only"
+                                colspan="2">{{$data->second_authorised->first_name}}</td>
                             <td rowspan="2">
                                 <table class="shadow-1px"
                                        style="width: 100%; text-align: center; padding: 40px; margin-top: 10px; margin-left: 15px">
@@ -210,16 +220,19 @@
                             <td style="width: 25%">
                                 Signature
                             </td>
-                            <td style="width: 25%;" class="border-bottom-only">{{$data->first_authorised->first_name}}</td>
+                            <td style="width: 25%;"
+                                class="border-bottom-only">{{$data->first_authorised->first_name}}</td>
                             <td style="width: 25%; text-align: right">
                                 Date
                             </td>
-                            <td style="width: 25%;" class="border-bottom-only">{{\Illuminate\Support\Carbon::parse($data->first_authorised_date)->toDateString()}}</td>
+                            <td style="width: 25%;"
+                                class="border-bottom-only">{{\Illuminate\Support\Carbon::parse($data->first_authorised_date)->toDateString()}}</td>
                         </tr>
                         <tr>
                             <td style="width: 25%">
                                 <p style="margin-bottom: -25px">Name</p></td>
-                            <td style="width: 25%;" class="border-bottom-only" colspan="2">{{$data->first_authorised->first_name}}</td>
+                            <td style="width: 25%;" class="border-bottom-only"
+                                colspan="2">{{$data->first_authorised->first_name}}</td>
                             <td rowspan="2">
                                 <table class="shadow-1px"
                                        style="width: 100%; text-align: center; padding: 40px; margin-top: 10px; margin-left: 15px">

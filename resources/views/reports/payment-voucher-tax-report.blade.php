@@ -328,7 +328,7 @@
                                     incurred under
                                     the
                                     Authority Quoted, that the
-                                    services that have been duly performed; that rate price charged is according to
+                                    services that have been duly performed; that rate/price charged is according to
                                     regulations.
                                     Contact
                                     is fair and reasonable.</p>
