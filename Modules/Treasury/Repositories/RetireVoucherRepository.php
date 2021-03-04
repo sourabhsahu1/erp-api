@@ -165,7 +165,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
         $data['data']['payment_voucher_ids'] = json_decode($data['data']['payment_voucher_ids'], true);
         $retireV = RetireVoucher::whereIn('payment_voucher_id', $data['data']['payment_voucher_ids']);
-dd($data['data']['payment_voucher_ids']);
+
         DB::beginTransaction();
         try {
             $paymentVouchers = PaymentVoucher::with([
@@ -387,65 +387,65 @@ dd($data['data']['payment_voucher_ids']);
                         $cashbook = Cashbook::where('economic_segment_id', $retire_liability->economic_segment_id)->first();
 
 
-                        $rv = ReceiptVoucher::create([
-                            'voucher_source_unit_id' => $paymentVoucher->voucher_source_unit_id,
-                            'source_department' => $paymentVoucher->source_unit,
-                            'deptal_id' => $paymentVoucher->deptal_id,
-                            'voucher_number' => $paymentVoucher->voucher_number,
-                            'value_date' => $paymentVoucher->value_date,
-                            'receipt_number' => null,
-                            'payee' => $paymentVoucher->payee,
-                            'type' => $type,
-                            'status' => $paymentVoucher->status,
-                            'payment_description' => $paymentVoucher->payment_description,
-                            'x_rate' => $paymentVoucher->x_rate,
-                            'official_x_rate' => $paymentVoucher->official_x_rate,
-                            'admin_segment_id' => $paymentVoucher->admin_segment_id,
-                            'fund_segment_id' => $paymentVoucher->fund_segment_id,
-                            'economic_segment_id' => $paymentVoucher->economic_segment_id,
-                            'program_segment_id' => $paymentVoucher->program_segment_id,
-                            'functional_segment_id' => $paymentVoucher->fund_segment_id,
-                            'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
-                            'receiving_officer_id' => $paymentVoucher->checking_officer_id,
-                            'prepared_by_officer_id' => $paymentVoucher->checking_officer_id,
-                            'closed_by_officer_id' => $paymentVoucher->checking_officer_id,
-                            'cashbook_id' => $mandate->cashbook_id
-                        ]);
-
-
-
-                        $payees = null;
-                        /** @var PayeeVoucher $payee_voucher */
-                        foreach ($paymentVoucher->payee_vouchers as $payee_voucher) {
-                            $rvPayee = ReceiptPayee::create([
-                                'receipt_voucher_id' => $rv->id,
-                                'employee_id' => $payee_voucher->employee_id,
-                                'company_id' => $payee_voucher->company_id,
-                                'total_amount' => $payee_voucher->net_amount,
-                                'year' => $payee_voucher->year,
-                                'line_detail' => $payee_voucher->details ?? '',
-                                'pay_mode' => AppConstant::RECEIPT_PAY_MODE_CASH,
-                                'instrument_number' => '',
-                                'instrument_type' => '',
-                                'instrument_teller_number' => '',
-                                'instrument_issued_by' => '',
-                                'created_at' => Carbon::now()->toDateTimeString(),
-                                'updated_at' => Carbon::now()->toDateTimeString()
-                            ]);
-                            //create schedule economic for rv
-
-                            $receiptScheduleEconomic = null;
-                            foreach ($payee_voucher->schedule_economics as $schedule_economic) {
-                                $temp = [
-                                    'receipt_payee_id' => $rvPayee->id,
-                                    'receipt_voucher_id' => $rv->id,
-                                    'economic_segment_id' => $schedule_economic->economic_segment_id,
-                                    'amount' => $schedule_economic->amount
-                                ];
-                                $receiptScheduleEconomic[] = $temp;
-                            }
-                            ReceiptScheduleEconomic::insert($receiptScheduleEconomic);
-                        }
+//                        $rv = ReceiptVoucher::create([
+//                            'voucher_source_unit_id' => $paymentVoucher->voucher_source_unit_id,
+//                            'source_department' => $paymentVoucher->source_unit,
+//                            'deptal_id' => $paymentVoucher->deptal_id,
+//                            'voucher_number' => $paymentVoucher->voucher_number,
+//                            'value_date' => $paymentVoucher->value_date,
+//                            'receipt_number' => null,
+//                            'payee' => $paymentVoucher->payee,
+//                            'type' => $type,
+//                            'status' => $paymentVoucher->status,
+//                            'payment_description' => $paymentVoucher->payment_description,
+//                            'x_rate' => $paymentVoucher->x_rate,
+//                            'official_x_rate' => $paymentVoucher->official_x_rate,
+//                            'admin_segment_id' => $paymentVoucher->admin_segment_id,
+//                            'fund_segment_id' => $paymentVoucher->fund_segment_id,
+//                            'economic_segment_id' => $paymentVoucher->economic_segment_id,
+//                            'program_segment_id' => $paymentVoucher->program_segment_id,
+//                            'functional_segment_id' => $paymentVoucher->fund_segment_id,
+//                            'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
+//                            'receiving_officer_id' => $paymentVoucher->checking_officer_id,
+//                            'prepared_by_officer_id' => $paymentVoucher->checking_officer_id,
+//                            'closed_by_officer_id' => $paymentVoucher->checking_officer_id,
+//                            'cashbook_id' => $mandate->cashbook_id
+//                        ]);
+//
+//
+//
+//                        $payees = null;
+//                        /** @var PayeeVoucher $payee_voucher */
+//                        foreach ($paymentVoucher->payee_vouchers as $payee_voucher) {
+//                            $rvPayee = ReceiptPayee::create([
+//                                'receipt_voucher_id' => $rv->id,
+//                                'employee_id' => $payee_voucher->employee_id,
+//                                'company_id' => $payee_voucher->company_id,
+//                                'total_amount' => $payee_voucher->net_amount,
+//                                'year' => $payee_voucher->year,
+//                                'line_detail' => $payee_voucher->details ?? '',
+//                                'pay_mode' => AppConstant::RECEIPT_PAY_MODE_CASH,
+//                                'instrument_number' => '',
+//                                'instrument_type' => '',
+//                                'instrument_teller_number' => '',
+//                                'instrument_issued_by' => '',
+//                                'created_at' => Carbon::now()->toDateTimeString(),
+//                                'updated_at' => Carbon::now()->toDateTimeString()
+//                            ]);
+//                            //create schedule economic for rv
+//
+//                            $receiptScheduleEconomic = null;
+//                            foreach ($payee_voucher->schedule_economics as $schedule_economic) {
+//                                $temp = [
+//                                    'receipt_payee_id' => $rvPayee->id,
+//                                    'receipt_voucher_id' => $rv->id,
+//                                    'economic_segment_id' => $schedule_economic->economic_segment_id,
+//                                    'amount' => $schedule_economic->amount
+//                                ];
+//                                $receiptScheduleEconomic[] = $temp;
+//                            }
+//                            ReceiptScheduleEconomic::insert($receiptScheduleEconomic);
+//                        }
 
 
                         if ($cashbook) {
@@ -504,6 +504,7 @@ dd($data['data']['payment_voucher_ids']);
                     $cashbook = Cashbook::whereIn('economic_segment_id', $liabilityEcoId)->first();
 
                     if ($cashbook) {
+                        Log::info("refund rv");
                         /** @var ReceiptVoucher $rv */
                         $rv = ReceiptVoucher::create([
                             'voucher_source_unit_id' => $paymentVoucher->voucher_source_unit_id,
