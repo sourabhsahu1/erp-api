@@ -165,13 +165,14 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
         $data['data']['payment_voucher_ids'] = json_decode($data['data']['payment_voucher_ids'], true);
         $retireV = RetireVoucher::whereIn('payment_voucher_id', $data['data']['payment_voucher_ids']);
-
+dd($data['data']['payment_voucher_ids']);
         DB::beginTransaction();
         try {
             $paymentVouchers = PaymentVoucher::with([
                 'voucher_source_unit',
                 'payee_vouchers.schedule_economics'
             ])->whereIn('id', $data['data']['payment_voucher_ids'])->get();
+            Log::info($data['data']['payment_voucher_ids']);
             /** @var CompanySetting $companySetting */
             $companySetting = CompanySetting::find(1);
             /** @var PaymentVoucher $paymentVoucher */
@@ -181,6 +182,8 @@ class RetireVoucherRepository extends EloquentBaseRepository
                     $query->where('is_personal_advance_unit', false);
                 })->first();
 
+                Log::info("pv start");
+                Log::info($pv);
                 if ($pv) {
                     throw new AppException('Only advances type voucher can be retired');
                 }
@@ -218,6 +221,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                     }
 
                 } elseif ($data['data']['retire_status'] == AppConstant::RETIRE_VOUCHER_RETIRE_POSTED_TO_GL) {
+                    Log::info("post to gl");
                     //todo create rv and payee
                     /** @var ReceiptVoucher $rv */
                     $rv = ReceiptVoucher::create([
