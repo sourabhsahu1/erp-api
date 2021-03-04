@@ -213,7 +213,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 $currency = Currency::find($paymentVoucher->currency_id);
                 if ($data['data']['retire_status'] == AppConstant::RETIRE_VOUCHER_RETIRE) {
                     $retireLiabilitySum = RetireLiability::where('retire_voucher_id', $retireVoucher->id)->sum('amount');
-                    if ($retireLiabilitySum !== $paymentVoucher->total_amount->amount) {
+                    if ($retireLiabilitySum != $paymentVoucher->total_amount->amount) {
                         throw new AppException('Retire Liability and Payment voucher should have equal amount');
                     }
 
