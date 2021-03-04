@@ -328,55 +328,55 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
 
                     //retirement Payment Voucher RV
-                    $rv2 = ReceiptVoucher::create([
-                        'voucher_source_unit_id' => $paymentVoucher->voucher_source_unit_id,
-                        'source_department' => $paymentVoucher->source_unit,
-                        'deptal_id' => $paymentVoucher->deptal_id,
-                        'voucher_number' => $paymentVoucher->voucher_number,
-                        'value_date' => $paymentVoucher->value_date,
-                        'receipt_number' => null,
-                        'payee' => $paymentVoucher->payee,
-                        'type' => $type,
-                        'status' => $paymentVoucher->status,
-                        'payment_description' => $paymentVoucher->payment_description,
-                        'x_rate' => $paymentVoucher->x_rate,
-                        'official_x_rate' => $paymentVoucher->official_x_rate,
-                        'admin_segment_id' => $paymentVoucher->admin_segment_id,
-                        'fund_segment_id' => $paymentVoucher->fund_segment_id,
-                        'economic_segment_id' => $paymentVoucher->economic_segment_id,
-                        'program_segment_id' => $paymentVoucher->program_segment_id,
-                        'functional_segment_id' => $paymentVoucher->fund_segment_id,
-                        'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
-                        'receiving_officer_id' => $paymentVoucher->checking_officer_id,
-                        'prepared_by_officer_id' => $paymentVoucher->checking_officer_id,
-                        'closed_by_officer_id' => $paymentVoucher->checking_officer_id,
-                        'cashbook_id' => $mandate->cashbook_id
-                    ]);
+//                    $rv2 = ReceiptVoucher::create([
+//                        'voucher_source_unit_id' => $paymentVoucher->voucher_source_unit_id,
+//                        'source_department' => $paymentVoucher->source_unit,
+//                        'deptal_id' => $paymentVoucher->deptal_id,
+//                        'voucher_number' => $paymentVoucher->voucher_number,
+//                        'value_date' => $paymentVoucher->value_date,
+//                        'receipt_number' => null,
+//                        'payee' => $paymentVoucher->payee,
+//                        'type' => $type,
+//                        'status' => $paymentVoucher->status,
+//                        'payment_description' => $paymentVoucher->payment_description,
+//                        'x_rate' => $paymentVoucher->x_rate,
+//                        'official_x_rate' => $paymentVoucher->official_x_rate,
+//                        'admin_segment_id' => $paymentVoucher->admin_segment_id,
+//                        'fund_segment_id' => $paymentVoucher->fund_segment_id,
+//                        'economic_segment_id' => $paymentVoucher->economic_segment_id,
+//                        'program_segment_id' => $paymentVoucher->program_segment_id,
+//                        'functional_segment_id' => $paymentVoucher->fund_segment_id,
+//                        'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
+//                        'receiving_officer_id' => $paymentVoucher->checking_officer_id,
+//                        'prepared_by_officer_id' => $paymentVoucher->checking_officer_id,
+//                        'closed_by_officer_id' => $paymentVoucher->checking_officer_id,
+//                        'cashbook_id' => $mandate->cashbook_id
+//                    ]);
 
 
                     foreach ($retireVoucher->retire_liabilities as $retire_liability) {
-                        $rvPayee2 = ReceiptPayee::create([
-                            'receipt_voucher_id' => $rv2->id,
-                            'employee_id' => $retire_liability->employee_id,
-                            'company_id' => $retire_liability->company_id,
-                            'total_amount' => $retire_liability->amount,
-                            'year' => Carbon::now()->year,
-                            'line_detail' => $retire_liability->details ?? '',
-                            'pay_mode' => AppConstant::RECEIPT_PAY_MODE_CASH,
-                            'instrument_number' => '',
-                            'instrument_type' => '',
-                            'instrument_teller_number' => '',
-                            'instrument_issued_by' => '',
-                            'created_at' => Carbon::now()->toDateTimeString(),
-                            'updated_at' => Carbon::now()->toDateTimeString()
-                        ]);
-
-                        $scheduleEconomic2 = ReceiptScheduleEconomic::create([
-                            'receipt_payee_id' => $rvPayee2->id,
-                            'receipt_voucher_id' => $rv2->id,
-                            'economic_segment_id' => $retire_liability->economic_segment_id,
-                            'amount' => $retire_liability->amount
-                        ]);
+//                        $rvPayee2 = ReceiptPayee::create([
+//                            'receipt_voucher_id' => $rv2->id,
+//                            'employee_id' => $retire_liability->employee_id,
+//                            'company_id' => $retire_liability->company_id,
+//                            'total_amount' => $retire_liability->amount,
+//                            'year' => Carbon::now()->year,
+//                            'line_detail' => $retire_liability->details ?? '',
+//                            'pay_mode' => AppConstant::RECEIPT_PAY_MODE_CASH,
+//                            'instrument_number' => '',
+//                            'instrument_type' => '',
+//                            'instrument_teller_number' => '',
+//                            'instrument_issued_by' => '',
+//                            'created_at' => Carbon::now()->toDateTimeString(),
+//                            'updated_at' => Carbon::now()->toDateTimeString()
+//                        ]);
+//
+//                        $scheduleEconomic2 = ReceiptScheduleEconomic::create([
+//                            'receipt_payee_id' => $rvPayee2->id,
+//                            'receipt_voucher_id' => $rv2->id,
+//                            'economic_segment_id' => $retire_liability->economic_segment_id,
+//                            'amount' => $retire_liability->amount
+//                        ]);
 
 
                         //refund entry in Jv
