@@ -315,7 +315,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                         'programme_segment_id' => $rv->program_segment_id,
                         'functional_segment_id' => $rv->functional_segment_id,
                         'geo_code_segment_id' => $rv->geo_code_segment_id,
-                        'line_value_type' => 'CREDIT',
+                        'line_value_type' => 'DEBIT',
                         'lv_line_value' => $paymentVoucher->total_amount->amount,
                         'local_currency' => $companySetting->local_currency
                     ]);
@@ -344,7 +344,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                                 'programme_segment_id' => $rv->program_segment_id,
                                 'functional_segment_id' => $rv->functional_segment_id,
                                 'geo_code_segment_id' => $rv->geo_code_segment_id,
-                                'line_value_type' => 'DEBIT',
+                                'line_value_type' => 'CREDIT',
                                 'lv_line_value' => $retire_liability->amount,
                                 'local_currency' => $companySetting->local_currency
                             ]);
@@ -363,7 +363,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                                 'programme_segment_id' => $paymentVoucher->program_segment_id,
                                 'functional_segment_id' => $paymentVoucher->functional_segment_id,
                                 'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
-                                'line_value_type' => 'DEBIT',
+                                'line_value_type' => 'CREDIT',
                                 'lv_line_value' => $retire_liability->amount,
                                 'local_currency' => $companySetting->local_currency,
                                 'created_at' => Carbon::now()->toDateTimeString(),
