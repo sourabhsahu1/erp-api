@@ -11,17 +11,19 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class TreasuryRetireLiability
- * 
+ *
  * @property int $id
  * @property \Carbon\Carbon $liability_value_date
  * @property int $amount
  * @property int $economic_segment_id
  * @property int $retire_voucher_id
+ * @property int $employee_id
+ * @property int $company_id
  * @property string $details
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * 
+ *
  * @property \Modules\Admin\Models\AdminSegment $economic_segment
  * @property \Modules\Treasury\Models\RetireVoucher $retire_voucher
  *
@@ -34,6 +36,8 @@ class RetireLiability extends Eloquent
 	protected $casts = [
 		'amount' => 'int',
 		'economic_segment_id' => 'int',
+		'company_id' => 'int',
+		'employee_id' => 'int',
 		'retire_voucher_id' => 'int',
 		'liability_value_date' => 'datetime:Y-m-d',
 	];
@@ -47,6 +51,8 @@ class RetireLiability extends Eloquent
 	protected $fillable = [
 		'liability_value_date',
 		'amount',
+		'company_id',
+		'employee_id',
 		'economic_segment_id',
 		'retire_voucher_id',
 		'details'
