@@ -126,6 +126,8 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 $d['retire_voucher_id'] = $retireV->id;
                 $d['liability_value_date'] = $liability['liability_value_date'];
                 $d['amount'] = $liability['amount'];
+                $d['company_id'] = $liability['company_id'];
+                $d['employee_id'] = $liability['employee_id'];
                 $d['economic_segment_id'] = $liability['economic_segment_id'];
                 $d['details'] = $liability['details'];
                 $d['created_at'] = Carbon::now()->toDateTimeString();
