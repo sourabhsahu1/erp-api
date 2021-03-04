@@ -285,12 +285,12 @@
                                 </table>
                             </td>
                         </tr>
-                        <tr>
+<!--                        <tr>
                             <td>
                                 <p style="margin-bottom: -25px">GSM No.</p>
                             </td>
                             <td style="width: 25%;" class="border-bottom-only" colspan="2"></td>
-                        </tr>
+                        </tr>-->
                     </table>
                 </td>
             </tr>

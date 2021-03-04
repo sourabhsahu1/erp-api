@@ -12,13 +12,13 @@
 
         input {
             border: none !important;
-            border-bottom: 1px solid #000 !important; 
+            border-bottom: 1px solid #000 !important;
             /* box-shadow: 0 1px 0 0 #000; */
         }
 
         .border-bottom-only {
             border: none !important;
-            border-bottom: 1px solid #000 !important; 
+            border-bottom: 1px solid #000 !important;
         }
 
         .table-bordered {
@@ -126,11 +126,18 @@
                             $payee->admin_company->company_bank->bank_branch->hr_bank->name :
                             $payee->employee->employee_bank->branches->hr_bank->name}}</td>
                         <td style="text-align: center;" class="shadow-1px">
-                            {{$payee->admin_company->company_bank->bank_branch->sort_code ?? " "}}</td>
+                            {{$payee->admin_company?
+                            $payee->admin_company->company_bank->bank_branch->sort_code :
+                            $payee->employee->employee_bank->branches->sort_code}}
+                        </td>
                         <td style="text-align: center;" class="shadow-1px">
-                            {{$payee->admin_company->company_bank->bank_account_number ?? " "}}</td>
+                            {{$payee->admin_company?
+                            $payee->admin_company->company_bank->bank_account_number :
+                            $payee->employee->employee_bank->number}}</td>
                         <td style="text-align: center;" class="shadow-1px">
-                            {{$payee->admin_company->company_bank->type_of_bank_account ?? " "}}</td>
+                            {{$payee->admin_company?
+                            $payee->admin_company->company_bank->type_of_bank_account :
+                            $payee->employee->employee_bank->type}}</td>
                         <td style="text-align: center;" class="shadow-1px">{{$payee->net_amount ?? " "}}</td>
                         <td style="text-align: center;" class="shadow-1px">{{$payee->details ?? " "}}</td>
                     </tr>
@@ -325,12 +332,12 @@
                                     </table>
                                 </td>
                             </tr>
-                            <tr>
+<!--                            <tr>
                                 <td>
                                     <p style="margin-bottom: -25px">GSM No.</p>
                                 </td>
                                 <td style="width: 25%;" class="border-bottom-only" colspan="2"></td>
-                            </tr>
+                            </tr>-->
                         </table>
                     </td>
                 </tr>
