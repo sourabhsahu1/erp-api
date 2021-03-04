@@ -144,6 +144,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 Log::info($economicSegment);
                 $cashbook = Cashbook::whereIn('economic_segment_id', $economicSegment)->pluck('economic_segment_id')->all();
                 $cashbook = array_unique($cashbook);
+                Log::info($cashbook);
                 if (count($cashbook) !== 1) {
                     throw new AppException('Economic segments selected , Associated to more than one cashbook');
                 }
