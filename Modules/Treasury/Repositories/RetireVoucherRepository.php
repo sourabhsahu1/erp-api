@@ -171,6 +171,11 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
         $data['data']['payment_voucher_ids'] = json_decode($data['data']['payment_voucher_ids'], true);
         $retireV = RetireVoucher::whereIn('payment_voucher_id', $data['data']['payment_voucher_ids']);
+        /** @var CompanySetting $companySetting */
+        $companySetting = CompanySetting::find(1);
+        if (is_null($companySetting)) {
+            throw new AppException("Company setting is null");
+        }
 
         DB::beginTransaction();
         try {
@@ -296,7 +301,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                         'jv_value_date' => $rv->value_date,
                         'fund_segment_id' => $rv->fund_segment_id,
                         'jv_reference' => $rv->source_department,
-                        'status' => AppConstant::JV_STATUS_NEW,
+                        'status' => $companySetting->default_status,
                         'transaction_details' => $rv->payment_description,
                         'prepared_value_date' => Carbon::now()->toDateTimeString(),
                         'prepared_transaction_date' => Carbon::now()->toDateTimeString(),

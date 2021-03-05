@@ -18,6 +18,7 @@ use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JournalVoucherDetail;
 use Modules\Finance\Repositories\JournalVoucherRepository;
 use Modules\Treasury\Models\Cashbook;
+use Modules\Treasury\Models\DefaultSetting;
 use Modules\Treasury\Models\Mandate;
 use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentApproval;
@@ -135,7 +136,11 @@ class MandateRepository extends EloquentBaseRepository
     {
 
         $data['data']['mandate_ids'] = json_decode($data['data']['mandate_ids']);
-
+        /** @var CompanySetting $companySetting */
+        $companySetting = CompanySetting::find(1);
+        if (is_null($companySetting)) {
+            throw new AppException("Company setting is null");
+        }
         foreach ($data['data']['mandate_ids'] as $mandate_id) {
             DB::beginTransaction();
             try {
@@ -149,9 +154,7 @@ class MandateRepository extends EloquentBaseRepository
                     if ($data['data']['status'] == AppConstant::ON_MANDATE_1ST_AUTHORISED) {
                         $data['data']['first_authorised_by'] = $data['data']['user_id'];
                         $data['data']['first_authorised_date'] = Carbon::now()->toDateString();
-                    }
-
-                    if ($data['data']['status'] == AppConstant::ON_MANDATE_2ND_AUTHORISED) {
+                    } elseif ($data['data']['status'] == AppConstant::ON_MANDATE_2ND_AUTHORISED) {
                         $data['data']['second_authorised_by'] = $data['data']['user_id'];
                         $data['data']['second_authorised_date'] = Carbon::now()->toDateString();
                         //payment voucher to be closed when on mandate 2nd auth
@@ -161,7 +164,7 @@ class MandateRepository extends EloquentBaseRepository
 
                         $paymentVouchers = PaymentVoucher::where('mandate_id', $mandate_id)->get();
                         foreach ($paymentVouchers as $paymentVoucher) {
-                            $paymentV = PaymentVoucher::where('status',AppConstant::VOUCHER_STATUS_CLOSED)
+                            $paymentV = PaymentVoucher::where('status', AppConstant::VOUCHER_STATUS_CLOSED)
                                 ->whereNotNull('voucher_number')
                                 ->orderby('id', 'desc')
                                 ->first();
@@ -174,9 +177,6 @@ class MandateRepository extends EloquentBaseRepository
                             $paymentVoucher->voucher_number = $data['data']['voucher_number'];
                             $paymentVoucher->save();
                         }
-
-                        /** @var CompanySetting $companySetting */
-                        $companySetting = CompanySetting::find(1);
 
                         if ($companySetting->is_payment_approval == false) {
                             $paymentVouchers = PaymentVoucher::with(['payee_vouchers.schedule_economics'])->where('mandate_id', $mandate_id)->get();
@@ -214,9 +214,7 @@ class MandateRepository extends EloquentBaseRepository
                                     PaymentApprovalPayee::insert($paymentApprovalPayee);
                             }
                         }
-                    }
-
-                    if ($data['data']['status'] == AppConstant::ON_MANDATE_POSTED_TO_GL) {
+                    } elseif ($data['data']['status'] == AppConstant::ON_MANDATE_POSTED_TO_GL) {
                         //payment voucher to be post to gl when on mandate post to gl
 
                         PaymentVoucher::where('mandate_id', $mandate_id)->update([
@@ -224,8 +222,6 @@ class MandateRepository extends EloquentBaseRepository
                         ]);
 
                         //todo jv from pv
-                        $companySetting = CompanySetting::find(1);
-
                         $paymentVouchers = PaymentVoucher::with(['payee_vouchers.schedule_economics'])->where('mandate_id', $mandate_id)->get();
 
                         /** @var PaymentVoucher $paymentVoucher */
@@ -237,7 +233,7 @@ class MandateRepository extends EloquentBaseRepository
                                 'jv_value_date' => Carbon::now()->toDateTimeString(),
                                 'fund_segment_id' => $paymentVoucher->fund_segment_id,
                                 'jv_reference' => $paymentVoucher->source_unit,
-                                'status' => AppConstant::VOUCHER_STATUS_NEW,
+                                'status' => $companySetting->default_status,
                                 'transaction_details' => $paymentVoucher->payment_description,
                                 'prepared_value_date' => Carbon::now()->toDateTimeString(),
                                 'prepared_transaction_date' => Carbon::now()->toDateTimeString(),
@@ -291,27 +287,6 @@ class MandateRepository extends EloquentBaseRepository
 
                                     $tax = Tax::wherein('id', json_decode($payee_voucher->tax_ids, true))->pluck('tax')->all();
                                     $totalTaxForSE = array_sum($tax);
-
-//                                    $jvD[] = [
-//                                        'journal_voucher_id' => $jv->id,
-//                                        'currency' => $currency->code_currency,
-//                                        'x_rate_local' => $paymentVoucher->x_rate,
-//                                        'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
-//                                        'account_name' => $paymentVoucher->deptal_id,
-//                                        'line_reference' => $paymentVoucher->deptal_id,
-//                                        'line_value' => ($tax->tax ?? 1 * $payee_voucher->net_amount) / 100,
-//                                        'admin_segment_id' => $paymentVoucher->admin_segment_id,
-//                                        'fund_segment_id' => $paymentVoucher->fund_segment_id,
-//                                        'economic_segment_id' => $tax->department_id,
-//                                        'programme_segment_id' => $paymentVoucher->program_segment_id,
-//                                        'functional_segment_id' => $paymentVoucher->functional_segment_id,
-//                                        'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
-//                                        'line_value_type' => 'CREDIT',
-//                                        'lv_line_value' => ($schedule_economic->amount * $totalTaxForSE) / 100,
-//                                        'local_currency' => $companySetting->local_currency,
-//                                        'created_at' => Carbon::now()->toDateTimeString(),
-//                                        'updated_at' => Carbon::now()->toDateTimeString()
-//                                    ];
 
                                     $jvD[] = [
                                         'journal_voucher_id' => $jv->id,

@@ -18,6 +18,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $local_currency
  * @property string $international_currency
  * @property bool $auto_post
+ * @property string $default_status
  * @property bool $is_payment_approval
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -41,6 +42,7 @@ class CompanySetting extends Eloquent
 		'company_information_id',
 		'country',
 		'local_currency',
+		'default_status',
         'international_currency',
 		'auto_post',
 		'is_payment_approval'
