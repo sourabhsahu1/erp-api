@@ -63,6 +63,16 @@ class RetireLiability extends Eloquent
 		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'economic_segment_id');
 	}
 
+	public function company()
+	{
+		return $this->belongsTo(\Modules\Admin\Models\Company::class, 'company_id');
+	}
+
+	public function employee()
+	{
+		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'employee_id');
+	}
+
 	public function retire_voucher()
 	{
 		return $this->belongsTo(\Modules\Treasury\Models\RetireVoucher::class, 'retire_voucher_id');
