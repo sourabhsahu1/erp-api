@@ -7,6 +7,7 @@
 
 namespace Modules\Treasury\Models;
 
+use Modules\Hr\Models\Employee;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -70,7 +71,7 @@ class RetireLiability extends Eloquent
 
 	public function employee()
 	{
-		return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'employee_id');
+		return $this->belongsTo(Employee::class, 'employee_id');
 	}
 
 	public function retire_voucher()
