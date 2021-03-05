@@ -51,7 +51,9 @@ class RetireVoucherRepository extends EloquentBaseRepository
             'paying_officer',
             'checking_officer',
             'financial_controller',
-            'retire_voucher.retire_liabilities.economic_segment'
+            'retire_voucher.retire_liabilities.economic_segment',
+            'retire_voucher.retire_liabilities.company',
+            'retire_voucher.retire_liabilities.employee'
         ])->whereIn('type', [
             AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER,
             AppConstant::VOUCHER_TYPE_STANDING_VOUCHER,
