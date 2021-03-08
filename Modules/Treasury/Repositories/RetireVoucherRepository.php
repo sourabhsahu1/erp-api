@@ -142,9 +142,9 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 unset($data);
                 $liabilities[] = $d;
                 if (!is_null($liability['company_id'])) {
-                    $liabilityPayers['C'][$liability['company_id']][] = $liability['economic_segment_id'];
+                    $liabilityPayers[$liability['company_id']][] = $liability['economic_segment_id'];
                 } elseif (!is_null($liability['employee_id'])) {
-                    $liabilityPayers['E'][$liability['employee_id']][] = $liability['economic_segment_id'];
+                    $liabilityPayers[$liability['employee_id']][] = $liability['economic_segment_id'];
                 }
             }
 
@@ -155,23 +155,23 @@ class RetireVoucherRepository extends EloquentBaseRepository
             }
 
             if (count($liabilityPayers) > 0) {
-                if (isset($liabilityPayers['E'])) {
-                    foreach ($liabilityPayers['E'] as $liabilityPayer) {
+//                if (isset($liabilityPayers['E'])) {
+                    foreach ($liabilityPayers as $liabilityPayer) {
                         $cashbook = Cashbook::whereIn('economic_segment_id', $liabilityPayer)->pluck('economic_segment_id')->all();
                         $cashbook = array_unique($cashbook);
                         if (count($cashbook) !== 1 && count($cashbook) !== 0) {
                             throw new AppException('Economic segments selected , Associated to more than one cashbook');
                         }
                     }
-                } elseif (isset($liabilityPayers['C'])) {
-                    foreach ($liabilityPayers['C'] as $liabilityPayer) {
-                        $cashbook = Cashbook::whereIn('economic_segment_id', $liabilityPayer)->pluck('economic_segment_id')->all();
-                        $cashbook = array_unique($cashbook);
-                        if (count($cashbook) !== 1 && count($cashbook) !== 0) {
-                            throw new AppException('Economic segments selected , Associated to more than one cashbook');
-                        }
-                    }
-                }
+//                } elseif (isset($liabilityPayers['C'])) {
+//                    foreach ($liabilityPayers['C'] as $liabilityPayer) {
+//                        $cashbook = Cashbook::whereIn('economic_segment_id', $liabilityPayer)->pluck('economic_segment_id')->all();
+//                        $cashbook = array_unique($cashbook);
+//                        if (count($cashbook) !== 1 && count($cashbook) !== 0) {
+//                            throw new AppException('Economic segments selected , Associated to more than one cashbook');
+//                        }
+//                    }
+//                }
             }
 
             if (count($economicSegment) > 0) {
