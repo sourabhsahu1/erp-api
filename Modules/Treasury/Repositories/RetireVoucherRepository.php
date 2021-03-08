@@ -150,9 +150,9 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
 
 //            dd($liabilityPayers);
-//            if ($totalAmount > (float)$pv->total_amount->amount) {
-//                throw new AppException('liability amount should be equal or less than gross amount');
-//            }
+            if ($totalAmount > (float)$pv->total_amount->amount) {
+                throw new AppException('liability amount should be equal or less than gross amount');
+            }
 
             if (count($liabilityPayers) > 0) {
                 foreach ($liabilityPayers['E'] as $liabilityPayer) {
@@ -170,8 +170,6 @@ class RetireVoucherRepository extends EloquentBaseRepository
                     }
                 }
             }
-
-
 
             if (count($economicSegment) > 0) {
                 $cashbook = Cashbook::whereIn('economic_segment_id', $economicSegment)->pluck('economic_segment_id')->all();
