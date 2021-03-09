@@ -265,6 +265,12 @@
             @endforeach
 
             <tr>
+                <td class="table-bordered" style="text-align: center;">
+                    Authorised by Staff Name
+                </td>
+            </tr>
+
+            <tr>
                 <td class="table-bordered" style="text-align: center;"></td>
                 <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
                 <td class="table-bordered" style="text-align: center;">
