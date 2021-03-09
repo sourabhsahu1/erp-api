@@ -308,10 +308,10 @@
                             </td>
                         </tr>
                         <tr>
-                            <td style="padding: 5px">Station</td>
-                            <td class="text-center border-bottom-only" style="padding: 5px">{{$data->default_setting->account_head->name  ?? " "}}</td>
-                            <td style="padding: 5px">Date</td>
-                            <td class="text-center border-bottom-only" style="width: 185px; padding: 5px"></td>
+                            <td style="width: 10%;">Station</td>
+                            <td class="text-center border-bottom-only" style="width: 50%; font-size: 11px">{{strtoupper($data->default_setting->account_head->name)  ?? " "}}</td>
+                            <td style="width: 10%;">Date</td>
+                            <td class="text-center border-bottom-only" style="width: 30%; padding: 5px"></td>
                         </tr>
                         <tr>
                             <td colspan="2">Checking Officer's Signature</td>
@@ -321,6 +321,10 @@
                             <td colspan="2">Name in Block letters</td>
                             <td colspan="2" class="text-center border-bottom-only" style="padding: 5px">{{strtoupper($data->checking_officer->first_name)}}
                             </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2" class="text-center border-bottom-only" style="padding-bottom: 5px; font-size: 10px">GW/SW</td>
                         </tr>
                         <tr>
                             <td colspan="2">Authy AIE No. etc.</td>
