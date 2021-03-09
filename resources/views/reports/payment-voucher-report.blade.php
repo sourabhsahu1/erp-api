@@ -266,7 +266,7 @@
 
             <tr>
                 <td style="text-align: center;"></td>
-                <td style="text-align: center;">
+                <td style="text-align: center; font-size: 8px">
                     Authorised by Staff Name
                 </td>
                 <td style="text-align: center;"></td>
