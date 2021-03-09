@@ -145,22 +145,21 @@
                     @endforeach
                 </tbody>
             </table>
-            <table style="width: 50%; margin-top: 20px">
+            <table style=" margin-top: 20px">
                 <tr>
-                    <td style="width: 50%">
+                    <td style="padding-right: 30px">
                         GRAND TOTAL (IN FIGURES)
                     </td>
-                    <td style="width: 50%" class="shadow-1px">
+                    <td style="alignment: left;" class="shadow-1px">
                     {{$totalSum}}
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 50%">
+                    <td>
                         GRAND TOTAL (IN WORDS)
                     </td>
                     <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
-                    <td style="width: 50%">
-                        {{ucfirst($f->format($totalSum))}} Naira Only
+                    <td style="alignment: left;">{{ucfirst($f->format($totalSum))}} Naira Only
                     </td>
                 </tr>
             </table>
