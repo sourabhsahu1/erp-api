@@ -265,9 +265,14 @@
             @endforeach
 
             <tr>
-                <td class="table-bordered" style="text-align: center;">
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;">
                     Authorised by Staff Name
                 </td>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;"></td>
+
+                <td style="text-align: center;"></td>
             </tr>
 
             <tr>
