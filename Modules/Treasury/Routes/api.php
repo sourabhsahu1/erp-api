@@ -84,7 +84,7 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::delete('retire-voucher/{id}', 'RetireVoucherController@destroy');
     Route::post('retire-voucher-update', 'RetireVoucherController@updateStatus');
 
-    Route::get('retire-voucher/{retire_voucher_id}/liabilities', 'RetireVoucherController@getLiabilities');
+    Route::get('retire-voucher/{payment_voucher_id}/liabilities', 'RetireVoucherController@getLiabilities');
     Route::put('retire-voucher/{retire_voucher_id}/liabilities/{id}', 'RetireVoucherController@updateLiabilities');
     Route::delete('retire-liabilities/{id}', 'RetireVoucherController@deleteLiability');
 

@@ -90,23 +90,25 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
     public function getLiabilities($params)
     {
-        $query = RetireVoucher::with([
-            'payment_voucher',
-            'retire_liabilities.economic_segment',
-            'retire_liabilities.company',
-            'retire_liabilities.employee'
-        ])->where('payment_voucher_id', $params['inputs']['retire_voucher_id']);
-
+        $query = RetireVoucher::query();
         if (isset($params['inputs']['company_id']) || isset($params['inputs']['employee_id'])) {
             $query->whereHas('retire_liabilities', function ($q) use ($params) {
-                if (isset($params['inputs']['company_id'])) {
+                if (isset($params['inputs']['company_id']) && $params['inputs']['company_id']) {
                     $q->where('company_id', $params['inputs']['company_id']);
                 }
-                if (isset($params['inputs']['employee_id'])) {
+                if (isset($params['inputs']['employee_id']) && $params['inputs']['employee_id']) {
                     $q->where('employee_id', $params['inputs']['employee_id']);
                 }
             });
         }
+
+        $query->with([
+            'payment_voucher',
+            'retire_liabilities.economic_segment',
+            'retire_liabilities.company',
+            'retire_liabilities.employee'
+        ])->where('payment_voucher_id', $params['inputs']['payment_voucher_id']);
+
         return parent::getAll($params, $query);
     }
 
