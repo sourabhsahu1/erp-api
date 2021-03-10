@@ -7,6 +7,7 @@ namespace Modules\Treasury\Http\Controllers;
 use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use Luezoid\Laravelcore\Jobs\BaseJob;
+use Modules\Treasury\Http\Requests\PayeeVoucher\Update;
 use Modules\Treasury\Repositories\PayeeVoucherRepository;
 
 class PayeeVoucherController extends BaseController
@@ -18,7 +19,6 @@ class PayeeVoucherController extends BaseController
 //    protected $deleteJob = BaseJob::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
-
 //    protected $deleteJobMethod = "delete";
 
 
