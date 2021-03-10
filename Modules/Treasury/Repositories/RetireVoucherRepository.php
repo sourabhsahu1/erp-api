@@ -102,12 +102,15 @@ class RetireVoucherRepository extends EloquentBaseRepository
             });
         }
 
-        $query->with([
-            'payment_voucher',
-            'retire_liabilities.economic_segment',
-            'retire_liabilities.company',
-            'retire_liabilities.employee'
-        ])->where('payment_voucher_id', $params['inputs']['payment_voucher_id']);
+        $query->with(['payment_voucher', 'retire_liabilities' => function ($rQuery) use ($params) {
+            if (isset($params['inputs']['company_id']) && $params['inputs']['company_id']) {
+                $rQuery->where('company_id', $params['inputs']['company_id']);
+            }
+            if (isset($params['inputs']['employee_id']) && $params['inputs']['employee_id']) {
+                $rQuery->where('employee_id', $params['inputs']['employee_id']);
+            }
+            $rQuery->with(['economic_segment', 'company', 'employee']);
+        }])->where('payment_voucher_id', $params['inputs']['payment_voucher_id']);
 
         return parent::getAll($params, $query);
     }
