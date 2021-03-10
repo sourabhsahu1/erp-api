@@ -123,7 +123,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                     'status' => AppConstant::RETIRE_VOUCHER_NEW
                 ]);
             }
-            RetireLiability::where('retire_voucher_id', $retireV->id)->delete();
+//            RetireLiability::where('retire_voucher_id', $retireV->id)->delete();
             $totalAmount = 0;
             $economicSegment = null;
             $liabilityPayers = null;
@@ -683,6 +683,20 @@ class RetireVoucherRepository extends EloquentBaseRepository
         }
         $this->model = RetireLiability::class;
         return parent::update($data);
+
+    }
+
+    public function deleteLiability($data)
+    {
+        $data['id'] = $data['data']['id'];
+
+        $retireVoucher = RetireVoucher::find($data['data']['retire_voucher_id']);
+
+        if ($retireVoucher->status != AppConstant::RETIRE_VOUCHER_NEW) {
+            throw new AppException('Cannot delete liability Retire Voucher Status is not New');
+        }
+        $this->model = RetireLiability::class;
+        return parent::delete($data);
 
     }
 }

@@ -37,6 +37,12 @@ class RetireVoucherController extends BaseController
         return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 
+    public function deleteLiability(Request $request)
+    {
+        $this->jobMethod = "deleteLiability";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
+
 
     public function updateStatus(Request $request)
     {
