@@ -112,7 +112,8 @@ class RetireVoucherRepository extends EloquentBaseRepository
             $rQuery->with(['economic_segment', 'company', 'employee']);
         }])->where('payment_voucher_id', $params['inputs']['payment_voucher_id']);
 
-        return parent::getAll($params, $query);
+        return $query->get();
+//        return parent::getAll($params, $query);
     }
 
 
