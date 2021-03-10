@@ -133,7 +133,7 @@ class PayeeVoucherRepository extends EloquentBaseRepository
 
         if (isset($data['data']['employee_id'])) {
             $payeeV = PayeeVoucher::where('employee_id', $data['data']['employee_id'])
-                ->where('payment_voucher_id', $data['data']['payment_voucher_id'])
+                ->where('id', $data['id'])
                 ->first();
 
             if ($payeeV->employee_id !== $payeeVCheck->employee_id) {
