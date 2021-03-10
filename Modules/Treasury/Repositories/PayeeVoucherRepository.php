@@ -26,6 +26,15 @@ class PayeeVoucherRepository extends EloquentBaseRepository
 
             /** @var PaymentVoucher $pv */
             $pv = PaymentVoucher::find($data['data']['payment_voucher_id']);
+            $payee = PayeeVoucher::where('payment_voucher_id', $data['data']['payment_voucher_id']);
+            $pId = isset($data['data']['employee_id']) ? $data['data']['employee_id'] : $data['data']['company_id'];
+
+            $payeeArray = isset($data['data']['employee_id']) ? $payee->pluck('employee_id')->all() : $payee->pluck('company_id')->all();
+
+            //check for already existed payee
+            if (isset($payeeArray) && in_array($pId, $payeeArray)) {
+                throw new AppException('Employee Already Exist');
+            }
 
             if ($pv->is_previous_year_advance == false) {
                 if (isset($data['data']['employee_id'])) {
