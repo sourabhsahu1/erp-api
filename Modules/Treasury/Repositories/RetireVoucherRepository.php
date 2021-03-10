@@ -90,14 +90,14 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
     public function getLiabilities($params)
     {
-        $retireVouchers = RetireVoucher::with([
+        $query = RetireVoucher::with([
             'payment_voucher',
             'retire_liabilities.economic_segment',
             'retire_liabilities.company',
             'retire_liabilities.employee'
         ])->where('payment_voucher_id', $params['inputs']['retire_voucher_id'])->get();
 
-        return $retireVouchers;
+        return parent::getAll($params, $query);
     }
 
 
@@ -156,13 +156,13 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
             if (count($liabilityPayers) > 0) {
 //                if (isset($liabilityPayers['E'])) {
-                    foreach ($liabilityPayers as $liabilityPayer) {
-                        $cashbook = Cashbook::whereIn('economic_segment_id', $liabilityPayer)->pluck('economic_segment_id')->all();
-                        $cashbook = array_unique($cashbook);
-                        if (count($cashbook) !== 1 && count($cashbook) !== 0) {
-                            throw new AppException('Economic segments selected , Associated to more than one cashbook');
-                        }
+                foreach ($liabilityPayers as $liabilityPayer) {
+                    $cashbook = Cashbook::whereIn('economic_segment_id', $liabilityPayer)->pluck('economic_segment_id')->all();
+                    $cashbook = array_unique($cashbook);
+                    if (count($cashbook) !== 1 && count($cashbook) !== 0) {
+                        throw new AppException('Economic segments selected , Associated to more than one cashbook');
                     }
+                }
 //                } elseif (isset($liabilityPayers['C'])) {
 //                    foreach ($liabilityPayers['C'] as $liabilityPayer) {
 //                        $cashbook = Cashbook::whereIn('economic_segment_id', $liabilityPayer)->pluck('economic_segment_id')->all();
@@ -689,7 +689,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
     public function deleteLiability($data)
     {
         $data['id'] = $data['data']['id'];
-        $retireVoucher = RetireVoucher::whereHas('retire_liabilities' , function ($q) use($data){
+        $retireVoucher = RetireVoucher::whereHas('retire_liabilities', function ($q) use ($data) {
             $q->where('id', $data['data']['id']);
         })->first();
 
