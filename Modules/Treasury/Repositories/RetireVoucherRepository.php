@@ -139,11 +139,36 @@ class RetireVoucherRepository extends EloquentBaseRepository
                     'status' => AppConstant::RETIRE_VOUCHER_NEW
                 ]);
             }
-//            RetireLiability::where('retire_voucher_id', $retireV->id)->delete();
-            $totalAmount = 0;
+
+            $q = RetireLiability::where('retire_voucher_id', $retireV->id);
+            $retireSum = $q->sum('amount');
+
+            $retireLiability = $q->get()->toArray();
+            $finalArRetireLs = array_merge($retireLiability, $data['data']['liabilities']);
             $economicSegment = null;
             $liabilityPayers = null;
+            foreach ($finalArRetireLs as $retireL) {
+                if (!is_null($retireL['company_id'])) {
+                    $liabilityPayers[$retireL['company_id']][] = $retireL['economic_segment_id'];
+                } elseif (!is_null($retireL['employee_id'])) {
+                    $liabilityPayers[$retireL['employee_id']][] = $retireL['economic_segment_id'];
+                }
+            }
+//            dd($liabilityPayers);
+            $totalAmount = 0;
+
             foreach ($data['data']['liabilities'] as $key => $liability) {
+
+                $retireLiab = RetireLiability::where('economic_segment_id', $liability['economic_segment_id'])
+                    ->where('retire_voucher_id', $retireV->id)
+                    ->where('company_id',$liability['company_id'])
+                    ->where('employee_id',$liability['employee_id'])
+                    ->first();
+
+                if ($retireLiab) {
+                    throw new AppException('liability exists of selected payer and economic segment id');
+                }
+
                 $d['retire_voucher_id'] = $retireV->id;
                 $d['liability_value_date'] = $liability['liability_value_date'];
                 $d['amount'] = $liability['amount'];
@@ -157,21 +182,18 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 $totalAmount = $totalAmount + $liability['amount'];
                 unset($data);
                 $liabilities[] = $d;
-                if (!is_null($liability['company_id'])) {
-                    $liabilityPayers[$liability['company_id']][] = $liability['economic_segment_id'];
-                } elseif (!is_null($liability['employee_id'])) {
-                    $liabilityPayers[$liability['employee_id']][] = $liability['economic_segment_id'];
-                }
+//                if (!is_null($liability['company_id'])) {
+//                    $liabilityPayers[$liability['company_id']][] = $liability['economic_segment_id'];
+//                } elseif (!is_null($liability['employee_id'])) {
+//                    $liabilityPayers[$liability['employee_id']][] = $liability['economic_segment_id'];
+//                }
             }
 
-
-//            dd($liabilityPayers);
-            if ($totalAmount > (float)$pv->total_amount->amount) {
+            if ($retireSum + $totalAmount > (float)$pv->total_amount->amount) {
                 throw new AppException('liability amount should be equal or less than gross amount');
             }
 
             if (count($liabilityPayers) > 0) {
-//                if (isset($liabilityPayers['E'])) {
                 foreach ($liabilityPayers as $liabilityPayer) {
                     $cashbook = Cashbook::whereIn('economic_segment_id', $liabilityPayer)->pluck('economic_segment_id')->all();
                     $cashbook = array_unique($cashbook);
@@ -179,24 +201,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                         throw new AppException('Economic segments selected , Associated to more than one cashbook');
                     }
                 }
-//                } elseif (isset($liabilityPayers['C'])) {
-//                    foreach ($liabilityPayers['C'] as $liabilityPayer) {
-//                        $cashbook = Cashbook::whereIn('economic_segment_id', $liabilityPayer)->pluck('economic_segment_id')->all();
-//                        $cashbook = array_unique($cashbook);
-//                        if (count($cashbook) !== 1 && count($cashbook) !== 0) {
-//                            throw new AppException('Economic segments selected , Associated to more than one cashbook');
-//                        }
-//                    }
-//                }
             }
-
-//            if (count($economicSegment) > 0) {
-//                $cashbook = Cashbook::whereIn('economic_segment_id', $economicSegment)->pluck('economic_segment_id')->all();
-//                $cashbook = array_unique($cashbook);
-//                if (count($cashbook) !== 1 && count($cashbook) !== 0) {
-//                    throw new AppException('Economic segments selected , Associated to more than one cashbook');
-//                }
-//            }
 
             if (count($liabilities) > 0) {
                 RetireLiability::insert($liabilities);
