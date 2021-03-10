@@ -97,6 +97,12 @@ class RetireVoucherRepository extends EloquentBaseRepository
             'retire_liabilities.employee'
         ])->where('payment_voucher_id', $params['inputs']['retire_voucher_id']);
 
+        if (isset($params['inputs']['company_id']) || isset($params['inputs']['employee_id'])) {
+            $query->whereHas('retire_liabilities', function ($q) use ($params) {
+                $q->where('company_id', $params['inputs']['company_id'] ?? null)
+                    ->where('employee_id', $params['inputs']['employee_id'] ?? null);
+            });
+        }
         return parent::getAll($params, $query);
     }
 
