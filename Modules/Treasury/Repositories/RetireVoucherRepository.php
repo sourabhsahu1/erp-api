@@ -689,9 +689,13 @@ class RetireVoucherRepository extends EloquentBaseRepository
     public function deleteLiability($data)
     {
         $data['id'] = $data['data']['id'];
+        $retireVoucher = RetireVoucher::whereHas('retire_liabilities' , function ($q) use($data){
+            $q->where('id', $data['data']['id']);
+        })->first();
 
-        $retireVoucher = RetireVoucher::find($data['data']['retire_voucher_id']);
-
+        if (is_null($retireVoucher)) {
+            throw new AppException('Retire Voucher Not Exist');
+        }
         if ($retireVoucher->status != AppConstant::RETIRE_VOUCHER_NEW) {
             throw new AppException('Cannot delete liability Retire Voucher Status is not New');
         }
