@@ -136,7 +136,7 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                 ->where('id', $data['id'])
                 ->first();
 
-            if ($payeeV->employee_id !== $payeeVCheck->employee_id) {
+            if (!is_null($payeeV) && ($payeeV->employee_id !== $payeeVCheck->employee_id)) {
                 throw new AppException('Cannot add Duplicate Payee');
             }
             $empBank = EmployeeBankDetail::where('employee_id', $data['data']['employee_id'])->first();
@@ -151,7 +151,7 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                 ->where('payment_voucher_id', $data['data']['payment_voucher_id'])
                 ->where('id', $data['id'])
                 ->first();
-            if ($payeeV->company_id !== $payeeVCheck->company_id) {
+            if (!is_null($payeeV) && ($payeeV->company_id !== $payeeVCheck->company_id)) {
                 throw new AppException('Cannot add Duplicate Payee');
             }
             $compBank = CompanyBank::where('company_id', $data['data']['company_id'])->first();
