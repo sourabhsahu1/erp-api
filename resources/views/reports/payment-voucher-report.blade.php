@@ -255,23 +255,23 @@
         <table style="width: 100%; margin-top: 40px;" class="table-bordered">
             <thead>
             <tr>
-                <th class="table-bordered" style="text-align: center;">Date</th>
-                <th class="table-bordered" style="text-align: center;">Name</th>
-                <th class="table-bordered" style="text-align: center;">Detail Description of Service Work</th>
-                <th class="table-bordered" style="text-align: center;">Rate</th>
-                <th class="table-bordered" style="text-align: center;">N</th>
-                <th class="table-bordered" style="text-align: center;">K</th>
+                <th class="table-bordered" style="text-align: center;width: 15%">Date</th>
+                <th class="table-bordered" style="text-align: center;width: 25%">Name</th>
+                <th class="table-bordered" style="text-align: center;width: 25%">Detail Description of Service Work</th>
+                <th class="table-bordered" style="text-align: center;width: 15%">Rate</th>
+                <th class="table-bordered" style="text-align: center;width: 10%">N</th>
+                <th class="table-bordered" style="text-align: center;width: 10%">K</th>
             </tr>
             </thead>
             <tbody>
             @foreach($data->payee_vouchers as $payee)
             <tr>
-                <td class="table-bordered" style="text-align: center;">{{\Illuminate\Support\Carbon::parse($payee->created_at)->toDateString()}}</td>
-                <td class="table-bordered bind-data" style="text-align: center;">{{isset($payee->company_id) ? $payee->admin_company->name : $payee->employee->first_name .' '.$payee->employee->last_name}}</td>
-                <td class="table-bordered bind-data" style="text-align: center;">{{$payee->details}}</td>
-                <td class="table-bordered bind-data" style="text-align: center;">{{1}}</td>
-                <td class="table-bordered bind-data" style="text-align: center;">{{$payee->net_amount}}</td>
-                <td class="table-bordered bind-data" style="text-align: center;">00</td>
+                <td class="table-bordered bind-data" style="text-align: center; width: 15%">{{\Illuminate\Support\Carbon::parse($payee->created_at)->toDateString()}}</td>
+                <td class="table-bordered bind-data" style="text-align: center; width: 25%">{{isset($payee->company_id) ? $payee->admin_company->name : $payee->employee->first_name .' '.$payee->employee->last_name}}</td>
+                <td class="table-bordered bind-data" style="text-align: center;width: 25%">{{$payee->details}}</td>
+                <td class="table-bordered bind-data" style="text-align: center;width: 15%">{{1}}</td>
+                <td class="table-bordered bind-data" style="text-align: center;width: 10%">{{$payee->net_amount}}</td>
+                <td class="table-bordered bind-data" style="text-align: center;width: 10%">00</td>
             </tr>
             @endforeach
 
