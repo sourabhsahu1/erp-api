@@ -56,7 +56,7 @@ class ReceiptScheduleEconomicRepository extends EloquentBaseRepository
         }
 
 
-        if (($receiptPayee->total_amount) < $totalAmount) {
+        if (($receiptVoucher->total_amount->amount) < $totalAmount) {
             throw new AppException('Given Amount is not equal to gross amount of Receipt Schedule Payee');
         }
         ReceiptScheduleEconomic::insert($dataToInsert);
