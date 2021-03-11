@@ -284,7 +284,7 @@
                 </td>
                 <td class="table-bordered" style="text-align: center;">Total</td>
                 <td class="table-bordered bind-data" style="text-align: center;">{{$data->total_tax->tax ?? ' '}}</td>
-                <td class="table-bordered" style="text-align: center;">00</td>
+                <td class="table-bordered bind-data" style="text-align: center;">00</td>
             </tr>
             </tbody>
         </table>
