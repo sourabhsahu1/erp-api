@@ -307,11 +307,24 @@
                             {{strtoupper($data->checking_officer->first_name)}}
                             </td>
                         </tr>
+
+                        <tr>
+                            <td style="padding: 5px" colspan="2"></td>
+                            <td colspan="2" class="text-center" style="padding: 5px">
+                            </td>
+                        </tr>
+
                         <tr>
                             <td style="width: 10%;">Station</td>
                             <td class="text-center border-bottom-only" style="width: 50%; font-size: 11px">{{strtoupper($data->default_setting->account_head->name)  ?? " "}}</td>
                             <td style="width: 10%;">Date</td>
                             <td class="text-center border-bottom-only" style="width: 30%; padding: 5px"></td>
+                        </tr>
+
+                        <tr>
+                            <td style="padding: 5px" colspan="2"></td>
+                            <td colspan="2" class="text-center" style="padding: 5px">
+                            </td>
                         </tr>
                         <tr>
                             <td colspan="2">Checking Officer's Signature</td>
