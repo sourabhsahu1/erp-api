@@ -280,7 +280,7 @@
                 <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
                 <td class="table-bordered" style="text-align: center;">
                     Checked and Insert Amount in words
-                    passed for :<b>{{isset($data->total_tax->tax) ? ucfirst($f->format($data->total_tax->tax)) . 'Naira Only.': ' '}}</b>
+                    passed for :<b>{{isset($data->total_tax->tax) ? ucfirst($f->format($data->total_tax->tax)) . ' Naira Only.': ' '}}</b>
                 </td>
                 <td class="table-bordered" style="text-align: center;">Total</td>
                 <td class="table-bordered bind-data" style="text-align: center;">{{$data->total_tax->tax ?? ' '}}</td>
