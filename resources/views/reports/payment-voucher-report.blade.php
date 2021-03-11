@@ -256,6 +256,7 @@
             <thead>
             <tr>
                 <th class="table-bordered" style="text-align: center;">Date</th>
+                <th class="table-bordered" style="text-align: center;">Name</th>
                 <th class="table-bordered" style="text-align: center;">Detail Description of Service Work</th>
                 <th class="table-bordered" style="text-align: center;">Rate</th>
                 <th class="table-bordered" style="text-align: center;">N</th>
@@ -266,6 +267,7 @@
             @foreach($data->payee_vouchers as $payee)
             <tr>
                 <td class="table-bordered bind-data" style="text-align: center;">{{\Illuminate\Support\Carbon::parse($payee->created_at)->toDateString()}}</td>
+                <td class="table-bordered bind-data" style="text-align: center;">{{isset($payee->company_id) ? $payee->admin_company->name : $payee->employee->first_name .' '.$payee->employee->last_name}}</td>
                 <td class="table-bordered bind-data" style="text-align: center;">{{$payee->details}}</td>
                 <td class="table-bordered bind-data" style="text-align: center;">{{1}}</td>
                 <td class="table-bordered bind-data" style="text-align: center;">{{$payee->net_amount}}</td>
