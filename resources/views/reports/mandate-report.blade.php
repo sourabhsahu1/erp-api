@@ -24,6 +24,11 @@
             border: 1px solid black;
             border-collapse: collapse;
         }
+
+        .bind-data {
+            font-size: 17px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -82,7 +87,7 @@
             <tr>
                 <td style="text-align: center" colspan="3">PAYMENT MANDATE</td>
             </tr>
-            <tr>
+            <tr class="bind-data">
                 <td>{{"Please credit the account " . $data->cashbook->bank_account_number . " of underlisted
                         beneficieries and debit out Account No. 345678289 accordingly"}}</td>
                 <!-- <td></td>
@@ -116,27 +121,27 @@
                     $totalSum = $totalSum + $payee->net_amount ?? 0;
                     ?>
                     <tr>
-                        <td style="text-align: center;" class="shadow-1px">{{$count}}</td>
-                        <td style="text-align: center;" class="shadow-1px">{{$payee->employee_id ?
+                        <td style="text-align: center;" class="shadow-1px bind-data">{{$count}}</td>
+                        <td style="text-align: center;" class="shadow-1px bind-data">{{$payee->employee_id ?
                             $payee->employee->first_name : $payee->admin_company->name}}</td>
-                        <td style="text-align: center;" class="shadow-1px">{{$payee->admin_company?
+                        <td style="text-align: center;" class="shadow-1px bind-data">{{$payee->admin_company?
                             $payee->admin_company->company_bank->bank_branch->hr_bank->name :
                             $payee->employee->employee_bank->branches->hr_bank->name}}</td>
-                        <td style="text-align: center;" class="shadow-1px">
+                        <td style="text-align: center;" class="shadow-1px bind-data">
                             {{$payee->admin_company?
                             $payee->admin_company->company_bank->bank_branch->sort_code :
                             $payee->employee->employee_bank->branches->sort_code}}
                         </td>
-                        <td style="text-align: center;" class="shadow-1px">
+                        <td style="text-align: center;" class="shadow-1px bind-data">
                             {{$payee->admin_company?
                             $payee->admin_company->company_bank->bank_account_number :
                             $payee->employee->employee_bank->number}}</td>
-                        <td style="text-align: center;" class="shadow-1px">
+                        <td style="text-align: center;" class="shadow-1px bind-data">
                             {{$payee->admin_company?
                             $payee->admin_company->company_bank->type_of_bank_account :
                             $payee->employee->employee_bank->type}}</td>
-                        <td style="text-align: center;" class="shadow-1px">{{$payee->net_amount ?? " "}}</td>
-                        <td style="text-align: center;" class="shadow-1px">{{$payee->details ?? " "}}</td>
+                        <td style="text-align: center;" class="shadow-1px bind-data">{{$payee->net_amount ?? " "}}</td>
+                        <td style="text-align: center;" class="shadow-1px bind-data">{{$payee->details ?? " "}}</td>
                     </tr>
                 @endforeach
             @endforeach
@@ -172,17 +177,17 @@
                                 Signature
                             </td>
                             <td style="width: 25%;"
-                                class="border-bottom-only">{{$data->second_authorised->first_name}}</td>
+                                class="border-bottom-only bind-data">{{$data->second_authorised->first_name}}</td>
                             <td style="width: 25%; text-align: right">
                                 Date
                             </td>
                             <td style="width: 25%;"
-                                class="border-bottom-only">{{\Illuminate\Support\Carbon::parse($data->second_authorised_date)->toDateString()}}</td>
+                                class="border-bottom-only bind-data">{{\Illuminate\Support\Carbon::parse($data->second_authorised_date)->toDateString()}}</td>
                         </tr>
                         <tr>
                             <td style="width: 25%">
                                 <p style="margin-bottom: -25px">Name</p></td>
-                            <td style="width: 25%;" class="border-bottom-only"
+                            <td style="width: 25%;" class="border-bottom-only bind-data"
                                 colspan="2">{{$data->second_authorised->first_name}}</td>
                             <td rowspan="2">
                                 <table class="shadow-1px"
@@ -220,17 +225,17 @@
                                 Signature
                             </td>
                             <td style="width: 25%;"
-                                class="border-bottom-only">{{$data->first_authorised->first_name}}</td>
+                                class="border-bottom-only bind-data">{{$data->first_authorised->first_name}}</td>
                             <td style="width: 25%; text-align: right">
                                 Date
                             </td>
                             <td style="width: 25%;"
-                                class="border-bottom-only">{{\Illuminate\Support\Carbon::parse($data->first_authorised_date)->toDateString()}}</td>
+                                class="border-bottom-only bind-data">{{\Illuminate\Support\Carbon::parse($data->first_authorised_date)->toDateString()}}</td>
                         </tr>
                         <tr>
                             <td style="width: 25%">
                                 <p style="margin-bottom: -25px">Name</p></td>
-                            <td style="width: 25%;" class="border-bottom-only"
+                            <td style="width: 25%;" class="border-bottom-only bind-data"
                                 colspan="2">{{$data->first_authorised->first_name}}</td>
                             <td rowspan="2">
                                 <table class="shadow-1px"

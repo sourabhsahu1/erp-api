@@ -27,7 +27,8 @@
         }
 
         .bind-data {
-            font-size: 10px;
+            font-size: 17px;
+            font-weight: bold;
         }
     </style>
 </head>
