@@ -270,7 +270,7 @@
                 <td class="table-bordered bind-data" style="text-align: center; width: 25%">{{isset($payee->company_id) ? $payee->admin_company->name : $payee->employee->first_name .' '.$payee->employee->last_name}}</td>
                 <td class="table-bordered bind-data" style="text-align: center;width: 40%">{{$payee->details}}</td>
                 <td class="table-bordered bind-data" style="text-align: center;width: 5%">{{1}}</td>
-                <td class="table-bordered bind-data" style="text-align: center;width: 10%">{{$payee->net_amount}}</td>
+                <td class="table-bordered bind-data" style="text-align: center;width: 10%">{{$payee->total_tax}}</td>
                 <td class="table-bordered bind-data" style="text-align: center;width: 5%">00</td>
             </tr>
             @endforeach
