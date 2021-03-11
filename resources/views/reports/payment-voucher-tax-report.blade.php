@@ -266,7 +266,7 @@
             <tbody>
             @foreach($data->payee_vouchers as $payee)
             <tr>
-                <td class="table-bordered" style="text-align: center;">{{\Illuminate\Support\Carbon::parse($payee->created_at)->toDateString()}}</td>
+                <td class="table-bordered bind-data" style="text-align: center;">{{\Illuminate\Support\Carbon::parse($payee->created_at)->toDateString()}}</td>
                 <td class="table-bordered bind-data" style="text-align: center;">{{isset($payee->company_id) ? $payee->admin_company->name : $payee->employee->first_name .' '.$payee->employee->last_name}}</td>
                 <td class="table-bordered bind-data" style="text-align: center;">{{$payee->details}}</td>
                 <td class="table-bordered bind-data" style="text-align: center;">{{1}}</td>
@@ -278,9 +278,9 @@
             <tr>
                 <td class="table-bordered" style="text-align: center;"></td>
                 <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
-                <td class="table-bordered bind-data" style="text-align: center;">
+                <td class="table-bordered" style="text-align: center;">
                     Checked and Insert Amount in words
-                    passed for : {{isset($data->total_tax->tax) ? ucfirst($f->format($data->total_tax->tax)) . 'Naira Only.': ' '}}
+                    passed for :<b>{{isset($data->total_tax->tax) ? ucfirst($f->format($data->total_tax->tax)) . 'Naira Only.': ' '}}</b>
                 </td>
                 <td class="table-bordered" style="text-align: center;">Total</td>
                 <td class="table-bordered bind-data" style="text-align: center;">{{$data->total_tax->tax ?? ' '}}</td>
