@@ -478,8 +478,28 @@ class PaymentRepository extends EloquentBaseRepository
         //dont have any so assigning randomly
         $data['data']['aie_id'] = $aie->id;
 
-        $pv = parent::create($data);
-        return $pv;
+        $paymentVoucher = parent::create($data);
+
+        $paymentApproval = PaymentApproval::create([
+            'admin_segment_id' => $paymentVoucher->admin_segment_id,
+            'fund_segment_id' => $paymentVoucher->fund_segment_id,
+            'economic_segment_id' => $paymentVoucher->economic_segment_id,
+            'employee_customer' => $paymentVoucher->payee,
+            'prepared_by_id' => $paymentVoucher->checking_officer_id,
+            'authorised_by_id' => $paymentVoucher->checking_officer_id,
+            'currency_id' => $paymentVoucher->currency_id,
+            'value_date' => $paymentVoucher->value_date,
+            'authorised_date' => Carbon::now()->toDateTimeString(),
+            'remark' => $paymentVoucher->payment_description,
+            'status' => AppConstant::PAYMENT_APPROVAL_FULLY_USED
+        ]);
+
+
+        $pv = PaymentVoucher::where('id', $paymentVoucher->id)->update([
+            'payment_approve_id' => $paymentApproval->id
+        ]);
+
+        return $paymentVoucher;
     }
 
 
