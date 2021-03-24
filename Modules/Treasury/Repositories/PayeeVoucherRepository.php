@@ -115,6 +115,49 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                         ]);
                     }
                 }
+            } elseif ($pv->is_previous_year_advance == true) {
+                if (isset($data['data']['employee_id'])) {
+
+                    $payeeV = PayeeVoucher::where('employee_id', $data['data']['employee_id'])->where('payment_voucher_id', $data['data']['payment_voucher_id'])->first();
+
+                    if ($payeeV) {
+                        throw new AppException('Cannot add Duplicate Payee');
+                    }
+                    $empBank = EmployeeBankDetail::where('employee_id', $data['data']['employee_id'])->first();
+                    if (is_null($empBank)) {
+                        throw new AppException('Bank Required to Add Payee Employee');
+                    }
+
+                    EmployeeBankDetail::where('id', $data['data']['payee_bank_id'])->update([
+                        'is_active' => true
+                    ]);
+                } elseif (isset($data['data']['company_id'])) {
+                    $payeeV = PayeeVoucher::where('company_id', $data['data']['company_id'])->where('payment_voucher_id', $data['data']['payment_voucher_id'])->first();
+                    if ($payeeV) {
+                        throw new AppException('Cannot add Duplicate Payee');
+                    }
+                    $compBank = CompanyBank::where('company_id', $data['data']['company_id'])->first();
+                    if (is_null($compBank)) {
+                        throw new AppException('Bank Required to Add Payee Company');
+                    }
+                    CompanyBank::where('id', $data['data']['payee_bank_id'])->update([
+                        'is_active' => true
+                    ]);
+                }
+                /** @var PayeeVoucher $payee */
+                $payee = parent::create($data);
+
+                $payeeApproval = PaymentApprovalPayee::create([
+                    'payment_approval_id' => $pv->payment_approve_id,
+                    'year' => $payee->year,
+                    'details' => $payee->details,
+                    'employee_id' => $payee->employee_id,
+                    'company_id' => $payee->company_id,
+                    'net_amount' => $payee->net_amount,
+                    'remaining_amount' => $payee->net_amount,
+                    'total_tax' => $payee->total_tax,
+                    'tax_ids' => $payee->tax_ids
+                ]);
             }
             DB::commit();
             return $payee;
