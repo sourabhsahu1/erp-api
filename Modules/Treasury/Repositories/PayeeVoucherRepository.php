@@ -155,7 +155,7 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                     'company_id' => $payee->company_id,
                     'net_amount' => $payee->net_amount,
                     'remaining_amount' => $payee->net_amount,
-                    'total_tax' => $payee->total_tax,
+                    'total_tax' => $payee->total_tax ?? 0,
                     'tax_ids' => $payee->tax_ids
                 ]);
             }
