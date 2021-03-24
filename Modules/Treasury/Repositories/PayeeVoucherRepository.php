@@ -140,9 +140,6 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                     if (is_null($compBank)) {
                         throw new AppException('Bank Required to Add Payee Company');
                     }
-                    CompanyBank::where('id', $data['data']['payee_bank_id'])->update([
-                        'is_active' => true
-                    ]);
                 }
                 /** @var PayeeVoucher $payee */
                 $payee = parent::create($data);
