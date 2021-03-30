@@ -32,42 +32,40 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class User extends Authenticatable
 {
-	use \Illuminate\Database\Eloquent\SoftDeletes;
+    use \Illuminate\Database\Eloquent\SoftDeletes;
     use HasApiTokens, Notifiable;
-	protected $casts = [
-		'file_id' => 'int'
-	];
 
-	protected $hidden = [
-		'password'
-	];
+    protected $casts = [
+        'file_id' => 'int'
+    ];
 
-	protected $fillable = [
-		'name',
-		'email',
-		'username',
-		'password',
-		'file_id'
-	];
+    protected $hidden = [
+        'password'
+    ];
 
-	public function file()
-	{
-		return $this->belongsTo(\Modules\Hr\Models\File::class);
-	}
+    protected $fillable = [
+        'name',
+        'email',
+        'username',
+        'password',
+        'file_id'
+    ];
 
-	public function employees()
-	{
-		return $this->hasMany(\Modules\Hr\Models\Employee::class, 'created_by_id');
-	}
+    public function file()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\File::class);
+    }
 
-	public function roles()
-	{
-		return $this->belongsToMany(\Modules\Hr\Models\Role::class, 'user_roles')
-					->withPivot('id', 'created_by_id', 'deleted_at')
-					->withTimestamps();
-	}
+    public function employees()
+    {
+        return $this->hasMany(\Modules\Hr\Models\Employee::class, 'created_by_id');
+    }
 
-	public function user_roles() {
-        return $this->hasMany(\Modules\Hr\Models\UserRole::class, 'user_id');
+    public function roles()
+    {
+        return $this->belongsToMany(\Modules\Hr\Models\Role::class, 'user_roles')
+            ->withPivot('id', 'created_by_id', 'deleted_at')
+            ->withTimestamps()
+            ->wherePivot('deleted_at', NULL);
     }
 }
