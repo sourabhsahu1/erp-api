@@ -14,6 +14,12 @@ class UserRepository extends EloquentBaseRepository
 {
     public $model = User::class;
 
+    public function show($id, $params = null)
+    {
+        return User::with('roles')->whereHas('user_roles', function ($q){
+            $q->whereNull('deleted_at');
+        })->find($id);
+    }
 
     public function create($data)
     {

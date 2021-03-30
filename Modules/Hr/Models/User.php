@@ -23,7 +23,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * 
+ *
  * @property \Modules\Hr\Models\File $file
  * @property \Illuminate\Database\Eloquent\Collection $employees
  * @property \Illuminate\Database\Eloquent\Collection $roles
@@ -66,4 +66,8 @@ class User extends Authenticatable
 					->withPivot('id', 'created_by_id', 'deleted_at')
 					->withTimestamps();
 	}
+
+	public function user_roles() {
+        return $this->hasMany(\Modules\Hr\Models\UserRole::class, 'user_id');
+    }
 }
