@@ -42,7 +42,7 @@ class PaymentApprovalRepository extends EloquentBaseRepository
         if (isset($params['inputs']['search'])) {
             $query->where(function ($d) use ($params) {
                 $d->where('id', 'like', "%" . $params['inputs']['search'] . "%")
-                    ->orWhere('remarks', 'like', "%" . $params['inputs']['search'] . "%")
+                    ->orWhere('remark', 'like', "%" . $params['inputs']['search'] . "%")
                     ->orWhere('currency_id', 'like', "%" . $params['inputs']['search'] . "%")
                     ->orWhere('employee_customer', 'like', "%" . $params['inputs']['search'] . "%");
             });
