@@ -83,7 +83,7 @@ class Cashbook extends Eloquent
 		'type_of_account'
 	];
 
-    protected $searchable = ['id','cashbook','title','type_of_account'];
+    public $searchable = ['id','cashbook','title','type_of_account'];
 
 	public function bank_branch()
 	{
