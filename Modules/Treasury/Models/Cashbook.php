@@ -11,7 +11,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class Cashbook
- * 
+ *
  * @property int $id
  * @property int $economic_segment_id
  * @property string $cashbook_title
@@ -33,7 +33,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * 
+ *
  * @property \Modules\Hr\Models\BankBranch $bank_branch
  * @property \Modules\Hr\Models\Bank $bank
  * @property \Modules\Finance\Models\Currency $currency
@@ -82,6 +82,8 @@ class Cashbook extends Eloquent
 		'currency_id',
 		'type_of_account'
 	];
+
+    protected $searchable = ['id','cashbook','title','type_of_account'];
 
 	public function bank_branch()
 	{
