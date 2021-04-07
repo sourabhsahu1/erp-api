@@ -18,10 +18,11 @@ class PaymentApprovalRepository extends EloquentBaseRepository
 
     public function getAll($params = [], $query = null)
     {
-
-
+        if (!$query) {
+            $query = PaymentApproval::query();
+        }
         if (isset($params['inputs']['in_use'])) {
-            $query = PaymentApproval::with([
+            $query = $query->with([
                 'admin_segment',
                 'fund_segment',
                 'economic_segment',
