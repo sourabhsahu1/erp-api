@@ -24,6 +24,8 @@ class PaymentApprovalRepository extends EloquentBaseRepository
             $query = PaymentApproval::with([
                 'admin_segment',
                 'fund_segment',
+                'total_amount',
+                'total_remaining_amount',
                 'economic_segment',
                 'currency',
                 'authorised_by',

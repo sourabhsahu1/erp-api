@@ -114,4 +114,24 @@ class PaymentApproval extends Eloquent
     {
         return $this->hasMany(\Modules\Treasury\Models\PaymentVoucher::class, 'payment_approve_id');
     }
+
+    public function total_amount()
+    {
+        return $this->hasOne(PaymentApprovalPayee::class,'payment_approval_id')
+            ->selectRaw('payment_approval_id, SUM(net_amount) as net_amount')
+            ->groupBy('payment_approval_id');
+    }
+    public function total_remaining_amount()
+    {
+        return $this->hasOne(PaymentApprovalPayee::class,'payment_approval_id')
+            ->selectRaw('payment_approval_id, SUM(remaining_amount) as remaining_amount')
+            ->groupBy('payment_approval_id');
+    }
+
+    public function total_tax()
+    {
+        return $this->hasOne(PaymentApprovalPayee::class,'payment_approval_id')
+            ->selectRaw('payment_approval_id, SUM(total_tax) as total_tax')
+            ->groupBy('payment_approval_id');
+    }
 }

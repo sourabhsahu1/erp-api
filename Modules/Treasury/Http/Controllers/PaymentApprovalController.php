@@ -22,6 +22,9 @@ class PaymentApprovalController extends BaseController
     protected $indexWith = [
         'admin_segment',
         'fund_segment',
+        'total_amount',
+        'total_remaining_amount',
+        'total_tax',
         'economic_segment',
         'currency',
         'authorised_by',
