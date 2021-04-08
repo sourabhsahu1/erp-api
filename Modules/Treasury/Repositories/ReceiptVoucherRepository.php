@@ -60,8 +60,14 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
             'total_amount'
         ]);
 
-        if (isset($params['inputs']['voucher_source_unit_id'])) {
-            $query->where('voucher_source_unit_id', $params['inputs']['voucher_source_unit_id']);
+        if (isset($params['inputs']['source_unit'])) {
+            $query->where('voucher_source_unit_id', $params['inputs']['source_unit']);
+        }
+        if (isset($params['inputs']['search'])) {
+            $query->where(function ($d) use ($params) {
+                $d->where('deptal_id', 'like', "%" . $params['inputs']['search'] . "%")
+                    ->orWhere('payment_description', 'like', "%" . $params['inputs']['search'] . "%");
+            });
         }
 
         if (isset($params['inputs']['status'])) {

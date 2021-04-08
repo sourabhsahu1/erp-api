@@ -329,8 +329,6 @@ class PaymentRepository extends EloquentBaseRepository
         if (isset($params['inputs']['search'])) {
             $query->where(function ($d) use ($params) {
                 $d->where('deptal_id', 'like', "%" . $params['inputs']['search'] . "%")
-                    ->orWhere('type', 'like', "%" . $params['inputs']['search'] . "%")
-                    ->orWhere('id', 'like', "%" . $params['inputs']['search'] . "%")
                     ->orWhere('payment_description', 'like', "%" . $params['inputs']['search'] . "%");
             });
         }
