@@ -51,6 +51,7 @@ class PaymentApproval extends Eloquent
         'economic_segment_id' => 'int',
         'prepared_by_id' => 'int',
         'authorised_by_id' => 'int',
+        'value_date' => 'datetime:Y-m-d',
         'currency_id' => 'int'
     ];
 
