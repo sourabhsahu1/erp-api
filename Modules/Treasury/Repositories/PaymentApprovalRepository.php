@@ -9,6 +9,7 @@ use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Treasury\Models\PaymentApproval;
 use Modules\Treasury\Models\PaymentApprovalPayee;
+use Carbon\Carbon;
 
 class PaymentApprovalRepository extends EloquentBaseRepository
 {
@@ -53,11 +54,10 @@ class PaymentApprovalRepository extends EloquentBaseRepository
 
     public function create($data)
     {
+
         $data['data']['prepared_by_id'] = $data['data']['user_id'];
         $data['data']['status'] = 'NEW';
-
-
-
+        $data['data']['value_date'] = Carbon::parse($data['data']['value_date']);
         return parent::create($data);
     }
 
