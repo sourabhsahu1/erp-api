@@ -90,6 +90,7 @@ class PaymentApprovalRepository extends EloquentBaseRepository
         if ($paymentApproval->status != AppConstant::PAYMENT_APPROVAL_NEW) {
             throw new AppException('Only New Status can be edited');
         }
+        $data['data']['value_date'] = Carbon::parse($data['data']['value_date']);
         $data['data']['status'] = $paymentApproval->status;
         return parent::update($data);
     }
