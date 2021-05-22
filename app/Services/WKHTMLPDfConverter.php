@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Spatie\Browsershot\Browsershot;
+use Symfony\Component\Process\Process;
 
 class WKHTMLPDfConverter
 {
@@ -120,7 +121,14 @@ class WKHTMLPDfConverter
             $filePath = config('file.pdf_directory') . $pdfFileName ?? Carbon::now()->timestamp . '.pdf';
 
             $command = 'node ' . base_path('node_modules/chromeshot/index.js') . ' "{\"url\": \"file://' . $tmp_path . '\", \"options\": {\"path\": \"' . $filePath . '\"}}"';
-            exec($command, $output, $error);
+            $process = Process::fromShellCommandline($command)->setTimeout(60);
+
+            if ($process->isSuccessful()) {
+                dd('done');
+                return rtrim($process->getOutput());
+            }
+            dd($process);
+//            exec($command, $output, $error);
 //            dd($command, $output, $error);
 
             return array('processId' => 1, 'filePath' => $filePath,
