@@ -23,7 +23,7 @@
         "vue": "^2.5.17"
     },
     "dependencies": {
-        "chromeshot": "0.0.1",
+        "chromeshot": "0.0.2",
         "puppeteer": "^2.1.1"
     }
 }
