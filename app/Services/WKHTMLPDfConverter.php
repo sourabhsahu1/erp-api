@@ -119,7 +119,9 @@ class WKHTMLPDfConverter
 
             $filePath = config('file.pdf_directory') . $pdfFileName ?? Carbon::now()->timestamp . '.pdf';
 
-            exec('node ' . base_path('node_modules/chromeshot/index.js') . ' "{\"url\": \"file://' . $tmp_path . '\", \"options\": {\"path\": \"' . $filePath . '\"}}"');
+            $command = 'node ' . base_path('node_modules/chromeshot/index.js') . ' "{\"url\": \"file://' . $tmp_path . '\", \"options\": {\"path\": \"' . $filePath . '\"}}"';
+            exec($command, $output, $error);
+//            dd($command, $output, $error);
 
             return array('processId' => 1, 'filePath' => $filePath,
                 'htmlPath' => $tmp_path, 'fileName' => $pdfFileName);
