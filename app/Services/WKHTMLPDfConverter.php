@@ -80,7 +80,8 @@ class WKHTMLPDfConverter
         }
     }
 
-    public function convertBrowserShot($html, $pdfFileName = null, $format = 'A3') {
+    public function convertBrowserShot($html, $pdfFileName = null, $format = 'A3')
+    {
         if ($this->header)
             $this->header = "Page [page] of [toPage]";
 
@@ -98,6 +99,27 @@ class WKHTMLPDfConverter
                 ->showBackground()
                 ->format($format)
                 ->save($filePath);
+
+            return array('processId' => 1, 'filePath' => $filePath,
+                'htmlPath' => $tmp_path, 'fileName' => $pdfFileName);
+        } catch (\Exception $e) {
+            Log::error($e);
+            throw $e;
+        }
+    }
+
+    public static function convertChromeShot($html, $pdfFileName = null, $format = 'A3')
+    {
+        try {
+            $tmp_path = config('file.pdf_directory') . Carbon::now()->timestamp . '.html';
+            $fp = fopen($tmp_path, "w+");
+
+            fclose($fp);
+            File::put($tmp_path, $html);
+
+            $filePath = config('file.pdf_directory') . $pdfFileName ?? Carbon::now()->timestamp . '.pdf';
+
+            exec('node ' . base_path('node_modules/chromeshot/index.js') . ' "{\"url\": \"https://luezoid.com\", \"options\": {\"path\": \"' . $filePath . '\"}}"');
 
             return array('processId' => 1, 'filePath' => $filePath,
                 'htmlPath' => $tmp_path, 'fileName' => $pdfFileName);

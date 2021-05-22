@@ -11,6 +11,8 @@
 |
 */
 
-Route::get('/', function () {
+Route::get('/chromeshot', function () {
+    \App\Services\WKHTMLPDfConverter::convertChromeShot('', 'asdf.pdf');
+    dd(url('pdf/asdf.pdf'));
     return view('welcome');
 });
