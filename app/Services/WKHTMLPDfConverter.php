@@ -123,6 +123,8 @@ class WKHTMLPDfConverter
             $command = 'node ' . base_path('node_modules/chromeshot/index.js') . ' "{\"url\": \"file://' . $tmp_path . '\", \"options\": {\"path\": \"' . $filePath . '\"}}"';
             $process = Process::fromShellCommandline($command)->setTimeout(60);
 
+            $process->run();
+
             if ($process->isSuccessful()) {
                 dd('done');
                 return rtrim($process->getOutput());
