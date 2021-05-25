@@ -269,7 +269,8 @@ class PaymentRepository extends EloquentBaseRepository
                                     ->delete();
                             }
                         }
-
+                        $remAmount = $remAmount + $approval_payee->remaining_amount;
+                        $amount = $amount + $approval_payee->net_amount;
                     }
                     if ($remAmount === $amount) {
                         PaymentApproval::where('id', $paymentApproval->id)->update([

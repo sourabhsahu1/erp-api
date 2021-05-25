@@ -19,5 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CountryCodesTableSeeder::class);
         $this->call(CompanyConfigTableSeeder::class);
         $this->call(PermissionsTableSeeder::class);
+        $this->call(CountriesTableSeeder::class);
+        $this->call(CurrenciesTableSeeder::class);
     }
 }
