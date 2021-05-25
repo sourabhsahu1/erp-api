@@ -249,30 +249,36 @@ class PaymentRepository extends EloquentBaseRepository
 
                     /** @var PaymentApprovalPayee $approval_payee */
 
+                    $remAmount = 0;
+                    $amount = 0;
                     foreach ($paymentApproval->payment_approval_payees as $approval_payee) {
                         $employeeId = $approval_payee->employee_id;
                         $companyId = $approval_payee->company_id;
                         /** @var PayeeVoucher $payee */
                         foreach ($paymentVoucher->payee_vouchers as $payee) {
-
                             //todo chcek for empid and comany id
-
                             if (($payee->employee_id === $approval_payee->employee_id) || ($payee->company_id === $approval_payee->company_id)) {
                                 PaymentApprovalPayee::where('id', $approval_payee->id)->update([
                                     'remaining_amount' => $approval_payee->remaining_amount + $payee->net_amount
                                 ]);
-
                                 $paymentApproval->status = AppConstant::PAYMENT_APPROVAL_READY_FOR_PV;
                                 $paymentApproval->save();
                                 PayeeVoucher::where('employee_id', $employeeId)
                                     ->where('company_id', $companyId)
                                     ->where('payment_voucher_id', $payee->payment_voucher_id)
                                     ->delete();
-
                             }
-
-
                         }
+
+                    }
+                    if ($remAmount === $amount) {
+                        PaymentApproval::where('id', $paymentApproval->id)->update([
+                            'status' => AppConstant::PAYMENT_APPROVAL_NEW
+                        ]);
+                    } else {
+                        PaymentApproval::where('id', $paymentApproval->id)->update([
+                            'status' => AppConstant::PAYMENT_APPROVAL_READY_FOR_PV
+                        ]);
                     }
                     DB::commit();
                     return parent::delete($data);
@@ -674,7 +680,7 @@ class PaymentRepository extends EloquentBaseRepository
             'admin_segment',
             'fund_segment',
             'sub_organisation'])->find(1);
-        $finalPayeesText = $count > 0 ? $payees .'+'.$count : $payees;
+        $finalPayeesText = $count > 0 ? $payees . '+' . $count : $payees;
         $paymentV->final_payees_text = $finalPayeesText;
         $paymentV->address = $address;
 
@@ -734,7 +740,7 @@ class PaymentRepository extends EloquentBaseRepository
             'admin_segment',
             'fund_segment',
             'sub_organisation'])->find(1);
-        $finalPayeesText = $count > 0 ? $payees .'+'.$count : $payees;
+        $finalPayeesText = $count > 0 ? $payees . '+' . $count : $payees;
         $paymentV->final_payees_text = $finalPayeesText;
         $paymentV->address = $address;
 
