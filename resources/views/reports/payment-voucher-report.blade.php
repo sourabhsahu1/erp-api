@@ -243,7 +243,7 @@
                     @foreach($data->es_code as $var)
                         <td>{{$var}}</td>
                     @endforeach
-                    @foreach( as $var)
+                    @foreach($data->e_code as $var)
                             <td>{{$var}}</td>
                     @endforeach
                 </tr>
