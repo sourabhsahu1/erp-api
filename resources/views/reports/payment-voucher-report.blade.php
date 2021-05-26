@@ -248,31 +248,31 @@
                     @endforeach
                 </tr>
                 <tr>
-                    <th colspan="{{strlen(str_replace('-','',$data->functional_segment->combined_code)) + 3}}">Functional Segment</th>
-                    <th colspan="{{strlen(str_replace('-','',$data->program_segment->combined_code)) + 1}}">Programme Segment</th>
-                    <th colspan="{{strlen(str_replace('-','',$data->fund_segment->combined_code)) + 4}}">Fund Segment</th>
-                    <th colspan="{{strlen(str_replace('-','',$data->geo_code_segment->combined_code)) + 4}}">Geo Code Segment</th>
+                    <th colspan="5">Functional Segment</th>
+                    <th colspan="14">Programme Segment</th>
+                    <th colspan="5">Fund Segment</th>
+                    <th colspan="8">Geo Code Segment</th>
                     <th class="border-none"></th>
                 </tr>
                 <tr>
-                    @foreach(str_split(str_replace('-','',$data->functional_segment->combined_code)) as $var)
+                    @foreach($data->f_code as $var)
                         <td>{{$var}}</td>
                     @endforeach
                     <td></td>
                     <td></td>
                     <td></td>
-                    @foreach(str_split(str_replace('-','',$data->program_segment->combined_code)) as $var)
+                    @foreach($data->ps_code as $var)
                             <td>{{$var}}</td>
                     @endforeach
                     <td></td>
-                    @foreach(str_split(str_replace('-','',$data->fund_segment->combined_code)) as $var)
+                    @foreach($data->fs_code as $var)
                             <td>{{$var}}</td>
                     @endforeach
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    @foreach(str_split(str_replace('-','',$data->geo_code_segment->combined_code)) as $var)
+                    @foreach($data->g_code as $var)
                             <td>{{$var}}</td>
                     @endforeach
                     <td></td>
@@ -286,15 +286,11 @@
                     <th colspan="11">Amount</th>
                 </tr>
                 <tr>
-                    @foreach(str_split(str_replace('/','',\Illuminate\Support\Carbon::parse($data->value_date)->format('d/m/Y'))) as $var)
-                        <td class="table-bordered bind-data cell-size"
-                            style="text-align: center; padding: 10px 0;">{{$var}}</td>
+                    @foreach($data->date as $var)
+                        <td>{{$var}}</td>
                     @endforeach
-                    <td class="table-bordered bind-data"
-                        style="text-align: center; padding: 10px 0;">{{$data->total_tax->tax ?? ' '}}</td>
-                    <td class="table-bordered">00</td>
-                    <td colspan="10"></td>
-                    <td></td>
+                    <td colspan="10">{{$data->total_tax->tax ?? ' '}}</td>
+                     <td class="table-bordered">00</td>
                 </tr>
             </table>
         </div>

@@ -14,7 +14,6 @@ use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\CompanyInformation;
 use Modules\Admin\Models\CompanySetting;
 use Modules\Admin\Models\Tax;
-use Modules\Finance\Models\Currency;
 use Modules\Treasury\Models\Aie;
 use Modules\Treasury\Models\Cashbook;
 use Modules\Treasury\Models\DefaultSetting;
@@ -753,11 +752,55 @@ class PaymentRepository extends EloquentBaseRepository
         if (count($esCombineCodes) < 12) {
             $esTds = 12 - count($esCombineCodes);
             while ($esTds > 0) {
-                $esCombineCodes[] ='';
+                $esCombineCodes[] = '';
                 $esTds--;
             }
         }
         $paymentV['es_code'] = $esCombineCodes;
+
+        $fCombineCode = str_split(str_replace('-', '', $paymentV->functional_segment->combined_code));
+        if (count($fCombineCode) < 5) {
+            $esTds = 5 - count($fCombineCode);
+            while ($esTds > 0) {
+                $fCombineCode[] = '';
+                $esTds--;
+            }
+        }
+        $paymentV['f_code'] = $fCombineCode;
+
+        $psCombineCode = str_split(str_replace('-', '', $paymentV->program_segment->combined_code));
+        if (count($psCombineCode) < 14) {
+            $esTds = 14 - count($psCombineCode);
+            while ($esTds > 0) {
+                $psCombineCode[] = '';
+                $esTds--;
+            }
+        }
+        $paymentV['ps_code'] = $psCombineCode;
+
+        $fsCombineCode = str_split(str_replace('-', '', $paymentV->fund_segment->combined_code));
+        if (count($fsCombineCode) < 5) {
+            $esTds = 5 - count($fsCombineCode);
+            while ($esTds > 0) {
+                $fsCombineCode[] = '';
+                $esTds--;
+            }
+        }
+        $paymentV['fs_code'] = $fsCombineCode;
+
+        $gCombineCode = str_split(str_replace('-', '', $paymentV->geo_code_segment->combined_code));
+        if (count($gCombineCode) < 8) {
+            $esTds = 8 - count($gCombineCode);
+            while ($esTds > 0) {
+                $gCombineCode[] = '';
+                $esTds--;
+            }
+        }
+        $paymentV['g_code'] = $gCombineCode;
+
+        $paymentV['date'] = str_split(Carbon::parse($paymentV->value_date)->format('D'));
+        $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('M')));
+        $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('YYYY')));
 
         if (isset($params['inputs']['bs'])) {
             app()->make(WKHTMLPDfConverter::class)
