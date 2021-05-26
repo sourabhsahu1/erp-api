@@ -813,6 +813,10 @@ class PaymentRepository extends EloquentBaseRepository
         $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('m')));
         $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('Y')));
 
+        $amounts = explode('.', $paymentV->total_amount->amount)[1];
+        $paymentV['amount'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amounts[0]);
+        $paymentV['paisa'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amounts[1] ?? 00);
+
         if (isset($params['inputs']['bs'])) {
             app()->make(WKHTMLPDfConverter::class)
                 ->convertBrowserShot(view('reports.payment-voucher-report', ['data' => $paymentV])->render(), $fileName);

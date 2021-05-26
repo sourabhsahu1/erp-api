@@ -346,9 +346,9 @@
                 </td>
                 <td class="table-bordered" style="text-align: center;">Total</td>
                 <td class="table-bordered bind-data"
-                    style="text-align: center; font-weight: bold">{{explode('.', $data->total_amount->amount)[0]}}</td>
+                    style="text-align: center; font-weight: bold">{{$data->amount}}</td>
                 <td class="table-bordered bind-data"
-                    style="text-align: center; font-weight: bold">{{explode('.', $data->total_amount->amount)[1]}}</td>
+                    style="text-align: center; font-weight: bold">{{$data->paisa}}</td>
             </tr>
             </tbody>
         </table>
