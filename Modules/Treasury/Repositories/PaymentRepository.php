@@ -685,7 +685,7 @@ class PaymentRepository extends EloquentBaseRepository
         $finalPayeesText = $count > 0 ? $payees . '+' . $count : $payees;
         $paymentV->final_payees_text = $finalPayeesText;
         $paymentV->address = $address;
-        $paymentV->deptalKey = $companyInformation->short_code.'/'.$paymentV->voucher_source_unit->short_name.'/'.$paymentV->deptal_id.'/'.Carbon::parse($paymentV->value_date)->year;
+        $paymentV->deptalKey = $companyInformation->short_code . '/' . $paymentV->voucher_source_unit->short_name . '/' . $paymentV->deptal_id . '/' . Carbon::parse($paymentV->value_date)->year;
         app()->make(WKHTMLPDfConverter::class)
             ->convert(view('reports.payment-voucher-tax-report', ['data' => $paymentV])->render(), $fileName);
 
@@ -747,7 +747,17 @@ class PaymentRepository extends EloquentBaseRepository
         $finalPayeesText = $count > 0 ? $payees . '+' . $count : $payees;
         $paymentV->final_payees_text = $finalPayeesText;
         $paymentV->address = $address;
-        $paymentV->deptalKey = $companyInformation->short_code.'/'.$paymentV->voucher_source_unit->short_name.'/'.$paymentV->deptal_id.'/'.Carbon::parse($paymentV->value_date)->year;
+        $paymentV->deptalKey = $companyInformation->short_code . '/' . $paymentV->voucher_source_unit->short_name . '/' . $paymentV->deptal_id . '/' . Carbon::parse($paymentV->value_date)->year;
+
+        $esCombineCodes = str_split(str_replace('-', '', $paymentV->admin_segment->combined_code));
+        if (count($esCombineCodes) < 12) {
+            $esTds = 12 - count($esCombineCodes);
+            while ($esTds > 0) {
+                $esCombineCodes[] ='';
+                $esTds--;
+            }
+        }
+        $paymentV['es_code'] = $esCombineCodes;
 
         if (isset($params['inputs']['bs'])) {
             app()->make(WKHTMLPDfConverter::class)
