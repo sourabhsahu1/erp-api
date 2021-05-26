@@ -248,38 +248,27 @@
                     @endforeach
                 </tr>
                 <tr>
-                    <th colspan="5">Functional Segment</th>
-                    <th colspan="14">Programme Segment</th>
-                    <th colspan="5">Fund Segment</th>
-                    <th colspan="8">Geo Code Segment</th>
-                    <th class="border-none"></th>
+                    <th colspan="{{count($data->f_code)}}">Functional Segment</th>
+                    <th colspan="{{count($data->ps_code)}}">Programme Segment</th>
+                    <th colspan="{{count($data->fs_code)}}">Fund Segment</th>
+                    <th colspan="{{count($data->g_code)}}">Geo Code Segment</th>
+{{--                    <th class="border-none"></th>--}}
                 </tr>
                 <tr>
                     @foreach($data->f_code as $var)
                         <td>{{$var}}</td>
                     @endforeach
-                    <td></td>
-                    <td></td>
-                    <td></td>
                     @foreach($data->ps_code as $var)
                             <td>{{$var}}</td>
                     @endforeach
-                    <td></td>
+
                     @foreach($data->fs_code as $var)
                             <td>{{$var}}</td>
                     @endforeach
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
                     @foreach($data->g_code as $var)
                             <td>{{$var}}</td>
                     @endforeach
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="border-none"></td>
+{{--                    <td class="border-none"></td>--}}
                 </tr>
                 <tr>
                     <th colspan="8">Date</th>
