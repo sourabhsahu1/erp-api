@@ -88,7 +88,7 @@
             <h2 style="text-align: center; margin-bottom: 8px; font-size: 1.5rem!important;">HQ, ABUJA</h2>
             <h2 class="bind-data"
                 style="text-align: center; margin-bottom: 10px; margin-top: 0; font-size: 1.5rem!important;">{{$data->admin_segment->name ?? " "}}</h2>
-            <h2 style="text-align: center; margin-bottom: 10px; margin-top: 0; font-size: 1.5rem!important;">Capital Expdtr. Pymt Voucher</h2>
+            <h2 style="text-align: center; margin-bottom: 10px; margin-top: 0; font-size: 1.5rem!important;">Payment Voucher</h2>
         </div>
         <table style="margin-top: 30px; width: 100%">
             <tr>
@@ -105,7 +105,7 @@
                     <div style="text-align: right; font-size: 17px">
                         <label class="label_font_family">Checked and passed for payment at : </label>
                         <input type="text" class="bind-data text_font_family"
-                               value="{{\Illuminate\Support\Carbon::parse($data->value_date)->format('d/m/Y')}}"
+                               value="{{$data->default_setting->account_head->name ?? " "}}"
                                style="text-align: center; font-weight: bold"/>
                     </div>
                 </td>
@@ -280,8 +280,8 @@
                                         @foreach(str_split(str_replace('/','',\Illuminate\Support\Carbon::parse($data->value_date)->format('d/m/Y'))) as $var)
                                             <td class="table-bordered bind-data cell-size" style="text-align: center; padding: 10px 0;">{{$var}}</td>
                                         @endforeach
-                                        <td class="table-bordered bind-data cell-size" style="text-align: center; padding: 10px 0;">{{$data->total_amount->amount ?? ' '}}</td>
-                                        <td class="table-bordered cell-size">00</td>
+                                        <td class="table-bordered bind-data cell-size" style="text-align: center; padding: 10px 0;">{{(int)$data->total_amount->amount ?? ' '}}</td>
+                                        <td class="table-bordered cell-size">{{$data->total_amount->amount % 1}}</td>
                                     </tr>
                                 </table>
                             </td>
@@ -318,7 +318,7 @@
             <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
             @foreach($data->payee_vouchers as $payee)
                 <tr style="font-weight: bold" class="text_font_family">
-                    <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline;padding: 10px">{{\Illuminate\Support\Carbon::parse($payee->created_at)->toDateString()}}</td>
+                    <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline;padding: 10px">{{\Illuminate\Support\Carbon::parse($payee->created_at)->format('d/m/Y')}}</td>
                     <td class="table-bordered bind-data" style="text-align: left;vertical-align: baseline; padding: 10px">{{isset($payee->company_id) ? $payee->admin_company->name : $payee->employee->first_name .' '.$payee->employee->last_name}}</td>
                     <td class="table-bordered bind-data" style="text-align: left;vertical-align: baseline; padding: 10px">
                         {{$payee->details}}
@@ -327,9 +327,9 @@
                         1
                     </td>
                     <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline; padding: 10px">
-                        {{$payee->net_amount}}
+                        {{(int)$payee->net_amount}}
                     </td>
-                    <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline; padding: 10px">00
+                    <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline; padding: 10px">{{round(($payee->net_amount - intval($payee->net_amount)),2)}}
                     </td>
                 </tr>
             @endforeach
@@ -343,8 +343,8 @@
                     passed for : <span style="font-weight: bold">{{isset($data->total_amount) ? ucfirst($f->format($data->total_amount->amount)) . ' Naira Only.': ' '}}</span>
                 </td>
                 <td class="table-bordered" style="text-align: center;">Total</td>
-                <td class="table-bordered bind-data" style="text-align: center; font-weight: bold">{{$data->total_amount->amount}}</td>
-                <td class="table-bordered bind-data" style="text-align: center; font-weight: bold">00</td>
+                <td class="table-bordered bind-data" style="text-align: center; font-weight: bold">{{(int)$data->total_amount->amount}}</td>
+                <td class="table-bordered bind-data" style="text-align: center; font-weight: bold">{{round(($data->total_amount->amount - intval($data->total_amount->amount)),2)}}</td>
             </tr>
             </tbody>
         </table>

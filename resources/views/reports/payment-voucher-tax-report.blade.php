@@ -272,15 +272,15 @@
                             <td style="width: 500px; text-align: center">
                                 <table class="width-100-per table-bordered" style="margin-left: -3px; margin-top: -8px">
                                     <tr>
-                                        <td class="text-center table-bordered bind-data" colspan="{{strlen(str_replace('-','',\Illuminate\Support\Carbon::parse($data->value_date)->toDateString()))}}"><label>Date</label></td>
+                                        <td class="text-center table-bordered bind-data" colspan="{{strlen(str_replace('/','',\Illuminate\Support\Carbon::parse($data->value_date)->format('d/m/Y')))}}"><label>Date</label></td>
                                         <td class="text-center table-bordered bind-data" colspan="2"><label>Amount (Naira)</label>
                                         </td>
                                     </tr>
                                     <tr style="font-weight: bold" class="text_font_family">
-                                        @foreach(str_split(str_replace('-','',\Illuminate\Support\Carbon::parse($data->value_date)->toDateString())) as $var)
+                                        @foreach(str_split(str_replace('/','',\Illuminate\Support\Carbon::parse($data->value_date)->format('d/m/Y'))) as $var)
                                             <td class="table-bordered bind-data cell-size" style="text-align: center; padding: 10px 0;">{{$var}}</td>
                                         @endforeach
-                                        <td class="table-bordered bind-data" style="text-align: center; padding: 10px 0;">{{$data->total_tax->tax ?? ' ' ?? ' '}}</td>
+                                        <td class="table-bordered bind-data" style="text-align: center; padding: 10px 0;">{{$data->total_tax->tax ?? ' '}}</td>
                                         <td class="table-bordered">00</td>
                                     </tr>
                                 </table>
