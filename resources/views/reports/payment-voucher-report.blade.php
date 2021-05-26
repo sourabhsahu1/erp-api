@@ -278,8 +278,8 @@
                     @foreach($data->date as $var)
                         <td>{{$var}}</td>
                     @endforeach
-                    <td colspan="10">{{$data->total_tax->tax ?? ' '}}</td>
-                     <td class="table-bordered">00</td>
+                    <td colspan="10">{{explode('.', $data->total_amount->amount)[0]}}</td>
+                     <td class="table-bordered">{{explode('.', $data->total_amount->amount)[1]}}</td>
                 </tr>
             </table>
         </div>
@@ -326,10 +326,10 @@
                     </td>
                     <td class="table-bordered bind-data"
                         style="text-align: center;vertical-align: baseline; padding: 10px">
-                        {{(int)$payee->net_amount}}
+                        {{explode('.', $payee->net_amount)[0]}}
                     </td>
                     <td class="table-bordered bind-data"
-                        style="text-align: center;vertical-align: baseline; padding: 10px">{{round(($payee->net_amount - intval($payee->net_amount)),2)}}
+                        style="text-align: center;vertical-align: baseline; padding: 10px">{{explode('.', $payee->net_amount)[1] ?? 00}}
                     </td>
                 </tr>
             @endforeach
@@ -343,11 +343,12 @@
                     passed for : <span
                         style="font-weight: bold">{{isset($data->total_amount) ? ucfirst($f->format($data->total_amount->amount)) . ' Naira Only.': ' '}}</span>
                 </td>
+
                 <td class="table-bordered" style="text-align: center;">Total</td>
                 <td class="table-bordered bind-data"
-                    style="text-align: center; font-weight: bold">{{(int)$data->total_amount->amount}}</td>
+                    style="text-align: center; font-weight: bold">{{explode('.', $data->total_amount->amount)[0]}}</td>
                 <td class="table-bordered bind-data"
-                    style="text-align: center; font-weight: bold">{{round(($data->total_amount->amount - intval($data->total_amount->amount)),2)}}</td>
+                    style="text-align: center; font-weight: bold">{{explode('.', $data->total_amount->amount)[1]}}</td>
             </tr>
             </tbody>
         </table>
@@ -395,13 +396,13 @@
                                              style="width: 70%; float: right">{{strtoupper($data->default_setting->account_head->name)  ?? " "}}
                                         </div>
                                     </div>
-                                    <div style="width: 30%; float: left">
+                                    <div style="width: 30%; float: right">
                                         <div style="width: 20%; float: left" class="label_font_family">
                                             Date
                                         </div>
                                         <div class="border-bottom-only text-center bind-data text_font_family text-bold"
                                              style="width: 80%; float: right">
-
+                                            &nbsp;
                                         </div>
                                     </div>
                                 </div>
