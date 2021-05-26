@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Admin\Models\CompanyInformation;
 use Modules\Admin\Models\CompanySetting;
 use Modules\Admin\Models\Tax;
 use Modules\Finance\Models\Currency;
@@ -274,7 +275,7 @@ class PaymentRepository extends EloquentBaseRepository
                     }
                     if ($remAmount === $amount) {
                         PaymentApproval::where('id', $paymentApproval->id)->update([
-                            'status' => AppConstant::PAYMENT_APPROVAL_NEW
+                            'status' => AppConstant::PAYMENT_APPROVAL_APPROVED_AND_READY
                         ]);
                     } else {
                         PaymentApproval::where('id', $paymentApproval->id)->update([
@@ -654,7 +655,7 @@ class PaymentRepository extends EloquentBaseRepository
             'checking_officer',
             'financial_controller'
         ])->find($data['data']['id']);
-
+        $companyInformation = CompanyInformation::find(1);
 
         $payees = " ";
         $address = " ";
@@ -684,7 +685,7 @@ class PaymentRepository extends EloquentBaseRepository
         $finalPayeesText = $count > 0 ? $payees . '+' . $count : $payees;
         $paymentV->final_payees_text = $finalPayeesText;
         $paymentV->address = $address;
-
+        $paymentV->deptalKey = $companyInformation->short_code.'/'.$paymentV->voucher_source_unit->short_name.'/'.$paymentV->deptal_id.'/'.Carbon::parse($paymentV->value_date)->year;
         app()->make(WKHTMLPDfConverter::class)
             ->convert(view('reports.payment-voucher-tax-report', ['data' => $paymentV])->render(), $fileName);
 
@@ -696,6 +697,7 @@ class PaymentRepository extends EloquentBaseRepository
         $fileName = 'payment-voucher' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
         $filePath = "pdf/";
 
+        /** @var PaymentVoucher $paymentV */
         $paymentV = PaymentVoucher::with([
             'program_segment',
             'economic_segment',
@@ -716,6 +718,7 @@ class PaymentRepository extends EloquentBaseRepository
             'financial_controller'
         ])->find($params['inputs']['id']);
 
+        $companyInformation = CompanyInformation::find(1);
         $payees = " ";
         $address = " ";
         $count = -1;
@@ -744,6 +747,7 @@ class PaymentRepository extends EloquentBaseRepository
         $finalPayeesText = $count > 0 ? $payees . '+' . $count : $payees;
         $paymentV->final_payees_text = $finalPayeesText;
         $paymentV->address = $address;
+        $paymentV->deptalKey = $companyInformation->short_code.'/'.$paymentV->voucher_source_unit->short_name.'/'.$paymentV->deptal_id.'/'.Carbon::parse($paymentV->value_date)->year;
 
         if (isset($params['inputs']['bs'])) {
             app()->make(WKHTMLPDfConverter::class)

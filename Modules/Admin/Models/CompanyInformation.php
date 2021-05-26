@@ -11,16 +11,17 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CompanyInformation
- * 
+ *
  * @property int $id
  * @property string $name
+ * @property string $short_code
  * @property string $address
  * @property string $email
  * @property string $phone
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * 
+ *
  * @property \Illuminate\Database\Eloquent\Collection $company_settings
  *
  * @package Modules\Admin\Models
@@ -32,6 +33,7 @@ class CompanyInformation extends Eloquent
 
 	protected $fillable = [
 		'name',
+		'short_code',
 		'address',
 		'email',
 		'phone'

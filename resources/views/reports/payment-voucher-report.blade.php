@@ -49,32 +49,53 @@
         .width-10px {
             width: 10px;
         }
-
+        .cell-size{
+            width: 15px;
+            height: 15px;
+        }
 
         .bind-data {
             font-size: 17px;
+        }
+        .description_table > tr > td{
+            border-bottom: none;
+            border-top: none;
+        }
+        .description_table > tr:last-child >td{
+            border-bottom:  1px solid black;!important;
+            border-top:  1px solid black;!important;
+        }
+        .description_table > tr:last-child > td:first-child{
+            border-top: none;
+            border-bottom: none;
+        }
+        .description_table > tr:last-child > td:nth-child(2){
+            border-top: none;
+            border-bottom: none;
         }
     </style>
 </head>
 <body>
 <div style="width: 90%; height: auto; margin: 0px auto;">
     <div style="width: 100%; padding-top: 40px; padding-bottom: 50px">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 3rem" class="text_font_family">
-            <div style="font-weight: bold">ORIGINAL</div>
-            <div>Treasury</div>
-        </div>
+        <table style="width: 100%;">
+            <tr>
+                <td style="text-align: left; font-weight: bold">ORIGINAL</td>
+                <td style="text-align: right">Treasury F1</td>
+            </tr>
+        </table>
         <div class="label_font_family">
-            <h2 style="text-align: center; margin-top: -30px; font-size: 1.5rem!important;">HQ, ABUJA</h2>
+            <h2 style="text-align: center; margin-bottom: 8px; font-size: 1.5rem!important;">HQ, ABUJA</h2>
             <h2 class="bind-data"
-                style="text-align: center; margin-top: -15px; margin-bottom: 0;font-size: 1.2rem!important;">{{$data->admin_segment->name ?? " "}}</h2>
-            <h2 style="text-align: center; margin-top: 0; margin-bottom: 0;font-size: 1.5rem!important;">Capital Expdtr. Pymt Voucher</h2>
+                style="text-align: center; margin-bottom: 10px; margin-top: 0; font-size: 1.5rem!important;">{{$data->admin_segment->name ?? " "}}</h2>
+            <h2 style="text-align: center; margin-bottom: 10px; margin-top: 0; font-size: 1.5rem!important;">Capital Expdtr. Pymt Voucher</h2>
         </div>
         <table style="margin-top: 30px; width: 100%">
             <tr>
                 <td>
                     <div style="font-size: 17px">
                         <label class="label_font_family">Deptal No: </label>
-                        <input class="bind-data text_font_family" type="text" value="{{$data->deptal_id}}"
+                        <input class="bind-data text_font_family" type="text" value="{{$data->deptalKey}}"
                                style="text-align: center; font-weight: bold"/>
                     </div>
                 </td>
@@ -84,13 +105,13 @@
                     <div style="text-align: right; font-size: 17px">
                         <label class="label_font_family">Checked and passed for payment at : </label>
                         <input type="text" class="bind-data text_font_family"
-                               value="{{\Illuminate\Support\Carbon::parse($data->value_date)->toDateString()}}"
+                               value="{{\Illuminate\Support\Carbon::parse($data->value_date)->format('d/m/Y')}}"
                                style="text-align: center; font-weight: bold"/>
                     </div>
                 </td>
             </tr>
         </table>
-        <table style="margin-top: 30px; width: 100%">
+        <table style="width: 100%">
             <tr>
                 <td>
                     <table>
@@ -125,10 +146,10 @@
                 <td style="text-align: center">
                     <table style="width: 100%; margin-top: 15px" class="table-bordered">
                         <tr>
-                            <td style="width: 120px; text-align: center;" class="table-bordered">
+                            <td style="width: 25%; text-align: center;" class="table-bordered">
                                 <label class="label_font_family">Station</label>
                             </td>
-                            <td style="width: 300px; text-align: center" class="table-bordered bind-data">
+                            <td style="width: 75%; text-align: center" class="table-bordered bind-data">
                                 <div style="font-weight: bold;">
                                     <label
                                         class="text_font_family">{{$data->default_setting->account_head->name ?? " "}}</label>
@@ -136,20 +157,20 @@
                             </td>
                         </tr>
                         <tr>
-                            <td style="width: 120px; padding: 10px 0; text-align: center;" class="table-bordered">
+                            <td style="width: 25%; padding: 10px 0; text-align: center;" class="table-bordered">
                                 <label class="label_font_family">Admin</label>
                             </td>
-                            <td style="width: 300px; text-align: center" class="table-bordered bind-data">
+                            <td style="width: 75%; text-align: left" class="table-bordered bind-data">
                                 <div style="padding: 10px 0; font-weight: bold;">
                                     <label class="text_font_family">{{$data->admin_segment->name ?? " "}}</label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
-                            <td style="width: 120px; text-align: center;" class="table-bordered">
+                            <td style="width: 25%; text-align: center;" class="table-bordered">
                                 <label class="label_font_family">Economic</label>
                             </td>
-                            <td style="width: 300px; text-align: center" class="table-bordered bind-data">
+                            <td style="width: 75%; text-align: left" class="table-bordered bind-data">
                                 <div style=" font-weight: bold; text-align: left">
                                     <label class="text_font_family">{{$data->economic_segment->name ?? " "}}</label>
                                 </div>
@@ -161,28 +182,28 @@
             <tr>
 
                 <td>
-                    <table style="width: 100%; margin-top: -20px;" class="table-bordered">
+                    <table style="width: 100%; margin-top: -23px;" class="table-bordered">
                         <tr>
-                            <td style="text-align: center; width: 60%" class="table-bordered bind-data" colspan="12">
+                            <td style="text-align: center;" class="table-bordered bind-data" colspan="12">
                                 <label class="label_font_family">Administrative Segment</label>
                             </td>
-                            <td style="text-align: center; width: 40%" class="table-bordered bind-data" colspan="8">
+                            <td style="text-align: center;" class="table-bordered bind-data" colspan="8">
                                 <label class="label_font_family">Economic Segment</label>
                             </td>
                         </tr>
                         <tr style="font-weight: bold" class="text_font_family">
                             @foreach(str_split(str_replace('-','',$data->admin_segment->combined_code)) as $var)
-                                <td class="table-bordered width-10px bind-data"
+                                <td class="table-bordered cell-size bind-data"
                                     style="text-align: center; padding: 10px 0">{{$var}}</td>
                             @endforeach
 
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0"></td>
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0"></td>
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0"></td>
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0"></td>
 
                             @foreach(str_split(str_replace('-','',$data->economic_segment->combined_code)) as $var)
-                                <td class="table-bordered width-10px"
+                                <td class="table-bordered cell-size"
                                     style="text-align: center; padding: 10px 0">{{$var}}</td>
                             @endforeach
                         </tr>
@@ -195,51 +216,51 @@
                 <td>
                     <table style="width: 89.5%" class="table-bordered">
                         <tr>
-                            <td class="table-bordered bind-data" style="text-align: center; width: 15%" colspan="{{strlen(str_replace('-','',$data->functional_segment->combined_code)) + 3}}">
+                            <td class="table-bordered bind-data" style="text-align: center;" colspan="{{strlen(str_replace('-','',$data->functional_segment->combined_code)) + 3}}">
                                 <label class="label_font_family">Functional Segment</label>
                             </td>
-                            <td class="table-bordered bind-data" style="text-align: center; width: 15%" colspan="{{strlen(str_replace('-','',$data->program_segment->combined_code)) + 1}}">
+                            <td class="table-bordered bind-data" style="text-align: center;" colspan="{{strlen(str_replace('-','',$data->program_segment->combined_code)) + 1}}">
                                 <label class="label_font_family">Programme Segment</label>
                             </td>
-                            <td class="table-bordered bind-data" style="text-align: center; width: 15%" colspan="{{strlen(str_replace('-','',$data->fund_segment->combined_code)) + 4}}">
+                            <td class="table-bordered bind-data" style="text-align: center;" colspan="{{strlen(str_replace('-','',$data->fund_segment->combined_code)) + 4}}">
                                 <label class="label_font_family">Fund Segment</label>
                             </td>
-                            <td class="table-bordered bind-data" style="text-align: center; width: 25%" colspan="{{strlen(str_replace('-','',$data->geo_code_segment->combined_code)) + 4}}">
+                            <td class="table-bordered bind-data" style="text-align: center;" colspan="{{strlen(str_replace('-','',$data->geo_code_segment->combined_code)) + 4}}">
                                 <label class="label_font_family">Geo Code Segment</label>
                             </td>
                         </tr>
                         <tr style="font-weight: bold" class="text_font_family">
                             @foreach(str_split(str_replace('-','',$data->functional_segment->combined_code)) as $var)
-                                <td class="table-bordered width-10px bind-data"
+                                <td class="table-bordered cell-size bind-data"
                                     style="text-align: center; padding: 10px 0;">{{$var}}
                                 </td>
                             @endforeach
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0;"></td>
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0;"></td>
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0;"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0;"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0;"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0;"></td>
                             @foreach(str_split(str_replace('-','',$data->program_segment->combined_code)) as $var)
-                                <td class="table-bordered width-10px bind-data"
+                                <td class="table-bordered cell-size bind-data"
                                     style="text-align: center; padding: 10px 0;">{{$var}}
                                 </td>
                             @endforeach
-                            <td class="table-bordered width-10px"
+                            <td class="table-bordered cell-size"
                                 style="text-align: center; padding: 10px 0;"></td>
                             @foreach(str_split(str_replace('-','',$data->fund_segment->combined_code)) as $var)
-                                <td class="table-bordered width-10px bind-data"
+                                <td class="table-bordered cell-size bind-data"
                                     style="text-align: center; padding: 10px 0;">{{$var}}
                                 </td>
                             @endforeach
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0;"></td>
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0;"></td>
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0;"></td>
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0;"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0;"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0;"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0;"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0;"></td>
                             @foreach(str_split(str_replace('-','',$data->geo_code_segment->combined_code)) as $var)
-                                <td class="table-bordered width-10px bind-data" style="text-align: center; padding: 10px 0;">{{$var}}</td>
+                                <td class="table-bordered cell-size bind-data" style="text-align: center; padding: 10px 0;">{{$var}}</td>
                             @endforeach
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0;"></td>
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0;"></td>
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0;"></td>
-                            <td class="table-bordered width-10px" style="text-align: center; padding: 10px 0;"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0;"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0;"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0;"></td>
+                            <td class="table-bordered cell-size" style="text-align: center; padding: 10px 0;"></td>
                         </tr>
                     </table>
                 </td>
@@ -251,16 +272,16 @@
                             <td style="width: 500px; text-align: center">
                                 <table class="width-100-per table-bordered" style="margin-left: -3px; margin-top: -8px">
                                     <tr>
-                                        <td class="text-center table-bordered bind-data" colspan="{{strlen(str_replace('-','',\Illuminate\Support\Carbon::parse($data->value_date)->toDateString()))}}"><label>Date</label></td>
+                                        <td class="text-center table-bordered bind-data" colspan="{{strlen(str_replace('/','',\Illuminate\Support\Carbon::parse($data->value_date)->format('d/m/Y')))}}"><label>Date</label></td>
                                         <td class="text-center table-bordered bind-data" colspan="2"><label>Amount (Naira)</label>
                                         </td>
                                     </tr>
                                     <tr style="font-weight: bold" class="text_font_family">
-                                        @foreach(str_split(str_replace('-','',\Illuminate\Support\Carbon::parse($data->value_date)->toDateString())) as $var)
-                                            <td class="table-bordered bind-data" style="text-align: center; padding: 10px 0;">{{$var}}</td>
+                                        @foreach(str_split(str_replace('/','',\Illuminate\Support\Carbon::parse($data->value_date)->format('d/m/Y'))) as $var)
+                                            <td class="table-bordered bind-data cell-size" style="text-align: center; padding: 10px 0;">{{$var}}</td>
                                         @endforeach
-                                        <td class="table-bordered bind-data" style="text-align: center; padding: 10px 0;">{{$data->total_amount->amount ?? ' '}}</td>
-                                        <td class="table-bordered">00</td>
+                                        <td class="table-bordered bind-data cell-size" style="text-align: center; padding: 10px 0;">{{$data->total_amount->amount ?? ' '}}</td>
+                                        <td class="table-bordered cell-size">00</td>
                                     </tr>
                                 </table>
                             </td>
@@ -293,24 +314,24 @@
                 <th class="table-bordered" style="text-align: center; width: 5%; padding: 10px 0">K</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody class="description_table">
             <?php  $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);?>
             @foreach($data->payee_vouchers as $payee)
-            <tr style="font-weight: bold" class="text_font_family">
-                <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline;padding: 10px">{{\Illuminate\Support\Carbon::parse($payee->created_at)->toDateString()}}</td>
-                <td class="table-bordered bind-data" style="text-align: left;vertical-align: baseline; padding: 10px">{{isset($payee->company_id) ? $payee->admin_company->name : $payee->employee->first_name .' '.$payee->employee->last_name}}</td>
-                <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline; padding: 10px">
-                    {{$payee->details}}
-                </td>
-                <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline; padding: 10px">
-                    1
-                </td>
-                <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline; padding: 10px">
-                    {{$payee->net_amount}}
-                </td>
-                <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline; padding: 10px">00
-                </td>
-            </tr>
+                <tr style="font-weight: bold" class="text_font_family">
+                    <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline;padding: 10px">{{\Illuminate\Support\Carbon::parse($payee->created_at)->toDateString()}}</td>
+                    <td class="table-bordered bind-data" style="text-align: left;vertical-align: baseline; padding: 10px">{{isset($payee->company_id) ? $payee->admin_company->name : $payee->employee->first_name .' '.$payee->employee->last_name}}</td>
+                    <td class="table-bordered bind-data" style="text-align: left;vertical-align: baseline; padding: 10px">
+                        {{$payee->details}}
+                    </td>
+                    <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline; padding: 10px">
+                        1
+                    </td>
+                    <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline; padding: 10px">
+                        {{$payee->net_amount}}
+                    </td>
+                    <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline; padding: 10px">00
+                    </td>
+                </tr>
             @endforeach
             <tr class="text_font_family">
                 <td class="table-bordered" style="text-align: center;vertical-align: baseline; padding: 15px 10px"></td>
@@ -329,7 +350,7 @@
         </table>
         <table style="border-collapse: collapse">
             <tr>
-                <td style="width: 50%; border: 1px solid #000; border-top: 0">
+                <td style="width: 50%; border: 1px solid #000; border-top: 0; vertical-align: baseline;">
                     <table style="width: 100%; padding: 0 10px">
                         <tr>
                             <td style="padding: 5px; width: 20%; vertical-align: bottom" class="label_font_family">
@@ -417,7 +438,7 @@
                         </tr>
                     </table>
                 </td>
-                <td style="width: 50%; padding: 15px">
+                <td style="width: 50%; padding: 5px 15px">
                     <table style="width: 100%;">
                         <tr>
                             <td style="text-align: center;" class="label_font_family">Certificate</td>
@@ -525,8 +546,7 @@
             <tr class="text_font_family">
                 <td class="table-bordered text-bold" style="width: 15%; padding: 10px 0">N</td>
                 <td class="table-bordered text-bold" style="width: 15%; text-align: right; padding: 10px 0">K</td>
-                <td style="width: 16%;text-align: right">
-                    <span style="margin-left: 10px;vertical-align: bottom;">Date</span>
+                <td style="width: 16%;text-align: right;vertical-align: bottom;">Date
                 </td>
                 <td style="width: 16%;" class="border-bottom-only"></td>
                 <td style="width: 16%; vertical-align: bottom; text-align: right">Place</td>
@@ -537,5 +557,4 @@
 </div>
 </body>
 </html>
-
 
