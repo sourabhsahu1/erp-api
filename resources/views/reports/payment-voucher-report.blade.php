@@ -328,8 +328,9 @@
                         style="text-align: center;vertical-align: baseline; padding: 10px">
                         {{explode('.', $payee->net_amount)[0]}}
                     </td>
+{{--                    {{dd(explode('.', $payee->net_amount)[1])}}--}}
                     <td class="table-bordered bind-data"
-                        style="text-align: center;vertical-align: baseline; padding: 10px">{{explode('.', $payee->net_amount)[1] ?? 00}}
+                        style="text-align: center;vertical-align: baseline; padding: 10px">{{(explode('.', $payee->net_amount)[1] ?? 00)*10}}
                     </td>
                 </tr>
             @endforeach
@@ -343,7 +344,6 @@
                     passed for : <span
                         style="font-weight: bold">{{isset($data->total_amount) ? ucfirst($f->format($data->total_amount->amount)) . ' Naira Only.': ' '}}</span>
                 </td>
-
                 <td class="table-bordered" style="text-align: center;">Total</td>
                 <td class="table-bordered bind-data"
                     style="text-align: center; font-weight: bold">{{explode('.', $data->total_amount->amount)[0]}}</td>
