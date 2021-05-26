@@ -388,19 +388,19 @@
 
                         <tr>
                             <td colspan="2">
-                                <div style="display: flex; flex-flow: row">
-                                    <div style="display: flex; flex-flow: row; width: 70%">
-                                        <div style="width: 30%" class="label_font_family">Station</div>
+                                <div>
+                                    <div style="width: 70%; float: left">
+                                        <div style="width: 30%; float: left" class="label_font_family">Station</div>
                                         <div class="border-bottom-only text-center bind-data text_font_family text-bold"
-                                             style="width: 70%">{{strtoupper($data->default_setting->account_head->name)  ?? " "}}
+                                             style="width: 70%; float: right">{{strtoupper($data->default_setting->account_head->name)  ?? " "}}
                                         </div>
                                     </div>
-                                    <div style="width: 30%">
-                                        <div style="width: 20%" class="label_font_family">
+                                    <div style="width: 30%; float: left">
+                                        <div style="width: 20%; float: left" class="label_font_family">
                                             Date
                                         </div>
                                         <div class="border-bottom-only text-center bind-data text_font_family text-bold"
-                                             style="width: 80%">
+                                             style="width: 80%; float: right">
 
                                         </div>
                                     </div>
