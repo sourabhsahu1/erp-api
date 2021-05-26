@@ -758,6 +758,16 @@ class PaymentRepository extends EloquentBaseRepository
         }
         $paymentV['es_code'] = $esCombineCodes;
 
+        $eCombineCodes = str_split(str_replace('-','',$paymentV->economic_segment->combined_code));
+        if (count($eCombineCodes) < 8) {
+            $esTds = 8 - count($eCombineCodes);
+            while ($esTds > 0) {
+                $eCombineCodes[] = '';
+                $esTds--;
+            }
+        }
+        $paymentV['e_code'] = $eCombineCodes;
+
         $fCombineCode = str_split(str_replace('-', '', $paymentV->functional_segment->combined_code));
         if (count($fCombineCode) < 5) {
             $esTds = 5 - count($fCombineCode);
@@ -798,9 +808,9 @@ class PaymentRepository extends EloquentBaseRepository
         }
         $paymentV['g_code'] = $gCombineCode;
 
-        $paymentV['date'] = str_split(Carbon::parse($paymentV->value_date)->format('D'));
-        $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('M')));
-        $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('YYYY')));
+        $paymentV['date'] = str_split(Carbon::parse($paymentV->value_date)->format('d'));
+        $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('m')));
+        $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('y')));
 
         if (isset($params['inputs']['bs'])) {
             app()->make(WKHTMLPDfConverter::class)

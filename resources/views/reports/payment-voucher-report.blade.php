@@ -243,7 +243,7 @@
                     @foreach($data->es_code as $var)
                         <td>{{$var}}</td>
                     @endforeach
-                    @foreach(str_split(str_replace('-','',$data->economic_segment->combined_code)) as $var)
+                    @foreach( as $var)
                             <td>{{$var}}</td>
                     @endforeach
                 </tr>
