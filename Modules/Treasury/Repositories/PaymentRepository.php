@@ -811,7 +811,7 @@ class PaymentRepository extends EloquentBaseRepository
 
         $paymentV['date'] = str_split(Carbon::parse($paymentV->value_date)->format('d'));
         $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('m')));
-        $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('y')));
+        $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('Y')));
 
         if (isset($params['inputs']['bs'])) {
             app()->make(WKHTMLPDfConverter::class)

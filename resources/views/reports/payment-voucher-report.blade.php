@@ -168,7 +168,7 @@
 </head>
 <body>
 <div style="width: 90%; height: auto; margin: 0px auto;">
-    <div style="width: 100%; padding-top: 40px; padding-bottom: 50px">
+    <div style="width: 100%; padding-top: 10px; padding-bottom: 10px">
         <table style="width: 100%;">
             <tr>
                 <td style="text-align: left; font-weight: bold">ORIGINAL</td>
@@ -395,7 +395,7 @@
                                              style="width: 70%">{{strtoupper($data->default_setting->account_head->name)  ?? " "}}
                                         </div>
                                     </div>
-                                    <div style="display: flex; flex-flow: row; width: 30%">
+                                    <div style="width: 30%">
                                         <div style="width: 20%" class="label_font_family">
                                             Date
                                         </div>
