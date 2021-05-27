@@ -233,7 +233,6 @@ class PaymentRepository extends EloquentBaseRepository
 
     public function delete($data)
     {
-
         DB::beginTransaction();
         try {
             /** @var PaymentVoucher $paymentVoucher */
@@ -249,28 +248,35 @@ class PaymentRepository extends EloquentBaseRepository
 
                     /** @var PaymentApprovalPayee $approval_payee */
 
-                    $remAmount = 0;
-                    $amount = 0;
                     foreach ($paymentApproval->payment_approval_payees as $approval_payee) {
                         $employeeId = $approval_payee->employee_id;
                         $companyId = $approval_payee->company_id;
                         /** @var PayeeVoucher $payee */
                         foreach ($paymentVoucher->payee_vouchers as $payee) {
-                            //todo chcek for empid and comany id
+                            // chcek for empid and company id
                             if (($payee->employee_id === $approval_payee->employee_id) || ($payee->company_id === $approval_payee->company_id)) {
+
                                 PaymentApprovalPayee::where('id', $approval_payee->id)->update([
                                     'remaining_amount' => $approval_payee->remaining_amount + $payee->net_amount
                                 ]);
-                                $paymentApproval->status = AppConstant::PAYMENT_APPROVAL_READY_FOR_PV;
-                                $paymentApproval->save();
+
                                 PayeeVoucher::where('employee_id', $employeeId)
                                     ->where('company_id', $companyId)
                                     ->where('payment_voucher_id', $payee->payment_voucher_id)
                                     ->delete();
                             }
                         }
+                    }
+                    $remAmount = 0;
+                    $amount = 0;
+                    $paymentApproval = PaymentApproval::with([
+                        'payment_approval_payees'
+                    ])->find($paymentVoucher->payment_approve_id);
+
+                    foreach ($paymentApproval->payment_approval_payees as $approval_payee) {
                         $remAmount = $remAmount + $approval_payee->remaining_amount;
                         $amount = $amount + $approval_payee->net_amount;
+
                     }
                     if ($remAmount === $amount) {
                         PaymentApproval::where('id', $paymentApproval->id)->update([
@@ -758,7 +764,7 @@ class PaymentRepository extends EloquentBaseRepository
         }
         $paymentV['es_code'] = $esCombineCodes;
 
-        $eCombineCodes = str_split(str_replace('-','',$paymentV->economic_segment->combined_code));
+        $eCombineCodes = str_split(str_replace('-', '', $paymentV->economic_segment->combined_code));
         if (count($eCombineCodes) < 8) {
             $esTds = 8 - count($eCombineCodes);
             while ($esTds > 0) {
