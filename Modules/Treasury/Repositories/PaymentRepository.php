@@ -437,7 +437,7 @@ class PaymentRepository extends EloquentBaseRepository
                             'value' => AppConstant::VOUCHER_TYPE_REMITTANCE_VOUCHER
                         ],
                         [
-                            'name' => 'EXPENDITURE VOUCHER',
+                            'name' => 'EXP  ENDITURE VOUCHER',
                             'value' => AppConstant::VOUCHER_TYPE_EXPENDITURE_VOUCHER
                         ], [
                             'name' => 'CREDIT VOUCHER',
@@ -813,7 +813,7 @@ class PaymentRepository extends EloquentBaseRepository
         $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('m')));
         $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('Y')));
 
-        $amounts = explode('.', $paymentV->total_amount->amount)[1];
+        $amounts = explode('.', $paymentV->total_amount->amount);
         $paymentV['amount'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amounts[0]);
         $paymentV['paisa'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amounts[1] ?? 00);
 
