@@ -691,6 +691,78 @@ class PaymentRepository extends EloquentBaseRepository
         $paymentV->final_payees_text = $finalPayeesText;
         $paymentV->address = $address;
         $paymentV->deptalKey = $companyInformation->short_code . '/' . $paymentV->voucher_source_unit->short_name . '/' . $paymentV->deptal_id . '/' . Carbon::parse($paymentV->value_date)->year;
+
+
+        $esCombineCodes = str_split(str_replace('-', '', $paymentV->admin_segment->combined_code));
+        if (count($esCombineCodes) < 12) {
+            $esTds = 12 - count($esCombineCodes);
+            while ($esTds > 0) {
+                $esCombineCodes[] = '';
+                $esTds--;
+            }
+        }
+        $paymentV['es_code'] = $esCombineCodes;
+
+        $eCombineCodes = str_split(str_replace('-', '', $paymentV->economic_segment->combined_code));
+        if (count($eCombineCodes) < 8) {
+            $esTds = 8 - count($eCombineCodes);
+            while ($esTds > 0) {
+                $eCombineCodes[] = '';
+                $esTds--;
+            }
+        }
+        $paymentV['e_code'] = $eCombineCodes;
+
+        // New
+        $fCombineCode = str_split(str_replace('-', '', $paymentV->functional_segment->combined_code));
+        /*if (count($fCombineCode) < 5) {
+            $esTds = 5 - count($fCombineCode);
+            while ($esTds > 0) {
+                $fCombineCode[] = '';
+                $esTds--;
+            }
+        }*/
+        $paymentV['f_code'] = $fCombineCode;
+
+        $psCombineCode = str_split(str_replace('-', '', $paymentV->program_segment->combined_code));
+        /*if (count($psCombineCode) < 14) {
+            $esTds = 14 - count($psCombineCode);
+            while ($esTds > 0) {
+                $psCombineCode[] = '';
+                $esTds--;
+            }
+        }*/
+        $paymentV['ps_code'] = $psCombineCode;
+
+        $fsCombineCode = str_split(str_replace('-', '', $paymentV->fund_segment->combined_code));
+        /*if (count($fsCombineCode) < 5) {
+            $esTds = 5 - count($fsCombineCode);
+            while ($esTds > 0) {
+                $fsCombineCode[] = '';
+                $esTds--;
+            }
+        }*/
+        $paymentV['fs_code'] = $fsCombineCode;
+
+        $gCombineCode = str_split(str_replace('-', '', $paymentV->geo_code_segment->combined_code));
+        /*if (count($gCombineCode) < 8) {
+            $esTds = 8 - count($gCombineCode);
+            while ($esTds > 0) {
+                $gCombineCode[] = '';
+                $esTds--;
+            }
+        }*/
+        $paymentV['g_code'] = $gCombineCode;
+
+        $paymentV['date'] = str_split(Carbon::parse($paymentV->value_date)->format('d'));
+        $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('m')));
+        $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('Y')));
+
+        $amounts = explode('.', $paymentV->total_tax->tax);
+        $paymentV['amount'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amounts[0]);
+        $paymentV['paisa'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amounts[1] ?? 00);
+
+
         app()->make(WKHTMLPDfConverter::class)
             ->convert(view('reports.payment-voucher-tax-report', ['data' => $paymentV])->render(), $fileName);
 

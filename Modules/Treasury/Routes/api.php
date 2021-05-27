@@ -116,5 +116,5 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
 Route::get('payment-vouchers/{id}/download', 'PaymentVoucherController@downloadPaymentReport');
 
 
-
+Route::get('payment-voucher-tax/{id}/download', 'PaymentVoucherController@downloadPaymentTaxReport');
 
