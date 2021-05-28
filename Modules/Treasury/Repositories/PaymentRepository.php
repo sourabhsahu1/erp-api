@@ -848,49 +848,44 @@ class PaymentRepository extends EloquentBaseRepository
 
         // New
         $fCombineCode = str_split(str_replace('-', '', $paymentV->functional_segment->combined_code));
-        /*if (count($fCombineCode) < 5) {
+        if (count($fCombineCode) < 5) {
             $esTds = 5 - count($fCombineCode);
             while ($esTds > 0) {
                 $fCombineCode[] = '';
                 $esTds--;
             }
-        }*/
+        }
         $paymentV['f_code'] = $fCombineCode;
 
         $psCombineCode = str_split(str_replace('-', '', $paymentV->program_segment->combined_code));
-        /*if (count($psCombineCode) < 14) {
+        if (count($psCombineCode) < 14) {
             $esTds = 14 - count($psCombineCode);
             while ($esTds > 0) {
                 $psCombineCode[] = '';
                 $esTds--;
             }
-        }*/
+        }
         $paymentV['ps_code'] = $psCombineCode;
 
         $fsCombineCode = str_split(str_replace('-', '', $paymentV->fund_segment->combined_code));
-        /*if (count($fsCombineCode) < 5) {
+        if (count($fsCombineCode) < 5) {
             $esTds = 5 - count($fsCombineCode);
             while ($esTds > 0) {
                 $fsCombineCode[] = '';
                 $esTds--;
             }
-        }*/
+        }
         $paymentV['fs_code'] = $fsCombineCode;
 
         $gCombineCode = str_split(str_replace('-', '', $paymentV->geo_code_segment->combined_code));
-        /*if (count($gCombineCode) < 8) {
+        if (count($gCombineCode) < 8) {
             $esTds = 8 - count($gCombineCode);
             while ($esTds > 0) {
                 $gCombineCode[] = '';
                 $esTds--;
             }
-        }*/
-        $paymentV['g_code'] = $gCombineCode;
-
-        // add extra column if combined code length is less than 32
-        if ($rem = 32 - (count($paymentV['f_code']) + count($paymentV['ps_code']) + count($paymentV['fs_code']) + count($paymentV['g_code']))) {
-            $paymentV['combine_code_extra'] = $rem;
         }
+        $paymentV['g_code'] = $gCombineCode;
 
         $paymentV['date'] = str_split(Carbon::parse($paymentV->value_date)->format('d'));
         $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('m')));
