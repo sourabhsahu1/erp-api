@@ -118,3 +118,5 @@ Route::get('payment-vouchers/{id}/download', 'PaymentVoucherController@downloadP
 
 Route::get('payment-voucher-tax/{id}/download', 'PaymentVoucherController@downloadPaymentTaxReport');
 
+Route::get('receipt-vouchers', 'ReceiptVoucherController@index');
+Route::get('payment-vouchers', 'PaymentVoucherController@index');

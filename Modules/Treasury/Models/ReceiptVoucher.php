@@ -109,7 +109,7 @@ class ReceiptVoucher extends Eloquent
         'cashbook_id'
     ];
 
-    protected $appends = ['year', 'types'];
+    protected $appends = ['year', 'types','payee_names'];
 
     public function getYearAttribute()
     {
@@ -122,7 +122,29 @@ class ReceiptVoucher extends Eloquent
             'name' => str_replace('_',' ', $this->type)
         ];
     }
+    public function getPayeeNamesAttribute()
+    {
+        $payees = '';
+        $count = -1;
+        $receiptV = ReceiptVoucher::with([
+            'receipt_payees.admin_company.company_bank.bank_branch.hr_bank',
+            'receipt_payees.employee.employee_bank.branches.hr_bank',
+        ])->find($this->id);
+        foreach ($receiptV->receipt_payees as $receipt_payee) {
+            if ($receipt_payee->employee_id) {
+                $payees = $receipt_payee->employee->first_name . ' ';
+            } elseif($receipt_payee->company_id) {
+                $payees = $receipt_payee->admin_company->name . ' ';
+            }
+            $count += 1;
+        }
 
+        if ($count > 0) {
+            return $payees.' +'.$count;
+        }else{
+            return $payees;
+        }
+    }
 
     public function program_segment()
     {

@@ -128,7 +128,30 @@ class PaymentVoucher extends Eloquent
         'is_previous_year_advance'
     ];
 
-    protected $appends = ['year', 'types','is_checked', 'is_payed', 'is_audited','is_approved'];
+    protected $appends = ['year', 'types','is_checked', 'is_payed', 'is_audited','is_approved','payee_names'];
+
+    public function getPayeeNamesAttribute()
+    {
+        $payees = '';
+        $count = -1;
+        $paymentV = PaymentVoucher::with([
+            'payee_vouchers.admin_company.company_bank.bank_branch.hr_bank',
+            'payee_vouchers.employee.employee_bank.branches.hr_bank',
+        ])->find($this->id);
+        foreach ($paymentV->payee_vouchers as $payee_voucher) {
+            if ($payee_voucher->employee_id) {
+                $payees = $payee_voucher->employee->first_name . ' ';
+            } elseif($payee_voucher->company_id) {
+                $payees = $payee_voucher->admin_company->name . ' ';
+            }
+            $count += 1;
+        }
+        if ($count > 0) {
+            return $payees.' +'.$count;
+        }else{
+            return $payees;
+        }
+    }
 
     public function getYearAttribute()
     {
@@ -235,7 +258,6 @@ class PaymentVoucher extends Eloquent
     public function payee_vouchers() {
         return $this->hasMany(\Modules\Treasury\Models\PayeeVoucher::class, 'payment_voucher_id');
     }
-
 
     public function schedule_economic() {
         return $this->hasMany(\Modules\Treasury\Models\ScheduleEconomic::class, 'payment_voucher_id');
