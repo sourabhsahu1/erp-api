@@ -252,7 +252,9 @@
                     <th colspan="{{count($data->ps_code)}}">Programme Segment</th>
                     <th colspan="{{count($data->fs_code)}}">Fund Segment</th>
                     <th colspan="{{count($data->g_code)}}">Geo Code Segment</th>
-{{--                    <th class="border-none"></th>--}}
+                    @if(isset($data['combine_code_extra']))
+                       <th class="border-none" colspan="{{$data->combine_code_extra}}"></th>
+                    @endif
                 </tr>
                 <tr>
                     @foreach($data->f_code as $var)

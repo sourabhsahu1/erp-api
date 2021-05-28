@@ -887,6 +887,11 @@ class PaymentRepository extends EloquentBaseRepository
         }*/
         $paymentV['g_code'] = $gCombineCode;
 
+        // add extra column if combined code length is less than 32
+        if ($rem = 32 - (count($paymentV['f_code']) + count($paymentV['ps_code']) + count($paymentV['fs_code']) + count($paymentV['g_code']))) {
+            $paymentV['combine_code_extra'] = $rem;
+        }
+
         $paymentV['date'] = str_split(Carbon::parse($paymentV->value_date)->format('d'));
         $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('m')));
         $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('Y')));
