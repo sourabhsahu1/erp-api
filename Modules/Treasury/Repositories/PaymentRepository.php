@@ -846,45 +846,49 @@ class PaymentRepository extends EloquentBaseRepository
         }
         $paymentV['e_code'] = $eCombineCodes;
 
-        // New
+        // There must be 32 columns
         $fCombineCode = str_split(str_replace('-', '', $paymentV->functional_segment->combined_code));
-        if (count($fCombineCode) < 5) {
-            $esTds = 5 - count($fCombineCode);
-            while ($esTds > 0) {
-                $fCombineCode[] = '';
-                $esTds--;
+        $psCombineCode = str_split(str_replace('-', '', $paymentV->program_segment->combined_code));
+        $fsCombineCode = str_split(str_replace('-', '', $paymentV->fund_segment->combined_code));
+        $gCombineCode = str_split(str_replace('-', '', $paymentV->geo_code_segment->combined_code));
+
+        if (($remainingColumns = 32 - (count($fCombineCode) + count($psCombineCode) + count($fsCombineCode) + count($gCombineCode))) > 0) {
+            if (count($fCombineCode) < 5 && $remainingColumns) {
+                $esTds = 5 - count($fCombineCode);
+                while ($esTds > 0 && $remainingColumns > 0) {
+                    $fCombineCode[] = '';
+                    $esTds--;
+                    $remainingColumns--;
+                }
+            }
+            if (count($psCombineCode) < 14 && $remainingColumns) {
+                $esTds = 14 - count($psCombineCode);
+                while ($esTds > 0 && $remainingColumns > 0) {
+                    $psCombineCode[] = '';
+                    $esTds--;
+                    $remainingColumns--;
+                }
+            }
+            if (count($fsCombineCode) < 5 && $remainingColumns) {
+                $esTds = 5 - count($fsCombineCode);
+                while ($esTds > 0 && $remainingColumns > 0) {
+                    $fsCombineCode[] = '';
+                    $esTds--;
+                    $remainingColumns--;
+                }
+            }
+            if (count($gCombineCode) < 8 && $remainingColumns) {
+                $esTds = 8 - count($gCombineCode);
+                while ($esTds > 0 && $remainingColumns > 0) {
+                    $gCombineCode[] = '';
+                    $esTds--;
+                    $remainingColumns--;
+                }
             }
         }
         $paymentV['f_code'] = $fCombineCode;
-
-        $psCombineCode = str_split(str_replace('-', '', $paymentV->program_segment->combined_code));
-        if (count($psCombineCode) < 14) {
-            $esTds = 14 - count($psCombineCode);
-            while ($esTds > 0) {
-                $psCombineCode[] = '';
-                $esTds--;
-            }
-        }
         $paymentV['ps_code'] = $psCombineCode;
-
-        $fsCombineCode = str_split(str_replace('-', '', $paymentV->fund_segment->combined_code));
-        if (count($fsCombineCode) < 5) {
-            $esTds = 5 - count($fsCombineCode);
-            while ($esTds > 0) {
-                $fsCombineCode[] = '';
-                $esTds--;
-            }
-        }
         $paymentV['fs_code'] = $fsCombineCode;
-
-        $gCombineCode = str_split(str_replace('-', '', $paymentV->geo_code_segment->combined_code));
-        if (count($gCombineCode) < 8) {
-            $esTds = 8 - count($gCombineCode);
-            while ($esTds > 0) {
-                $gCombineCode[] = '';
-                $esTds--;
-            }
-        }
         $paymentV['g_code'] = $gCombineCode;
 
         $paymentV['date'] = str_split(Carbon::parse($paymentV->value_date)->format('d'));
