@@ -8,6 +8,7 @@
 namespace Modules\Treasury\Models;
 
 use Illuminate\Support\Carbon;
+use Modules\Admin\Models\CompanyInformation;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -91,7 +92,7 @@ class PaymentVoucher extends Eloquent
         'paying_officer_id' => 'int',
         'financial_controller_id' => 'int',
         'is_previous_year_advance' => 'boolean',
-        'value_date' =>'datetime:Y-m-d'
+        'value_date' => 'datetime:Y-m-d'
     ];
 
     protected $dates = [
@@ -128,7 +129,13 @@ class PaymentVoucher extends Eloquent
         'is_previous_year_advance'
     ];
 
-    protected $appends = ['year', 'types','is_checked', 'is_payed', 'is_audited','is_approved','payee_names'];
+    protected $appends = ['year', 'types', 'is_checked', 'is_payed', 'is_audited', 'is_approved', 'payee_names', 'deptal_key'];
+
+    public function getDeptalKeyAttribute()
+    {
+        $companyInformation = CompanyInformation::find(1);
+        return $companyInformation->short_code . '/' . $this->voucher_source_unit->short_name . '/' . $this->deptal_id . '/' . \Carbon\Carbon::parse($this->value_date)->year;
+    }
 
     public function getPayeeNamesAttribute()
     {
@@ -141,14 +148,14 @@ class PaymentVoucher extends Eloquent
         foreach ($paymentV->payee_vouchers as $payee_voucher) {
             if ($payee_voucher->employee_id) {
                 $payees = $payee_voucher->employee->first_name . ' ';
-            } elseif($payee_voucher->company_id) {
+            } elseif ($payee_voucher->company_id) {
                 $payees = $payee_voucher->admin_company->name . ' ';
             }
             $count += 1;
         }
         if ($count > 0) {
-            return $payees.' +'.$count;
-        }else{
+            return $payees . ' +' . $count;
+        } else {
             return $payees;
         }
     }
@@ -183,7 +190,7 @@ class PaymentVoucher extends Eloquent
     public function getTypesAttribute()
     {
         return [
-            'name' => str_replace('_',' ', $this->type)
+            'name' => str_replace('_', ' ', $this->type)
         ];
     }
 
@@ -250,30 +257,35 @@ class PaymentVoucher extends Eloquent
 
     public function total_amount()
     {
-        return $this->hasOne(PayeeVoucher::class,'payment_voucher_id')
+        return $this->hasOne(PayeeVoucher::class, 'payment_voucher_id')
             ->selectRaw('payment_voucher_id, sum(net_amount) as amount')
             ->groupBy('payment_voucher_id');
     }
 
-    public function payee_vouchers() {
+    public function payee_vouchers()
+    {
         return $this->hasMany(\Modules\Treasury\Models\PayeeVoucher::class, 'payment_voucher_id');
     }
 
-    public function schedule_economic() {
+    public function schedule_economic()
+    {
         return $this->hasMany(\Modules\Treasury\Models\ScheduleEconomic::class, 'payment_voucher_id');
     }
 
-    public function total_tax() {
-        return $this->hasOne(PayeeVoucher::class,'payment_voucher_id')
+    public function total_tax()
+    {
+        return $this->hasOne(PayeeVoucher::class, 'payment_voucher_id')
             ->selectRaw('payment_voucher_id, sum(total_tax) as tax')
             ->groupBy('payment_voucher_id');
     }
 
-    public function retire_voucher() {
+    public function retire_voucher()
+    {
         return $this->hasOne(RetireVoucher::class, 'payment_voucher_id');
     }
 
-    public function payment_approval() {
+    public function payment_approval()
+    {
         return $this->belongsTo(PaymentApproval::class, 'payment_approve_id');
     }
 

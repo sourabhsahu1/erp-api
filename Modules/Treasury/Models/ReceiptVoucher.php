@@ -8,6 +8,7 @@
 namespace Modules\Treasury\Models;
 
 use Illuminate\Support\Carbon;
+use Modules\Admin\Models\CompanyInformation;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -109,13 +110,17 @@ class ReceiptVoucher extends Eloquent
         'cashbook_id'
     ];
 
-    protected $appends = ['year', 'types','payee_names'];
+    protected $appends = ['year', 'types','payee_names','deptal_key'];
 
     public function getYearAttribute()
     {
         return Carbon::parse($this->value_date)->year;
     }
-
+    public function getDeptalKeyAttribute()
+    {
+        $companyInformation = CompanyInformation::find(1);
+        return $companyInformation->short_code . '/' . $this->voucher_source_unit->short_name . '/' . $this->deptal_id . '/' . \Carbon\Carbon::parse($this->value_date)->year;
+    }
     public function getTypesAttribute()
     {
         return [
