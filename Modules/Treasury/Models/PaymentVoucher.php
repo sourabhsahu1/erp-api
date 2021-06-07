@@ -219,6 +219,11 @@ class PaymentVoucher extends Eloquent
         return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'admin_segment_id');
     }
 
+    public function mandate()
+    {
+        return $this->belongsTo(\Modules\Treasury\Models\Mandate::class, 'mandate_id');
+    }
+
     public function fund_segment()
     {
         return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'fund_segment_id');

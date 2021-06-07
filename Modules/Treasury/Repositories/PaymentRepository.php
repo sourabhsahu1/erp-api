@@ -321,7 +321,8 @@ class PaymentRepository extends EloquentBaseRepository
             'paying_officer',
             'checking_officer',
             'financial_controller',
-            'payment_approval'
+            'payment_approval',
+            'mandate'
         ]);
 
         if (isset($params['inputs']['is_personal_advance_unit'])) {
