@@ -2847,6 +2847,1006 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
+            283 => 
+            array (
+                'id' => 284,
+                'name' => 'PV Voucher: Add PV Details',
+                'entity_name' => 'PV.VOUCHER.DETAILS.ADD',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            284 => 
+            array (
+                'id' => 285,
+                'name' => 'PV Voucher: Add Schedule Payee employees',
+                'entity_name' => 'PV.VOUCHER.SCHEDULE_PAYEE_EMPLOYEES.ADD',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            285 => 
+            array (
+                'id' => 286,
+                'name' => 'PV Voucher: Add Schedule economic codes',
+                'entity_name' => 'PV.VOUCHER.SCHEDULE_ECONOMIC_CODE.ADD',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            286 => 
+            array (
+                'id' => 287,
+                'name' => 'PV Voucher: Edit PV Voucher',
+                'entity_name' => 'PV.VOUCHER.EDIT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            287 => 
+            array (
+                'id' => 288,
+                'name' => 'PV Voucher: Edit Scheduled payees and economic codes',
+                'entity_name' => 'PV.VOUCHER.SCHEDULE_PAYEE.ECONOMIC_CODES.ADD',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            288 => 
+            array (
+                'id' => 289,
+                'name' => 'PV Voucher: Change status of PV Voucher',
+                'entity_name' => 'PV.VOUCHER.CHANGE_STATUS',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            289 => 
+            array (
+                'id' => 290,
+                'name' => 'PV Voucher: Export PDF PV Voucher',
+                'entity_name' => 'PV.VOUCHER.EXPORT.PDF',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            290 => 
+            array (
+                'id' => 291,
+                'name' => 'PV Voucher: Delete PV Voucher',
+                'entity_name' => 'PV.VOUCHER.DELETE',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            291 => 
+            array (
+                'id' => 292,
+                'name' => 'Mandate: Add Mandate',
+                'entity_name' => 'MANDATE.ADD',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            292 => 
+            array (
+                'id' => 293,
+                'name' => 'Mandate: Edit Mandate',
+                'entity_name' => 'MANDATE.EDIT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            293 => 
+            array (
+                'id' => 294,
+                'name' => 'Mandate: Change status of Mandate',
+                'entity_name' => 'MANDATE.CHANGE_STATUS',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            294 => 
+            array (
+                'id' => 295,
+                'name' => 'Mandate: Post Mandate',
+                'entity_name' => 'MANDATE.POST',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            295 => 
+            array (
+                'id' => 296,
+                'name' => 'Retire Voucher: Edit Liability of Retire voucher',
+                'entity_name' => 'RETIRE.VOUCHER.EDIT.LIABILITY',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            296 => 
+            array (
+                'id' => 297,
+                'name' => 'Retire voucher: change status of Retire voucher',
+                'entity_name' => 'RETIRE.VOUCHER.CHANGE_STATUS',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            297 => 
+            array (
+                'id' => 298,
+                'name' => 'Retire voucher: Post Retire voucher',
+                'entity_name' => 'RETIRE.VOUCHER.POST',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            298 => 
+            array (
+                'id' => 299,
+                'name' => 'RV: Add RV Details',
+                'entity_name' => 'RV.ADD',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            299 => 
+            array (
+                'id' => 300,
+                'name' => 'RV: Edit RV Details',
+                'entity_name' => 'RV.DETAILS.EDIT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            300 => 
+            array (
+                'id' => 301,
+                'name' => 'RV: CloseRV',
+                'entity_name' => 'RV.CLOSE',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            301 => 
+            array (
+                'id' => 302,
+                'name' => 'RV: Post RV',
+                'entity_name' => 'RV.POST',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            302 => 
+            array (
+                'id' => 303,
+                'name' => 'RV: Delete RV ',
+                'entity_name' => 'RV.DELETE',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            303 => 
+            array (
+                'id' => 304,
+                'name' => 'RV: Download RV PDF',
+                'entity_name' => 'RV.PDF.DOWNLOAD',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            304 => 
+            array (
+                'id' => 305,
+                'name' => 'RV: Schedule Payer employees',
+                'entity_name' => 'RV.SCHEDULE.PAYER_EMPLOYEE',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            305 => 
+            array (
+                'id' => 306,
+                'name' => 'RV: Schedule economic code',
+                'entity_name' => 'RV.SCHEDULE.ECONOMIC_CODE',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            306 => 
+            array (
+                'id' => 307,
+                'name' => 'RV: Edit Scheduled payer employees and economic codes',
+                'entity_name' => 'RV.SCHEDULE.PAYER_EMPLOYEE.ECONOMIC_CODE.EDIT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            307 => 
+            array (
+                'id' => 308,
+                'name' => 'Payment Approval: Add Payment Approval',
+                'entity_name' => 'PAYMENT.APPROVAL.ADD',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            308 => 
+            array (
+                'id' => 309,
+                'name' => 'Payment Approval: Edit Payment Approval',
+                'entity_name' => 'PAYMENT.APPROVAL.EDIT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            309 => 
+            array (
+                'id' => 310,
+                'name' => 'Payment Approval: Check Payment Approval',
+                'entity_name' => 'PAYMENT.APPROVAL.CHECK',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            310 => 
+            array (
+                'id' => 311,
+                'name' => 'Payment Approval: Approve Payment Approval',
+                'entity_name' => 'PAYMENT.APPROVAL.APPROVE',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            311 => 
+            array (
+                'id' => 312,
+                'name' => 'Payment Approval: Schedule payee employees',
+                'entity_name' => 'PAYMENT.APPROVAL.SCHEDULE.PAYEE_EMPLOYEE',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            312 => 
+            array (
+                'id' => 313,
+                'name' => 'Payment Approval: Edit Scheduled payee employee',
+                'entity_name' => 'PAYMENT.APPROVAL.SCHEDULE.PAYEE_EMPLOYEE.EDIT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            313 => 
+            array (
+                'id' => 314,
+                'name' => 'Payment Approval: Delete Scheduled payee employee',
+                'entity_name' => 'PAYMENT.APPROVAL.SCHEDULE.PAYEE_EMPLOYEE.DELETE',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            314 => 
+            array (
+                'id' => 315,
+                'name' => 'PYA: Add PYA',
+                'entity_name' => 'PYA.ADD',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            315 => 
+            array (
+                'id' => 316,
+                'name' => 'PYA: Edit PYA',
+                'entity_name' => 'PYA.EDIT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            316 => 
+            array (
+                'id' => 317,
+                'name' => 'PYA: Delete PYA',
+                'entity_name' => 'PYA.DELETE',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            317 => 
+            array (
+                'id' => 318,
+                'name' => 'PYA: Close PYA',
+                'entity_name' => 'PYA.CLOSE',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            318 => 
+            array (
+                'id' => 319,
+                'name' => 'PYA: Post PYA',
+                'entity_name' => 'PYA.POST',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            319 => 
+            array (
+                'id' => 320,
+                'name' => 'VSU: Add VSU',
+                'entity_name' => 'VSU.ADD',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            320 => 
+            array (
+                'id' => 321,
+                'name' => 'VSU: Edit VSU',
+                'entity_name' => 'VSU.EDIT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            321 => 
+            array (
+                'id' => 322,
+                'name' => 'VSU: Mark VSU as personal advanced unit?',
+                'entity_name' => 'VSU.MARKED.PERSONAL_ADVANCED_UNIT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            322 => 
+            array (
+                'id' => 323,
+                'name' => 'Cashbook: Add cashbook',
+                'entity_name' => 'CASHBOOK.ADD',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            323 => 
+            array (
+                'id' => 324,
+                'name' => 'Cashbook: Edit Cashbook',
+                'entity_name' => 'CASHBOOK.EDIT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            324 => 
+            array (
+                'id' => 325,
+                'name' => 'Cashbook: delete Cashbook',
+                'entity_name' => 'CASHBOOK.DELETE',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            325 => 
+            array (
+                'id' => 326,
+            'name' => 'Default Setting (Voucher): Edit default settings',
+                'entity_name' => 'DEFAULT.SETTINGS.EDIT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            326 => 
+            array (
+                'id' => 327,
+                'name' => 'Reports Treasury PV: View reports',
+                'entity_name' => 'REPORTS.TREASURY.PV.VIEW.REPORTS',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            327 => 
+            array (
+                'id' => 328,
+                'name' => 'Reports Treasury PV: Add columns',
+                'entity_name' => 'REPORTS.TREASURY.PV.ADD_COLUMNS',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            328 => 
+            array (
+                'id' => 329,
+                'name' => 'Reports Treasury PV: Download report',
+                'entity_name' => 'REPORTS.TREASURY.PV.DOWNLOAD_REPORT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            329 => 
+            array (
+                'id' => 330,
+                'name' => 'Reports Treasury PV: Close all open reports',
+                'entity_name' => 'REPORTS.TREASURY.PV.CLOSE_OPEN_REPORTS',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            330 => 
+            array (
+                'id' => 331,
+                'name' => 'Reports Treasury PV: Open all reports',
+                'entity_name' => 'REPORTS.TREASURY.PV.OPEN_ALL_REPORTS',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            331 => 
+            array (
+                'id' => 332,
+                'name' => 'Reports Treasury RV: View reports',
+                'entity_name' => 'REPORTS.TREASURY.RV.VIEW.REPORTS',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            332 => 
+            array (
+                'id' => 333,
+                'name' => 'Reports Treasury RV: Add columns',
+                'entity_name' => 'REPORTS.TREASURY.RV.ADD_COLUMNS',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            333 => 
+            array (
+                'id' => 334,
+                'name' => 'Reports Treasury RV: Download report',
+                'entity_name' => 'REPORTS.TREASURY.RV.DOWNLOAD_REPORT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            334 => 
+            array (
+                'id' => 335,
+                'name' => 'Reports Treasury RV: Close all open reports',
+                'entity_name' => 'REPORTS.TREASURY.RV.CLOSE_OPEN_REPORTS',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            335 => 
+            array (
+                'id' => 336,
+                'name' => 'Reports Treasury RV: Open all reports',
+                'entity_name' => 'REPORTS.TREASURY.RV.OPEN_ALL_REPORTS',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            336 => 
+            array (
+                'id' => 337,
+                'name' => 'Reports Treasury- Summary Non personal Advances: View department wise report',
+                'entity_name' => 'REPORTS.TREASURY.SUMMARY_NON_PERSONAL_ADVANCES.VIEW_DEPARTMENT_REPORT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            337 => 
+            array (
+                'id' => 338,
+                'name' => 'Reports Treasury - Summary Non personal Advances: View employee wise report',
+                'entity_name' => 'REPORTS.TREASURY.SUMMARY_NON_PERSONAL_ADVANCES.VIEW_EMPLOYEE_REPORT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            338 => 
+            array (
+                'id' => 339,
+                'name' => 'Reports Treasury - Summary Personal Advances: View department wise report',
+                'entity_name' => 'REPORTS.TREASURY.SUMMARY_PERSONAL_ADVANCES.VIEW_DEPARTMENT_REPORT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            339 => 
+            array (
+                'id' => 340,
+                'name' => 'Reports Treasury - Summary Personal Advances: View employee wise report',
+                'entity_name' => 'REPORTS.TREASURY.SUMMARY_PERSONAL_ADVANCES.VIEW_EMPLOYEE_REPORT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            340 => 
+            array (
+                'id' => 341,
+                'name' => 'Reports Treasury - Summary Standing Imprest: View department wise report',
+                'entity_name' => 'REPORTS.TREASURY.SUMMARY_STANDING_IMPREST.VIEW_DEPARTMENT_REPORT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            341 => 
+            array (
+                'id' => 342,
+                'name' => 'Reports Treasury -  Summary Standing Imprest: View employee wise report',
+                'entity_name' => 'REPORTS.TREASURY.SUMMARY_STANDING_IMPREST.VIEW_EMPLOYEE_REPORT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            342 => 
+            array (
+                'id' => 343,
+                'name' => 'Reports Treasury - Summary Special Imprest: View department wise report',
+                'entity_name' => 'REPORTS.TREASURY.SUMMARY_SPECIAL_IMPREST.VIEW_DEPARTMENT_REPORT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            343 => 
+            array (
+                'id' => 344,
+                'name' => 'Reports Treasury - Summary Special Imprest: View employee wise report',
+                'entity_name' => 'REPORTS.TREASURY.SUMMARY_SPECIAL_IMPREST.VIEW_EMPLOYEE_REPORT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            344 => 
+            array (
+                'id' => 345,
+                'name' => 'Reports Treasury - Summary Advance Ledger: View report',
+                'entity_name' => 'REPORTS.TREASURY.SUMMARY_ADVANCE_LEDGER.VIEW_REPORT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            345 => 
+            array (
+                'id' => 346,
+                'name' => 'Budget Control AIE: Add new AIE',
+                'entity_name' => 'BUDGET.CONTROL.AIE.ADD',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            346 => 
+            array (
+                'id' => 347,
+                'name' => 'Budget Control AIE: Search AIE',
+                'entity_name' => 'BUDGET.CONTROL.AIE.SEARCH',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            347 => 
+            array (
+                'id' => 348,
+                'name' => 'Budget Control AIE: Edit AIE',
+                'entity_name' => 'BUDGET.CONTROL.AIE.EDIT',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            348 => 
+            array (
+                'id' => 349,
+                'name' => 'Budget Control AIE: Delete AIE',
+                'entity_name' => 'BUDGET.CONTROL.AIE.DELETE',
+                'module' => 'Treasury',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            349 => 
+            array (
+                'id' => 350,
+                'name' => 'GL JV: Create JV',
+                'entity_name' => 'GL.JV.CREATE',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            350 => 
+            array (
+                'id' => 351,
+                'name' => 'GL JV: Add JV main details',
+                'entity_name' => 'GL.JV.ADD.DETAILS',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            351 => 
+            array (
+                'id' => 352,
+                'name' => 'GL JV: Edit JV',
+                'entity_name' => 'GL.JV.EDIT',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            352 => 
+            array (
+                'id' => 353,
+                'name' => 'GL JV: Delete JV',
+                'entity_name' => 'GL.JV.DELETE',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            353 => 
+            array (
+                'id' => 354,
+                'name' => 'Budget control economic: Add economic budget',
+                'entity_name' => 'BUDGET.CONTROL.ECONOMIC.ADD',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            354 => 
+            array (
+                'id' => 355,
+                'name' => 'Budget control economic: Edit economic budget',
+                'entity_name' => 'BUDGET.CONTROL.ECONOMIC.EDIT',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            355 => 
+            array (
+                'id' => 356,
+                'name' => 'Budget control economic: View economic budget list',
+                'entity_name' => 'BUDGET.CONTROL.ECONOMIC.VIEW_LIST',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            356 => 
+            array (
+                'id' => 357,
+                'name' => 'Budget control economic: Delete economic budget list',
+                'entity_name' => 'BUDGET.CONTROL.ECONOMIC.DELETE',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            357 => 
+            array (
+                'id' => 358,
+                'name' => 'Budget control programme: Add programme budget',
+                'entity_name' => 'BUDGET.CONTROL.PROGRAMME.ADD',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            358 => 
+            array (
+                'id' => 359,
+                'name' => 'Budget control programme: Edit programme budget',
+                'entity_name' => 'BUDGET.CONTROL.PROGRAMME.EDIT',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            359 => 
+            array (
+                'id' => 360,
+                'name' => 'Budget control programme: View programme budget list',
+                'entity_name' => 'BUDGET.CONTROL.PROGRAMME.VIEW',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            360 => 
+            array (
+                'id' => 361,
+                'name' => 'Budget control programme:: Delete programme budget list',
+                'entity_name' => 'BUDGET.CONTROL.PROGRAMME.DELETE',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            361 => 
+            array (
+                'id' => 362,
+                'name' => 'Setup currencies: Add new currency',
+                'entity_name' => 'SETUP.CURRENCIES.ADD',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            362 => 
+            array (
+                'id' => 363,
+                'name' => 'Setup currencies: edit currency',
+                'entity_name' => 'SETUP.CURRENCIES.EDIT',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            363 => 
+            array (
+                'id' => 364,
+                'name' => 'Setup currencies: Delete currency',
+                'entity_name' => 'SETUP.CURRENCIES.DELETE',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            364 => 
+            array (
+                'id' => 365,
+                'name' => 'Setup banks: Add bank',
+                'entity_name' => 'SETUP.BANKS.ADD',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            365 => 
+            array (
+                'id' => 366,
+                'name' => 'Setup banks: Edit bank details',
+                'entity_name' => 'SETUP.BANKS.EDIT',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            366 => 
+            array (
+                'id' => 367,
+                'name' => 'Setup banks: Delete bank',
+                'entity_name' => 'SETUP.BANKS.DELETE',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            367 => 
+            array (
+                'id' => 368,
+                'name' => 'Setup banks: Mark Active/Inactive',
+                'entity_name' => 'SETUP.BANKS.MARK_ACTIVE_INACTIVE',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            368 => 
+            array (
+                'id' => 369,
+                'name' => 'Setup banks: Add Bank branch',
+                'entity_name' => 'SETUP.BANKS.ADD_BRANCH',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            369 => 
+            array (
+                'id' => 370,
+                'name' => 'Setup banks: Edit Bank branch',
+                'entity_name' => 'SETUP.BANKS.EDIT_BRANCH',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            370 => 
+            array (
+                'id' => 371,
+                'name' => 'Setup banks: Delete Bank branch',
+                'entity_name' => 'SETUP.BANKS.DELETE_BRANCH',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            371 => 
+            array (
+                'id' => 372,
+                'name' => 'Settings Company Info: View Company Info',
+                'entity_name' => 'SETTINGS.COMPANY.INFO.VIEW',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            372 => 
+            array (
+                'id' => 373,
+                'name' => 'Settings Company Info: Change status - Auto Post JV',
+                'entity_name' => 'SETTINGS.COMPANY.INFO.CHANGE_STATUS_AUTO_POSTED_JV',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            373 => 
+            array (
+                'id' => 374,
+                'name' => 'Settings Company Info: Change status - Payment Approval Required',
+                'entity_name' => 'SETTINGS.COMPANY.INFO.CHANGE_STATUS_PAYMENT_APPROVAL_REQUIRED',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            374 => 
+            array (
+                'id' => 375,
+                'name' => 'Settings Company Info: Change status - Default status of auto posted JV',
+                'entity_name' => 'SETTINGS.COMPANY.INFO.CHANGE_STATUS.DEFAULT_STATUS_AUTO_POSTED_JV',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            375 => 
+            array (
+                'id' => 376,
+                'name' => 'Reports Finance - Trial Balance: View report',
+                'entity_name' => 'REPORTS.FINANCE.TRIAL_BALANCE.VIEW.REPORT',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            376 => 
+            array (
+                'id' => 377,
+                'name' => 'Reports Finance - Trial Balance: Create Note',
+                'entity_name' => 'REPORTS.FINANCE.TRIAL_BALANCE.CREATE.NOTE',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            377 => 
+            array (
+                'id' => 378,
+                'name' => 'Reports Finance - Notes Master: View report',
+                'entity_name' => 'REPORTS.FINANCE.NOTES_MASTER.VIEW.REPORT',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            378 => 
+            array (
+                'id' => 379,
+                'name' => 'Reports Finance - Notes Master: Download report',
+                'entity_name' => 'REPORTS.FINANCE.NOTES_MASTER.DOWNLOAD.REPORT',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            379 => 
+            array (
+                'id' => 380,
+                'name' => 'Reports Finance - Notes Master: Add notes',
+                'entity_name' => 'REPORTS.FINANCE.NOTES_MASTER.ADD.NOTES',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            380 => 
+            array (
+                'id' => 381,
+                'name' => 'Reports Finance - Notes Master: Reset All notes',
+                'entity_name' => 'REPORTS.FINANCE.NOTES_MASTER.RESET_NOTES',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            381 => 
+            array (
+                'id' => 382,
+                'name' => 'Report Finance - JV Ledger: View Report',
+                'entity_name' => 'REPORTS.FINANCE.JV_LEDGER.VIEW.REPORT',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            382 => 
+            array (
+                'id' => 383,
+                'name' => 'Report Finance - JV Ledger Sibling: View Report',
+                'entity_name' => 'REPORTS.FINANCE.JV_LEDGER_SIBLING.VIEW.REPORT',
+                'module' => 'Finance',
+                'deleted_at' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
         ));
         
         
