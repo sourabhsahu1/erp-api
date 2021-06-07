@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CompanyInformationTableSeeder::class);
         $this->call(CompanySettingsTableSeeder::class);
         $this->call(TreasuryDefaultSettingsTableSeeder::class);
+        $this->call(RolePermissionsTableSeeder::class);
     }
 }
