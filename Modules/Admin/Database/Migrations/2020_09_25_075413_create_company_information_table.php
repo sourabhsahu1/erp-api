@@ -16,6 +16,7 @@ class CreateCompanyInformationTable extends Migration
         Schema::create('company_information', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
+            $table->string('short_code');
             $table->string('address');
             $table->string('email')->unique();
             $table->string('phone');
