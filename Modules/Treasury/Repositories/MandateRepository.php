@@ -20,6 +20,7 @@ use Modules\Finance\Repositories\JournalVoucherRepository;
 use Modules\Treasury\Models\Cashbook;
 use Modules\Treasury\Models\DefaultSetting;
 use Modules\Treasury\Models\Mandate;
+use Modules\Treasury\Models\MandateLog;
 use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentApproval;
 use Modules\Treasury\Models\PaymentApprovalPayee;
@@ -351,6 +352,14 @@ class MandateRepository extends EloquentBaseRepository
                 }
 
                 $data['id'] = $mandate_id;
+
+                MandateLog::create([
+                    'mandate_id' => $mandate_id,
+                    'previous_status' => $mandate->status,
+                    'current_status' => $data['data']['status'],
+                    'date' => $data['data']['date'],
+                    'admin_id' => $data['data']['user_id']
+                ]);
                 parent::update($data);
                 DB::commit();
             } catch (\Exception $exception) {

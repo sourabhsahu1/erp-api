@@ -17,6 +17,7 @@ class CreatePaymentVouchersLogsTable extends Migration
         Schema::create('payment_vouchers_logs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('payment_voucher_id');
+            $table->unsignedBigInteger('admin_id');
             $table->enum('previous_status',[
                 AppConstant::VOUCHER_STATUS_CHECKED,
                 AppConstant::VOUCHER_STATUS_DRAFT,
@@ -44,6 +45,7 @@ class CreatePaymentVouchersLogsTable extends Migration
             $table->date('date');
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('admin_id')->references('id')->on('users');
             $table->foreign('payment_voucher_id')->references('id')->on('treasury_payment_vouchers');
         });
     }

@@ -21,6 +21,7 @@ use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentApproval;
 use Modules\Treasury\Models\PaymentApprovalPayee;
 use Modules\Treasury\Models\PaymentVoucher;
+use Modules\Treasury\Models\PaymentVouchersLog;
 use Modules\Treasury\Models\RetireLiability;
 use Modules\Treasury\Models\RetireVoucher;
 use Modules\Treasury\Models\ScheduleEconomic;
@@ -387,10 +388,20 @@ class PaymentRepository extends EloquentBaseRepository
             if (is_null($scheduleVoucher)) {
                 throw new AppException('Schedule Economic not added');
             }
+
+            $pvLog = PaymentVouchersLog::create([
+                'payment_voucher_id' => $payment_voucher_id,
+                'previous_status' => $pv->status,
+                'current_status' => $data['data']['status'],
+                'date' => $data['data']['date'],
+                'admin_id' => $data['data']['user_id']
+            ]);
+
         }
         $pv->update([
             'status' => $data['data']['status']
         ]);
+
         return [
             'data' => 'Status Updated Successfully'
         ];

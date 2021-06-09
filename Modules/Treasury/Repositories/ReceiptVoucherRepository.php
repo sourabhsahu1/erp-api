@@ -19,6 +19,7 @@ use Modules\Treasury\Models\DefaultSetting;
 use Modules\Treasury\Models\ReceiptPayee;
 use Modules\Treasury\Models\ReceiptScheduleEconomic;
 use Modules\Treasury\Models\ReceiptVoucher;
+use Modules\Treasury\Models\ReceiptVoucherLog;
 use Modules\Treasury\Models\VoucherSourceUnit;
 
 class ReceiptVoucherRepository extends EloquentBaseRepository
@@ -253,6 +254,15 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
                             'updated_at' => Carbon::now()->toDateTimeString()
                         ]);
                         JournalVoucherDetail::insert($jvD);
+
+
+                        ReceiptVoucherLog::create([
+                            'receipt_voucher_id' => $retireVoucher->id,
+                            'previous_status' => $retireVoucher->status,
+                            'current_status' => $data['data']['status'],
+                            'date' => $data['data']['date'],
+                            'admin_id' => $data['data']['user_id']
+                        ]);
                     }
                 }
                 $rv->update([
