@@ -49,6 +49,7 @@ class PaymentApproval extends Eloquent
         'admin_segment_id' => 'int',
         'fund_segment_id' => 'int',
         'economic_segment_id' => 'int',
+        'voucher_source_unit_id' => 'int',
         'prepared_by_id' => 'int',
         'authorised_by_id' => 'int',
         'value_date' => 'datetime:Y-m-d',
@@ -64,6 +65,7 @@ class PaymentApproval extends Eloquent
         'admin_segment_id',
         'fund_segment_id',
         'economic_segment_id',
+        'voucher_source_unit_id',
         'employee_customer',
         'prepared_by_id',
         'authorised_by_id',
@@ -134,5 +136,10 @@ class PaymentApproval extends Eloquent
         return $this->hasOne(PaymentApprovalPayee::class,'payment_approval_id')
             ->selectRaw('payment_approval_id, SUM(total_tax) as total_tax')
             ->groupBy('payment_approval_id');
+    }
+
+    public function voucher_source_unit()
+    {
+        return $this->belongsTo(VoucherSourceUnit::class,'voucher_source_unit_id');
     }
 }
