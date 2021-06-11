@@ -155,7 +155,8 @@ class MandateRepository extends EloquentBaseRepository
                     if ($data['data']['status'] == AppConstant::ON_MANDATE_1ST_AUTHORISED) {
                         $data['data']['first_authorised_by'] = $data['data']['user_id'];
                         $data['data']['first_authorised_date'] = Carbon::now()->toDateString();
-                    } elseif ($data['data']['status'] == AppConstant::ON_MANDATE_2ND_AUTHORISED) {
+                    }
+                    elseif ($data['data']['status'] == AppConstant::ON_MANDATE_2ND_AUTHORISED) {
                         $data['data']['second_authorised_by'] = $data['data']['user_id'];
                         $data['data']['second_authorised_date'] = Carbon::now()->toDateString();
                         //payment voucher to be closed when on mandate 2nd auth
@@ -215,7 +216,8 @@ class MandateRepository extends EloquentBaseRepository
                                     PaymentApprovalPayee::insert($paymentApprovalPayee);
                             }
                         }
-                    } elseif ($data['data']['status'] == AppConstant::ON_MANDATE_POSTED_TO_GL) {
+                    }
+                    elseif ($data['data']['status'] == AppConstant::ON_MANDATE_POSTED_TO_GL) {
                         //payment voucher to be post to gl when on mandate post to gl
 
                         PaymentVoucher::where('mandate_id', $mandate_id)->update([
@@ -349,17 +351,34 @@ class MandateRepository extends EloquentBaseRepository
                             }
                         }
                     }
+                    elseif ($data['data']['status'] == AppConstant::ON_MANDATE_NEW) {
+                        $data['data']['second_authorised_by'] = null;
+                        $data['data']['second_authorised_by'] = null;
+                        $data['data']['second_authorised_date'] = null;
+                        $data['data']['second_authorised_date'] = null;
+                        //payment voucher to be closed when on mandate 2nd auth
+                        PaymentVoucher::where('mandate_id', $mandate_id)->update([
+                            'status' => AppConstant::VOUCHER_STATUS_AUDITED
+                        ]);
+
+                        if ($companySetting->is_payment_approval == false) {
+                            $paymentVouchers = PaymentVoucher::with(['payee_vouchers.schedule_economics'])
+                                ->where('mandate_id', $mandate_id)
+                                ->get();
+
+                            /** @var PaymentVoucher $paymentVoucher */
+                            foreach ($paymentVouchers as $paymentVoucher) {
+                                $pa = PaymentApproval::where('id', $paymentVoucher->payment_approve_id)
+                                    ->delete();
+                                $pap = PaymentApprovalPayee::where('payment_approval_id', $paymentVoucher->payment_approve_id)
+                                    ->delete();
+                            }
+                        }
+                    }
                 }
 
                 $data['id'] = $mandate_id;
-
-                MandateLog::create([
-                    'mandate_id' => $mandate_id,
-                    'previous_status' => $mandate->status,
-                    'current_status' => $data['data']['status'],
-                    'date' => $data['data']['date'],
-                    'admin_id' => $data['data']['user_id']
-                ]);
+                $this->mandateLog($mandate, $data);
                 parent::update($data);
                 DB::commit();
             } catch (\Exception $exception) {
@@ -370,6 +389,29 @@ class MandateRepository extends EloquentBaseRepository
         return ['data' => 'Success'];
     }
 
+    public function mandateLog($mandate, $data) {
+        $mandateLog  =  MandateLog::where('mandate_id', $mandate->id)->orderBy('id', 'DESC')->first();
+        if ($mandateLog && ($data['data']['status'] != AppConstant::ON_MANDATE_NEW)) {
+            if ($mandateLog->current_status > Carbon::parse($data['data']['date'])->toDateString()) {
+                throw new AppException('Data should be greater than previous');
+            }
+            MandateLog::create([
+                'payment_approval_id' => $mandate->id,
+                'admin_id' => $data['data']['user_id'],
+                'previous_status' => $mandate->status ?? null,
+                'current_status' =>$data['data']['status'],
+                'date' => $data['data']['date']
+            ]);
+        }elseif ($mandateLog && ($data['data']['status'] == AppConstant::ON_MANDATE_NEW)) {
+            MandateLog::create([
+                'payment_approval_id' => $mandate->id,
+                'admin_id' => $data['data']['user_id'],
+                'previous_status' => $mandate->status ?? null,
+                'current_status' =>$data['data']['status'],
+                'date' => $data['data']['date']
+            ]);
+        }
+    }
 
     public function downloadMandateReport($data)
     {

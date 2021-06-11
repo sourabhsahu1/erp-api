@@ -5,13 +5,15 @@ namespace Modules\Treasury\Repositories;
 
 
 use App\Constants\AppConstant;
+use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Treasury\Models\PaymentApproval;
+use Modules\Treasury\Models\PaymentApprovalLog;
 use Modules\Treasury\Models\PaymentApprovalPayee;
 use Carbon\Carbon;
 
-class PaymentApprovalRepository extends EloquentBaseRepository
+class   PaymentApprovalRepository extends EloquentBaseRepository
 {
 
     public $model = PaymentApproval::class;
@@ -64,19 +66,49 @@ class PaymentApprovalRepository extends EloquentBaseRepository
     public function updateStatus($data)
     {
 
-        foreach (json_decode($data['data']['payment_approval_ids'], true) as $payment_approval_id) {
+        DB::beginTransaction();
+        try {
+            foreach (json_decode($data['data']['payment_approval_ids'], true) as $payment_approval_id) {
+                $payeeVoucher = PaymentApprovalPayee::where('payment_approval_id', $payment_approval_id)->get();
+                $pa = PaymentApproval::find($payment_approval_id);
+                if ($payeeVoucher->isEmpty()) {
+                    throw new AppException('Payee not added for Payment Approval Id ' . $payment_approval_id);
+                }
 
-            $payeeVoucher = PaymentApprovalPayee::where('payment_approval_id', $payment_approval_id)->get();
+                $pavLog = PaymentApprovalLog::where('payment_approval_id', $payment_approval_id)->orderBy('id', 'DESC')->first();
 
-            if ($payeeVoucher->isEmpty()) {
-                throw new AppException('Payee not added for Payment Approval Id ' . $payment_approval_id);
+                if ($pavLog && ($data['data']['status'] != AppConstant::VOUCHER_STATUS_NEW)) {
+                    if ($pavLog->current_status > Carbon::parse($data['data']['date'])->toDateString()) {
+                        throw new AppException('Data should be greater than previous');
+                    }
+                    PaymentApprovalLog::create([
+                        'payment_approval_id' => $payment_approval_id,
+                        'admin_id' => $data['data']['user_id'],
+                        'previous_status' => $pa->status ?? null,
+                        'current_status' => $data['data']['status'],
+                        'date' => $data['data']['date']
+                    ]);
+                }elseif ($pavLog && ($data['data']['status'] == AppConstant::VOUCHER_STATUS_NEW)) {
+                    PaymentApprovalLog::create([
+                        'payment_approval_id' => $payment_approval_id,
+                        'admin_id' => $data['data']['user_id'],
+                        'previous_status' => $pa->status ?? null,
+                        'current_status' => $data['data']['status'],
+                        'date' => $data['data']['date']
+                    ]);
+                }
+
             }
-        }
 
-        $pa = PaymentApproval::whereIn('id', json_decode($data['data']['payment_approval_ids'], true));
-        $pa->update([
-            'status' => $data['data']['status']
-        ]);
+            $pa = PaymentApproval::whereIn('id', json_decode($data['data']['payment_approval_ids'], true));
+            $pa->update([
+                'status' => $data['data']['status']
+            ]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
         return [
             'data' => 'Status Updated Successfully'
         ];

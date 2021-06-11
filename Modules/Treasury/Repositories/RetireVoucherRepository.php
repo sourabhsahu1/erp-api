@@ -509,13 +509,28 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
                 }
 
-                RetireVoucherLog::create([
-                    'retire_voucher_id' => $retireVoucher->id,
-                    'previous_status' => $retireVoucher->status,
-                    'current_status' => $data['data']['retire_status'],
-                    'date' => $data['data']['date'],
-                    'admin_id' => $data['data']['user_id']
-                ]);
+                $retireVLog = RetireVoucherLog::where('retire_voucher_id', $retireVoucher->id)->orderBy('id', 'DESC')->first();
+
+                if ($retireVLog && ($data['data']['status'] != AppConstant::VOUCHER_STATUS_NEW)) {
+                    if ($retireVLog->current_status > Carbon::parse($data['data']['date'])->toDateString()) {
+                        throw new AppException('Data should be greater than previous');
+                    }
+                    RetireVoucherLog::create([
+                        'retire_voucher_id' => $retireVoucher->id,
+                        'previous_status' => $retireVoucher->status,
+                        'current_status' => $data['data']['retire_status'],
+                        'date' => $data['data']['date'],
+                        'admin_id' => $data['data']['user_id']
+                    ]);
+                }elseif ($retireVLog && ($data['data']['status'] == AppConstant::VOUCHER_STATUS_NEW)){
+                    RetireVoucherLog::create([
+                        'retire_voucher_id' => $retireVoucher->id,
+                        'previous_status' => $retireVoucher->status,
+                        'current_status' => $data['data']['retire_status'],
+                        'date' => $data['data']['date'],
+                        'admin_id' => $data['data']['user_id']
+                    ]);
+                }
             }
 
             if ($retireV->get()->isEmpty()) {

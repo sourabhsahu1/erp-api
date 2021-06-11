@@ -389,13 +389,28 @@ class PaymentRepository extends EloquentBaseRepository
                 throw new AppException('Schedule Economic not added');
             }
 
-            $pvLog = PaymentVouchersLog::create([
-                'payment_voucher_id' => $payment_voucher_id,
-                'previous_status' => $pv->status,
-                'current_status' => $data['data']['status'],
-                'date' => $data['data']['date'],
-                'admin_id' => $data['data']['user_id']
-            ]);
+            $pvLog = PaymentVouchersLog::where('mandate_id', $pv->id)->orderBy('id', 'DESC')->first();
+
+            if ($pvLog && ($data['data']['status'] != AppConstant::VOUCHER_STATUS_NEW)) {
+                if ($pvLog->current_status > Carbon::parse($data['data']['date'])->toDateString()) {
+                    throw new AppException('Data should be greater than previous');
+                }
+                $pvLog = PaymentVouchersLog::create([
+                    'payment_voucher_id' => $payment_voucher_id,
+                    'previous_status' => $pv->status,
+                    'current_status' => $data['data']['status'],
+                    'date' => $data['data']['date'],
+                    'admin_id' => $data['data']['user_id']
+                ]);
+            }elseif ($pvLog && ($data['data']['status'] == AppConstant::VOUCHER_STATUS_NEW)){
+                $pvLog = PaymentVouchersLog::create([
+                    'payment_voucher_id' => $payment_voucher_id,
+                    'previous_status' => $pv->status,
+                    'current_status' => $data['data']['status'],
+                    'date' => $data['data']['date'],
+                    'admin_id' => $data['data']['user_id']
+                ]);
+            }
 
         }
         $pv->update([
@@ -583,18 +598,35 @@ class PaymentRepository extends EloquentBaseRepository
         foreach (json_decode($data['data']['payment_voucher_ids'], true) as $payment_voucher_id) {
 
             $pv = PaymentVoucher::with('total_amount')->where('id', $payment_voucher_id)->first();
-//dd($pv);
             $payeeVoucherIds = PayeeVoucher::where('payment_voucher_id', $pv->id)->pluck('id')->all();
 
             if (is_null($payeeVoucherIds)) {
                 throw new AppException('Payee not added');
             }
 
-//            $scheduleVoucher = ScheduleEconomic::whereIn('payee_voucher_id', $payeeVoucherIds)->first();
-//
-//            if (is_null($scheduleVoucher)) {
-//                throw new AppException('Schedule Economic not added');
-//            }
+
+            $pvLog = PaymentVouchersLog::where('payment_voucher_id', $pv->id)->orderBy('id', 'DESC')->first();
+
+            if ($pvLog && ($data['data']['status'] != AppConstant::VOUCHER_STATUS_NEW)) {
+                if ($pvLog->current_status > Carbon::parse($data['data']['date'])->toDateString()) {
+                    throw new AppException('Data should be greater than previous');
+                }
+                $pvLog = PaymentVouchersLog::create([
+                    'payment_voucher_id' => $payment_voucher_id,
+                    'previous_status' => $pv->status,
+                    'current_status' => $data['data']['status'],
+                    'date' => $data['data']['date'],
+                    'admin_id' => $data['data']['user_id']
+                ]);
+            }elseif($pvLog && ($data['data']['status'] == AppConstant::VOUCHER_STATUS_NEW)){
+                $pvLog = PaymentVouchersLog::create([
+                    'payment_voucher_id' => $payment_voucher_id,
+                    'previous_status' => $pv->status,
+                    'current_status' => $data['data']['status'],
+                    'date' => $data['data']['date'],
+                    'admin_id' => $data['data']['user_id']
+                ]);
+            }
 
             $retireVoucher = RetireVoucher::create([
                 'payment_voucher_id' => $pv->id,

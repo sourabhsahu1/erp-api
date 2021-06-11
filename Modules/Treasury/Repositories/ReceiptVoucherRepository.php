@@ -144,28 +144,53 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
 
         $rv = ReceiptVoucher::whereIn('id', $data['data']['receipt_voucher_ids']);
 
-        foreach ($data['data']['receipt_voucher_ids'] as $receipt_voucher_id) {
-
-            $rv = ReceiptVoucher::where('id', $receipt_voucher_id)->first();
-
-            if (is_null($rv)) {
-                throw  new AppException('receipt voucher not exists');
-            }
-            $payeeVoucherIds = ReceiptPayee::where('receipt_voucher_id', $rv->id)->pluck('id')->all();
-
-            if (is_null($payeeVoucherIds)) {
-                throw new AppException('Payee not added');
-            }
-
-            $scheduleVoucher = ReceiptScheduleEconomic::whereIn('receipt_payee_id', $payeeVoucherIds)->first();
-
-            if (is_null($scheduleVoucher)) {
-                throw new AppException('Schedule Economic not added');
-            }
-        }
-
         DB::beginTransaction();
         try {
+            foreach ($data['data']['receipt_voucher_ids'] as $receipt_voucher_id) {
+
+                $rv = ReceiptVoucher::where('id', $receipt_voucher_id)->first();
+
+                if (is_null($rv)) {
+                    throw  new AppException('receipt voucher not exists');
+                }
+                $payeeVoucherIds = ReceiptPayee::where('receipt_voucher_id', $rv->id)->pluck('id')->all();
+
+                if (is_null($payeeVoucherIds)) {
+                    throw new AppException('Payee not added');
+                }
+
+                $scheduleVoucher = ReceiptScheduleEconomic::whereIn('receipt_payee_id', $payeeVoucherIds)->first();
+
+                if (is_null($scheduleVoucher)) {
+                    throw new AppException('Schedule Economic not added');
+                }
+
+
+                $rvLog = ReceiptVoucherLog::where('receipt_voucher_id', $rv->id)->orderBy('id', 'DESC')->first();
+
+                if ($rvLog && ($data['data']['status'] != AppConstant::VOUCHER_STATUS_NEW)) {
+                    if ($rvLog->current_status > Carbon::parse($data['data']['date'])->toDateString()) {
+                        throw new AppException('Data should be greater than previous');
+                    }
+                    ReceiptVoucherLog::create([
+                        'receipt_voucher_id' => $rv->id,
+                        'previous_status' => $rv->status,
+                        'current_status' => $data['data']['status'],
+                        'date' => $data['data']['date'],
+                        'admin_id' => $data['data']['user_id']
+                    ]);
+                }elseif ($rvLog && ($data['data']['status'] == AppConstant::VOUCHER_STATUS_NEW)) {
+                    ReceiptVoucherLog::create([
+                        'receipt_voucher_id' => $rv->id,
+                        'previous_status' => $rv->status,
+                        'current_status' => $data['data']['status'],
+                        'date' => $data['data']['date'],
+                        'admin_id' => $data['data']['user_id']
+                    ]);
+                }
+            }
+
+
             if (isset($data['data']['status'])) {
                 if ($data['data']['status'] == AppConstant::RECEIPT_VOUCHER_STATUS_POSTED_TO_GL) {
                     $retireVouchers = ReceiptVoucher::with(['receipt_payees.treasury_receipt_schedule_economics'])
@@ -255,14 +280,6 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
                         ]);
                         JournalVoucherDetail::insert($jvD);
 
-
-                        ReceiptVoucherLog::create([
-                            'receipt_voucher_id' => $retireVoucher->id,
-                            'previous_status' => $retireVoucher->status,
-                            'current_status' => $data['data']['status'],
-                            'date' => $data['data']['date'],
-                            'admin_id' => $data['data']['user_id']
-                        ]);
                     }
                 }
                 $rv->update([

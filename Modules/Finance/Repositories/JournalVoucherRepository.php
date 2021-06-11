@@ -15,6 +15,7 @@ use Modules\Admin\Models\CompanySetting;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JournalVoucherDetail;
 use Modules\Finance\Models\JvTrailBalanceReport;
+use Modules\Treasury\Models\JournalVoucherLog;
 
 class JournalVoucherRepository extends EloquentBaseRepository
 {
@@ -30,7 +31,7 @@ class JournalVoucherRepository extends EloquentBaseRepository
         $companySetting = CompanySetting::where('id', 1)->first();
         if ($companySetting->auto_post == true) {
 
-            if (!isset($data['data']['jv_detail']) || count($data['data']['jv_detail']) <=0) {
+            if (!isset($data['data']['jv_detail']) || count($data['data']['jv_detail']) <= 0) {
                 throw new AppException('jv detail required when auto post is enabled');
             }
 
@@ -228,9 +229,9 @@ class JournalVoucherRepository extends EloquentBaseRepository
 
 
         if (isset($params['inputs']['source_app'])) {
-            if($params['inputs']['source_app'] == 'GENERAL_LEDGER') {
+            if ($params['inputs']['source_app'] == 'GENERAL_LEDGER') {
                 $query->where('source_app', 'PLINYEGL');
-            }elseif($params['inputs']['source_app'] == 'E_VOUCHER_TREASURY') {
+            } elseif ($params['inputs']['source_app'] == 'E_VOUCHER_TREASURY') {
                 $query->where('source_app', 'E-Voucher (Treasury)');
             }
 
@@ -256,45 +257,81 @@ class JournalVoucherRepository extends EloquentBaseRepository
         if (is_null($jVD)) {
             throw new AppException('cannot update or post, jv detail is empty');
         }
-
-        if (isset($data['data']['status'])) {
-            if ($data['data']['status'] == 'CHECKED') {
-                $jvs->update([
-                    'status' => AppConstant::JV_STATUS_CHECKED,
-                    'checked_user_id' => $data['data']['user_id'],
-                    'checked_value_date' => Carbon::now()->toDateTimeString(),
-                    'checked_transaction_date' => Carbon::now()->toDateTimeString(),
-                ]);
-            } elseif ($data['data']['status'] == 'POSTED') {
-                $jvs->update([
-                    'status' => AppConstant::JV_STATUS_POSTED,
-                    'posted_user_id' => $data['data']['user_id'],
-                    'posted_value_date' => Carbon::now()->toDateTimeString(),
-                    'posted_transaction_date' => Carbon::now()->toDateTimeString()
-                ]);
-
-              $jvs =  $jvs->get();
-              foreach ($jvs as $jv) {
-                  $jds = JournalVoucherDetail::where('journal_voucher_id', $jv->id)->get();
-                  foreach ($jds as $jd) {
-                      $jd = $jd->toArray();
-                      $this->insertInTrailReport($jd);
-                  }
-              }
-
-            } elseif ($data['data']['status'] == 'RENEW') {
-                $jvs->update([
-                    'status' => AppConstant::JV_STATUS_NEW,
-                    'checked_user_id' => null,
-                    'checked_value_date' => null,
-                    'checked_transaction_date' => null
-                ]);
-            } else {
-                throw new AppException('Invalid status');
+        DB::beginTransaction();
+        try {
+            $journalVouchers = JournalVoucher::whereIn('id', $data['data']['jv_reference_numbers'])->get();
+            foreach ($journalVouchers as $journalVoucher) {
+                $this->jvLogs($journalVoucher, $data);
             }
+            if (isset($data['data']['status'])) {
+                if ($data['data']['status'] == 'CHECKED') {
+                    $jvs->update([
+                        'status' => AppConstant::JV_STATUS_CHECKED,
+                        'checked_user_id' => $data['data']['user_id'],
+                        'checked_value_date' => Carbon::now()->toDateTimeString(),
+                        'checked_transaction_date' => Carbon::now()->toDateTimeString(),
+                    ]);
+                } elseif ($data['data']['status'] == 'POSTED') {
+                    $jvs->update([
+                        'status' => AppConstant::JV_STATUS_POSTED,
+                        'posted_user_id' => $data['data']['user_id'],
+                        'posted_value_date' => Carbon::now()->toDateTimeString(),
+                        'posted_transaction_date' => Carbon::now()->toDateTimeString()
+                    ]);
+
+                    $jvs = $jvs->get();
+                    foreach ($jvs as $jv) {
+                        $jds = JournalVoucherDetail::where('journal_voucher_id', $jv->id)->get();
+                        foreach ($jds as $jd) {
+                            $jd = $jd->toArray();
+                            $this->insertInTrailReport($jd);
+                        }
+                    }
+
+                } elseif ($data['data']['status'] == 'RENEW') {
+                    $jvs->update([
+                        'status' => AppConstant::JV_STATUS_NEW,
+                        'checked_user_id' => null,
+                        'checked_value_date' => null,
+                        'checked_transaction_date' => null
+                    ]);
+                } else {
+                    throw new AppException('Invalid status');
+                }
+            }
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw $exception;
         }
+
 
         return ['success' => strtolower($data['data']['status']) . ' successfully'];
     }
 
+
+    public function jvLogs($jv, $data)
+    {
+        $jvLog = JournalVoucherLog::where('journal_voucher_id', $jv->id)->orderBy('id', 'DESC')->first();
+        if ($jvLog && ($data['data']['status'] != AppConstant::ON_MANDATE_NEW)) {
+            if ($jvLog->current_status > Carbon::parse($data['data']['date'])->toDateString()) {
+                throw new AppException('Data should be greater than previous');
+            }
+            JournalVoucherLog::create([
+                'payment_approval_id' => $jv->id,
+                'admin_id' => $data['data']['user_id'],
+                'previous_status' => $jv->status ?? null,
+                'current_status' => $data['data']['status'],
+                'date' => $data['data']['date']
+            ]);
+        } elseif ($jvLog && ($data['data']['status'] != AppConstant::ON_MANDATE_NEW)) {
+            JournalVoucherLog::create([
+                'payment_approval_id' => $jv->id,
+                'admin_id' => $data['data']['user_id'],
+                'previous_status' => $jv->status ?? null,
+                'current_status' => $data['data']['status'],
+                'date' => $data['data']['date']
+            ]);
+        }
+    }
 }
