@@ -62,7 +62,13 @@ class MandateRepository extends EloquentBaseRepository
             $data['data']['prepared_by'] = $data['data']['user_id'];
             $data['data']['prepared_date'] = Carbon::now()->toDateString();
             $mandate = parent::create($data);
-
+            MandateLog::create([
+                'payment_approval_id' => $mandate->id,
+                'admin_id' => $data['data']['user_id'],
+                'previous_status' => null,
+                'current_status' => 'NEW',
+                'date' => $data['data']['date']
+            ]);
             if (isset($data['data']['payment_vouchers'])) {
 
                 $data['data']['payment_vouchers'] = json_decode($data['data']['payment_vouchers'], true);

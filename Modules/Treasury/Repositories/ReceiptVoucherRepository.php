@@ -39,7 +39,15 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
         }
         $data['data']['status'] = 'NEW';
 
-        return parent::create($data);
+        $rv = parent::create($data);
+        ReceiptVoucherLog::create([
+            'receipt_voucher_id' => $rv->id,
+            'previous_status' => null,
+            'current_status' => 'NEW',
+            'date' => $data['data']['date'],
+            'admin_id' => $data['data']['user_id']
+        ]);
+        return $rv;
     }
 
 

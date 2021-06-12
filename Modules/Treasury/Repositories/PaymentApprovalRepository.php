@@ -60,7 +60,15 @@ class   PaymentApprovalRepository extends EloquentBaseRepository
         $data['data']['prepared_by_id'] = $data['data']['user_id'];
         $data['data']['status'] = 'NEW';
         $data['data']['value_date'] = Carbon::parse($data['data']['value_date']);
-        return parent::create($data);
+        $pa = parent::create($data);
+        PaymentApprovalLog::create([
+            'payment_approval_id' => $pa->id,
+            'admin_id' => $data['data']['user_id'],
+            'previous_status' => null,
+            'current_status' => 'NEW',
+            'date' => $data['data']['date']
+        ]);
+        return $pa;
     }
 
     public function updateStatus($data)

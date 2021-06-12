@@ -55,7 +55,13 @@ class JournalVoucherRepository extends EloquentBaseRepository
         DB::beginTransaction();
         try {
             $jv = parent::create($data);
-
+            JournalVoucherLog::create([
+                'payment_approval_id' => $jv->id,
+                'admin_id' => $data['data']['user_id'],
+                'previous_status' => null,
+                'current_status' => 'NEW',
+                'date' => $data['data']['date']
+            ]);
             if (!isset($data['data']['jv_detail']) || count($data['data']['jv_detail']) <= 0) {
                 DB::commit();
                 return $jv;

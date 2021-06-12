@@ -117,6 +117,13 @@ class PaymentRepository extends EloquentBaseRepository
                         }
                     }
                 }
+                $pvLog = PaymentVouchersLog::create([
+                    'payment_voucher_id' => $paymentVoucher->id,
+                    'previous_status' =>  null,
+                    'current_status' => 'NEW',
+                    'date' => $data['data']['date'],
+                    'admin_id' => $data['data']['user_id']
+                ]);
                 DB::commit();
                 return $paymentVoucher;
             } elseif ($companySetting->is_payment_approval == false) {
@@ -526,7 +533,13 @@ class PaymentRepository extends EloquentBaseRepository
         $data['data']['aie_id'] = $aie->id;
 
         $paymentVoucher = parent::create($data);
-
+        $pvLog = PaymentVouchersLog::create([
+            'payment_voucher_id' => $paymentVoucher->id,
+            'previous_status' =>  null,
+            'current_status' => 'NEW',
+            'date' => $data['data']['date'],
+            'admin_id' => $data['data']['user_id']
+        ]);
         $paymentApproval = PaymentApproval::create([
             'admin_segment_id' => $paymentVoucher->admin_segment_id,
             'fund_segment_id' => $paymentVoucher->fund_segment_id,

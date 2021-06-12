@@ -141,6 +141,14 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 ]);
             }
 
+            RetireVoucherLog::create([
+                'retire_voucher_id' => $retireV->id,
+                'previous_status' => null,
+                'current_status' => 'NEW',
+                'date' => $data['data']['date'],
+                'admin_id' => $data['data']['user_id']
+            ]);
+
             $q = RetireLiability::where('retire_voucher_id', $retireV->id);
             $retireSum = $q->sum('amount');
 

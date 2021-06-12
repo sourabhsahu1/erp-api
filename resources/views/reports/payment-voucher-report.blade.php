@@ -277,7 +277,7 @@
                     @foreach($data->date as $var)
                         <td>{{$var}}</td>
                     @endforeach
-                    <td colspan="10">{{explode('.', $data->total_amount->amount)[0]}}</td>
+                    <td colspan="10">{{$data->amount}}</td>
                      <td class="table-bordered">{{explode('.', $data->total_amount->amount)[1]}}</td>
                 </tr>
             </table>
@@ -325,14 +325,45 @@
                     </td>
                     <td class="table-bordered bind-data"
                         style="text-align: center;vertical-align: baseline; padding: 10px">
-                        {{explode('.', $payee->net_amount)[0]}}
+                        {{preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", explode('.', $payee->net_amount)[0])}}
                     </td>
-{{--                    {{dd(explode('.', $payee->net_amount)[1])}}--}}
                     <td class="table-bordered bind-data"
-                        style="text-align: center;vertical-align: baseline; padding: 10px">{{(explode('.', $payee->net_amount)[1] ?? 00)*10}}
+                        style="text-align: center;vertical-align: baseline; padding: 10px">{{((explode('.', $payee->net_amount)[1] ?? '00') * 10) === 0 ? '00' : (explode('.', $payee->net_amount)[1] ?? '00') * 10}}
                     </td>
                 </tr>
             @endforeach
+            <tr>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+            </tr>
+           <tr>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+            </tr>
             <tr class="text_font_family">
                 <td class="table-bordered" style="text-align: center;vertical-align: baseline; padding: 15px 10px"></td>
                 <td class="table-bordered" style="text-align: center;vertical-align: baseline; padding: 15px 10px"></td>

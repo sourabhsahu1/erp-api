@@ -51,7 +51,7 @@ class WKHTMLPDfConverter
     {
 
         if ($this->header)
-            $this->header = "Page [page] of [toPage]";
+            $this->header = "";
         $this->location = config('file.wkhtml_path');
         try {
             $tmp_path = config('file.pdf_directory') . Carbon::now()->timestamp . '.html';
