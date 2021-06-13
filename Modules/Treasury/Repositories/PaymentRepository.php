@@ -396,7 +396,7 @@ class PaymentRepository extends EloquentBaseRepository
                 throw new AppException('Schedule Economic not added');
             }
 
-            $pvLog = PaymentVouchersLog::where('mandate_id', $pv->id)->orderBy('id', 'DESC')->first();
+            $pvLog = PaymentVouchersLog::where('payment_voucher_id', $pv->id)->orderBy('id', 'DESC')->first();
 
             if ($pvLog && ($data['data']['status'] != AppConstant::VOUCHER_STATUS_NEW)) {
                 if ($pvLog->current_status > Carbon::parse($data['data']['date'])->toDateString()) {
