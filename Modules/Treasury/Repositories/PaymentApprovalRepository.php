@@ -66,7 +66,7 @@ class   PaymentApprovalRepository extends EloquentBaseRepository
             'admin_id' => $data['data']['user_id'],
             'previous_status' => null,
             'current_status' => 'NEW',
-            'date' => $data['data']['date']
+            'date' => Carbon::now()->toDateString()
         ]);
         return $pa;
     }

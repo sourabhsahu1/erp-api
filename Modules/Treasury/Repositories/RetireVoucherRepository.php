@@ -145,7 +145,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 'retire_voucher_id' => $retireV->id,
                 'previous_status' => null,
                 'current_status' => 'NEW',
-                'date' => $data['data']['date'],
+                'date' => Carbon::now()->toDateString(),
                 'admin_id' => $data['data']['user_id']
             ]);
 
