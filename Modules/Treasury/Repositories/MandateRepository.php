@@ -63,7 +63,7 @@ class MandateRepository extends EloquentBaseRepository
             $data['data']['prepared_date'] = Carbon::now()->toDateString();
             $mandate = parent::create($data);
             MandateLog::create([
-                'payment_approval_id' => $mandate->id,
+                'mandate_id' => $mandate->id,
                 'admin_id' => $data['data']['user_id'],
                 'previous_status' => null,
                 'current_status' => 'NEW',
@@ -402,7 +402,7 @@ class MandateRepository extends EloquentBaseRepository
                 throw new AppException('Data should be greater than previous');
             }
             MandateLog::create([
-                'payment_approval_id' => $mandate->id,
+                'mandate_id' => $mandate->id,
                 'admin_id' => $data['data']['user_id'],
                 'previous_status' => $mandate->status ?? null,
                 'current_status' =>$data['data']['status'],
@@ -410,7 +410,7 @@ class MandateRepository extends EloquentBaseRepository
             ]);
         }elseif ($mandateLog && ($data['data']['status'] == AppConstant::ON_MANDATE_NEW)) {
             MandateLog::create([
-                'payment_approval_id' => $mandate->id,
+                'mandate_id' => $mandate->id,
                 'admin_id' => $data['data']['user_id'],
                 'previous_status' => $mandate->status ?? null,
                 'current_status' =>$data['data']['status'],
