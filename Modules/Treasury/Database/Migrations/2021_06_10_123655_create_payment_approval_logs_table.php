@@ -24,7 +24,7 @@ class   CreatePaymentApprovalLogsTable extends Migration
                 AppConstant::PAYMENT_APPROVAL_APPROVED_AND_READY,
                 AppConstant::PAYMENT_APPROVAL_FULLY_USED,
                 AppConstant::PAYMENT_APPROVAL_READY_FOR_PV
-            ]);
+            ])->nullable();
             $table->enum('current_status',[
                 AppConstant::PAYMENT_APPROVAL_NEW,
                 AppConstant::PAYMENT_APPROVAL_CHECKED,

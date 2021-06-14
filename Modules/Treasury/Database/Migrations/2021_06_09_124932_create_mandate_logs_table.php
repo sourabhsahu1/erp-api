@@ -23,7 +23,7 @@ class CreateMandateLogsTable extends Migration
                 AppConstant::ON_MANDATE_1ST_AUTHORISED,
                 AppConstant::ON_MANDATE_2ND_AUTHORISED,
                 AppConstant::ON_MANDATE_POSTED_TO_GL
-            ]);
+            ])->nullable();
             $table->enum('current_status',[
                 AppConstant::ON_MANDATE_NEW,
                 AppConstant::ON_MANDATE_1ST_AUTHORISED,

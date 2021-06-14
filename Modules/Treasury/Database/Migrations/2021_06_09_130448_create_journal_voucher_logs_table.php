@@ -22,7 +22,7 @@ class CreateJournalVoucherLogsTable extends Migration
                 AppConstant::JV_STATUS_NEW,
                 AppConstant::JV_STATUS_POSTED,
                 AppConstant::JV_STATUS_CHECKED
-            ]);
+            ])->nullable();
             $table->enum('current_status',[
                 AppConstant::JV_STATUS_NEW,
                 AppConstant::JV_STATUS_POSTED,

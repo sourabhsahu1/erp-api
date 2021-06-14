@@ -26,7 +26,7 @@ class CreateReceiptVoucherLogsTable extends Migration
                 AppConstant::VOUCHER_TYPE_REMITTANCE_RECEIVED_VOUCHER,
                 AppConstant::VOUCHER_TYPE_DEPOSIT_RECEIVED_VOUCHER,
                 AppConstant::VOUCHER_TYPE_REVENUE_DEBIT_VOUCHER
-            ]);
+            ])->nullable();
             $table->enum('current_status',[
                 AppConstant::VOUCHER_TYPE_REVENUE_VOUCHER,
                 AppConstant::VOUCHER_TYPE_NON_PERSONAL_ADVANCES_RECEIVED_VOUCHER,

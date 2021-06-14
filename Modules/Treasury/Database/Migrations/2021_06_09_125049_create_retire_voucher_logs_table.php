@@ -27,7 +27,7 @@ class CreateRetireVoucherLogsTable extends Migration
                 AppConstant::RETIRE_VOUCHER_RETIRE,
                 AppConstant::RETIRE_VOUCHER_BUDGET_CODES_VERIFIED,
                 AppConstant::RECEIPT_VOUCHER_STATUS_POSTED_TO_GL
-            ]);
+            ])->nullable();
             $table->enum('current_status',[
                 AppConstant::RETIRE_VOUCHER_NEW,
                 AppConstant::RETIRE_VOUCHER_APPROVED,
