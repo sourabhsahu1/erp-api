@@ -399,8 +399,8 @@ class PaymentRepository extends EloquentBaseRepository
             $pvLog = PaymentVouchersLog::where('payment_voucher_id', $pv->id)->orderBy('id', 'DESC')->first();
 
             if ($pvLog && ($data['data']['status'] != AppConstant::VOUCHER_STATUS_NEW)) {
-                if ($pvLog->current_status > Carbon::parse($data['data']['date'])->toDateString()) {
-                    throw new AppException('Data should be greater than previous');
+                if ($pvLog->date > Carbon::parse($data['data']['date'])->toDateString()) {
+                    throw new AppException('Current Date should be greater than previous date');
                 }
                 $pvLog = PaymentVouchersLog::create([
                     'payment_voucher_id' => $payment_voucher_id,
@@ -621,8 +621,8 @@ class PaymentRepository extends EloquentBaseRepository
             $pvLog = PaymentVouchersLog::where('payment_voucher_id', $pv->id)->orderBy('id', 'DESC')->first();
 
             if ($pvLog && ($data['data']['status'] != AppConstant::VOUCHER_STATUS_NEW)) {
-                if ($pvLog->current_status > Carbon::parse($data['data']['date'])->toDateString()) {
-                    throw new AppException('Data should be greater than previous');
+                if ($pvLog->date > Carbon::parse($data['data']['date'])->toDateString()) {
+                    throw new AppException('Current Date should be greater than previous date');
                 }
                 $pvLog = PaymentVouchersLog::create([
                     'payment_voucher_id' => $payment_voucher_id,

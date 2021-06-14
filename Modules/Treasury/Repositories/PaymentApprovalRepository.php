@@ -86,8 +86,8 @@ class   PaymentApprovalRepository extends EloquentBaseRepository
                 $pavLog = PaymentApprovalLog::where('payment_approval_id', $payment_approval_id)->orderBy('id', 'DESC')->first();
 
                 if ($pavLog && ($data['data']['status'] != AppConstant::VOUCHER_STATUS_NEW)) {
-                    if ($pavLog->current_status > Carbon::parse($data['data']['date'])->toDateString()) {
-                        throw new AppException('Data should be greater than previous');
+                    if ($pavLog->date > Carbon::parse($data['data']['date'])->toDateString()) {
+                        throw new AppException('Current Date should be greater than previous date');
                     }
                     PaymentApprovalLog::create([
                         'payment_approval_id' => $payment_approval_id,

@@ -177,8 +177,8 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
                 $rvLog = ReceiptVoucherLog::where('receipt_voucher_id', $rv->id)->orderBy('id', 'DESC')->first();
 
                 if ($rvLog && ($data['data']['status'] != AppConstant::VOUCHER_STATUS_NEW)) {
-                    if ($rvLog->current_status > Carbon::parse($data['data']['date'])->toDateString()) {
-                        throw new AppException('Data should be greater than previous');
+                    if ($rvLog->date > Carbon::parse($data['data']['date'])->toDateString()) {
+                        throw new AppException('Current Date should be greater than previous date');
                     }
                     ReceiptVoucherLog::create([
                         'receipt_voucher_id' => $rv->id,

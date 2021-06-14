@@ -398,8 +398,8 @@ class MandateRepository extends EloquentBaseRepository
     public function mandateLog($mandate, $data) {
         $mandateLog  =  MandateLog::where('mandate_id', $mandate->id)->orderBy('id', 'DESC')->first();
         if ($mandateLog && ($data['data']['status'] != AppConstant::ON_MANDATE_NEW)) {
-            if ($mandateLog->current_status > Carbon::parse($data['data']['date'])->toDateString()) {
-                throw new AppException('Data should be greater than previous');
+            if ($mandateLog->date > Carbon::parse($data['data']['date'])->toDateString()) {
+                throw new AppException('Current Date should be greater than previous date');
             }
             MandateLog::create([
                 'mandate_id' => $mandate->id,
