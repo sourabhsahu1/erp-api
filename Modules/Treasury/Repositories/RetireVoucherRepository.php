@@ -623,7 +623,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
             'retire_voucher.total_amount'
         ])->find($params['inputs']['id']);
 
-        if (is_null($paymentV->retire_voucher->retire_liabilities)) {
+        if (is_null($paymentV->retire_voucher) || is_null($paymentV->retire_voucher->retire_liabilities)) {
             throw new AppException('Add Retire Voucher Liability First');
         }
 
