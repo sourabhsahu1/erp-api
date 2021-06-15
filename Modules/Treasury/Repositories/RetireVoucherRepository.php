@@ -5,17 +5,20 @@ namespace Modules\Treasury\Repositories;
 
 
 use App\Constants\AppConstant;
+use App\Services\WKHTMLPDfConverter;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
+use Modules\Admin\Models\CompanyInformation;
 use Modules\Admin\Models\CompanySetting;
 use Modules\Finance\Models\Currency;
 use Modules\Finance\Models\JournalVoucher;
 use Modules\Finance\Models\JournalVoucherDetail;
 use Modules\Finance\Repositories\JournalVoucherRepository;
 use Modules\Treasury\Models\Cashbook;
+use Modules\Treasury\Models\DefaultSetting;
 use Modules\Treasury\Models\Mandate;
 use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentVoucher;
@@ -595,4 +598,150 @@ class RetireVoucherRepository extends EloquentBaseRepository
         return parent::delete($data);
 
     }
+
+    public function downloadRetireVoucherReport($params)
+    {
+        $fileName = 'payment-voucher' . \Carbon\Carbon::now()->toDateTimeString() . '.pdf';
+        $filePath = "pdf/";
+        /** @var PaymentVoucher $paymentV */
+        $paymentV = PaymentVoucher::with([
+            'program_segment',
+            'economic_segment',
+            'functional_segment',
+            'geo_code_segment',
+            'admin_segment',
+            'fund_segment',
+            'aie',
+            'currency',
+            'voucher_source_unit',
+            'paying_officer',
+            'checking_officer',
+            'financial_controller',
+            'retire_voucher.retire_liabilities.economic_segment',
+            'retire_voucher.retire_liabilities.company',
+            'retire_voucher.retire_liabilities.employee',
+            'retire_voucher.total_amount'
+        ])->find($params['inputs']['id']);
+
+        if (is_null($paymentV->retire_voucher->retire_liabilities)) {
+            throw new AppException('Add Retire Voucher Liability First');
+        }
+
+        $companyInformation = CompanyInformation::find(1);
+        $payees = " ";
+        $address = " ";
+        $count = -1;
+        /** @var RetireLiability $retire_liability */
+        foreach ($paymentV->retire_voucher->retire_liabilities as $retire_liability) {
+            if ($retire_liability->employee_id) {
+                $payees = $retire_liability->employee->first_name . ' ';
+                $address = $retire_liability->employee->employee_contact_details->country->name;
+            } else {
+                $payees = $retire_liability->company->name . ' ';
+                $address = $retire_liability->company->country;
+            }
+            $count += 1;
+        }
+        $paymentV->default_setting = DefaultSetting::with([
+            'checking_officer',
+            'financial_controller',
+            'paying_officer',
+            'account_head',
+            'program_segment',
+            'economic_segment',
+            'functional_segment',
+            'geo_code_segment',
+            'admin_segment',
+            'fund_segment',
+            'sub_organisation'])->find(1);
+        $finalPayeesText = $count > 0 ? $payees . '+' . $count : $payees;
+        $paymentV->final_payees_text = $finalPayeesText;
+        $paymentV->address = $address;
+        $paymentV->deptalKey = $companyInformation->short_code . '/' . $paymentV->voucher_source_unit->short_name . '/' . $paymentV->deptal_id . '/' . Carbon::parse($paymentV->value_date)->year;
+
+        $esCombineCodes = str_split(str_replace('-', '', $paymentV->admin_segment->combined_code));
+        if (count($esCombineCodes) < 12) {
+            $esTds = 12 - count($esCombineCodes);
+            while ($esTds > 0) {
+                $esCombineCodes[] = '';
+                $esTds--;
+            }
+        }
+        $paymentV['es_code'] = $esCombineCodes;
+
+        $eCombineCodes = str_split(str_replace('-', '', $paymentV->economic_segment->combined_code));
+        if (count($eCombineCodes) < 8) {
+            $esTds = 8 - count($eCombineCodes);
+            while ($esTds > 0) {
+                $eCombineCodes[] = '';
+                $esTds--;
+            }
+        }
+        $paymentV['e_code'] = $eCombineCodes;
+
+        // There must be 32 columns
+        $fCombineCode = str_split(str_replace('-', '', $paymentV->functional_segment->combined_code));
+        $psCombineCode = str_split(str_replace('-', '', $paymentV->program_segment->combined_code));
+        $fsCombineCode = str_split(str_replace('-', '', $paymentV->fund_segment->combined_code));
+        $gCombineCode = str_split(str_replace('-', '', $paymentV->geo_code_segment->combined_code));
+
+        if (($remainingColumns = 32 - (count($fCombineCode) + count($psCombineCode) + count($fsCombineCode) + count($gCombineCode))) > 0) {
+            if (count($fCombineCode) < 5 && $remainingColumns) {
+                $esTds = 5 - count($fCombineCode);
+                while ($esTds > 0 && $remainingColumns > 0) {
+                    $fCombineCode[] = '';
+                    $esTds--;
+                    $remainingColumns--;
+                }
+            }
+            if (count($psCombineCode) < 14 && $remainingColumns) {
+                $esTds = 14 - count($psCombineCode);
+                while ($esTds > 0 && $remainingColumns > 0) {
+                    $psCombineCode[] = '';
+                    $esTds--;
+                    $remainingColumns--;
+                }
+            }
+            if (count($fsCombineCode) < 5 && $remainingColumns) {
+                $esTds = 5 - count($fsCombineCode);
+                while ($esTds > 0 && $remainingColumns > 0) {
+                    $fsCombineCode[] = '';
+                    $esTds--;
+                    $remainingColumns--;
+                }
+            }
+            if (count($gCombineCode) < 8 && $remainingColumns) {
+                $esTds = 8 - count($gCombineCode);
+                while ($esTds > 0 && $remainingColumns > 0) {
+                    $gCombineCode[] = '';
+                    $esTds--;
+                    $remainingColumns--;
+                }
+            }
+        }
+        $paymentV['f_code'] = $fCombineCode;
+        $paymentV['ps_code'] = $psCombineCode;
+        $paymentV['fs_code'] = $fsCombineCode;
+        $paymentV['g_code'] = $gCombineCode;
+
+        $paymentV['date'] = str_split(Carbon::parse($paymentV->retire_voucher->created_at)->format('d'));
+        $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('m')));
+        $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('Y')));
+
+        $amounts = explode('.', $paymentV->retire_voucher->total_amount->amount);
+        $paymentV['amount'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amounts[0]);
+        $paymentV['paisa'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amounts[1] ?? 00);
+
+        if (isset($params['inputs']['bs'])) {
+            app()->make(WKHTMLPDfConverter::class)
+                ->convertBrowserShot(view('reports.retire-voucher-report', ['data' => $paymentV])->render(), $fileName);
+        } else {
+            app()->make(WKHTMLPDfConverter::class)
+                ->convert(view('reports.retire-voucher-report', ['data' => $paymentV])->render(), $fileName);
+        }
+
+
+        return ['url' => url($filePath . $fileName)];
+    }
+
 }

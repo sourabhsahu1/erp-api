@@ -112,6 +112,7 @@ Route::middleware(['auth:api'])->prefix('treasury')->group(function () {
     Route::get('payment-voucher-tax/{id}/download', 'PaymentVoucherController@downloadPaymentTaxReport');
     Route::get('receipt-voucher/{id}/download', 'ReceiptVoucherController@downloadReceiptReport');
     Route::get('payment-voucher/{id}/download', 'PaymentVoucherController@downloadPaymentReport');
+    Route::get('retire-voucher/{id}/download', 'RetireVoucherController@downloadRetireVoucherReport');
 });
 Route::get('payment-vouchers/{id}/download', 'PaymentVoucherController@downloadPaymentReport');
 
@@ -120,3 +121,4 @@ Route::get('payment-voucher-tax/{id}/download', 'PaymentVoucherController@downlo
 
 Route::get('receipt-vouchers', 'ReceiptVoucherController@index');
 Route::get('payment-vouchers', 'PaymentVoucherController@index');
+Route::get('retire-voucher/{id}/download', 'RetireVoucherController@downloadRetireVoucherReport');

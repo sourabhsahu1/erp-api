@@ -11,7 +11,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class RetireVoucher
- * 
+ *
  * @property int $id
  * @property int $payment_voucher_id
  * @property \Carbon\Carbon $liability_value_date
@@ -22,9 +22,10 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * 
+ *
  * @property \Modules\Admin\Models\AdminSegment $economic_segment
  * @property \Modules\Treasury\Models\PaymentVoucher $payment_voucher
+ * @property \Modules\Treasury\Models\RetireLiability $retire_liabilities
  *
  * @package Modules\Treasury\Models
  */
@@ -52,5 +53,12 @@ class RetireVoucher extends Eloquent
     public function retire_liabilities()
     {
         return $this->hasMany(\Modules\Treasury\Models\RetireLiability::class, 'retire_voucher_id');
+    }
+
+    public function total_amount()
+    {
+        return $this->hasOne(RetireLiability::class, 'retire_voucher_id')
+            ->selectRaw('retire_voucher_id, sum(amount) as amount')
+            ->groupBy('retire_voucher_id');
     }
 }

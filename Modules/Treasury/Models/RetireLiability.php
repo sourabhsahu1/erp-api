@@ -27,6 +27,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  *
  * @property \Modules\Admin\Models\AdminSegment $economic_segment
  * @property \Modules\Treasury\Models\RetireVoucher $retire_voucher
+ * @property \Modules\Hr\Models\Employee $employee
+ * @property \Modules\Admin\Models\Company $company
  *
  * @package Modules\Treasury\Models
  */

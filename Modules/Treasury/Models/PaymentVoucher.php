@@ -59,7 +59,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Modules\Treasury\Models\ScheduleEconomic $schedule_economic
  * @property \Modules\Treasury\Models\PayeeVoucher $payee_vouchers
  * @property \Modules\Treasury\Models\VoucherSourceUnit $treasury_voucher_source_unit
- * @property \Modules\Treasury\Models\RetireVoucher $retire_vouchers
+ * @property \Modules\Treasury\Models\RetireVoucher $retire_voucher
  * @property \Modules\Treasury\Models\PaymentApproval $payment_approval
  *
  * @package Modules\Treasury\Models
