@@ -12,12 +12,12 @@ class AdminTaxesTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('admin_taxes')->delete();
-        
+
         \DB::table('admin_taxes')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 1,
                 'name' => 'VAT',
@@ -29,20 +29,8 @@ class AdminTaxesTableSeeder extends Seeder
                 'department_id' => 1,
                 'company_id' => 4,
             ),
-            1 => 
-            array (
-                'id' => 2,
-                'name' => 'Test AB',
-                'tax' => 10.0,
-                'is_active' => 1,
-                'deleted_at' => '2021-04-15 15:50:50',
-                'created_at' => '2021-04-15 15:50:29',
-                'updated_at' => '2021-04-15 15:50:50',
-                'department_id' => 113,
-                'company_id' => 11,
-            ),
         ));
-        
-        
+
+
     }
 }
