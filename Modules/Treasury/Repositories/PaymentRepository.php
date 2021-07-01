@@ -477,7 +477,7 @@ class PaymentRepository extends EloquentBaseRepository
                             'value' => AppConstant::VOUCHER_TYPE_REMITTANCE_VOUCHER
                         ],
                         [
-                            'name' => 'EXP  ENDITURE VOUCHER',
+                            'name' => 'EXPENDITURE VOUCHER',
                             'value' => AppConstant::VOUCHER_TYPE_EXPENDITURE_VOUCHER
                         ], [
                             'name' => 'CREDIT VOUCHER',
