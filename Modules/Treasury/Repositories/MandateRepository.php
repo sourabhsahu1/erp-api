@@ -384,7 +384,8 @@ class MandateRepository extends EloquentBaseRepository
                 }
 
                 $data['id'] = $mandate_id;
-                $this->mandateLog($mandate, $data);
+                //log commented
+//                $this->mandateLog($mandate, $data);
                 parent::update($data);
                 DB::commit();
             } catch (\Exception $exception) {
