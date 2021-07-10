@@ -379,7 +379,7 @@ class PaymentRepository extends EloquentBaseRepository
     function updateStatus($data)
     {
 
-        $pv = PaymentVoucher::whereIn('id', $data['data']['payment_voucher_ids']);
+        $pvs = PaymentVoucher::whereIn('id', $data['data']['payment_voucher_ids']);
 
         foreach ($data['data']['payment_voucher_ids'] as $payment_voucher_id) {
 
@@ -420,7 +420,7 @@ class PaymentRepository extends EloquentBaseRepository
             }
 
         }
-        $pv->update([
+        $pvs->update([
             'status' => $data['data']['status']
         ]);
 

@@ -150,7 +150,7 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
     public function updateStatus($data)
     {
 
-        $rv = ReceiptVoucher::whereIn('id', $data['data']['receipt_voucher_ids']);
+        $rvs = ReceiptVoucher::whereIn('id', $data['data']['receipt_voucher_ids']);
 
         DB::beginTransaction();
         try {
@@ -290,7 +290,7 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
 
                     }
                 }
-                $rv->update([
+                $rvs->update([
                     'status' => $data['data']['status']
                 ]);
             }
