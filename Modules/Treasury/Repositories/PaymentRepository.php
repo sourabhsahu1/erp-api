@@ -119,7 +119,7 @@ class PaymentRepository extends EloquentBaseRepository
                 }
                 $pvLog = PaymentVouchersLog::create([
                     'payment_voucher_id' => $paymentVoucher->id,
-                    'previous_status' =>  null,
+                    'previous_status' => null,
                     'current_status' => 'NEW',
                     'date' => Carbon::now()->toDateString(),
                     'admin_id' => $data['data']['user_id']
@@ -399,9 +399,12 @@ class PaymentRepository extends EloquentBaseRepository
             $pvLog = PaymentVouchersLog::where('payment_voucher_id', $pv->id)->orderBy('id', 'DESC')->first();
 
             if ($pvLog && ($data['data']['status'] != AppConstant::VOUCHER_STATUS_NEW)) {
-                if ($pvLog->date > Carbon::parse($data['data']['date'])->toDateString() && $pvLog->date != Carbon::now()->toDateString()) {
-                    throw new AppException('Current Date should be greater than previous date');
+                if ($pvLog->date != Carbon::now()->toDateString()) {
+                    if ($pvLog->date > Carbon::parse($data['data']['date'])->toDateString()) {
+                        throw new AppException('Current Date should be greater than previous date');
+                    }
                 }
+
                 $pvLog = PaymentVouchersLog::create([
                     'payment_voucher_id' => $payment_voucher_id,
                     'previous_status' => $pv->status,
@@ -409,7 +412,7 @@ class PaymentRepository extends EloquentBaseRepository
                     'date' => $data['data']['date'],
                     'admin_id' => $data['data']['user_id']
                 ]);
-            }elseif ($pvLog && ($data['data']['status'] == AppConstant::VOUCHER_STATUS_NEW)){
+            } elseif ($pvLog && ($data['data']['status'] == AppConstant::VOUCHER_STATUS_NEW)) {
                 $pvLog = PaymentVouchersLog::create([
                     'payment_voucher_id' => $payment_voucher_id,
                     'previous_status' => $pv->status,
@@ -535,7 +538,7 @@ class PaymentRepository extends EloquentBaseRepository
         $paymentVoucher = parent::create($data);
         $pvLog = PaymentVouchersLog::create([
             'payment_voucher_id' => $paymentVoucher->id,
-            'previous_status' =>  null,
+            'previous_status' => null,
             'current_status' => 'NEW',
             'date' => Carbon::now()->toDateString(),
             'admin_id' => $data['data']['user_id']
@@ -631,7 +634,7 @@ class PaymentRepository extends EloquentBaseRepository
                     'date' => $data['data']['date'],
                     'admin_id' => $data['data']['user_id']
                 ]);
-            }elseif($pvLog && ($data['data']['status'] == AppConstant::VOUCHER_STATUS_NEW)){
+            } elseif ($pvLog && ($data['data']['status'] == AppConstant::VOUCHER_STATUS_NEW)) {
                 $pvLog = PaymentVouchersLog::create([
                     'payment_voucher_id' => $payment_voucher_id,
                     'previous_status' => $pv->status,
