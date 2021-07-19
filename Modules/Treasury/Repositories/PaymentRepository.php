@@ -399,8 +399,9 @@ class PaymentRepository extends EloquentBaseRepository
             $pvLog = PaymentVouchersLog::where('payment_voucher_id', $pv->id)->orderBy('id', 'DESC')->first();
 
             if ($pvLog && ($data['data']['status'] != AppConstant::VOUCHER_STATUS_NEW)) {
-                if ($pvLog->date == Carbon::now()->toDateString()) {
-                    if ($pvLog->date > Carbon::parse($data['data']['date'])->toDateString()) {
+
+                if ($pvLog->date > Carbon::parse($data['data']['date'])->toDateString()) {
+                    if ($pvLog->date != Carbon::now()->toDateString()) {
                         throw new AppException('Current Date should be greater than previous date');
                     }
                 }
