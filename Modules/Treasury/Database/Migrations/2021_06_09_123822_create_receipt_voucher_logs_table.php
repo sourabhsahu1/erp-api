@@ -19,22 +19,14 @@ class CreateReceiptVoucherLogsTable extends Migration
 
             $table->unsignedBigInteger('receipt_voucher_id');
             $table->enum('previous_status',[
-                AppConstant::VOUCHER_TYPE_REVENUE_VOUCHER,
-                AppConstant::VOUCHER_TYPE_NON_PERSONAL_ADVANCES_RECEIVED_VOUCHER,
-                AppConstant::VOUCHER_TYPE_SPECIAL_IMPREST_RECEIVED_VOUCHER,
-                AppConstant::VOUCHER_TYPE_STANDING_IMPREST_RECEIVED_VOUCHER,
-                AppConstant::VOUCHER_TYPE_REMITTANCE_RECEIVED_VOUCHER,
-                AppConstant::VOUCHER_TYPE_DEPOSIT_RECEIVED_VOUCHER,
-                AppConstant::VOUCHER_TYPE_REVENUE_DEBIT_VOUCHER
+                AppConstant::RECEIPT_VOUCHER_STATUS_NEW,
+                AppConstant::RECEIPT_VOUCHER_STATUS_CLOSED,
+                AppConstant::RECEIPT_VOUCHER_STATUS_POSTED_TO_GL
             ])->nullable();
             $table->enum('current_status',[
-                AppConstant::VOUCHER_TYPE_REVENUE_VOUCHER,
-                AppConstant::VOUCHER_TYPE_NON_PERSONAL_ADVANCES_RECEIVED_VOUCHER,
-                AppConstant::VOUCHER_TYPE_SPECIAL_IMPREST_RECEIVED_VOUCHER,
-                AppConstant::VOUCHER_TYPE_STANDING_IMPREST_RECEIVED_VOUCHER,
-                AppConstant::VOUCHER_TYPE_REMITTANCE_RECEIVED_VOUCHER,
-                AppConstant::VOUCHER_TYPE_DEPOSIT_RECEIVED_VOUCHER,
-                AppConstant::VOUCHER_TYPE_REVENUE_DEBIT_VOUCHER
+                AppConstant::RECEIPT_VOUCHER_STATUS_NEW,
+                AppConstant::RECEIPT_VOUCHER_STATUS_CLOSED,
+                AppConstant::RECEIPT_VOUCHER_STATUS_POSTED_TO_GL
             ]);
             $table->date('date');
             $table->timestamps();

@@ -117,13 +117,6 @@ class PaymentRepository extends EloquentBaseRepository
                         }
                     }
                 }
-                $pvLog = PaymentVouchersLog::create([
-                    'payment_voucher_id' => $paymentVoucher->id,
-                    'previous_status' => null,
-                    'current_status' => 'NEW',
-                    'date' => Carbon::now()->toDateString(),
-                    'admin_id' => $data['data']['user_id']
-                ]);
                 DB::commit();
                 return $paymentVoucher;
             } elseif ($companySetting->is_payment_approval == false) {
@@ -148,7 +141,13 @@ class PaymentRepository extends EloquentBaseRepository
                 ]);
             }
 
-
+            $pvLog = PaymentVouchersLog::create([
+                'payment_voucher_id' => $paymentVoucher->id,
+                'previous_status' => null,
+                'current_status' => 'NEW',
+                'date' => Carbon::now()->toDateString(),
+                'admin_id' => $data['data']['user_id']
+            ]);
             DB::commit();
             return $paymentVoucher;
         } catch (\Exception $exception) {
