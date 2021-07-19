@@ -523,9 +523,13 @@ class RetireVoucherRepository extends EloquentBaseRepository
                 $retireVLog = RetireVoucherLog::where('retire_voucher_id', $retireVoucher->id)->orderBy('id', 'DESC')->first();
 
                 if ($retireVLog && ($data['data']['status'] != AppConstant::VOUCHER_STATUS_NEW)) {
-                    if ($retireVLog->date > Carbon::parse($data['data']['date'])->toDateString()) {
-                        throw new AppException('Current Date should be greater than previous date');
+
+                    if (Carbon::parse($retireVLog->date)->toDateString() > Carbon::parse($data['data']['date'])->toDateString()) {
+                        if ($retireVLog->date != Carbon::now()->toDateString()) {
+                            throw new AppException('Current Date should be greater than previous date');
+                        }
                     }
+
                     RetireVoucherLog::create([
                         'retire_voucher_id' => $retireVoucher->id,
                         'previous_status' => $retireVoucher->status,

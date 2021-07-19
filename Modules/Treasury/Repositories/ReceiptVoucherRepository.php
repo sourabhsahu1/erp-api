@@ -182,7 +182,6 @@ class ReceiptVoucherRepository extends EloquentBaseRepository
                             throw new AppException('Current Date should be greater than previous date');
                         }
                     }
-
                     ReceiptVoucherLog::create([
                         'receipt_voucher_id' => $rv->id,
                         'previous_status' => $rv->status,
