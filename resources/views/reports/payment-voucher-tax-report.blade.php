@@ -299,7 +299,6 @@
             <thead>
             <tr class="label_font_family">
                 <td class="table-bordered" style="text-align: center;width: 10%; padding: 10px 0">Date</td>
-                <td class="table-bordered" style="text-align: center;width: 10%; padding: 10px 0">Name</td>
                 <td class="table-bordered" style="text-align: center;width: 60%; padding: 10px 0">Detail Description of
                     Service Work
                 </td>
@@ -314,8 +313,6 @@
                 <tr style="font-weight: bold" class="text_font_family">
                     <td class="table-bordered bind-data"
                         style="text-align: center;vertical-align: baseline;padding: 10px">{{\Illuminate\Support\Carbon::parse($payee->created_at)->format('d/m/Y')}}</td>
-                    <td class="table-bordered bind-data"
-                        style="text-align: left;vertical-align: baseline; padding: 10px">{{isset($payee->company_id) ? $payee->admin_company->name : $payee->employee->first_name .' '.$payee->employee->last_name}}</td>
                     <td class="table-bordered bind-data"
                         style="text-align: left;vertical-align: baseline; padding: 10px">
                         {{$payee->details}}
@@ -335,7 +332,6 @@
                 </tr>
             @endforeach
             <tr class="text_font_family">
-                <td class="table-bordered" style="text-align: center;vertical-align: baseline; padding: 15px 10px"></td>
                 <td class="table-bordered" style="text-align: center;vertical-align: baseline; padding: 15px 10px"></td>
                 <td class="table-bordered bind-data"
                     style="text-align: left;vertical-align: baseline; padding: 15px 10px">

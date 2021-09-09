@@ -863,6 +863,16 @@ class PaymentRepository extends EloquentBaseRepository
         $count = -1;
         /** @var PayeeVoucher $payee_voucher */
         foreach ($paymentV->payee_vouchers as $payee_voucher) {
+            $taxArray = [];
+            if (count(json_decode($payee_voucher->tax_ids)) > 0) {
+                foreach (json_decode($payee_voucher->tax_ids) as $tax_id) {
+                    /** @var Tax $tax */
+                    $tax = Tax::find($tax_id);
+                    $taxArray[$tax->name] = $taxArray[$tax->name] ?? 0;
+                    $taxArray[$tax->name] = $tax->tax * $payee_voucher->total_tax + $taxArray[$tax->name];
+                }
+            }
+
             if ($payee_voucher->employee_id) {
                 $payees = $payee_voucher->employee->first_name . ' ';
                 $address = $payee_voucher->employee->employee_contact_details->country->name;
@@ -883,6 +893,7 @@ class PaymentRepository extends EloquentBaseRepository
             'admin_segment',
             'fund_segment',
             'sub_organisation'])->find(1);
+        $paymentV->all_tax = $taxArray;
         $finalPayeesText = $count > 0 ? $payees . '+' . $count : $payees;
         $paymentV->final_payees_text = $finalPayeesText;
         $paymentV->address = $address;
@@ -958,8 +969,14 @@ class PaymentRepository extends EloquentBaseRepository
         $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('Y')));
 
         $amounts = explode('.', $paymentV->total_amount->amount);
+        $taxesSum = explode('.', $paymentV->total_tax->tax);
+        $amountTaxSum = explode('.', $paymentV->total_amount->amount + $paymentV->total_tax->tax);
         $paymentV['amount'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amounts[0]);
+        $paymentV['tax_sum'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $taxesSum[0]);
         $paymentV['paisa'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amounts[1] ?? 00);
+        $paymentV['tax_paisa'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $taxesSum[1] ?? 00);
+        $paymentV['total_amount_tax_sum'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amountTaxSum[0]);
+        $paymentV['total_amount_tax_paisa'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amountTaxSum[1] ?? 00);
 
         if (isset($params['inputs']['bs'])) {
             app()->make(WKHTMLPDfConverter::class)

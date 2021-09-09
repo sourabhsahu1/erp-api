@@ -184,8 +184,6 @@
         </div>
 
 
-
-
         <div class="width-90-per" style="margin: auto">
             <table style="margin-top: 30px; width: 100%">
                 <tr>
@@ -244,7 +242,7 @@
                         <td>{{$var}}</td>
                     @endforeach
                     @foreach($data->e_code as $var)
-                            <td>{{$var}}</td>
+                        <td>{{$var}}</td>
                     @endforeach
                 </tr>
                 <tr>
@@ -258,16 +256,16 @@
                         <td>{{$var}}</td>
                     @endforeach
                     @foreach($data->ps_code as $var)
-                            <td>{{$var}}</td>
+                        <td>{{$var}}</td>
                     @endforeach
 
                     @foreach($data->fs_code as $var)
-                            <td>{{$var}}</td>
+                        <td>{{$var}}</td>
                     @endforeach
                     @foreach($data->g_code as $var)
-                            <td>{{$var}}</td>
+                        <td>{{$var}}</td>
                     @endforeach
-{{--                    <td class="border-none"></td>--}}
+                    {{--                    <td class="border-none"></td>--}}
                 </tr>
                 <tr>
                     <th colspan="8">Date</th>
@@ -277,8 +275,8 @@
                     @foreach($data->date as $var)
                         <td>{{$var}}</td>
                     @endforeach
-                    <td colspan="10">{{$data->amount}}</td>
-                     <td class="table-bordered">{{explode('.', $data->total_amount->amount)[1]}}</td>
+                    <td colspan="10">{{$data->total_amount_tax_sum}}</td>
+                    <td class="table-bordered">{{$data->total_amount_tax_paisa}}</td>
                 </tr>
             </table>
         </div>
@@ -298,7 +296,6 @@
             <thead>
             <tr class="label_font_family">
                 <td class="table-bordered" style="text-align: center;width: 10%; padding: 10px 0">Date</td>
-                <td class="table-bordered" style="text-align: center;width: 10%; padding: 10px 0">Name</td>
                 <td class="table-bordered" style="text-align: center;width: 60%; padding: 10px 0">Detail Description of
                     Service Work
                 </td>
@@ -314,8 +311,6 @@
                     <td class="table-bordered bind-data"
                         style="text-align: center;vertical-align: baseline;padding: 10px">{{\Illuminate\Support\Carbon::parse($payee->created_at)->format('d/m/Y')}}</td>
                     <td class="table-bordered bind-data"
-                        style="text-align: left;vertical-align: baseline; padding: 10px">{{isset($payee->company_id) ? $payee->admin_company->name : $payee->employee->first_name .' '.$payee->employee->last_name}}</td>
-                    <td class="table-bordered bind-data"
                         style="text-align: left;vertical-align: baseline; padding: 10px">
                         {{$payee->details}}
                     </td>
@@ -325,47 +320,56 @@
                     </td>
                     <td class="table-bordered bind-data"
                         style="text-align: center;vertical-align: baseline; padding: 10px">
-                        {{preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", explode('.', $payee->net_amount)[0])}}
+                        {{preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", explode('.', $payee->net_amount + $payee->total_tax)[0])}}
                     </td>
                     <td class="table-bordered bind-data"
-                        style="text-align: center;vertical-align: baseline; padding: 10px">{{((explode('.', $payee->net_amount)[1] ?? '00') * 10) === 0 ? '00' : (explode('.', $payee->net_amount)[1] ?? '00') * 10}}
+                        style="text-align: center;vertical-align: baseline; padding: 10px">{{((explode('.', $payee->net_amount + $payee->total_tax)[1] ?? '00') * 10) === 0 ? '00' : (explode('.', $payee->net_amount+$payee->total_tax)[1] ?? '00') * 10}}
                     </td>
+
                 </tr>
             @endforeach
-            <tr>
+            <tr style="font-weight: bold" class="text_font_family">
                 <td class="table-bordered bind-data">&nbsp;</td>
                 <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-            </tr>
-            <tr>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data" style="text-align: center;vertical-align: baseline; padding: 10px">
+                    <b>(less)</b></td>
                 <td class="table-bordered bind-data">&nbsp;</td>
                 <td class="table-bordered bind-data">&nbsp;</td>
             </tr>
-            <tr>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-            </tr>
-           <tr>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-                <td class="table-bordered bind-data">&nbsp;</td>
-            </tr>
+            @if(count($data->all_tax) > 0)
+                @foreach($data->all_tax as $key => $tax)
+                    <tr style="font-weight: bold" class="text_font_family">
+                        <td class="table-bordered bind-data"
+                            style="text-align: center;vertical-align: baseline; padding: 10px">&nbsp;
+                        </td>
+                        <td class="table-bordered bind-data"
+                            style="text-align: center;vertical-align: baseline; padding: 10px">&nbsp;
+                        </td>
+                        <td class="table-bordered bind-data"
+                            style="text-align: center;vertical-align: baseline; padding: 10px">{{$key}}</td>
+                        <td class="table-bordered bind-data"
+                            style="text-align: center;vertical-align: baseline; padding: 10px">{{((explode('.', $tax)[0] ?? '00') * 10) === 0 ? '00' : (explode('.', $tax)[0] ?? '00') * 10}}</td>
+                        <td class="table-bordered bind-data"
+                            style="text-align: center;vertical-align: baseline; padding: 10px">{{((explode('.', $tax)[1] ?? '00') * 10) === 0 ? '00' : (explode('.', $tax)[1] ?? '00') * 10}}</td>
+                    </tr>
+                @endforeach
+            @else
+                <tr>
+                    <td class="table-bordered bind-data">&nbsp;</td>
+                    <td class="table-bordered bind-data">&nbsp;</td>
+                    <td class="table-bordered bind-data">&nbsp;</td>
+                    <td class="table-bordered bind-data">&nbsp;</td>
+                    <td class="table-bordered bind-data">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="table-bordered bind-data">&nbsp;</td>
+                    <td class="table-bordered bind-data">&nbsp;</td>
+                    <td class="table-bordered bind-data">&nbsp;</td>
+                    <td class="table-bordered bind-data">&nbsp;</td>
+                    <td class="table-bordered bind-data">&nbsp;</td>
+                </tr>
+            @endif
             <tr class="text_font_family">
-                <td class="table-bordered" style="text-align: center;vertical-align: baseline; padding: 15px 10px"></td>
                 <td class="table-bordered" style="text-align: center;vertical-align: baseline; padding: 15px 10px"></td>
                 <td class="table-bordered bind-data"
                     style="text-align: left;vertical-align: baseline; padding: 15px 10px">
