@@ -348,7 +348,7 @@
                         <td class="table-bordered bind-data"
                             style="text-align: center;vertical-align: baseline; padding: 10px">{{$key}}</td>
                         <td class="table-bordered bind-data"
-                            style="text-align: center;vertical-align: baseline; padding: 10px">{{((explode('.', $tax)[0] ?? '00') * 10) === 0 ? '00' : (explode('.', $tax)[0] ?? '00') * 10}}</td>
+                            style="text-align: center;vertical-align: baseline; padding: 10px">{{((explode('.', $tax)[0] ?? '00')) === 0 ? '00' : (explode('.', $tax)[0] ?? '00')}}</td>
                         <td class="table-bordered bind-data"
                             style="text-align: center;vertical-align: baseline; padding: 10px">{{((explode('.', $tax)[1] ?? '00') * 10) === 0 ? '00' : (explode('.', $tax)[1] ?? '00') * 10}}</td>
                     </tr>
