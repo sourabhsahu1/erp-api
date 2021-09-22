@@ -860,10 +860,9 @@ class PaymentRepository extends EloquentBaseRepository
         $payees = " ";
         $address = " ";
         $count = -1;
+        $taxArray = [];
 
-
-
-        if (in_array($paymentV->status, [AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER, AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER, AppConstant::VOUCHER_TYPE_STANDING_VOUCHER, AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER])) {
+        if (in_array($paymentV->type, [AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER, AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER, AppConstant::VOUCHER_TYPE_STANDING_VOUCHER, AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER])) {
             $paymentV->is_tax_voucher = false;
         } else {
             /** @var PayeeVoucher $payee_voucher */
@@ -909,6 +908,7 @@ class PaymentRepository extends EloquentBaseRepository
             }
             $paymentV->is_tax_voucher = true;
         }
+        $paymentV->all_tax = $taxArray;
 
         $paymentV->default_setting = DefaultSetting::with(['checking_officer',
             'financial_controller',
@@ -921,7 +921,7 @@ class PaymentRepository extends EloquentBaseRepository
             'admin_segment',
             'fund_segment',
             'sub_organisation'])->find(1);
-        $paymentV->all_tax = $taxArray;
+
         $finalPayeesText = $count > 0 ? $payees . '+' . $count : $payees;
         $paymentV->final_payees_text = $finalPayeesText;
         $paymentV->address = $address;
