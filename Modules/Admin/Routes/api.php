@@ -30,6 +30,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('company/{companyId}/bank/{id}','CompanyBankController@update');
     Route::delete('company/{companyId}/bank/{id}','CompanyBankController@destroy');
 
+    Route::put('taxes/{id}','TaxController@update');
     Route::resource('taxes','TaxController');
 
 
