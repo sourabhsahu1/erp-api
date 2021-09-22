@@ -860,53 +860,53 @@ class PaymentRepository extends EloquentBaseRepository
         $payees = " ";
         $address = " ";
         $count = -1;
-        /** @var PayeeVoucher $payee_voucher */
-        foreach ($paymentV->payee_vouchers as $payee_voucher) {
 
-            //Tax Logic for PDF
-            $taxArray = [];
-            if (count(json_decode($payee_voucher->tax_ids)) > 0) {
-                foreach (json_decode($payee_voucher->tax_ids) as $tax_id) {
-                    /** @var Tax $tax */
-                    $tax = Tax::find($tax_id);
-                    $taxArray[$tax->name] = $taxArray[$tax->name] ?? 0;
-                    $taxArray[$tax->name] = $tax->tax * $payee_voucher->net_amount + $taxArray[$tax->name];
-                }
-            }
-            $sum = 0;
-            foreach ($taxArray as $key => &$tax) {
-                $tax = $tax / 100;
-                if ($key === 'VAT' || $key === 'WHT') {
-                    continue;
-                }
-                $sum = $tax + $sum;
-                unset($taxArray[$key]);
-            }
-            if (!isset($taxArray['VAT'])) {
-                $taxArray['VAT'] = 0;
-            }
-            if (!isset($taxArray['WHT'])) {
-                $taxArray['WHT'] = 0;
-            }
-
-            $taxArray['OTHERS'] = $sum;
-            //Tax logic ended
-
-
-            if ($payee_voucher->employee_id) {
-                $payees = $payee_voucher->employee->first_name . ' ';
-                $address = $payee_voucher->employee->employee_contact_details->country->name;
-            } else {
-                $payees = $payee_voucher->admin_company->name . ' ';
-                $address = $payee_voucher->admin_company->country;
-            }
-            $count += 1;
-        }
 
 
         if (in_array($paymentV->status, [AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER, AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER, AppConstant::VOUCHER_TYPE_STANDING_VOUCHER, AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER])) {
             $paymentV->is_tax_voucher = false;
         } else {
+            /** @var PayeeVoucher $payee_voucher */
+            foreach ($paymentV->payee_vouchers as $payee_voucher) {
+                //Tax Logic for PDF
+                $taxArray = [];
+                if (count(json_decode($payee_voucher->tax_ids)) > 0) {
+                    foreach (json_decode($payee_voucher->tax_ids) as $tax_id) {
+                        /** @var Tax $tax */
+                        $tax = Tax::find($tax_id);
+                        $taxArray[$tax->name] = $taxArray[$tax->name] ?? 0;
+                        $taxArray[$tax->name] = $tax->tax * $payee_voucher->net_amount + $taxArray[$tax->name];
+                    }
+                }
+                $sum = 0;
+                foreach ($taxArray as $key => &$tax) {
+                    $tax = $tax / 100;
+                    if ($key === 'VAT' || $key === 'WHT') {
+                        continue;
+                    }
+                    $sum = $tax + $sum;
+                    unset($taxArray[$key]);
+                }
+                if (!isset($taxArray['VAT'])) {
+                    $taxArray['VAT'] = 0;
+                }
+                if (!isset($taxArray['WHT'])) {
+                    $taxArray['WHT'] = 0;
+                }
+
+                $taxArray['OTHERS'] = $sum;
+                //Tax logic ended
+
+
+                if ($payee_voucher->employee_id) {
+                    $payees = $payee_voucher->employee->first_name . ' ';
+                    $address = $payee_voucher->employee->employee_contact_details->country->name;
+                } else {
+                    $payees = $payee_voucher->admin_company->name . ' ';
+                    $address = $payee_voucher->admin_company->country;
+                }
+                $count += 1;
+            }
             $paymentV->is_tax_voucher = true;
         }
 
