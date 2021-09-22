@@ -882,13 +882,16 @@ class PaymentRepository extends EloquentBaseRepository
                 $sum = $tax + $sum;
                 unset($taxArray[$key]);
             }
-            $taxArray['OTHERS'] = $sum;
             if (!isset($taxArray['VAT'])) {
                 $taxArray['VAT'] = 0;
             }
             if (!isset($taxArray['WHT'])) {
                 $taxArray['WHT'] = 0;
             }
+
+            $taxArray['OTHERS'] = $sum;
+            //Tax logic ended
+
 
             if ($payee_voucher->employee_id) {
                 $payees = $payee_voucher->employee->first_name . ' ';
@@ -901,9 +904,9 @@ class PaymentRepository extends EloquentBaseRepository
         }
 
 
-        if (in_array($paymentV->status, [AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER,AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER,AppConstant::VOUCHER_TYPE_STANDING_VOUCHER,AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER])){
+        if (in_array($paymentV->status, [AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER, AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER, AppConstant::VOUCHER_TYPE_STANDING_VOUCHER, AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER])) {
             $paymentV->is_tax_voucher = false;
-        }else{
+        } else {
             $paymentV->is_tax_voucher = true;
         }
 
