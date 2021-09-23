@@ -80,6 +80,15 @@ class RolesTableSeeder extends Seeder
                     'created_at' => NULL,
                     'updated_at' => NULL,
                 ),
+            7 =>
+                array(
+                    'id' => 8,
+                    'role' => 'Employee Custom',
+                    'description' => 'Employee Custom Detail',
+                    'deleted_at' => NULL,
+                    'created_at' => NULL,
+                    'updated_at' => NULL,
+                ),
         ));
 
 

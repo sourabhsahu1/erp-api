@@ -12,6 +12,8 @@ namespace App\Constants;
 class AppConstant
 {
 
+    const EMPLOYEE_ROLE_ID = 8;
+
     const EMPLOYEE_MARITAL_STATUS_MARRIED = 'MARRIED';
     const EMPLOYEE_MARITAL_STATUS_SINGLE = 'SINGLE';
     const EMPLOYEE_MARITAL_STATUS_DIVORCED = 'DIVORCED';

@@ -55,7 +55,7 @@ class EmployeeController extends BaseController
         'employee_pensions',
         'file'
     ];
-    
+
     public function employeeDetails(Request $request)
     {
         $this->customRequest = CreatePersonalDetail::class;
@@ -126,5 +126,11 @@ class EmployeeController extends BaseController
 
         $this->jobMethod = "downloadEmpDetails";
         return $this->handleCustomEndPointGet(BaseJob::class, $request);
+    }
+
+    public function employeeLoginCreate(Request $request) {
+
+        $this->jobMethod = "employeeLoginCreate";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
     }
 }

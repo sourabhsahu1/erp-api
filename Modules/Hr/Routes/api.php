@@ -171,7 +171,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('employee/{employeeId}/progression-history','EmployeeProgressionController@store');
     Route::put('employee/{employeeId}/progression-history/{id}','EmployeeProgressionController@update');
 
-
+    /*employee login*/
+    Route::post('employee-login-access/{employeeId}','EmployeeController@employeeLoginCreate' );
 });
 Route::get('employee/{id}/details-download', 'EmployeeController@downloadDetails');
 Route::get('employee/{id}/emp-details-download', 'EmployeeController@downloadEmpDetails');

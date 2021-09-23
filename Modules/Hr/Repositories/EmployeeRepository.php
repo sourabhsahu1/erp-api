@@ -8,6 +8,7 @@ use App\Services\WKHTMLPDfConverter;
 use App\Constants\AppConstant;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Hr\Models\Department;
@@ -21,6 +22,8 @@ use Modules\Hr\Models\EmployeePersonalDetail;
 use Modules\Hr\Models\EmployeeProgression;
 use Modules\Hr\Models\EmployeeProgressionHistory;
 use Modules\Hr\Models\JobPosition;
+use Modules\Hr\Models\User;
+use Modules\Hr\Models\UserRole;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
@@ -839,6 +842,43 @@ class EmployeeRepository extends EloquentBaseRepository
         }
 
         return ['url' => url($filePath . $fileName)];
+    }
 
+    public function employeeLoginCreate($data)
+    {
+        $employee = Employee::with('employee_personal_details')->find($data['data']['employee_id']);
+        if (is_null($employee->employee_personal_details)) {
+            throw new AppException('employee personal details is not entered');
+        }
+        if (!isset($data['data']['password'])) {
+            throw new AppException('Password is Required');
+        }
+        DB::beginTransaction();
+        try {
+            $user = User::where('email', $employee->employee_personal_details->email)->first();
+            if ($user) {
+                $user->update([
+                    'password' => Hash::make($data['data']['password'])
+                ]);
+            } else {
+                $user = User::create([
+                    'name' => $employee->first_name . ' ' . $employee->last_name,
+                    'email' => $employee->employee_personal_details->email,
+                    'username' => $employee->employee_personal_details->email,
+                    'password' => Hash::make($data['data']['password'])
+                ]);
+            }
+
+            $roleMap = UserRole::create([
+                'user_id' => $user->id,
+                'role_id' => AppConstant::EMPLOYEE_ROLE_ID,
+                'created_by_id' => $data['data']['user_id']
+            ]);
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw $exception;
+        }
+        return $user;
     }
 }
