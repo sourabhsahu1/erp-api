@@ -11,7 +11,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class PayeeVoucher
- * 
+ *
  * @property int $id
  * @property int $payment_voucher_id
  * @property int $employee_id
@@ -24,10 +24,11 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * 
+ *
  * @property \Modules\Admin\Models\Company $admin_company
  * @property \Modules\Hr\Models\Employee $employee
  * @property \Modules\Treasury\Models\PaymentVoucher $payment_voucher
+ * @property \Modules\Treasury\Models\PayeeVoucherCustomTax $payee_taxes
  * @property \Illuminate\Database\Eloquent\Collection $schedule_economics
  *
  * @package Modules\Treasury\Models
@@ -90,4 +91,9 @@ class PayeeVoucher extends Eloquent
 //	public function sum_amount() {
 //        return $this->hasMany(\Modules\Treasury\Models\ScheduleEconomic::class, 'payee_voucher_id');
 //    }
+
+    public function payee_taxes()
+    {
+        return $this->hasMany(\Modules\Treasury\Models\PayeeVoucherCustomTax::class, 'payee_voucher_id');
+    }
 }

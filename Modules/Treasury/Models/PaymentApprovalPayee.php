@@ -29,6 +29,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Modules\Admin\Models\Company $company
  * @property \Modules\Hr\Models\Employee $employee
  * @property \Modules\Treasury\Models\PaymentApproval $payment_approval
+ * @property \Modules\Treasury\Models\PayeeApprovalCustomTax $payee_taxes
  *
  * @package Modules\Treasury\Models
  */
@@ -89,5 +90,10 @@ class PaymentApprovalPayee extends Eloquent
     public function payment_approval()
     {
         return $this->belongsTo(\Modules\Treasury\Models\PaymentApproval::class, 'payment_approval_id');
+    }
+
+    public function payee_taxes()
+    {
+        return $this->hasMany(\Modules\Treasury\Models\PayeeApprovalCustomTax::class, 'payment_approval_payee_id');
     }
 }

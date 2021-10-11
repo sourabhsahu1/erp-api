@@ -336,7 +336,8 @@
                 <td class="table-bordered bind-data">&nbsp;</td>
                 <td class="table-bordered bind-data">&nbsp;</td>
             </tr>
-            @if(count($data->all_tax) > 0)
+
+            @if(!is_null($data->all_tax) && count($data->all_tax) > 0)
                 @foreach($data->all_tax as $key => $tax)
                     <tr style="font-weight: bold" class="text_font_family">
                         <td class="table-bordered bind-data"

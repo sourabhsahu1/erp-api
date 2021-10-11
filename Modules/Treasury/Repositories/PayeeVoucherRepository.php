@@ -9,7 +9,9 @@ use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\CompanyBank;
 use Modules\Hr\Models\EmployeeBankDetail;
+use Modules\Treasury\Models\PayeeApprovalCustomTax;
 use Modules\Treasury\Models\PayeeVoucher;
+use Modules\Treasury\Models\PayeeVoucherCustomTax;
 use Modules\Treasury\Models\PaymentApprovalPayee;
 use Modules\Treasury\Models\PaymentVoucher;
 
@@ -23,7 +25,6 @@ class PayeeVoucherRepository extends EloquentBaseRepository
 
         DB::beginTransaction();
         try {
-
             /** @var PaymentVoucher $pv */
             $pv = PaymentVoucher::find($data['data']['payment_voucher_id']);
             $payee = PayeeVoucher::where('payment_voucher_id', $data['data']['payment_voucher_id']);
@@ -66,6 +67,7 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                     ]);
                 }
                 /** @var PayeeVoucher $payee */
+
                 $payee = parent::create($data);
 
                 $payeeApproval = PaymentApprovalPayee::create([
@@ -77,8 +79,33 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                     'net_amount' => $payee->net_amount,
                     'remaining_amount' => $payee->net_amount,
                     'total_tax' => $payee->total_tax,
-                    'tax_ids' => $payee->tax_ids
+//                    'tax_ids' => $payee->tax_ids
                 ]);
+
+
+                $payeeVoucherTax = [];
+                $payeeApprovalTax = [];
+                //if tax enabled
+                if (isset($data['data']['tax_ids'])) {
+                    $data['data']['tax_ids'] = json_decode($data['data']['tax_ids'], true);
+                    foreach ($data['data']['tax_ids'] as $tax) {
+                        $tax['payee_voucher_id'] = $payee->id;
+                        $tmp['payment_approval_payee_id'] = $payeeApproval->id;
+                        $tmp['tax_id'] = $tax['id'];
+                        $tmp['tax_percentage'] = $tax['tax'];
+                        $payeeApprovalTax[] = $tmp;
+                        $tmp2['payee_voucher_id'] = $payee->id;
+                        $tmp2['tax_id'] = $tax['id'];
+                        $tmp2['tax_percentage'] = $tax['tax'];
+                        $payeeVoucherTax[] = $tmp2;
+                    }
+                    if (count($payeeApprovalTax) > 0) {
+                        PayeeVoucherCustomTax::insert($payeeVoucherTax);
+                        PayeeApprovalCustomTax::insert($payeeApprovalTax);
+                    }
+                }
+
+
             } elseif ($pv->is_payment_approval == true) {
                 //todo logic to write approval deduction
                 $approvalPayees = PaymentApprovalPayee::whereHas('payment_approval', function ($q) use ($data) {
@@ -101,6 +128,20 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                 }
 
                 $payee = parent::create($data);
+
+                //if tax enabled
+                $payeeVoucherTax = [];
+                if (isset($data['data']['tax_ids'])) {
+                    $data['data']['tax_ids'] = json_decode($data['data']['tax_ids'], true);
+                    foreach ($data['data']['tax_ids'] as $tax) {
+                        $temp['payee_voucher_id'] = $payee->id;
+                        $temp['tax_id'] = $tax->id;
+                        $temp['tax_percentage'] = $tax->tax;
+                        $payeeVoucherTax = $temp;
+                    }
+                    if (count($payeeVoucherTax) > 0)
+                        PayeeVoucherCustomTax::insert($payeeVoucherTax);
+                }
                 foreach ($approvalPayees as $approvalPayee) {
                     $remainingAmount = $approvalPayee->remaining_amount - $data['data']['net_amount'];
                     if ($remainingAmount < 0) {
@@ -108,12 +149,13 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                             'remaining_amount' => 0
                         ]);
                         $data['data']['net_amount'] = $data['data']['net_amount'] - $approvalPayee->remaining_amount;
-                    } elseif ($remainingAmount >= 0) {
+                    } elseif ($remainingAmount > 0) {
 
                         $paymentApprovalPayee = PaymentApprovalPayee::where('id', $approvalPayee->id)->update([
                             'remaining_amount' => $remainingAmount
                         ]);
                     }
+
                 }
             } elseif ($pv->is_previous_year_advance == true) {
                 if (isset($data['data']['employee_id'])) {
@@ -158,6 +200,29 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                     'total_tax' => $payee->total_tax ?? 0,
                     'tax_ids' => $payee->tax_ids
                 ]);
+
+
+                $payeeVoucherTax = [];
+                $payeeApprovalTax = [];
+                //if tax enabled
+                if (isset($data['data']['tax_ids'])) {
+                    $data['data']['tax_ids'] = json_decode($data['data']['tax_ids'], true);
+                    foreach ($data['data']['tax_ids'] as $tax) {
+                        $tax['payee_voucher_id'] = $payee->id;
+                        $tmp['payment_approval_payee_id'] = $payeeApproval->id;
+                        $tmp['tax_id'] = $tax['id'];
+                        $tmp['tax_percentage'] = $tax['tax'];
+                        $payeeApprovalTax[] = $tmp;
+                        $tmp2['payee_voucher_id'] = $payee->id;
+                        $tmp2['tax_id'] = $tax['id'];
+                        $tmp2['tax_percentage'] = $tax['tax'];
+                        $payeeVoucherTax[] = $tmp2;
+                    }
+                    if (count($payeeApprovalTax) > 0) {
+                        PayeeVoucherCustomTax::insert($payeeVoucherTax);
+                        PayeeApprovalCustomTax::insert($payeeApprovalTax);
+                    }
+                }
             }
             DB::commit();
             return $payee;
@@ -214,9 +279,22 @@ class PayeeVoucherRepository extends EloquentBaseRepository
                 throw new AppException('Cannot Update Status of Payment Voucher is Not NEW');
             }
         }
+        $payee = parent::update($data);
 
+        $payeeApprovalTax = [];
+        //if tax enabled
+        if (isset($data['data']['tax_ids'])) {
+            $data['data']['tax_ids'] = json_decode($data['data']['tax_ids'], true);
+            foreach ($data['data']['tax_ids'] as $tax) {
+                PayeeVoucherCustomTax::where('payee_voucher_id', $payee->id)
+                    ->where('tax_id', $tax['id'])
+                    ->update([
+                        'tax_percentage' => $tax['tax']
+                    ]);
+            }
+        }
 
-        return parent::update($data);
+        return $payee;
     }
 
 
@@ -234,7 +312,21 @@ class PayeeVoucherRepository extends EloquentBaseRepository
             }
         }
         $data['id'] = $data['data']['schedule_payee'];
-        return parent::delete($data); // TODO: Change the autogenerated stub
+
+        DB::beginTransaction();
+        try {
+            $payee = parent::delete($data);
+            $payeeTaxes = PayeeVoucherCustomTax::where('payee_voucher_id', $data['id'])
+                ->get();
+            if (!$payeeTaxes->isEmpty()) {
+                $payeeTaxes->delete();
+            }
+            DB::commit();
+            return $payee;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+        }
+
     }
 
     public function getAll($params = [], $query = null)
@@ -243,7 +335,8 @@ class PayeeVoucherRepository extends EloquentBaseRepository
             'admin_company.company_bank.bank',
             'admin_company.company_bank.bank_branch',
             'employee.employee_bank.bank',
-            'employee.employee_bank.branches'
+            'employee.employee_bank.branches',
+            'payee_taxes'
         ]);
         return parent::getAll($params, $query);
     }

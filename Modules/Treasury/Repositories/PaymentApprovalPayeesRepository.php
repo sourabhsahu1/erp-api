@@ -5,10 +5,12 @@ namespace Modules\Treasury\Repositories;
 
 
 use App\Constants\AppConstant;
+use Illuminate\Support\Facades\DB;
 use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\Admin\Models\CompanyBank;
 use Modules\Hr\Models\EmployeeBankDetail;
+use Modules\Treasury\Models\PayeeApprovalCustomTax;
 use Modules\Treasury\Models\PaymentApproval;
 use Modules\Treasury\Models\PaymentApprovalPayee;
 
@@ -46,8 +48,21 @@ class PaymentApprovalPayeesRepository extends EloquentBaseRepository
                 'is_active' => true
             ]);
         }
-        $payeeBank = parent::create($data);
-        return $payeeBank;
+        $payee = parent::create($data);
+
+        $payeeApprovalTax = [];
+        //if tax enabled
+        if (isset($data['data']['tax_ids'])) {
+            $data['data']['tax_ids'] = json_decode($data['data']['tax_ids'], true);
+            foreach ($data['data']['tax_ids'] as $tax) {
+                $temp['payment_approval_payee_id'] = $payee->id;
+                $temp['tax_id'] = $tax['id'];
+                $temp['tax_percentage'] = $tax['tax'];
+                $payeeApprovalTax[] = $temp;
+            }
+            PayeeApprovalCustomTax::insert($payeeApprovalTax);
+        }
+        return $payee;
     }
 
 
@@ -71,19 +86,44 @@ class PaymentApprovalPayeesRepository extends EloquentBaseRepository
             throw new AppException('Can Update only when Payment Approval Status is New');
         }
         $data['data']['remaining_amount'] = $data['data']['net_amount'];
+        if (isset($data['data']['tax_ids'])) {
+            $data['data']['tax_ids'] = json_decode($data['data']['tax_ids'],true);
+            foreach ($data['data']['tax_ids'] as $tax) {
+                PayeeApprovalCustomTax::where('payment_approval_payee_id', $data['id'])
+                    ->where('tax_id', $tax['id'])
+                    ->update([
+                        'tax_percentage' => $tax['tax']
+                    ]);
+            }
+        }
         return parent::update($data);
     }
 
 
-
     public function delete($data)
     {
-        $paymentApproval = PaymentApproval::find($data['data']['payment_approval_id']);
 
+        $paymentApproval = PaymentApproval::find($data['data']['payment_approval_id']);
         if ($paymentApproval->status != AppConstant::PAYMENT_APPROVAL_NEW) {
             throw new AppException('Can Delete only when Payment Approval Status is New');
         }
         $data['id'] = $data['data']['schedule_payee'];
-        return parent::delete($data);
+        DB::beginTransaction();
+
+        try {
+            $payee = parent::delete($data);
+            $payeeTaxes = PayeeApprovalCustomTax::where('payment_approval_payee_id', $data['data']['schedule_payee'])
+                ->get();
+            if (!$payeeTaxes->isEmpty()) {
+                $payeeTaxes->delete();
+            }
+            DB::commit();
+            return $payee;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw $exception;
+        }
+
+
     }
 }

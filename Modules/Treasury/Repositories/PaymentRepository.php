@@ -7,6 +7,7 @@ namespace Modules\Treasury\Repositories;
 use App\Constants\AppConstant;
 use App\Services\WKHTMLPDfConverter;
 use Carbon\Carbon;
+use http\Exception\BadMessageException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Luezoid\Laravelcore\Exceptions\AppException;
@@ -18,6 +19,7 @@ use Modules\Treasury\Models\Aie;
 use Modules\Treasury\Models\Cashbook;
 use Modules\Treasury\Models\DefaultSetting;
 use Modules\Treasury\Models\PayeeVoucher;
+use Modules\Treasury\Models\PayeeVoucherCustomTax;
 use Modules\Treasury\Models\PaymentApproval;
 use Modules\Treasury\Models\PaymentApprovalPayee;
 use Modules\Treasury\Models\PaymentVoucher;
@@ -59,7 +61,7 @@ class PaymentRepository extends EloquentBaseRepository
                 $paymentVoucher = parent::create($data);
 
                 $paymentApproval = PaymentApproval::with([
-                    'payment_approval_payees'
+                    'payment_approval_payees.payee_taxes'
                 ])->find($paymentVoucher->payment_approve_id);
 
                 /** @var PaymentApprovalPayee $approval_payee */
@@ -67,7 +69,6 @@ class PaymentRepository extends EloquentBaseRepository
                     $employeeId = $approval_payee->employee_id;
                     $companyId = $approval_payee->company_id;
                     foreach ($data['data']['payees'] as $payee) {
-
                         /** @var PaymentApprovalPayee $approvalPayee */
                         $approvalPayee = PaymentApprovalPayee::find($payee['id']);
                         if (is_null($approvalPayee->company_id)) {
@@ -75,12 +76,16 @@ class PaymentRepository extends EloquentBaseRepository
                         } else {
                             $payeeId = $approvalPayee->company_id;
                         }
-
                         if (($payeeId === $employeeId) || ($payeeId === $companyId)) {
-                            //todo payee create and deduction in payment approval payee amount
-                            $taxes = Tax::whereIn('id', json_decode($approval_payee->tax_ids, true))->pluck('tax')->all();
 
-                            $totalTax = array_sum($taxes);
+//                            $taxes = Tax::whereIn('id', json_decode($approval_payee->tax_ids, true))->pluck('tax')->all();
+
+                            $totalTax = 0;
+                            if ($approval_payee->payee_taxes){
+                                $totalTax = $approval_payee->payee_taxes->sum('tax_percentage');
+                            }
+
+
                             //check to make sure amount is well balanced in both
                             $remainingAmount = $approval_payee->remaining_amount - $payee['amount'];
 
@@ -107,6 +112,16 @@ class PaymentRepository extends EloquentBaseRepository
                                 'details' => $approval_payee->details,
                                 'tax_ids' => $approval_payee->tax_ids
                             ]);
+
+                            if ($approval_payee->payee_taxes){
+                                foreach ($approval_payee->payee_taxes as $tax){
+                                    PayeeVoucherCustomTax::create([
+                                        'payment_approval_payee_id' => $payeeVoucher->id,
+                                        'tax_id' => $tax->tax_id,
+                                        'tax_percentage' => $tax->tax_percentage
+                                    ]);
+                                }
+                            }
 
                             PaymentApprovalPayee::where('id', $approval_payee->id)->update([
                                 'remaining_amount' => $remainingAmount
@@ -167,7 +182,7 @@ class PaymentRepository extends EloquentBaseRepository
         if ($paymentVoucher->is_payment_approval === true) {
 
             $paymentApproval = PaymentApproval::with([
-                'payment_approval_payees'
+                'payment_approval_payees.payee_taxes'
             ])->find($paymentVoucher->payment_approve_id);
 
             if ($paymentApproval) {
@@ -188,9 +203,12 @@ class PaymentRepository extends EloquentBaseRepository
                         }
                         if (($payeeId === $employeeId) || ($payeeId === $companyId)) {
                             //todo payee create and deduction in payment approval payee amount
-                            $taxes = Tax::whereIn('id', json_decode($approval_payee->tax_ids, true))->pluck('tax')->all();
-
-                            $totalTax = array_sum($taxes);
+//                            $taxes = Tax::whereIn('id', json_decode($approval_payee->tax_ids, true))->pluck('tax')->all();
+//                            $totalTax = array_sum($taxes);
+                            $totalTax = 0;
+                            if ($approval_payee->payee_taxes){
+                                $totalTax = $approval_payee->payee_taxes->sum('tax_percentage');
+                            }
                             //check to make sure amount is well balanced in both
                             $remainingAmount = $approval_payee->remaining_amount - $payee['amount'];
                             if ($remainingAmount == 0) {
@@ -206,6 +224,16 @@ class PaymentRepository extends EloquentBaseRepository
                                 ->where('employee_id', $employeeId)
                                 ->where('company_id', $companyId)
                                 ->first();
+
+                            if ($approval_payee->payee_taxes){
+                                foreach ($approval_payee->payee_taxes as $tax){
+                                    PayeeVoucherCustomTax::create([
+                                        'payment_approval_payee_id' => $payeeVoucher->id,
+                                        'tax_id' => $tax->tax_id,
+                                        'tax_percentage' => $tax->tax_percentage
+                                    ]);
+                                }
+                            }
 
                             $updatedRemainingAmount = $payee['amount'] - $payeeVoucher->net_amount;
 
@@ -862,40 +890,24 @@ class PaymentRepository extends EloquentBaseRepository
         $count = -1;
         $taxArray = [];
 
+        if (!$paymentV){
+            throw new AppException('Pv Not Exist');
+        }
+
         if (in_array($paymentV->type, [AppConstant::VOUCHER_TYPE_NON_PERSONAL_VOUCHER, AppConstant::VOUCHER_TYPE_PERSONAL_ADVANCES_VOUCHER, AppConstant::VOUCHER_TYPE_STANDING_VOUCHER, AppConstant::VOUCHER_TYPE_SPECIAL_VOUCHER])) {
             $paymentV->is_tax_voucher = false;
         } else {
             /** @var PayeeVoucher $payee_voucher */
             foreach ($paymentV->payee_vouchers as $payee_voucher) {
                 //Tax Logic for PDF
-                $taxArray = [];
-                if (count(json_decode($payee_voucher->tax_ids)) > 0) {
-                    foreach (json_decode($payee_voucher->tax_ids) as $tax_id) {
+                if ($payee_voucher->payee_taxes) {
+                    foreach ($payee_voucher->payee_taxes as $payee_tax) {
                         /** @var Tax $tax */
-                        $tax = Tax::find($tax_id);
+                        $tax = Tax::find($payee_tax->tax_id);
                         $taxArray[$tax->name] = $taxArray[$tax->name] ?? 0;
-                        $taxArray[$tax->name] = $tax->tax * $payee_voucher->net_amount + $taxArray[$tax->name];
+                        $taxArray[$tax->name] = $payee_tax->tax_percentage * $payee_voucher->net_amount + $taxArray[$tax->name];
                     }
                 }
-                $sum = 0;
-                foreach ($taxArray as $key => &$tax) {
-                    $tax = $tax / 100;
-                    if ($key === 'VAT' || $key === 'WHT') {
-                        continue;
-                    }
-                    $sum = $tax + $sum;
-                    unset($taxArray[$key]);
-                }
-                if (!isset($taxArray['VAT'])) {
-                    $taxArray['VAT'] = 0;
-                }
-                if (!isset($taxArray['WHT'])) {
-                    $taxArray['WHT'] = 0;
-                }
-
-                $taxArray['OTHERS'] = $sum;
-                //Tax logic ended
-
 
                 if ($payee_voucher->employee_id) {
                     $payees = $payee_voucher->employee->first_name . ' ';
@@ -906,9 +918,27 @@ class PaymentRepository extends EloquentBaseRepository
                 }
                 $count += 1;
             }
+            $sum = 0;
+            foreach ($taxArray as $key => &$tax) {
+                $tax = $tax / 100;
+                if ($key === 'VAT' || $key === 'WHT') {
+                    continue;
+                }
+                $sum = $tax + $sum;
+                unset($taxArray[$key]);
+            }
+            if (!isset($taxArray['VAT'])) {
+                $taxArray['VAT'] = 0;
+            }
+            if (!isset($taxArray['WHT'])) {
+                $taxArray['WHT'] = 0;
+            }
+
+            $taxArray['OTHERS'] = $sum;
             $paymentV->is_tax_voucher = true;
+            $paymentV->all_tax = $taxArray;
         }
-        $paymentV->all_tax = $taxArray;
+        //Tax logic ended
 
         $paymentV->default_setting = DefaultSetting::with(['checking_officer',
             'financial_controller',

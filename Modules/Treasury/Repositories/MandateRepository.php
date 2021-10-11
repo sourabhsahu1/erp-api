@@ -21,6 +21,7 @@ use Modules\Treasury\Models\Cashbook;
 use Modules\Treasury\Models\DefaultSetting;
 use Modules\Treasury\Models\Mandate;
 use Modules\Treasury\Models\MandateLog;
+use Modules\Treasury\Models\PayeeApprovalCustomTax;
 use Modules\Treasury\Models\PayeeVoucher;
 use Modules\Treasury\Models\PaymentApproval;
 use Modules\Treasury\Models\PaymentApprovalPayee;
@@ -161,8 +162,7 @@ class MandateRepository extends EloquentBaseRepository
                     if ($data['data']['status'] == AppConstant::ON_MANDATE_1ST_AUTHORISED) {
                         $data['data']['first_authorised_by'] = $data['data']['user_id'];
                         $data['data']['first_authorised_date'] = Carbon::now()->toDateString();
-                    }
-                    elseif ($data['data']['status'] == AppConstant::ON_MANDATE_2ND_AUTHORISED) {
+                    } elseif ($data['data']['status'] == AppConstant::ON_MANDATE_2ND_AUTHORISED) {
                         $data['data']['second_authorised_by'] = $data['data']['user_id'];
                         $data['data']['second_authorised_date'] = Carbon::now()->toDateString();
                         //payment voucher to be closed when on mandate 2nd auth
@@ -206,7 +206,7 @@ class MandateRepository extends EloquentBaseRepository
                                 ]);
 
                                 foreach ($paymentVoucher->payee_vouchers as $payee_voucher) {
-                                    $paymentApprovalPayee[] = [
+                                    $paymentApprovalPayee = [
                                         'payment_approval_id' => $paymentApproval->id,
                                         'year' => $payee_voucher->year,
                                         'details' => $payee_voucher->details,
@@ -217,13 +217,25 @@ class MandateRepository extends EloquentBaseRepository
                                         'total_tax' => $payee_voucher->total_tax,
                                         'tax_ids' => $payee_voucher->tax_ids
                                     ];
+
+                                    $approvalPayee = PaymentApprovalPayee::create($paymentApprovalPayee);
+                                    $payeeApprovalTax = [];
+                                    foreach ($paymentVoucher->payee_vouchers->payee_taxes as $payee_tax) {
+                                        $temp = [
+                                            'payment_approval_payee_id' => $approvalPayee->id,
+                                            'tax_id' => $payee_tax->tax_id,
+                                            'tax_percentage' => $payee_tax->tax_percentage
+                                        ];
+                                        $payeeApprovalTax[] = $temp;
+                                    }
+                                    if (count($payeeApprovalTax) > 0)
+                                        PayeeApprovalCustomTax::insert($payeeApprovalTax);
+
                                 }
-                                if (count($paymentApprovalPayee) > 0)
-                                    PaymentApprovalPayee::insert($paymentApprovalPayee);
+
                             }
                         }
-                    }
-                    elseif ($data['data']['status'] == AppConstant::ON_MANDATE_POSTED_TO_GL) {
+                    } elseif ($data['data']['status'] == AppConstant::ON_MANDATE_POSTED_TO_GL) {
                         //payment voucher to be post to gl when on mandate post to gl
 
                         PaymentVoucher::where('mandate_id', $mandate_id)->update([
@@ -262,9 +274,10 @@ class MandateRepository extends EloquentBaseRepository
                             $totalTax = 0;
                             foreach ($paymentVoucher->payee_vouchers as $payee_voucher) {
                                 foreach ($payee_voucher->schedule_economics as $schedule_economic) {
-                                    foreach (json_decode($payee_voucher->tax_ids, true) as $tax_id) {
+//                                    foreach (json_decode($payee_voucher->tax_ids, true) as $tax_id) {
+                                    foreach ($payee_voucher->payee_taxes as $tax) {
                                         /** @var Tax $tax */
-                                        $tax = Tax::find($tax_id);
+//                                        $tax = Tax::find($tax->tax_id);
                                         if ($tax) {
                                             $jvD[] = [
                                                 'journal_voucher_id' => $jv->id,
@@ -273,7 +286,7 @@ class MandateRepository extends EloquentBaseRepository
                                                 'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
                                                 'account_name' => $payee_voucher->details,
                                                 'line_reference' => $paymentVoucher->deptal_id,
-                                                'line_value' => ($tax->tax * $schedule_economic->amount) / 100,
+                                                'line_value' => ($tax->tax_percentage * $schedule_economic->amount) / 100,
                                                 'admin_segment_id' => $paymentVoucher->admin_segment_id,
                                                 'fund_segment_id' => $paymentVoucher->fund_segment_id,
                                                 'economic_segment_id' => $tax->department_id,
@@ -281,7 +294,7 @@ class MandateRepository extends EloquentBaseRepository
                                                 'functional_segment_id' => $paymentVoucher->functional_segment_id,
                                                 'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
                                                 'line_value_type' => 'CREDIT',
-                                                'lv_line_value' => ($tax->tax * $schedule_economic->amount) / 100,
+                                                'lv_line_value' => ($tax->tax_percentage * $schedule_economic->amount) / 100,
                                                 'local_currency' => $companySetting->local_currency,
                                                 'created_at' => Carbon::now()->toDateTimeString(),
                                                 'updated_at' => Carbon::now()->toDateTimeString()
@@ -293,9 +306,9 @@ class MandateRepository extends EloquentBaseRepository
                                 /** @var ScheduleEconomic $schedule_economic */
 
                                 foreach ($payee_voucher->schedule_economics as $schedule_economic) {
-
-                                    $tax = Tax::wherein('id', json_decode($payee_voucher->tax_ids, true))->pluck('tax')->all();
-                                    $totalTaxForSE = array_sum($tax);
+//                                    $tax = Tax::wherein('id', json_decode($payee_voucher->tax_ids, true))->pluck('tax')->all();
+//                                    $totalTaxForSE = array_sum($tax);
+                                    $totalTaxForSE = $payee_voucher->payee_taxes->sum('tax_percentage');
 
                                     $jvD[] = [
                                         'journal_voucher_id' => $jv->id,
@@ -356,8 +369,7 @@ class MandateRepository extends EloquentBaseRepository
                                 $jvRepository->insertInTrailReport($jd);
                             }
                         }
-                    }
-                    elseif ($data['data']['status'] == AppConstant::ON_MANDATE_NEW) {
+                    } elseif ($data['data']['status'] == AppConstant::ON_MANDATE_NEW) {
                         $data['data']['second_authorised_by'] = null;
                         $data['data']['second_authorised_by'] = null;
                         $data['data']['second_authorised_date'] = null;
@@ -396,8 +408,9 @@ class MandateRepository extends EloquentBaseRepository
         return ['data' => 'Success'];
     }
 
-    public function mandateLog($mandate, $data) {
-        $mandateLog  =  MandateLog::where('mandate_id', $mandate->id)->orderBy('id', 'DESC')->first();
+    public function mandateLog($mandate, $data)
+    {
+        $mandateLog = MandateLog::where('mandate_id', $mandate->id)->orderBy('id', 'DESC')->first();
         if ($mandateLog && ($data['data']['status'] != AppConstant::ON_MANDATE_NEW)) {
             if ($mandateLog->date > Carbon::parse($data['data']['date'])->toDateString()) {
                 throw new AppException('Current Date should be greater than previous date');
@@ -406,15 +419,15 @@ class MandateRepository extends EloquentBaseRepository
                 'mandate_id' => $mandate->id,
                 'admin_id' => $data['data']['user_id'],
                 'previous_status' => $mandate->status ?? null,
-                'current_status' =>$data['data']['status'],
+                'current_status' => $data['data']['status'],
                 'date' => $data['data']['date']
             ]);
-        }elseif ($mandateLog && ($data['data']['status'] == AppConstant::ON_MANDATE_NEW)) {
+        } elseif ($mandateLog && ($data['data']['status'] == AppConstant::ON_MANDATE_NEW)) {
             MandateLog::create([
                 'mandate_id' => $mandate->id,
                 'admin_id' => $data['data']['user_id'],
                 'previous_status' => $mandate->status ?? null,
-                'current_status' =>$data['data']['status'],
+                'current_status' => $data['data']['status'],
                 'date' => $data['data']['date']
             ]);
         }
