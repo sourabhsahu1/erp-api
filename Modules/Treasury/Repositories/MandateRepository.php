@@ -220,13 +220,16 @@ class MandateRepository extends EloquentBaseRepository
 
                                     $approvalPayee = PaymentApprovalPayee::create($paymentApprovalPayee);
                                     $payeeApprovalTax = [];
-                                    foreach ($paymentVoucher->payee_vouchers->payee_taxes as $payee_tax) {
-                                        $temp = [
-                                            'payment_approval_payee_id' => $approvalPayee->id,
-                                            'tax_id' => $payee_tax->tax_id,
-                                            'tax_percentage' => $payee_tax->tax_percentage
-                                        ];
-                                        $payeeApprovalTax[] = $temp;
+                                    foreach ($paymentVoucher->payee_vouchers as $payee_voucher) {
+                                        foreach ($payee_voucher->payee_taxes as $tax){
+                                            $temp = [
+                                                'payment_approval_payee_id' => $approvalPayee->id,
+                                                'tax_id' => $tax->tax_id,
+                                                'tax_percentage' => $tax->tax_percentage
+                                            ];
+                                            $payeeApprovalTax[] = $temp;
+                                        }
+
                                     }
                                     if (count($payeeApprovalTax) > 0)
                                         PayeeApprovalCustomTax::insert($payeeApprovalTax);
