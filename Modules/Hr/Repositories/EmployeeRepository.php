@@ -864,7 +864,7 @@ class EmployeeRepository extends EloquentBaseRepository
                 $user = User::create([
                     'name' => $employee->first_name . ' ' . $employee->last_name,
                     'email' => $employee->employee_personal_details->email,
-                    'username' => $employee->employee_personal_details->email,
+                    'username' => $employee->personnel_file_number,
                     'password' => Hash::make($data['data']['password'])
                 ]);
             }
