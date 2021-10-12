@@ -858,7 +858,8 @@ class EmployeeRepository extends EloquentBaseRepository
             $user = User::where('email', $employee->employee_personal_details->email)->first();
             if ($user) {
                 $user->update([
-                    'password' => Hash::make($data['data']['password'])
+                    'password' => Hash::make($data['data']['password']),
+                    'username' => $employee->personnel_file_number
                 ]);
             } else {
                 $user = User::create([

@@ -15,7 +15,7 @@ class CreateHrEmployeesTable extends Migration
     {
         Schema::create('hr_employees', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('personnel_file_number')->nullable();
+            $table->string('personnel_file_number')->unique()->nullable();
             $table->string('last_name')->nullable();
             $table->string('first_name');
             $table->string('other_name')->nullable();
