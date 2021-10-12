@@ -952,6 +952,9 @@ class PaymentRepository extends EloquentBaseRepository
             'fund_segment',
             'sub_organisation'])->find(1);
 
+        if (!isset($paymentV->total_amount)){
+            throw new AppException('Payee not added');
+        }
         $finalPayeesText = $count > 0 ? $payees . '+' . $count : $payees;
         $paymentV->final_payees_text = $finalPayeesText;
         $paymentV->address = $address;

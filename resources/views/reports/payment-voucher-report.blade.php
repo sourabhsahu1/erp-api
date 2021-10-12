@@ -322,8 +322,14 @@
                         style="text-align: center;vertical-align: baseline; padding: 10px">
                         {{preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", explode('.', $payee->net_amount + $payee->total_tax)[0])}}
                     </td>
+                    {{--                    {{dd(explode('.', $payee->net_amount + $payee->total_tax)[1])}}--}}
+                    {{--                    <td class="table-bordered bind-data"--}}
+                    {{--                        style="text-align: center;vertical-align: baseline; padding: 10px">{{((explode('.', $payee->net_amount + $payee->total_tax)[1] ?? '00') * 10) === 0 ? '00' : (explode('.', $payee->net_amount+$payee->total_tax)[1] ?? '00') * 10}}--}}
+                    {{--                    </td>--}}
+
+
                     <td class="table-bordered bind-data"
-                        style="text-align: center;vertical-align: baseline; padding: 10px">{{((explode('.', $payee->net_amount + $payee->total_tax)[1] ?? '00') * 10) === 0 ? '00' : (explode('.', $payee->net_amount+$payee->total_tax)[1] ?? '00') * 10}}
+                        style="text-align: center;vertical-align: baseline; padding: 10px">{{explode('.',number_format((float)$payee->net_amount + $payee->total_tax, 2, '.', ''))[1]}}
                     </td>
 
                 </tr>
@@ -350,16 +356,19 @@
                             <td class="table-bordered bind-data"
                                 style="text-align: center;vertical-align: baseline; padding: 10px">{{$key}}</td>
                             <td class="table-bordered bind-data"
-                                style="text-align: center;vertical-align: baseline; padding: 10px">{{((explode('.', $tax)[0] ?? '00')) === 0 ? '00' : (explode('.', $tax)[0] ?? '00')}}</td>
+                                style="text-align: center;vertical-align: baseline; padding: 10px">{{explode('.',number_format($tax, 2, '.', ','))[0]}}</td>
                             <td class="table-bordered bind-data"
-                                style="text-align: center;vertical-align: baseline; padding: 10px">{{((explode('.', $tax)[1] ?? '00') * 10) === 0 ? '00' : (explode('.', $tax)[1] ?? '00') * 10}}</td>
+                                style="text-align: center;vertical-align: baseline; padding: 10px">{{explode('.',number_format($tax, 2, '.', ''))[1]}}</td>
                         @else
                             <td class="table-bordered bind-data"
-                                style="text-align: center;vertical-align: baseline; padding: 10px">&nbsp;</td>
+                                style="text-align: center;vertical-align: baseline; padding: 10px">&nbsp;
+                            </td>
                             <td class="table-bordered bind-data"
-                                style="text-align: center;vertical-align: baseline; padding: 10px">&nbsp;</td>
+                                style="text-align: center;vertical-align: baseline; padding: 10px">&nbsp;
+                            </td>
                             <td class="table-bordered bind-data"
-                                style="text-align: center;vertical-align: baseline; padding: 10px">&nbsp;</td>
+                                style="text-align: center;vertical-align: baseline; padding: 10px">&nbsp;
+                            </td>
                         @endif
                     </tr>
                 @endforeach
@@ -386,7 +395,7 @@
                     Checked and &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Insert Amount
                     in words <br>
                     passed for : <span
-                        style="font-weight: bold">{{isset($data->total_amount) ? ucfirst($f->format($data->total_amount->amount)) . ' Naira Only.': ' '}}</span>
+                        style="font-weight: bold">{{isset($data->total_amount) ? ucfirst($f->format(explode('.',number_format($data->total_amount->amount, 2, '.', ''))[0])): ' '}}{{isset($data->total_amount) && explode('.',number_format($data->total_amount->amount, 2, '.', ''))[1] != "00"? ' and '. ucfirst($f->format(explode('.',number_format($data->total_amount->amount, 2, '.', ''))[1])): ' '}} Naira Only </span>
                 </td>
                 <td class="table-bordered" style="text-align: center;">Total</td>
                 <td class="table-bordered bind-data"
@@ -505,10 +514,10 @@
                                     is fair and reasonable.</p>
                             </td>
                         </tr>
+
                         <tr class="text_font_family">
                             <td style="display: flex">
-		                        <span style="margin-left: 10px">That the amount of : <span class="text-bold bind-data"
-                                                                                           style="margin-left:10px; font-size: 16px">{{isset($data->total_amount) ? ucfirst($f->format($data->total_amount->amount)) . ' Naira Only.': ' '}}</span></span>
+		                        <span style="margin-left: 10px">That the amount of : <span class="text-bold bind-data" style="margin-left:10px; font-size: 16px">{{isset($data->total_amount) ? ucfirst($f->format(explode('.',number_format($data->total_amount->amount, 2, '.', ''))[0])): ' '}}{{isset($data->total_amount) && explode('.',number_format($data->total_amount->amount, 2, '.', ''))[1] != "00"? ' and '. ucfirst($f->format(explode('.',number_format($data->total_amount->amount, 2, '.', ''))[1])): ' '}} Naira Only </span></span>
                             </td>
                         </tr>
                         <tr>

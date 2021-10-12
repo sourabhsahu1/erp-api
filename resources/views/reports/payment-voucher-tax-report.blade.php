@@ -278,8 +278,8 @@
                     @foreach($data->date as $var)
                         <td>{{$var}}</td>
                     @endforeach
-                    <td colspan="10">{{explode('.', $data->total_tax->tax)[0]}}</td>
-                    <td class="table-bordered">{{explode('.', $data->total_tax->tax)[1]}}</td>
+                    <td colspan="10">{{explode('.',number_format($data->total_tax->tax, 2, '.', ','))[0]}}</td>
+                    <td class="table-bordered">{{explode('.',number_format($data->total_tax->tax, 2, '.', ''))[1]}}</td>
                 </tr>
             </table>
         </div>
@@ -323,11 +323,12 @@
                     </td>
                     <td class="table-bordered bind-data"
                         style="text-align: center;vertical-align: baseline; padding: 10px">
-                        {{explode('.', $payee->total_tax)[0]}}
+                        {{explode('.',number_format($payee->total_tax, 2, '.', ','))[0]}}
                     </td>
                     {{--                    {{dd(explode('.', $payee->net_amount)[1])}}--}}
                     <td class="table-bordered bind-data"
-                        style="text-align: center;vertical-align: baseline; padding: 10px">{{(explode('.', $payee->total_tax)[1] ?? 00)*10}}
+                        style="text-align: center;vertical-align: baseline; padding: 10px">
+                        {{explode('.',number_format($payee->total_tax, 2, '.', ','))[1]}}
                     </td>
                 </tr>
             @endforeach
@@ -338,7 +339,7 @@
                     Checked and &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Insert Amount
                     in words <br>
                     passed for : <span
-                        style="font-weight: bold">{{isset($data->total_tax) ? ucfirst($f->format($data->total_tax->tax)) . ' Naira Only.': ' '}}</span>
+                        style="font-weight: bold">{{isset($data->total_tax) ? ucfirst($f->format(explode('.',number_format($data->total_tax->tax, 2, '.', ''))[0])): ' '}}{{isset($data->total_tax) && explode('.',number_format($data->total_tax->tax, 2, '.', ''))[1] != "00"? ' and '. ucfirst($f->format(explode('.',number_format($data->total_tax->tax, 2, '.', ''))[1])): ' '}} Naira Only.</span>
                 </td>
                 <td class="table-bordered" style="text-align: center;">Total</td>
                 <td class="table-bordered bind-data"
@@ -459,8 +460,12 @@
                         </tr>
                         <tr class="text_font_family">
                             <td style="display: flex">
-		                        <span style="margin-left: 10px">That the amount of : <span class="text-bold bind-data"
-                                                                                           style="margin-left:10px; font-size: 16px">{{isset($data->total_tax) ? ucfirst($f->format($data->total_tax->tax)) . ' Naira Only.': ' '}}</span></span>
+		                        <span style="margin-left: 10px">That the amount of :
+                                    <span class="text-bold bind-data"
+                                                                                           style="margin-left:10px; font-size: 16px">
+                                        {{isset($data->total_tax) ? ucfirst($f->format(explode('.',number_format($data->total_tax->tax, 2, '.', ''))[0])): ' '}}{{isset($data->total_tax) && explode('.',number_format($data->total_tax->tax, 2, '.', ''))[1] != "00"? ' and '. ucfirst($f->format(explode('.',number_format($data->total_tax->tax, 2, '.', ''))[1])): ' '}} Naira Only.
+                                    </span>
+                                </span>
                             </td>
                         </tr>
                         <tr>
