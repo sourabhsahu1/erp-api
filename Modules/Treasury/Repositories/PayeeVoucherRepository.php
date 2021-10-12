@@ -281,19 +281,32 @@ class PayeeVoucherRepository extends EloquentBaseRepository
         }
         $payee = parent::update($data);
 
-        $payeeApprovalTax = [];
         //if tax enabled
+        $ids = [];
         if (isset($data['data']['tax_ids'])) {
             $data['data']['tax_ids'] = json_decode($data['data']['tax_ids'], true);
             foreach ($data['data']['tax_ids'] as $tax) {
-                PayeeVoucherCustomTax::where('payee_voucher_id', $payee->id)
-                    ->where('tax_id', $tax['id'])
-                    ->update([
+                $ids[] = $tax['id'];
+                $payeeTaxes = PayeeVoucherCustomTax::where('payee_voucher_id', $payee->id)
+                    ->where('tax_id', $tax['id'])->first();
+                if (!$payeeTaxes) {
+                    PayeeVoucherCustomTax::create([
+                        'payee_voucher_id' => $payee->id,
+                        'tax_id' => $tax['id'],
                         'tax_percentage' => $tax['tax']
                     ]);
+                } else {
+                    $payeeTaxes->tax_percentage = $tax['tax'];
+                    $payeeTaxes->save();
+                }
+
             }
         }
 
+        if (count($ids) > 0) {
+            PayeeVoucherCustomTax::where('payee_voucher_id', $payee->id)
+                ->whereNotIn('tax_id', $ids)->delete();
+        }
         return $payee;
     }
 

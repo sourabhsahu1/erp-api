@@ -86,17 +86,33 @@ class PaymentApprovalPayeesRepository extends EloquentBaseRepository
             throw new AppException('Can Update only when Payment Approval Status is New');
         }
         $data['data']['remaining_amount'] = $data['data']['net_amount'];
+        $ids = [];
+      $paUpdate =  parent::update($data);
         if (isset($data['data']['tax_ids'])) {
-            $data['data']['tax_ids'] = json_decode($data['data']['tax_ids'],true);
+            $data['data']['tax_ids'] = json_decode($data['data']['tax_ids'], true);
             foreach ($data['data']['tax_ids'] as $tax) {
-                PayeeApprovalCustomTax::where('payment_approval_payee_id', $data['id'])
-                    ->where('tax_id', $tax['id'])
-                    ->update([
+                $ids[] = $tax['id'];
+                $payeeApprovalTax = PayeeApprovalCustomTax::where('payment_approval_payee_id', $data['id'])
+                    ->where('tax_id', $tax['id'])->first();
+                if (!$payeeApprovalTax){
+                    PayeeApprovalCustomTax::create([
+                        'payment_approval_payee_id' => $data['id'],
+                        'tax_id' => $tax['id'],
                         'tax_percentage' => $tax['tax']
                     ]);
+                }else{
+                    $payeeApprovalTax->tax_percentage = $tax['tax'];
+                    $payeeApprovalTax->save();
+                }
+            }
+
+            if (count($ids) > 0) {
+                PayeeApprovalCustomTax::where('payment_approval_payee_id', $data['id'])
+                    ->whereNotIn('tax_id', $ids)->delete();
             }
         }
-        return parent::update($data);
+
+        return $paUpdate;
     }
 
 
