@@ -395,7 +395,7 @@
                     Checked and &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Insert Amount
                     in words <br>
                     passed for : <span
-                        style="font-weight: bold">{{isset($data->total_amount) ? ucfirst($f->format(explode('.',number_format($data->total_amount->amount, 2, '.', ''))[0])): ' '}}{{isset($data->total_amount) && explode('.',number_format($data->total_amount->amount, 2, '.', ''))[1] != "00"? ' and '. ucfirst($f->format(explode('.',number_format($data->total_amount->amount, 2, '.', ''))[1])): ' '}} Naira Only </span>
+                        style="font-weight: bold">{{isset($data->total_amount) ? ucfirst($f->format(explode('.',number_format($data->total_amount->amount, 2, '.', ''))[0])) .' '. $data->currency->plural_currency_name : ' '}}{{isset($data->total_amount) && explode('.',number_format($data->total_amount->amount, 2, '.', ''))[1] != "00"? ' and '. ucfirst($f->format(explode('.',number_format($data->total_amount->amount, 2, '.', ''))[1])) .' '. $data->currency->plural_change_name: ' '}} Only </span>
                 </td>
                 <td class="table-bordered" style="text-align: center;">Total</td>
                 <td class="table-bordered bind-data"
@@ -517,7 +517,7 @@
 
                         <tr class="text_font_family">
                             <td style="display: flex">
-		                        <span style="margin-left: 10px">That the amount of : <span class="text-bold bind-data" style="margin-left:10px; font-size: 16px">{{isset($data->total_amount) ? ucfirst($f->format(explode('.',number_format($data->total_amount->amount, 2, '.', ''))[0])): ' '}}{{isset($data->total_amount) && explode('.',number_format($data->total_amount->amount, 2, '.', ''))[1] != "00"? ' and '. ucfirst($f->format(explode('.',number_format($data->total_amount->amount, 2, '.', ''))[1])): ' '}} Naira Only </span></span>
+		                        <span style="margin-left: 10px">That the amount of : <span class="text-bold bind-data" style="margin-left:10px; font-size: 16px">{{isset($data->total_amount) ? ucfirst($f->format(explode('.',number_format($data->total_amount->amount, 2, '.', ''))[0])) .' '. $data->currency->plural_currency_name : ' '}}{{isset($data->total_amount) && explode('.',number_format($data->total_amount->amount, 2, '.', ''))[1] != "00"? ' and '. ucfirst($f->format(explode('.',number_format($data->total_amount->amount, 2, '.', ''))[1])) .' '. $data->currency->plural_change_name: ' '}} Only </span></span>
                             </td>
                         </tr>
                         <tr>

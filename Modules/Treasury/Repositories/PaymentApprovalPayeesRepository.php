@@ -72,7 +72,8 @@ class PaymentApprovalPayeesRepository extends EloquentBaseRepository
             'company.company_bank.bank',
             'company.company_bank.bank_branch',
             'employee.employee_bank.bank',
-            'employee.employee_bank.branches'
+            'employee.employee_bank.branches',
+            'payee_taxes'
         ]);
         return parent::getAll($params, $query);
     }

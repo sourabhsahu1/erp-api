@@ -12,19 +12,19 @@ class AdminSegmentsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('admin_segments')->delete();
-        
+
         \DB::table('admin_segments')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 1,
                 'name' => 'Administrative Segment',
                 'character_count' => '2',
                 'max_level' => 5,
                 'individual_code' => '01',
-                'combined_code' => '',
+                'combined_code' => '01',
                 'is_active' => 1,
                 'top_level_id' => 1,
                 'top_level_child_count' => 4,
@@ -32,14 +32,14 @@ class AdminSegmentsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            1 => 
+            1 =>
             array (
                 'id' => 2,
                 'name' => 'Economic Segment',
                 'character_count' => '2',
                 'max_level' => 5,
                 'individual_code' => '02',
-                'combined_code' => '',
+                'combined_code' => '02',
                 'is_active' => 1,
                 'top_level_id' => 2,
                 'top_level_child_count' => 1,
@@ -47,14 +47,14 @@ class AdminSegmentsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            2 => 
+            2 =>
             array (
                 'id' => 3,
                 'name' => 'Functional Segment',
                 'character_count' => '2',
                 'max_level' => 5,
                 'individual_code' => '03',
-                'combined_code' => '',
+                'combined_code' => '03',
                 'is_active' => 1,
                 'top_level_id' => 3,
                 'top_level_child_count' => 0,
@@ -62,14 +62,14 @@ class AdminSegmentsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            3 => 
+            3 =>
             array (
                 'id' => 4,
                 'name' => 'Programme Segment',
                 'character_count' => '2',
                 'max_level' => 5,
                 'individual_code' => '04',
-                'combined_code' => '',
+                'combined_code' => '04',
                 'is_active' => 1,
                 'top_level_id' => 4,
                 'top_level_child_count' => 0,
@@ -77,14 +77,14 @@ class AdminSegmentsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            4 => 
+            4 =>
             array (
                 'id' => 5,
                 'name' => 'Fund Segment',
                 'character_count' => '2',
                 'max_level' => 5,
                 'individual_code' => '05',
-                'combined_code' => '',
+                'combined_code' => '05',
                 'is_active' => 1,
                 'top_level_id' => 5,
                 'top_level_child_count' => 0,
@@ -92,14 +92,14 @@ class AdminSegmentsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            5 => 
+            5 =>
             array (
                 'id' => 6,
                 'name' => 'Geo Code',
                 'character_count' => '2',
                 'max_level' => 5,
                 'individual_code' => '06',
-                'combined_code' => '',
+                'combined_code' => '06',
                 'is_active' => 1,
                 'top_level_id' => 6,
                 'top_level_child_count' => 0,
@@ -107,7 +107,7 @@ class AdminSegmentsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            6 => 
+            6 =>
             array (
                 'id' => 7,
                 'name' => 'Revenue',
@@ -122,7 +122,7 @@ class AdminSegmentsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            7 => 
+            7 =>
             array (
                 'id' => 8,
                 'name' => 'Expenditure',
@@ -137,7 +137,7 @@ class AdminSegmentsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            8 => 
+            8 =>
             array (
                 'id' => 9,
                 'name' => 'Asset',
@@ -152,7 +152,7 @@ class AdminSegmentsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            9 => 
+            9 =>
             array (
                 'id' => 10,
                 'name' => 'Liabilities',
@@ -168,7 +168,7 @@ class AdminSegmentsTableSeeder extends Seeder
                 'updated_at' => NULL,
             ),
         ));
-        
-        
+
+
     }
 }

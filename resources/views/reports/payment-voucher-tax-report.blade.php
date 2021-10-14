@@ -339,7 +339,7 @@
                     Checked and &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Insert Amount
                     in words <br>
                     passed for : <span
-                        style="font-weight: bold">{{isset($data->total_tax) ? ucfirst($f->format(explode('.',number_format($data->total_tax->tax, 2, '.', ''))[0])): ' '}}{{isset($data->total_tax) && explode('.',number_format($data->total_tax->tax, 2, '.', ''))[1] != "00"? ' and '. ucfirst($f->format(explode('.',number_format($data->total_tax->tax, 2, '.', ''))[1])): ' '}} Naira Only.</span>
+                        style="font-weight: bold">{{isset($data->total_tax) ? ucfirst($f->format(explode('.',number_format($data->total_tax->tax, 2, '.', ''))[0])) .' '. $data->currency->plural_currency_name: ' '}}{{isset($data->total_tax) && explode('.',number_format($data->total_tax->tax, 2, '.', ''))[1] != "00"? ' and '. ucfirst($f->format(explode('.',number_format($data->total_tax->tax, 2, '.', ''))[1])).' '. $data->currency->plural_change_name: ' '}} Only.</span>
                 </td>
                 <td class="table-bordered" style="text-align: center;">Total</td>
                 <td class="table-bordered bind-data"
@@ -463,7 +463,7 @@
 		                        <span style="margin-left: 10px">That the amount of :
                                     <span class="text-bold bind-data"
                                                                                            style="margin-left:10px; font-size: 16px">
-                                        {{isset($data->total_tax) ? ucfirst($f->format(explode('.',number_format($data->total_tax->tax, 2, '.', ''))[0])): ' '}}{{isset($data->total_tax) && explode('.',number_format($data->total_tax->tax, 2, '.', ''))[1] != "00"? ' and '. ucfirst($f->format(explode('.',number_format($data->total_tax->tax, 2, '.', ''))[1])): ' '}} Naira Only.
+                                        {{isset($data->total_tax) ? ucfirst($f->format(explode('.',number_format($data->total_tax->tax, 2, '.', ''))[0])) .' '. $data->currency->plural_currency_name: ' '}}{{isset($data->total_tax) && explode('.',number_format($data->total_tax->tax, 2, '.', ''))[1] != "00"? ' and '. ucfirst($f->format(explode('.',number_format($data->total_tax->tax, 2, '.', ''))[1])).' '. $data->currency->plural_change_name: ' '}} Only.
                                     </span>
                                 </span>
                             </td>
