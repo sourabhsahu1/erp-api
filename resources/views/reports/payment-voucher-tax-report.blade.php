@@ -285,7 +285,7 @@
         </div>
         <table style="width: 100%; margin-top: 10px">
             <tr>
-                <td style="width: 10%">Payee</td>
+                <td style="width: 10%; margin-top: 10px">Payee</td>
                 <td><input type="text" style="width: 95%; font-weight: bold" class="bind-data"
                            value="{{strtoupper($data->final_payees_text)}}"></td>
             </tr>
@@ -332,6 +332,56 @@
                     </td>
                 </tr>
             @endforeach
+
+            <tr>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+                <td class="table-bordered bind-data">&nbsp;</td>
+            </tr>
             <tr class="text_font_family">
                 <td class="table-bordered" style="text-align: center;vertical-align: baseline; padding: 15px 10px"></td>
                 <td class="table-bordered bind-data"
