@@ -848,9 +848,9 @@ class PaymentRepository extends EloquentBaseRepository
         $paymentV['date'] = array_merge($paymentV['date'], str_split(Carbon::parse($paymentV->value_date)->format('Y')));
 
         $amounts = explode('.', $paymentV->total_tax->tax);
-        $paymentV['amount'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amounts[0]);
-        $paymentV['paisa'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amounts[1] ?? 00);
 
+        $paymentV['amount'] =    explode('.',number_format($paymentV->total_tax->tax, 2, '.', ','))[0];
+        $paymentV['paisa'] = explode('.',number_format($paymentV->total_tax->tax, 2, '.', ','))[1];
 
         app()->make(WKHTMLPDfConverter::class)
             ->convert(view('reports.payment-voucher-tax-report', ['data' => $paymentV])->render(), $fileName);
@@ -1031,13 +1031,15 @@ class PaymentRepository extends EloquentBaseRepository
 
         $amounts = explode('.', $paymentV->total_amount->amount);
         $taxesSum = explode('.', $paymentV->total_tax->tax);
-        $amountTaxSum = explode('.', $paymentV->total_amount->amount + $paymentV->total_tax->tax);
-        $paymentV['amount'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amounts[0]);
-        $paymentV['tax_sum'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $taxesSum[0]);
-        $paymentV['paisa'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amounts[1] ?? 00);
-        $paymentV['tax_paisa'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $taxesSum[1] ?? 00);
-        $paymentV['total_amount_tax_sum'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amountTaxSum[0]);
-        $paymentV['total_amount_tax_paisa'] = preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amountTaxSum[1] ?? 00);
+        $amountTaxSum = $paymentV->total_amount->amount + $paymentV->total_tax->tax;
+
+        $paymentV['amount'] = explode('.',number_format($paymentV->total_amount->amount, 2, '.', ','))[0];
+        $paymentV['tax_sum'] = explode('.',number_format($paymentV->total_tax->tax, 2, '.', ','))[0];
+        $paymentV['paisa'] = explode('.',number_format($paymentV->total_amount->amount, 2, '.', ','))[1];
+        $paymentV['tax_paisa'] = explode('.',number_format($paymentV->total_tax->tax, 2, '.', ','))[1];
+        $paymentV['total_amount_tax_sum'] =  explode('.',number_format($amountTaxSum, 2, '.', ','))[0];
+        $paymentV['total_amount_tax_paisa'] = explode('.',number_format($amountTaxSum, 2, '.', ','))[1];
+
 
         if (isset($params['inputs']['bs'])) {
             app()->make(WKHTMLPDfConverter::class)

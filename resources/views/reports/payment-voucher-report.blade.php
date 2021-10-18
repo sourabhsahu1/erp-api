@@ -320,7 +320,7 @@
                     </td>
                     <td class="table-bordered bind-data"
                         style="text-align: center;vertical-align: baseline; padding: 10px">
-                        {{preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", explode('.', $payee->net_amount + $payee->total_tax)[0])}}
+                        {{explode('.',number_format($payee->net_amount + $payee->total_tax, 2, '.', ','))[0]}}
                     </td>
                     {{--                    {{dd(explode('.', $payee->net_amount + $payee->total_tax)[1])}}--}}
                     {{--                    <td class="table-bordered bind-data"--}}
