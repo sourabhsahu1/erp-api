@@ -282,7 +282,7 @@ class MandateRepository extends EloquentBaseRepository
 //                                    foreach (json_decode($payee_voucher->tax_ids, true) as $tax_id) {
                                     foreach ($payee_voucher->payee_taxes as $taxP) {
                                         /** @var Tax $tax */
-                                        $tax = Tax::find($tax->tax_id);
+                                        $tax = Tax::find($taxP->tax_id);
                                         if ($tax) {
                                             $jvD[] = [
                                                 'journal_voucher_id' => $jv->id,
