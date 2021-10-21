@@ -1033,9 +1033,11 @@ class PaymentRepository extends EloquentBaseRepository
         $taxesSum = explode('.', $paymentV->total_tax->tax);
         $amountTaxSum = $paymentV->total_amount->amount + $paymentV->total_tax->tax;
 
+
         $paymentV['amount'] = explode('.',number_format($paymentV->total_amount->amount, 2, '.', ','))[0];
         $paymentV['tax_sum'] = explode('.',number_format($paymentV->total_tax->tax, 2, '.', ','))[0];
         $paymentV['paisa'] = explode('.',number_format($paymentV->total_amount->amount, 2, '.', ','))[1];
+//        dd($paymentV['paisa']);
         $paymentV['tax_paisa'] = explode('.',number_format($paymentV->total_tax->tax, 2, '.', ','))[1];
         $paymentV['total_amount_tax_sum'] =  explode('.',number_format($amountTaxSum, 2, '.', ','))[0];
         $paymentV['total_amount_tax_paisa'] = explode('.',number_format($amountTaxSum, 2, '.', ','))[1];

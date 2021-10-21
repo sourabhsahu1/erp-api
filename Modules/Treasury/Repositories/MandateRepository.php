@@ -162,7 +162,8 @@ class MandateRepository extends EloquentBaseRepository
                     if ($data['data']['status'] == AppConstant::ON_MANDATE_1ST_AUTHORISED) {
                         $data['data']['first_authorised_by'] = $data['data']['user_id'];
                         $data['data']['first_authorised_date'] = Carbon::now()->toDateString();
-                    } elseif ($data['data']['status'] == AppConstant::ON_MANDATE_2ND_AUTHORISED) {
+                    }
+                    elseif ($data['data']['status'] == AppConstant::ON_MANDATE_2ND_AUTHORISED) {
                         $data['data']['second_authorised_by'] = $data['data']['user_id'];
                         $data['data']['second_authorised_date'] = Carbon::now()->toDateString();
                         //payment voucher to be closed when on mandate 2nd auth
@@ -238,7 +239,8 @@ class MandateRepository extends EloquentBaseRepository
 
                             }
                         }
-                    } elseif ($data['data']['status'] == AppConstant::ON_MANDATE_POSTED_TO_GL) {
+                    }
+                    elseif ($data['data']['status'] == AppConstant::ON_MANDATE_POSTED_TO_GL) {
                         //payment voucher to be post to gl when on mandate post to gl
 
                         PaymentVoucher::where('mandate_id', $mandate_id)->update([
@@ -278,9 +280,9 @@ class MandateRepository extends EloquentBaseRepository
                             foreach ($paymentVoucher->payee_vouchers as $payee_voucher) {
                                 foreach ($payee_voucher->schedule_economics as $schedule_economic) {
 //                                    foreach (json_decode($payee_voucher->tax_ids, true) as $tax_id) {
-                                    foreach ($payee_voucher->payee_taxes as $tax) {
+                                    foreach ($payee_voucher->payee_taxes as $taxP) {
                                         /** @var Tax $tax */
-//                                        $tax = Tax::find($tax->tax_id);
+                                        $tax = Tax::find($tax->tax_id);
                                         if ($tax) {
                                             $jvD[] = [
                                                 'journal_voucher_id' => $jv->id,
@@ -289,7 +291,7 @@ class MandateRepository extends EloquentBaseRepository
                                                 'bank_x_rate_to_usd' => $paymentVoucher->official_x_rate,
                                                 'account_name' => $payee_voucher->details,
                                                 'line_reference' => $paymentVoucher->deptal_id,
-                                                'line_value' => ($tax->tax_percentage * $schedule_economic->amount) / 100,
+                                                'line_value' => ($taxP->tax_percentage * $schedule_economic->amount) / 100,
                                                 'admin_segment_id' => $paymentVoucher->admin_segment_id,
                                                 'fund_segment_id' => $paymentVoucher->fund_segment_id,
                                                 'economic_segment_id' => $tax->department_id,
@@ -297,7 +299,7 @@ class MandateRepository extends EloquentBaseRepository
                                                 'functional_segment_id' => $paymentVoucher->functional_segment_id,
                                                 'geo_code_segment_id' => $paymentVoucher->geo_code_segment_id,
                                                 'line_value_type' => 'CREDIT',
-                                                'lv_line_value' => ($tax->tax_percentage * $schedule_economic->amount) / 100,
+                                                'lv_line_value' => ($taxP->tax_percentage * $schedule_economic->amount) / 100,
                                                 'local_currency' => $companySetting->local_currency,
                                                 'created_at' => Carbon::now()->toDateTimeString(),
                                                 'updated_at' => Carbon::now()->toDateTimeString()
