@@ -89,6 +89,7 @@ class EloquentBaseRepository implements IBaseRepository
      */
     public function delete($data)
     {
+        dd(23);
         $object = $this->find($data['id']);
 
         if (is_null($object)) {

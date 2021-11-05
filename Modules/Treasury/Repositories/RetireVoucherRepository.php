@@ -147,7 +147,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
             RetireVoucherLog::create([
                 'retire_voucher_id' => $retireV->id,
                 'previous_status' => null,
-                'current_status' => 'NEW',
+                'current_status' => AppConstant::RETIRE_VOUCHER_NEW,
                 'date' => Carbon::now()->toDateString(),
                 'admin_id' => $data['data']['user_id']
             ]);

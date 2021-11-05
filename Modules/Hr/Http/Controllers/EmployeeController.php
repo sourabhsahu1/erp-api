@@ -23,7 +23,9 @@ class EmployeeController extends BaseController
     protected $repository = EmployeeRepository::class;
 
     protected $storeJobMethod = "create";
+    protected $deleteJobMethod = "delete";
     protected $createJob = BaseJob::class;
+    protected $deleteJob = BaseJob::class;
     protected $storeRequest = CreateRequest::class;
 
     protected $updateJobMethod = "update";

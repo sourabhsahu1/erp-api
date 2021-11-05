@@ -57,6 +57,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('public-holidays', 'PublicHolidayController');
 
     /*Employees*/
+    Route::delete('employees/{id}', 'EmployeeController@destroy');
     Route::post('employees', 'EmployeeController@store');
     Route::put('employees/{id}', 'EmployeeController@update');
     Route::post('employees/{id}/details', 'EmployeeController@employeeDetails');
