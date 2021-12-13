@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class FxaDeployments extends Migration
+class FxaStatuses extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,12 @@ class FxaDeployments extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('fxa_statuses', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('title','50');
+            $table->softDeletes();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +28,6 @@ class FxaDeployments extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('fxa_statuses');
     }
 }

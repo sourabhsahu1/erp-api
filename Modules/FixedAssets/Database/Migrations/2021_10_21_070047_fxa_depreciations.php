@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class FxaInformations extends Migration
+class FxaDepreciations extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,12 @@ class FxaInformations extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('fxa_depreciations', function (Blueprint $table) {
+            $table->bigIncrements('id');
+
+            $table->softDeletes();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +28,6 @@ class FxaInformations extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('fxa_depreciations');
     }
 }

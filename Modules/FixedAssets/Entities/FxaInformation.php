@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Mon, 13 Dec 2021 18:39:10 +0000.
+ * Date: Mon, 13 Dec 2021 18:39:32 +0000.
  */
 
 namespace Modules\FixedAssets\Entities;
@@ -10,7 +10,7 @@ namespace Modules\FixedAssets\Entities;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class FxaDeployment
+ * Class FxaInformation
  *
  * @property int $id
  * @property string $deleted_at
@@ -19,7 +19,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  *
  * @package Modules\Treasury\Models
  */
-class FxaDeployment extends Eloquent
+class FxaInformation extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 }
