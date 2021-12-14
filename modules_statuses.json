@@ -3,5 +3,6 @@
     "Admin": true,
     "Inventory": true,
     "Finance": true,
-    "Treasury": true
+    "Treasury": true,
+    "FixedAssets": true
 }

@@ -2,13 +2,13 @@
 
 namespace Modules\FixedAssets\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\BaseController;
 use Luezoid\Laravelcore\Jobs\BaseJob;
+use Modules\FixedAssets\Http\Requests\FixedAssets\Create;
+use Modules\FixedAssets\Http\Requests\FixedAssets\Update;
 use Modules\FixedAssets\Repositories\FixedAssetRepository;
 
-class FixedAssetsController extends Controller
+class FixedAssetsController extends BaseController
 {
     protected $repository = FixedAssetRepository::class;
     protected $createJob = BaseJob::class;
@@ -17,4 +17,6 @@ class FixedAssetsController extends Controller
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
+    protected $storeRequest = Create::class;
+    protected $updateRequest = Update::class;
 }
