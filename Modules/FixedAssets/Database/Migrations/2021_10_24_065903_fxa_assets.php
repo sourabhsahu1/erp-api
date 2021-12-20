@@ -56,7 +56,7 @@ class FxaAssets extends Migration
             //nmrl_location check relation
             $table->unsignedInteger('nmrl_location');
             $table->unsignedInteger('qty');
-            $table->unsignedInteger('file_id');
+            $table->unsignedBigInteger('file_id');
             $table->unsignedInteger('comments');
             $table->softDeletes();
             $table->foreign('fxa_depr_method_id')->references('id')->on('fxa_depr_methods');
