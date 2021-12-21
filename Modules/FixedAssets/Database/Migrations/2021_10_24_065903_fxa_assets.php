@@ -15,9 +15,9 @@ class FxaAssets extends Migration
     {
         Schema::create('fxa_assets', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('asset_no');
-            $table->string('title');
-            $table->unsignedInteger('custodian');
+            $table->string('asset_no')->nullable();
+            $table->string('title')->nullable();
+            $table->unsignedInteger('custodian')->nullable();
 //            $table->foreign('custodian')->references('id')->on('employees');
             $table->string('make')->nullable();
             $table->string('model')->nullable();
