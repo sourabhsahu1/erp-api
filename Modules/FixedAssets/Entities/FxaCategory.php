@@ -95,4 +95,9 @@ class FxaCategory extends Eloquent
     {
         return $this->hasMany(\Modules\FixedAssets\Entities\FxaCategory::class, 'parent_id');
     }
+
+    public function sub_categories()
+    {
+        return $this->children()->with('sub_categories');
+    }
 }
