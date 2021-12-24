@@ -16,6 +16,7 @@ class CategoriesRepository extends EloquentBaseRepository
         }
         if (isset($params['inputs']['is_parent'])) {
             $query->whereNull('parent_id');
+            unset($params['inputs']['is_parent']);
         }
         return parent::getAll($params, $query);
     }
