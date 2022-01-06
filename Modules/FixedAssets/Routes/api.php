@@ -17,11 +17,9 @@ Route::middleware('auth:api')->get('/fixedassets', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware(['auth:api'])->group(function () {
-    Route::resource('fixed-assets', 'FixedAssetsController');
-    Route::prefix('fixed-assets')->group(function () {
-        Route::resource('categories', 'FxaCategoriesController');
-        Route::get('statuses', 'FixAssetStatusController@index');
-        Route::get('depreciations', 'FixAssetDepreciationController@index');
-    });
+Route::middleware(['auth:api'])->prefix('fixed-assets')->group(function () {
+    Route::resource('', 'FixedAssetsController');
+    Route::resource('categories', 'FxaCategoriesController');
+    Route::get('statuses', 'FixAssetStatusController@index');
+    Route::get('depreciations', 'FixAssetDepreciationController@index');
 });
