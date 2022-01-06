@@ -18,8 +18,8 @@ Route::middleware('auth:api')->get('/fixedassets', function (Request $request) {
 });
 
 Route::middleware(['auth:api'])->prefix('fixed-assets')->group(function () {
-    Route::get('', 'FixedAssetsController');
-    Route::post('', 'FixedAssetsController');
+    Route::get('', 'FixedAssetsController@index');
+    Route::post('', 'FixedAssetsController@store');
     Route::get('{id}', 'FixedAssetsController@show');
     Route::delete('{id}', 'FixedAssetsController@destroy');
     Route::resource('categories', 'FxaCategoriesController');
