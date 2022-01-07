@@ -22,4 +22,6 @@ Route::middleware(['auth:api'])->prefix('fixed-assets')->group(function () {
     Route::get('statuses', 'FixAssetStatusController@index');
     Route::get('depreciations', 'FixAssetDepreciationController@index');
     Route::resource('', 'FixedAssetsController');
+    Route::get('{id}', 'FixedAssetsController@show');
+    Route::delete('{id}', 'FixedAssetsController@destroy');
 });
