@@ -13,9 +13,9 @@ class FxaDeprMethods extends Migration
      */
     public function up()
     {
-        Schema::create('fxa_depr_methods', function (Blueprint $table) {
+        Schema::create('fxa_deprecation_methods', function (Blueprint $table) {
             $table->bigIncrements('id');
-
+            $table->string('title');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -28,6 +28,6 @@ class FxaDeprMethods extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fxa_depr_methods');
+        Schema::dropIfExists('fxa_deprecation_methods');
     }
 }

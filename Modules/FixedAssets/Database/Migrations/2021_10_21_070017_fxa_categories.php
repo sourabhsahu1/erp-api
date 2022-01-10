@@ -15,6 +15,7 @@ class FxaCategories extends Migration
     {
         Schema::create('fxa_categories', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('title');
             $table->unsignedInteger('fixed_asset_acct_id')->nullable();
             $table->unsignedInteger('accum_depr_acct_id')->nullable();
@@ -22,9 +23,8 @@ class FxaCategories extends Migration
             $table->string('asset_no_prefix_line', '10')->nullable();
             $table->string('asset_no_prefix_full', '20')->nullable();
             $table->unsignedBigInteger('next_asset_no')->nullable();
-            $table->unsignedBigInteger('parent_id')->nullable();
             $table->unsignedBigInteger('ref_no_to_root_node')->nullable();
-            $table->enum('is_parent', ['Yes', 'No'])->nullable();
+            $table->boolean('is_parent')->default(false);
             $table->boolean('is_editable')->default(0);
             $table->string('level_no')->nullable();
             $table->softDeletes();
