@@ -28,12 +28,12 @@ class FxaCategories extends Migration
             $table->boolean('is_editable')->default(0);
             $table->string('level_no')->nullable();
             $table->softDeletes();
+            $table->timestamps();
 
             $table->foreign('fixed_asset_acct_id')->references('id')->on('admin_segments');
             $table->foreign('accum_depr_acct_id')->references('id')->on('admin_segments');
             $table->foreign('depr_exps_acct_id')->references('id')->on('admin_segments');
             $table->foreign('parent_id')->references('id')->on('fxa_categories');
-            $table->timestamps();
         });
     }
 

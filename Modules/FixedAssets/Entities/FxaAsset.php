@@ -61,7 +61,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  *
  * @property \Modules\Admin\Models\AdminSegment $admin_segment
  * @property \Modules\FixedAssets\Entities\FxaCategory $fxa_category
- * @property \Modules\FixedAssets\Entities\FxaDeprMethod $fxa_depr_method
+ * @property \Modules\FixedAssets\Entities\FxaDeprecationMethod $fxa_depr_method
  * @property \Modules\FixedAssets\Entities\FxaStatus $fxa_status
  *
  * @package Modules\Treasury\Models
@@ -187,7 +187,7 @@ class FxaAsset extends Eloquent
 
 	public function depr_method()
 	{
-		return $this->belongsTo(\Modules\FixedAssets\Entities\FxaDeprMethod::class);
+		return $this->belongsTo(\Modules\FixedAssets\Entities\FxaDeprecationMethod::class);
 	}
 
 	public function status()
