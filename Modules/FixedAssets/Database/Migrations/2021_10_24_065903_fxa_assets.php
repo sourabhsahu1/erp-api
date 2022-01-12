@@ -54,7 +54,7 @@ class FxaAssets extends Migration
             $table->unsignedInteger('t_date')->nullable();
             $table->unsignedInteger('login_id')->comment('hr_id')->nullable();
             //nmrl_location check relation
-            $table->unsignedInteger('nmrl_location')->nullable();
+            $table->unsignedInteger('location_id')->nullable();
             $table->unsignedInteger('qty')->nullable();
             $table->unsignedBigInteger('file_id')->nullable();
             $table->unsignedInteger('comments')->nullable();
