@@ -21,5 +21,15 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  */
 class FxaDeployment extends Eloquent
 {
-	use \Illuminate\Database\Eloquent\SoftDeletes;
+    use \Illuminate\Database\Eloquent\SoftDeletes;
+
+    protected $fillable = [
+        'fxa_assets_id',
+        'custodian_id',
+        'value_date',
+        'admin_segment_id',
+        'location_id',
+        'remark',
+        'created_by_id'
+    ];
 }
