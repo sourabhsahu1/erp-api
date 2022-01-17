@@ -16,6 +16,7 @@ class FxaDeprecationMethod extends Migration
         Schema::create('fxa_deprecation_methods', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
+            $table->string('remark');
             $table->softDeletes();
             $table->timestamps();
         });
