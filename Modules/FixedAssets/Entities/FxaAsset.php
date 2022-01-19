@@ -199,4 +199,9 @@ class FxaAsset extends Eloquent
 	{
 		return $this->belongsTo(File::class);
 	}
+
+	public function latest_deployment() {
+        return $this->hasOne(\Modules\FixedAssets\Entities\FxaDeployment::class)
+            ->orderBy('created_at', 'desc');
+    }
 }

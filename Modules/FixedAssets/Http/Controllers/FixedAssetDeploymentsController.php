@@ -11,4 +11,5 @@ use Modules\FixedAssets\Repositories\FxaDeploymentRepository;
 class FixedAssetDeploymentsController extends BaseController
 {
     protected $repository = FxaDeploymentRepository::class;
+    protected $indexWith = ['admin_segment', 'work_location', 'custodian'];
 }

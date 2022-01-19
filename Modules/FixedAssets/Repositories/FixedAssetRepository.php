@@ -17,7 +17,7 @@ class FixedAssetRepository extends EloquentBaseRepository
             $fixedAsset = parent::create($data);
 
             $fixedAssetDeployment = [
-                'fxa_assets_id' => $fixedAsset->id,
+                'fxa_asset_id' => $fixedAsset->id,
                 'custodian_id' => $data['data']['custodian_id'],
                 'value_date' => $data['data']['value_date'],
                 'admin_segment_id' => $data['data']['deployment_admin_segment_id'],

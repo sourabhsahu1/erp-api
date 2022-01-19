@@ -15,7 +15,7 @@ class FxaDeployments extends Migration
     {
         Schema::create('fxa_deployments', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('fxa_assets_id');
+            $table->unsignedBigInteger('fxa_asset_id');
             $table->unsignedBigInteger('custodian_id');
             $table->date('value_date');
             $table->unsignedInteger('admin_segment_id');
