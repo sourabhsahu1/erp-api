@@ -25,4 +25,5 @@ Route::middleware(['auth:api'])->prefix('fixed-assets')->group(function () {
     Route::get('{id}', 'FixedAssetsController@show');
     Route::delete('{id}', 'FixedAssetsController@destroy');
     Route::put('{id}', 'FixedAssetsController@updateOverloadFunction');
+    Route::get('{fxa_assets_id}/deployments', 'FixedAssetDeploymentsController@index');
 });
