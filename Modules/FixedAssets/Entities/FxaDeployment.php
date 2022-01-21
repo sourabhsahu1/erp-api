@@ -46,6 +46,6 @@ class FxaDeployment extends Eloquent
 
     public function custodian()
     {
-        return $this->belongsTo(\Modules\Hr\Models\User::class, 'custodian_id');
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class, 'custodian_id');
     }
 }
