@@ -25,7 +25,7 @@ class FxaDeployments extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('fxa_assets_id')->references('id')->on('fxa_assets');
+            $table->foreign('fxa_asset_id')->references('id')->on('fxa_assets');
             $table->foreign('admin_segment_id')->references('id')->on('admin_segments');
             $table->foreign('location_id')->references('id')->on('hr_work_locations');
             $table->foreign('custodian_id')->references('id')->on('users');
