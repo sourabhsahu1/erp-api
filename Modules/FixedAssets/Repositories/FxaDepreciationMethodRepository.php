@@ -3,9 +3,9 @@
 namespace Modules\FixedAssets\Repositories;
 
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
-use Modules\FixedAssets\Entities\FxaDeprecationMethod;
+use Modules\FixedAssets\Entities\FxaDepreciationMethod;
 
 class FxaDepreciationMethodRepository extends EloquentBaseRepository
 {
-    public $model = FxaDeprecationMethod::class;
+    public $model = FxaDepreciationMethod::class;
 }

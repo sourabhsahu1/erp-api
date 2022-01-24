@@ -4,7 +4,7 @@ namespace Modules\FixedAssets\Repositories;
 
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\FixedAssets\Entities\FxaDeployment;
-use Modules\FixedAssets\Entities\FxaDeprecationMethod;
+use Modules\FixedAssets\Entities\FxaDepreciationMethod;
 use Carbon\Carbon;
 
 class FxaDeploymentRepository extends EloquentBaseRepository
