@@ -52,6 +52,8 @@ class FxaCategory extends Eloquent
 
     protected $fillable = [
         'title',
+        'deprecation_method_id',
+        'deprecation_rate',
         'fixed_asset_acct_id',
         'accum_depr_acct_id',
         'depr_exps_acct_id',

@@ -17,6 +17,8 @@ class FxaCategories extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('title');
+            $table->unsignedBigInteger('deprecation_method_id');
+            $table->unsignedDecimal('deprecation_rate');
             $table->unsignedInteger('fixed_asset_acct_id')->nullable();
             $table->unsignedInteger('accum_depr_acct_id')->nullable();
             $table->unsignedInteger('depr_exps_acct_id')->nullable();
@@ -34,6 +36,7 @@ class FxaCategories extends Migration
             $table->foreign('accum_depr_acct_id')->references('id')->on('admin_segments');
             $table->foreign('depr_exps_acct_id')->references('id')->on('admin_segments');
             $table->foreign('parent_id')->references('id')->on('fxa_categories');
+            $table->foreign('deprecation_method_id')->references('id')->on('fxa_depreciation_methods');
         });
     }
 

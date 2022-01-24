@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class FxaDeprecationMethod extends Migration
+class FxaDepreciationMethod extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class FxaDeprecationMethod extends Migration
      */
     public function up()
     {
-        Schema::create('fxa_deprecation_methods', function (Blueprint $table) {
+        Schema::create('fxa_depreciation_methods', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
             $table->string('remark');
@@ -29,6 +29,6 @@ class FxaDeprecationMethod extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fxa_deprecation_methods');
+        Schema::dropIfExists('fxa_depreciation_methods');
     }
 }

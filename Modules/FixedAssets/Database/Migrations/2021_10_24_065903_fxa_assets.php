@@ -61,7 +61,7 @@ class FxaAssets extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('fxa_depr_method_id')->references('id')->on('fxa_deprecation_methods');
+            $table->foreign('fxa_depr_method_id')->references('id')->on('fxa_depreciation_methods');
             $table->foreign('fxa_category_id')->references('id')->on('fxa_categories');
             $table->foreign('fxa_status_id')->references('id')->on('fxa_statuses');
             $table->foreign('file_id')->references('id')->on('files');
