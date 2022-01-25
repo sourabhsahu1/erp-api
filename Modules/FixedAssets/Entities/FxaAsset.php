@@ -91,7 +91,7 @@ class FxaAsset extends Eloquent
 
     public function program_segment()
     {
-        return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'program_segment_id');
+        return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'programme_segment_id');
     }
 
     public function economic_segment()
