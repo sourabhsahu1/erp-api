@@ -36,12 +36,12 @@ class FxaAssets extends Migration
             $table->date('date_disposed')->nullable();
             $table->unsignedInteger('disposal_price')->nullable();
             $table->unsignedInteger('begin_accum_depr')->nullable();
-            $table->unsignedInteger('xptd_life_yrs')->nullable();
+            $table->unsignedInteger('expected_life')->nullable();
             $table->unsignedInteger('salvage_value')->nullable();
             $table->string('supplier_invoice')->nullable();
             $table->string('supplier_name')->nullable();
             $table->string('supplier_contact')->nullable();
-            $table->unsignedBigInteger('fxa_depr_method_id')->nullable();
+            $table->unsignedBigInteger('fxa_depreciation_method_id')->nullable();
             $table->unsignedBigInteger('fxa_category_id')->nullable();
             $table->unsignedBigInteger('fxa_status_id')->nullable();
             $table->unsignedInteger('admin_segment_id')->nullable();
@@ -61,7 +61,7 @@ class FxaAssets extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('fxa_depr_method_id')->references('id')->on('fxa_depreciation_methods');
+            $table->foreign('fxa_depreciation_method_id')->references('id')->on('fxa_depreciation_methods');
             $table->foreign('fxa_category_id')->references('id')->on('fxa_categories');
             $table->foreign('fxa_status_id')->references('id')->on('fxa_statuses');
             $table->foreign('file_id')->references('id')->on('files');
