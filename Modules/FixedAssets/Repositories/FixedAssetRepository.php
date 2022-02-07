@@ -21,7 +21,7 @@ class FixedAssetRepository extends EloquentBaseRepository
                 throw new BadRequestHttpException('Invalid Category');
             }
             $data['data']['asset_no'] = $fixedAssetCategory->combined_code . '\\' . $fixedAssetCategory->next_asset_no;
-            FxaCategory::increment('next_asset_no')->where('id', $fixedAssetCategory->id);
+            FxaCategory::where('id', $fixedAssetCategory->id)->increment('next_asset_no');
 
             $fixedAsset = parent::create($data);
 
