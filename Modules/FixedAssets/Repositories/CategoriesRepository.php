@@ -9,6 +9,16 @@ class CategoriesRepository extends EloquentBaseRepository
 {
     public $model = FxaCategory::class;
 
+    public function create($data)
+    {
+        if (isset($data['data']['combined_code'])) {
+            $data['data']['combined_code'] .= "\\" . $data['data']['individual_code'];
+        } else {
+            $data['data']['combined_code'] = $data['data']['individual_code'];
+        }
+        return parent::create($data);
+    }
+
     public function getAll($params = [], $query = null)
     {
         if (!$query) {

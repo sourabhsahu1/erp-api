@@ -14,11 +14,6 @@ class FixedAssetRepository extends EloquentBaseRepository
     {
         try {
             DB::beginTransaction();
-            if (isset($data['data']['combined_code'])) {
-                $data['data']['combined_code'] .= "\\" . $data['data']['individual_code'];
-            } else {
-                $data['data']['combined_code'] = $data['data']['individual_code'];
-            }
             $fixedAsset = parent::create($data);
 
             $fixedAssetDeployment = [
