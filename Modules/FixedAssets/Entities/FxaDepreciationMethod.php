@@ -21,7 +21,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  *
  * @package Modules\Treasury\Models
  */
-class FxaDeprecationMethod extends Eloquent
+class FxaDepreciationMethod extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 

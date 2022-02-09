@@ -15,4 +15,10 @@ class FixedAssetDeploymentsController extends BaseController
     protected $indexWith = ['admin_segment', 'work_location', 'custodian'];
     protected $storeJobMethod = "create";
     protected $createJob = BaseJob::class;
+
+    public function bulkCreate(Request $request)
+    {
+        $this->jobMethod = "bulkCreate";
+        return $this->handleCustomEndPoint(BaseJob::class, $request);
+    }
 }

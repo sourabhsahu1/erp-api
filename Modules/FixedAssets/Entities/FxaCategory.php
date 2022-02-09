@@ -1,41 +1,9 @@
 <?php
 
-/**
- * Created by Reliese Model.
- * Date: Mon, 13 Dec 2021 18:38:24 +0000.
- */
-
 namespace Modules\FixedAssets\Entities;
 
 use Reliese\Database\Eloquent\Model as Eloquent;
 
-/**
- * Class FxaCategory
- *
- * @property int $id
- * @property string $title
- * @property int $fixed_asset_acct_id
- * @property int $accum_depr_acct_id
- * @property int $depr_exps_acct_id
- * @property string $asset_no_prefix_line
- * @property string $asset_no_prefix_full
- * @property int $next_asset_no
- * @property int $parent_id
- * @property int $ref_no_to_root_node
- * @property string $is_parent
- * @property bool $is_editable
- * @property string $level_no
- * @property string $deleted_at
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- *
- * @property \Modules\Admin\Models\AdminSegment $admin_segment
- * @property \Modules\FixedAssets\Entities\FxaCategory $fxa_category
- * @property \Illuminate\Database\Eloquent\Collection $fxa_assets
- * @property \Illuminate\Database\Eloquent\Collection $fxa_categories
- *
- * @package Modules\Treasury\Models
- */
 class FxaCategory extends Eloquent
 {
     use \Illuminate\Database\Eloquent\SoftDeletes;
@@ -52,6 +20,8 @@ class FxaCategory extends Eloquent
 
     protected $fillable = [
         'title',
+        'depreciation_method_id',
+        'depreciation_rate',
         'fixed_asset_acct_id',
         'accum_depr_acct_id',
         'depr_exps_acct_id',

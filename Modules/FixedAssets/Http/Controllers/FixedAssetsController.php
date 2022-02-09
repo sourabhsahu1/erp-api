@@ -19,6 +19,6 @@ class FixedAssetsController extends BaseController
     protected $deleteJobMethod = "delete";
     protected $storeRequest = Create::class;
     protected $updateRequest = Update::class;
-    protected $showWith = ['program_segment', 'economic_segment', 'functional_segment', 'geo_code_segment', 'admin_segment', 'fund_segment', 'latest_deployment'];
+    protected $showWith = ['program_segment', 'economic_segment', 'functional_segment', 'geo_code_segment', 'admin_segment', 'fund_segment', 'latest_deployment', 'latest_deployment.admin_segment', 'latest_deployment.work_location', 'latest_deployment.custodian', 'category'];
     protected $indexWith = ['latest_deployment', 'latest_deployment.admin_segment', 'latest_deployment.work_location', 'latest_deployment.custodian'];
 }

@@ -15,10 +15,10 @@ class FxaInformations extends Migration
     {
         Schema::create('fxa_informations', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('fxa_depr_method_id')->nullable();
+            $table->unsignedBigInteger('deprecation_method_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
-            $table->foreign('fxa_depr_method_id')->references('id')->on('fxa_deprecation_methods');
+            $table->foreign('deprecation_method_id')->references('id')->on('fxa_depreciation_methods');
         });
     }
 
