@@ -34,7 +34,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $date_disposed
  * @property int $disposal_price
  * @property int $begin_accum_depr
- * @property int $xptd_life_yrs
+ * @property int $expected_life
  * @property int $salvage_value
  * @property string $supplier_invoice
  * @property string $supplier_name
@@ -76,7 +76,7 @@ class FxaAsset extends Eloquent
 		'installed' => 'bool',
 		'disposal_price' => 'int',
 		'begin_accum_depr' => 'int',
-		'xptd_life_yrs' => 'int',
+		'expected_life' => 'int',
 		'salvage_value' => 'int',
 		'fxa_depr_method_id' => 'int',
 		'fxa_category_id' => 'int',
@@ -128,7 +128,7 @@ class FxaAsset extends Eloquent
 		'date_disposed',
 		'disposal_price',
 		'begin_accum_depr',
-		'xptd_life_yrs',
+		'expected_life',
 		'salvage_value',
 		'supplier_invoice',
 		'supplier_name',

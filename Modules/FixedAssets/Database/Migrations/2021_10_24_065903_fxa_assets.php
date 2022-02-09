@@ -36,7 +36,7 @@ class FxaAssets extends Migration
             $table->date('date_disposed')->nullable();
             $table->unsignedInteger('disposal_price')->nullable();
             $table->unsignedInteger('begin_accum_depr')->nullable();
-            $table->unsignedInteger('xptd_life_yrs')->nullable();
+            $table->unsignedInteger('expected_life')->nullable();
             $table->unsignedInteger('salvage_value')->nullable();
             $table->string('supplier_invoice')->nullable();
             $table->string('supplier_name')->nullable();

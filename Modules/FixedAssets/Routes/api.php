@@ -27,4 +27,5 @@ Route::middleware(['auth:api'])->prefix('fixed-assets')->group(function () {
     Route::put('{id}', 'FixedAssetsController@updateOverloadFunction');
     Route::get('{fxa_asset_id}/deployments', 'FixedAssetDeploymentsController@index');
     Route::post('re-deployments', 'FixedAssetDeploymentsController@store');
+    Route::post('depreciations', 'FixAssetDepreciationController@store');
 });

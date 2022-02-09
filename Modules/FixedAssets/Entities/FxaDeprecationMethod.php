@@ -27,6 +27,6 @@ class FxaDeprecationMethod extends Eloquent
 
 	public function fxa_assets()
 	{
-		return $this->hasMany(\Modules\Treasury\Models\FxaAsset::class);
+		return $this->hasMany(\Modules\FixedAssets\Entities\FxaAsset::class);
 	}
 }
