@@ -14,6 +14,7 @@ class FixedAssetRepository extends EloquentBaseRepository
     {
         try {
             DB::beginTransaction();
+            $data['data']['acquisition_cost_deprecated'] = $data['data']['acquisition_cost'];
             $fixedAsset = parent::create($data);
 
             $fixedAssetDeployment = [

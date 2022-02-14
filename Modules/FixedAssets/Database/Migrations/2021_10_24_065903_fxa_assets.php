@@ -27,6 +27,7 @@ class FxaAssets extends Migration
             $table->date('date_manufactured')->nullable();
             $table->date('date_acquired')->nullable();
             $table->unsignedInteger('acquisition_cost')->nullable();
+            $table->unsignedInteger('acquisition_cost_deprecated')->nullable();
             $table->boolean('is_installed')->default(false);
             $table->boolean('is_commissioned')->default(false);
             $table->boolean('is_decommissioned')->default(false);

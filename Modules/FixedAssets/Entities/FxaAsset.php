@@ -12,6 +12,7 @@ class FxaAsset extends Eloquent
     protected $casts = [
         'custodian' => 'int',
         'acquisition_cost' => 'int',
+        'acquisition_cost_deprecated' => 'int',
         'is_installed' => 'bool',
         'is_commissioned' => 'bool',
         'is_decommissioned' => 'bool',
@@ -60,6 +61,7 @@ class FxaAsset extends Eloquent
         'date_manufactured',
         'date_acquired',
         'acquisition_cost',
+        'acquisition_cost_deprecated',
         'is_installed',
         'is_commissioned',
         'is_decommissioned',

@@ -22,7 +22,7 @@ class FxaDepreciationDetailRepository extends EloquentBaseRepository
 
         DB::beginTransaction();
         try {
-            $fxDepricatedDetail= [];
+            $fxDepricatedDetail = [];
             /** @var FxaCategory $category */
             foreach ($categories as $category) {
                 $depreciaton = FxaDepreciation::create([
@@ -34,12 +34,13 @@ class FxaDepreciationDetailRepository extends EloquentBaseRepository
 
                 /** @var FxaAsset $asset */
                 foreach ($category->fxa_assets as $asset) {
+
                     $temp = [
                         'depreciation_id' => $depreciaton->id,
                         'fxa_assets_id' => $asset->id,
-                        'fxa_depr_method_id' => $asset->fxa_depr_method_id,
+                        'fxa_depr_method_id' => $category->depreciation_method_id,
                         'serial_number' => $srlNumber,
-                        'amount' => $this->getDepricatedAmount($asset),
+                        'amount' => $this->getDepricatedAmount($category, $asset),
                     ];
                     $fxDepricatedDetail[] = $temp;
                     $srlNumber = $srlNumber + 1;
@@ -49,24 +50,30 @@ class FxaDepreciationDetailRepository extends EloquentBaseRepository
                 FxaDepreciationDetail::insert($fxDepricatedDetail);
             }
             DB::commit();
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             DB::rollBack();
             throw  $exception;
         }
-        return ['data'=> 'success'];
+        return ['data' => 'success'];
     }
 
     /**
      * @param FxaAsset $asset
      */
-    public function getDepricatedAmount($asset)
+    public function getDepricatedAmount($category, $asset)
     {
-        return ($asset->acquisition_cost - $asset->salvage_value) / $asset->expected_life;
+        if ($category->depreciation_method_id == 1) {
+            return ($asset->acquisition_cost - $asset->salvage_value) / (100 / $category->depreciation_rate);
+
+        } elseif ($category->depreciation_method_id == 2) {
+            return ($asset->acquisition_cost - $asset->salvage_value) / (200 / $category->depreciation_rate);
+
+        }
     }
 
     public function getSerialNumber()
     {
-        $fxDepreDetail = FxaDepreciationDetail::orderby('id','desc')->first();
+        $fxDepreDetail = FxaDepreciationDetail::orderby('id', 'desc')->first();
         if (is_null($fxDepreDetail))
             return 1;
         return $fxDepreDetail->id + 1;
