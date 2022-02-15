@@ -44,6 +44,7 @@ class FxaDepreciationDetailRepository extends EloquentBaseRepository
                         if ($asset->is_depreciation_over == false){
                             $asset->acquisition_cost_deprecated = $asset->acquisition_cost_deprecated + $asset->salvage_value;
                             $asset->is_depreciation_over = true;
+                            $asset->save();
                         }
                         continue;
                     }
