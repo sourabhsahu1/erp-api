@@ -27,7 +27,7 @@ class FxaDepreciationDetailRepository extends EloquentBaseRepository
             foreach ($categories as $category) {
 
                 $depreciaton = FxaDepreciation::where('fxa_category_id', $category->id)->first();
-                if (is_null($depreciaton)){
+                if (is_null($depreciaton)) {
                     $depreciaton = FxaDepreciation::create([
                         'vdate' => Carbon::now()->toDateTimeString(),
                         'tdate' => Carbon::now()->toDateTimeString(),
@@ -39,16 +39,17 @@ class FxaDepreciationDetailRepository extends EloquentBaseRepository
                 /** @var FxaAsset $asset */
                 foreach ($category->fxa_assets as $asset) {
 
-                    if (($asset->acquisition_cost_deprecated < (int)$this->getDepricatedAmount($category, $asset))){
+
+                    if (($asset->is_depreciation_over == false) && ($asset->acquisition_cost_deprecated < (int)$this->getDepricatedAmount($category, $asset))) {
                         // add salvage value when depriciation is overs
-                        if ($asset->is_depreciation_over == false){
-                            $asset->acquisition_cost_deprecated = $asset->acquisition_cost_deprecated + $asset->salvage_value;
-                            $asset->is_depreciation_over = true;
-                            $asset->save();
-                        }
+                        $asset->acquisition_cost_deprecated = $asset->acquisition_cost_deprecated + $asset->salvage_value;
+                        $asset->is_depreciation_over = true;
+                        $asset->save();
+                        continue;
+                    } elseif ($asset->is_depreciation_over == true) {
                         continue;
                     }
-                    if ($this->getDepricatedAmount($category, $asset) < 0){
+                    if ($this->getDepricatedAmount($category, $asset) < 0) {
                         continue;
                     }
                     $temp = [
@@ -82,10 +83,10 @@ class FxaDepreciationDetailRepository extends EloquentBaseRepository
     public function getDepricatedAmount($category, $asset)
     {
         if ($category->depreciation_method_id == 1) {
-            return ($asset->acquisition_cost - $asset->salvage_value - $asset->begin_accum_depr ?? 0 ) / (100 / $category->depreciation_rate);
+            return ($asset->acquisition_cost - $asset->salvage_value - $asset->begin_accum_depr ?? 0) / (100 / $category->depreciation_rate);
 
         } elseif ($category->depreciation_method_id == 2) {
-            return ($asset->acquisition_cost_deprecated  - $asset->begin_accum_depr ?? 0) / (200 / $category->depreciation_rate);
+            return ($asset->acquisition_cost_deprecated - $asset->begin_accum_depr ?? 0) / (200 / $category->depreciation_rate);
 
         }
     }
