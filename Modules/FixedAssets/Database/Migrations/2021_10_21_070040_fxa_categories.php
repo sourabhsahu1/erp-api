@@ -22,9 +22,9 @@ class FxaCategories extends Migration
             $table->unsignedInteger('fixed_asset_acct_id')->nullable();
             $table->unsignedInteger('accum_depr_acct_id')->nullable();
             $table->unsignedInteger('depr_exps_acct_id')->nullable();
-            $table->string('asset_no_prefix_line', '10')->nullable();
-            $table->string('asset_no_prefix_full', '20')->nullable();
-            $table->unsignedBigInteger('next_asset_no')->nullable();
+            $table->string('individual_code', '10')->nullable();
+            $table->string('combined_code', '20')->nullable();
+            $table->unsignedBigInteger('next_asset_no')->default(1);
             $table->unsignedBigInteger('ref_no_to_root_node')->nullable();
             $table->boolean('is_parent')->default(false);
             $table->boolean('is_editable')->default(0);

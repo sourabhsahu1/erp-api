@@ -5,6 +5,8 @@ namespace Modules\FixedAssets\Repositories;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\FixedAssets\Entities\FxaAsset;
 use Illuminate\Support\Facades\DB;
+use Modules\FixedAssets\Entities\FxaCategory;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class FixedAssetRepository extends EloquentBaseRepository
 {
@@ -14,6 +16,13 @@ class FixedAssetRepository extends EloquentBaseRepository
     {
         try {
             DB::beginTransaction();
+            $fixedAssetCategory = FxaCategory::find($data['data']['fxa_category_id']);
+            if (!$fixedAssetCategory) {
+                throw new BadRequestHttpException('Invalid Category');
+            }
+            $data['data']['asset_no'] = $fixedAssetCategory->combined_code . '\\' . $fixedAssetCategory->next_asset_no;
+            FxaCategory::where('id', $fixedAssetCategory->id)->increment('next_asset_no');
+
             $data['data']['acquisition_cost_deprecated'] = $data['data']['acquisition_cost'];
             $fixedAsset = parent::create($data);
 
