@@ -39,7 +39,7 @@ class FxaDepreciationDetailRepository extends EloquentBaseRepository
                 /** @var FxaAsset $asset */
                 foreach ($category->fxa_assets as $asset) {
 
-                    if (($asset->acquisition_cost_deprecated < $this->getDepricatedAmount($category, $asset))){
+                    if (($asset->acquisition_cost_deprecated < (int)$this->getDepricatedAmount($category, $asset))){
                         // add salvage value when depriciation is overs
                         if ($asset->is_depreciation_over == false){
                             $asset->acquisition_cost_deprecated = $asset->acquisition_cost_deprecated + $asset->salvage_value;
@@ -53,7 +53,7 @@ class FxaDepreciationDetailRepository extends EloquentBaseRepository
                         'fxa_assets_id' => $asset->id,
                         'fxa_depr_method_id' => $category->depreciation_method_id,
                         'serial_number' => $srlNumber,
-                        'amount' => $this->getDepricatedAmount($category, $asset),
+                        'amount' => (int)$this->getDepricatedAmount($category, $asset),
                     ];
 
                     $asset->acquisition_cost_deprecated = $asset->acquisition_cost_deprecated - $this->getDepricatedAmount($category, $asset);
