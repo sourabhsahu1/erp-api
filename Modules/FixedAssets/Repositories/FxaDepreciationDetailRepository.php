@@ -39,9 +39,6 @@ class FxaDepreciationDetailRepository extends EloquentBaseRepository
                 /** @var FxaAsset $asset */
                 foreach ($category->fxa_assets as $asset) {
 
-                    if ($this->getDepricatedAmount($category, $asset) < 0){
-                        continue;
-                    }
                     if (($asset->acquisition_cost_deprecated < (int)$this->getDepricatedAmount($category, $asset))){
                         // add salvage value when depriciation is overs
                         if ($asset->is_depreciation_over == false){
@@ -50,7 +47,9 @@ class FxaDepreciationDetailRepository extends EloquentBaseRepository
                         }
                         continue;
                     }
-
+                    if ($this->getDepricatedAmount($category, $asset) < 0){
+                        continue;
+                    }
                     $temp = [
                         'depreciation_id' => $depreciaton->id,
                         'fxa_assets_id' => $asset->id,
