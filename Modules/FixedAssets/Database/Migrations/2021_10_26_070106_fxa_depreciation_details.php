@@ -21,6 +21,8 @@ class FxaDepreciationDetails extends Migration
 //            $table->unsignedBigInteger('fxa_category_id')->nullable();
             $table->unsignedInteger('serial_number');
             $table->unsignedInteger('amount');
+            $table->unsignedInteger('opening_balance');
+            $table->unsignedInteger('closing_balance');
             $table->softDeletes();
             $table->timestamps();
 

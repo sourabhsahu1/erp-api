@@ -155,4 +155,8 @@ class FxaAsset extends Eloquent
         return $this->hasOne(\Modules\FixedAssets\Entities\FxaDeployment::class)
             ->orderBy('created_at', 'desc');
     }
+    public function depreciation_details()
+    {
+        return $this->hasMany(\Modules\FixedAssets\Entities\FxaDepreciationDetail::class,'fxa_assets_id')->orderBy('created_at','desc');
+    }
 }
