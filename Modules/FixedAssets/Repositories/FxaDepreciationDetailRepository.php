@@ -5,6 +5,7 @@ namespace Modules\FixedAssets\Repositories;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Luezoid\Laravelcore\Exceptions\AppException;
 use Luezoid\Laravelcore\Repositories\EloquentBaseRepository;
 use Modules\FixedAssets\Entities\FxaAsset;
 use Modules\FixedAssets\Entities\FxaCategory;
@@ -51,15 +52,15 @@ class FxaDepreciationDetailRepository extends EloquentBaseRepository
                     if ($this->getDepricatedAmount($category, $asset) < 0) {
                         continue;
                     }
-//                    $detail = FxaDepreciationDetail::where('depreciation_id', $depreciaton->id)->orderby('id', 'desc')->first();
+
                     $temp = [
                         'depreciation_id' => $depreciaton->id,
                         'fxa_assets_id' => $asset->id,
                         'fxa_depr_method_id' => $category->depreciation_method_id,
                         'serial_number' => $srlNumber,
                         'opening_balance' => $asset->acquisition_cost_deprecated,
-                        'closing_balance' => $asset->acquisition_cost_deprecated - (int)$this->getDepricatedAmount($category, $asset),
-                        'amount' => (int)$this->getDepricatedAmount($category, $asset),
+                        'closing_balance' => $asset->acquisition_cost_deprecated - $this->getDepricatedAmount($category, $asset),
+                        'amount' => $this->getDepricatedAmount($category, $asset),
                         'created_at' => Carbon::now()->toDateTimeString(),
                         'updated_at' => Carbon::now()->toDateTimeString()
                     ];
@@ -87,14 +88,11 @@ class FxaDepreciationDetailRepository extends EloquentBaseRepository
     public function getDepricatedAmount($category, $asset)
     {
         if ($category->depreciation_method_id == 1) {
-            return ($asset->acquisition_cost - $asset->salvage_value - $asset->begin_accum_depr ?? 0) / (100 / $category->depreciation_rate);
-
+            return ($asset->acquisition_cost - $asset->salvage_value) / (100 / $category->depreciation_rate);
         } elseif ($category->depreciation_method_id == 2) {
-            if ($asset->acquisition_cost_deprecated === $asset->acquisition_cost) {
-                return ($asset->acquisition_cost_deprecated - $asset->begin_accum_depr ?? 0) / (200 / $category->depreciation_rate);
-            } elseif ($asset->acquisition_cost_deprecated < $asset->acquisition_cost) {
-                return ($asset->acquisition_cost_deprecated) / (200 / $category->depreciation_rate);
-            }
+            return ($asset->acquisition_cost_deprecated * 2 * $category->depreciation_rate)/100;
+        } else {
+            throw new AppException('Wrong method');
         }
     }
 

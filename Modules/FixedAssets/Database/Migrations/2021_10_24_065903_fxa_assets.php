@@ -26,8 +26,8 @@ class FxaAssets extends Migration
             $table->string('oem_bar_code_no')->nullable();
             $table->date('date_manufactured')->nullable();
             $table->date('date_acquired')->nullable();
-            $table->unsignedInteger('acquisition_cost')->nullable();
-            $table->unsignedInteger('acquisition_cost_deprecated')->nullable();
+            $table->decimal('acquisition_cost', 18,2)->nullable();
+            $table->decimal('acquisition_cost_deprecated',18,2)->nullable();
             $table->boolean('is_depreciation_over')->default(false);
             $table->boolean('is_installed')->default(false);
             $table->boolean('is_commissioned')->default(false);
@@ -40,9 +40,9 @@ class FxaAssets extends Migration
             $table->date('date_de_commissioned')->nullable();
             $table->date('date_disposed')->nullable();
             $table->unsignedInteger('disposal_price')->nullable();
-            $table->unsignedInteger('begin_accum_depr')->nullable();
-            $table->unsignedInteger('expected_life')->nullable();
-            $table->unsignedInteger('salvage_value')->nullable();
+            $table->decimal('begin_accum_depr',12,2)->nullable();
+            $table->decimal('expected_life',4,2)->nullable();
+            $table->decimal('salvage_value',12,2)->nullable();
             $table->string('supplier_invoice')->nullable();
             $table->string('supplier_name')->nullable();
             $table->string('supplier_contact')->nullable();

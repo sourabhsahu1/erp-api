@@ -23,7 +23,8 @@ class FixedAssetRepository extends EloquentBaseRepository
             $data['data']['asset_no'] = $fixedAssetCategory->combined_code . '\\' . $fixedAssetCategory->next_asset_no;
             FxaCategory::where('id', $fixedAssetCategory->id)->increment('next_asset_no');
 
-            $data['data']['acquisition_cost_deprecated'] = $data['data']['acquisition_cost'];
+            $data['data']['acquisition_cost_deprecated'] = $data['data']['acquisition_cost'] - $data['data']['begin_accum_depr'] ?? 0;
+            $data['data']['expected_life'] = 100/$fixedAssetCategory->depreciation_rate;
             $fixedAsset = parent::create($data);
 
             $fixedAssetDeployment = [

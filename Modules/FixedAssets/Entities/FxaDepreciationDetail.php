@@ -40,9 +40,9 @@ class FxaDepreciationDetail extends Eloquent
 		'fxa_depr_method_id' => 'int',
 		'fxa_category_id' => 'int',
 		'serial_number' => 'int',
-		'amount' => 'int',
-        'opening_balance' => 'int',
-		'closing_balance' => 'int'
+		'amount' => 'float',
+        'opening_balance' => 'float',
+		'closing_balance' => 'float'
 	];
 
 	protected $fillable = [
