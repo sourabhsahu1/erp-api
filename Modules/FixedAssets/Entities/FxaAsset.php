@@ -100,6 +100,14 @@ class FxaAsset extends Eloquent
         'comments'
     ];
 
+    protected $appends = [
+        'total_depreciation'
+    ];
+
+    public function getTotalDepreciationAttribute(){
+        return round(($this->acquisition_cost - $this->acquisition_cost_deprecated),2);
+    }
+
     public function program_segment()
     {
         return $this->belongsTo(\Modules\Admin\Models\AdminSegment::class, 'programme_segment_id');
