@@ -73,6 +73,6 @@ class FxaDepreciationDetail extends Eloquent
 
 	public function fxa_depreciation_method()
 	{
-		return $this->belongsTo(\Modules\FixedAssets\Entities\FxaDeprecationMethod::class, 'fxa_depr_method_id');
+		return $this->belongsTo(\Modules\FixedAssets\Entities\FxaDepreciationMethod::class, 'fxa_depr_method_id');
 	}
 }
