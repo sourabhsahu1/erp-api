@@ -19,5 +19,10 @@ class FxaCategoriesController extends BaseController
     protected $deleteJobMethod = "delete";
     protected $storeRequest = Create::class;
     protected $updateRequest = Update::class;
-    protected $indexWith = ['fixed_asset_acct', 'accum_depr_acct', 'depr_exps_acct', 'sub_categories', 'sub_categories.fixed_asset_acct', 'sub_categories.accum_depr_acct', 'sub_categories.depr_exps_acct'];
+    protected $indexWith = [
+        'fixed_asset_acct',
+        'accum_depr_acct',
+        'depr_exps_acct',
+        'sub_categories',
+    ];
 }

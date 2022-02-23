@@ -63,7 +63,13 @@ class FxaCategory extends Eloquent
 
     public function children()
     {
-        return $this->hasMany(\Modules\FixedAssets\Entities\FxaCategory::class, 'parent_id');
+        return $this->hasMany(\Modules\FixedAssets\Entities\FxaCategory::class, 'parent_id')->with(
+            [
+                'fixed_asset_acct',
+                'accum_depr_acct',
+                'depr_exps_acct'
+            ]
+        );
     }
 
     public function sub_categories()
