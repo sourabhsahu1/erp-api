@@ -522,7 +522,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
 
                 $retireVLog = RetireVoucherLog::where('retire_voucher_id', $retireVoucher->id)->orderBy('id', 'DESC')->first();
 
-                if ($retireVLog && ($data['data']['status'] != AppConstant::VOUCHER_STATUS_NEW)) {
+                if ($retireVLog && ($data['data']['retire_status'] != AppConstant::VOUCHER_STATUS_NEW)) {
 
                     if (Carbon::parse($retireVLog->date)->toDateString() > Carbon::parse($data['data']['date'])->toDateString()) {
                         if ($retireVLog->date != Carbon::now()->toDateString()) {
@@ -537,7 +537,7 @@ class RetireVoucherRepository extends EloquentBaseRepository
                         'date' => $data['data']['date'],
                         'admin_id' => $data['data']['user_id']
                     ]);
-                }elseif ($retireVLog && ($data['data']['status'] == AppConstant::VOUCHER_STATUS_NEW)){
+                }elseif ($retireVLog && ($data['data']['retire_status'] == AppConstant::VOUCHER_STATUS_NEW)){
                     RetireVoucherLog::create([
                         'retire_voucher_id' => $retireVoucher->id,
                         'previous_status' => $retireVoucher->status,

@@ -8,6 +8,7 @@ use App\Http\Controllers\BaseController;
 use App\Services\WKHTMLPDfConverter;
 use Illuminate\Http\Request;
 use Luezoid\Laravelcore\Jobs\BaseJob;
+use Modules\Treasury\Http\Requests\Mandate\Create;
 use Modules\Treasury\Repositories\MandateRepository;
 
 class MandateController extends BaseController
@@ -17,6 +18,7 @@ class MandateController extends BaseController
     protected $createJob = BaseJob::class;
     protected $updateJob = BaseJob::class;
     protected $deleteJob = BaseJob::class;
+    protected $storeRequest = Create::class;
     protected $storeJobMethod = "create";
     protected $updateJobMethod = "update";
     protected $deleteJobMethod = "delete";
