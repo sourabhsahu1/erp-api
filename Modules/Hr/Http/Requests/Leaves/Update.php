@@ -15,13 +15,13 @@ class Update extends BaseRequest
 
         $id = $this->route('leaf');
         return [
-            'name' => ['required', Rule::unique('hr_leaves')->ignore($id)],
+            'title' => ['required', Rule::unique('hr_leaves')->ignore($id)],
             'shortName'=> 'required',
-            'isCarryOverUnusedLeave'=> 'required|boolean',
             'isPaidLeave'=> 'required|boolean',
             'isCalenderDays'=> 'required|boolean',
+            'entitledAnnually'=> 'required|boolean',
+            'rollOverUnusedLeave'=> 'required|boolean',
             'isActive'=> 'required|boolean',
-            'autoCreate'=> 'required|boolean'
         ];
     }
 }

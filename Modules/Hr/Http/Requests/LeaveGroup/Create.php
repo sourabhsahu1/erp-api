@@ -12,7 +12,7 @@ class Create extends BaseRequest
     public function rules()
     {
         return [
-            "name" => "required"
+            "title" => "required"
         ];
     }
 

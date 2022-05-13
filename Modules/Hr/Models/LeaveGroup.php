@@ -13,7 +13,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * Class LeaveGroup
  * 
  * @property int $id
- * @property string $name
+ * @property string $title
  * @property boolean $is_active
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
@@ -30,7 +30,7 @@ class LeaveGroup extends Eloquent
         'is_active' => 'bool',
     ];
 	protected $fillable = [
-		'name',
+		'title',
         'is_active'
 	];
 }
