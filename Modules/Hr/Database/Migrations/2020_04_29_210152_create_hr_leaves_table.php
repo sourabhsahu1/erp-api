@@ -15,7 +15,7 @@ class CreateHrLeavesTable extends Migration
     {
         Schema::create('hr_leaves', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title');
+            $table->string('title')->unique();
             $table->string('short_name');
             $table->boolean('entitled_annually');
             $table->boolean('is_paid_leave');

@@ -33,4 +33,9 @@ class LeaveGroup extends Eloquent
 		'title',
         'is_active'
 	];
+
+	public function leave_group_members()
+    {
+        return $this->hasMany(\Modules\Hr\Models\LeaveGroupMember::class, 'leave_group_id');
+    }
 }

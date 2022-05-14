@@ -54,6 +54,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('job-positions', 'JobPositionController');
     Route::resource('leaves', 'LeaveController');
     Route::resource('leave-groups', 'LeaveGroupController');
+    Route::resource('leave-group-members', 'LeaveGroupMemberController');
     Route::resource('public-holidays', 'PublicHolidayController');
 
     /*Employees*/

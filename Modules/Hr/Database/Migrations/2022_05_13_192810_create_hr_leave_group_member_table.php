@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHrLeaveGroupTable extends Migration
+class CreateHrLeaveGroupMemberTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateHrLeaveGroupTable extends Migration
      */
     public function up()
     {
-        Schema::create('hr_leave_group', function (Blueprint $table) {
+        Schema::create('hr_leave_group_member', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title')->unique();
-            $table->boolean('is_active')->default(1);
+            $table->bigInteger('leave_group_id');
+            $table->bigInteger('staff_id');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ class CreateHrLeaveGroupTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('hr_leave_group');
+        Schema::dropIfExists('hr_leave_group_member');
     }
 }
