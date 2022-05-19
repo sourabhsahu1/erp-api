@@ -14,6 +14,7 @@ class CreateHrLeaveGroupMemberTable extends Migration
     public function up()
     {
         Schema::create('hr_leave_group_member', function (Blueprint $table) {
+            $table->unique(['leave_group_id', 'staff_id']);
             $table->bigIncrements('id');
             $table->bigInteger('leave_group_id');
             $table->bigInteger('staff_id');
