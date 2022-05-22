@@ -32,7 +32,7 @@ class LeaveGroupEntitlement extends Eloquent
 	protected $fillable = [
 		'leave_group_id',
 		'leave_type_id',
-		'due_days'
+		'due_days',
 	];
 
 	public function leave_group()

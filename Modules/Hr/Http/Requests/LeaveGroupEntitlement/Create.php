@@ -2,8 +2,6 @@
 
 
 namespace Modules\Hr\Http\Requests\LeaveGroupEntitlement;
-
-
 use Luezoid\Laravelcore\Requests\BaseRequest;
 
 class Create extends BaseRequest
