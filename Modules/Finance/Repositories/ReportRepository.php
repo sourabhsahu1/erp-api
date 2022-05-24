@@ -56,6 +56,8 @@ class ReportRepository extends EloquentBaseRepository
             ->selectRaw('name, jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
             ->whereIn('admin_segments.id', $childIds)
             ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+            ->whereNull('jd.deleted_At')
+            ->whereNull('jv.deleted_At')
             ->groupby(DB::raw('name,jd.economic_segment_id, line_value_type'));
 
         if (isset($params['inputs']['from_date']) && isset($params['inputs']['to_date'])) {
@@ -131,10 +133,15 @@ class ReportRepository extends EloquentBaseRepository
         }
         //todo report type get from obj
 
-        $jvTbReport = JvTrailBalanceReport::where('economic_segment_id', $data['data']['economic_segment_id'])->orWhere('parent_id', $data['data']['economic_segment_id'])->get();
+        $jvTbReport = JvTrailBalanceReport::where('economic_segment_id', $data['data']['economic_segment_id'])
+            ->orWhere('parent_id', $data['data']['economic_segment_id'])
+            ->whereNull('deleted_at')
+            ->get();
 
 
-        $checkForJv = JvTrailBalanceReport::where('parent_id', $data['data']['economic_segment_id'])->get();
+        $checkForJv = JvTrailBalanceReport::where('parent_id', $data['data']['economic_segment_id'])
+            ->whereNull('deleted_at')
+            ->get();
 
         if ($checkForJv->isEmpty()) {
             throw new AppException('child doesnt exist , cannot create notes');
@@ -142,7 +149,11 @@ class ReportRepository extends EloquentBaseRepository
 
         $d = [];
 
-        $note = NotesTrailBalanceReport::whereNotNull('note_id')->orderBy('created_at', 'desc')->orderBy('id', 'desc')->first();
+        $note = NotesTrailBalanceReport::whereNotNull('note_id')
+            ->whereNull('deleted_at')
+            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
         if (is_null($note)) {
             $noteId = 'N1';
         } else {
@@ -169,7 +180,13 @@ class ReportRepository extends EloquentBaseRepository
         DB::beginTransaction();
         try {
 
-            $jv = JvTrailBalanceReport::rightjoin('notes_trail_balance_report as n', 'jv_trail_balance_report.id', '=', 'n.jv_tb_report_id')->where('economic_segment_id', $data['data']['economic_segment_id'])->where('type', $data['data']['type'])->where('is_parent', 1)->first();
+            $jv = JvTrailBalanceReport::rightjoin('notes_trail_balance_report as n', 'jv_trail_balance_report.id', '=', 'n.jv_tb_report_id')
+                ->where('economic_segment_id', $data['data']['economic_segment_id'])
+                ->where('type', $data['data']['type'])
+                ->where('is_parent', 1)
+                ->whereNull('n.deleted_at')
+                ->whereNull('jv_trail_balance_report.deleted_at')
+                ->first();
 
             if (!is_null($jv)) {
                 throw new AppException('already created');
@@ -222,7 +239,8 @@ class ReportRepository extends EloquentBaseRepository
         $query = JournalVoucher
             ::join('journal_voucher_details as jd', 'journal_vouchers.id', '=', 'jd.journal_voucher_id')
             ->join('admin_segments', 'jd.economic_segment_id', '=', 'admin_segments.id')
-            ->where('status', AppConstant::JV_STATUS_POSTED);
+            ->where('status', AppConstant::JV_STATUS_POSTED)
+            ->whereNull('jd.deleted_at');
 
         $q = clone $query;
         if (isset($params['inputs']['economic_segment_id'])) {
@@ -246,6 +264,7 @@ class ReportRepository extends EloquentBaseRepository
             ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
             ->selectRaw('name,jd.economic_segment_id, month(jd.created_at) as month, sum(lv_line_value) sum, line_value_type')
 //            ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+            ->whereNull('jd.deleted_at')
             ->groupby(DB::raw('name,jd.economic_segment_id, month(jd.created_at), line_value_type'))
             ->get()
             ->toArray();
@@ -372,6 +391,7 @@ class ReportRepository extends EloquentBaseRepository
             ->join('journal_vouchers as jv', 'jv.id', '=', 'jd.journal_voucher_id')
             ->selectRaw('name, jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
             ->whereIn('admin_segments.id', $childIds)
+            ->whereNull('jd.deleted_at')
             ->where('jv.status', AppConstant::JV_STATUS_POSTED)
             ->groupby(DB::raw('name,jd.economic_segment_id, line_value_type'))
             ->get()
@@ -422,6 +442,7 @@ class ReportRepository extends EloquentBaseRepository
             ->selectRaw('name, jd.economic_segment_id, sum(lv_line_value) sum, line_value_type')
             ->whereIn('admin_segments.id', $childIds)
             ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+            ->whereNull('jd.deleted_at')
             ->groupby(DB::raw('name,jd.economic_segment_id, line_value_type'))
             ->get()
             ->toArray();
@@ -642,6 +663,7 @@ class ReportRepository extends EloquentBaseRepository
                     ->whereNull('budget.program_segment_id')
                     ->groupby(DB::raw('admin_segments.id,budget.economic_segment_id'))
                     ->whereIn('budget_breakups.month', $previousMonth)
+                    ->whereNull('budget_breakups.deleted_at')
                     ->get()
                     ->toArray();
 
@@ -663,6 +685,7 @@ class ReportRepository extends EloquentBaseRepository
                     ->whereIn('jd.fund_segment_id', $fundSegmentChildIds)
                     ->where('jv.status', AppConstant::JV_STATUS_POSTED)
                     ->groupby(DB::raw('name,jd.economic_segment_id,line_value_type'))
+                    ->whereNull('jd.deleted_at')
                     ->whereRaw('MONTH(jd.created_at) in (' . implode(',', $previousMonth) . ')')
                     ->get()
                     ->toArray();
@@ -687,6 +710,7 @@ class ReportRepository extends EloquentBaseRepository
                     ->whereNull('budget.program_segment_id')
                     ->groupby(DB::raw('admin_segments.id,budget.economic_segment_id'))
                     ->whereIn('budget_breakups.month', $previousMonth)
+                    ->whereNull('budget_breakups.deleted_at')
                     ->get()
                     ->toArray();
 
@@ -923,6 +947,7 @@ class ReportRepository extends EloquentBaseRepository
                 ->whereIn('jd.admin_segment_id', $adminSegmentChildIds)
                 ->whereIn('jd.economic_segment_id', $economicParent['child_ids'])
 //                    ->where('jv.status', AppConstant::JV_STATUS_POSTED)
+                    ->whereNull('jd.deleted_at')
                 ->groupby(DB::raw('name,jd.economic_segment_id,line_value_type ,c.currency_sign,c.code_currency,jd.local_currency'));
 
             if (count($months)) {
