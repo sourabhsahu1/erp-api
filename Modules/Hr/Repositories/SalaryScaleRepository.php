@@ -19,7 +19,15 @@ class SalaryScaleRepository extends EloquentBaseRepository
 
     public function getAll($params = [], $query = null)
     {
-        return SalaryScale::with('grade_levels.grade_level_steps')->get();
+        $get_by_id = false;
+        if (isset($params["inputs"]["get_by_id"])) {
+            $get_by_id = true;
+        }
+        if ($get_by_id) {
+            return parent::getAll($params, $query);
+        } else {
+            return SalaryScale::with('grade_levels.grade_level_steps')->get();
+        }
     }
 
     public function create($data)
@@ -30,7 +38,7 @@ class SalaryScaleRepository extends EloquentBaseRepository
         if ($data['data']['is_automatic_create'] == true) {
             for ($i = 1; $i <= $data['data']['number_of_levels']; $i++) {
                 $levelName = 'Level-';
-                $levelName.= str_pad($i, 2, '0', STR_PAD_LEFT);
+                $levelName .= str_pad($i, 2, '0', STR_PAD_LEFT);
                 $gradeLevel[] = [
                     'salary_scale_id' => $salaryScale->id,
                     'name' => $levelName,
@@ -46,7 +54,7 @@ class SalaryScaleRepository extends EloquentBaseRepository
             foreach ($gradeLevelIds as $key => $gradeLevelId) {
                 for ($j = 1; $j <= $data['data']['number_of_steps']; $j++) {
                     $glStepName = 'GL-';
-                    $glStepName.= str_pad($key+1, 2, '0', STR_PAD_LEFT).'-'. str_pad($j, 2, '0', STR_PAD_LEFT);;
+                    $glStepName .= str_pad($key + 1, 2, '0', STR_PAD_LEFT) . '-' . str_pad($j, 2, '0', STR_PAD_LEFT);;
                     $glSteps[] = [
                         'name' => $glStepName,
                         'grade_level_id' => $gradeLevelId
@@ -69,7 +77,7 @@ class SalaryScaleRepository extends EloquentBaseRepository
         $grade = GradeLevel::where('salary_scale_id', $data['id'])->first();
         if (is_null($grade)) {
             return parent::delete($data);
-        }else {
+        } else {
             throw new AppException('Already in use');
         }
     }

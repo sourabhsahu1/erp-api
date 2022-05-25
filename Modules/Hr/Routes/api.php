@@ -43,6 +43,7 @@ Route::middleware(['auth:api'])->group(function () {
     /*Salary scale and grade Level*/
     Route::resource('salary-scales', 'SalaryScaleController');
     Route::get('grade-levels/{id}', 'GradeLevelController@show');
+    Route::get('grade-levels', 'GradeLevelController@show');
     Route::post('grade-levels', 'GradeLevelController@store');
     Route::put('grade-levels/{id}', 'GradeLevelController@update');
     Route::delete('grade-levels/{id}', 'GradeLevelController@destroy');
@@ -56,6 +57,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('leave-groups', 'LeaveGroupController');
     Route::resource('leave-group-members', 'LeaveGroupMemberController');
     Route::resource('leave-group-entitlements', 'LeaveGroupEntitlementController');
+    Route::resource('leave-entitlement-salary-scales', 'LeaveSalaryScaleEntitlementController');
+    Route::resource('leave-entitlement-grade-levels', 'LeaveGradeLevelEntitlementController');
     Route::resource('leave-years', 'LeaveYearController');
     Route::resource('hr-informations', 'HrInformationController');
     Route::resource('leave-credits', 'LeaveCreditController');
