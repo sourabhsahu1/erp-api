@@ -43,7 +43,7 @@ Route::middleware(['auth:api'])->group(function () {
     /*Salary scale and grade Level*/
     Route::resource('salary-scales', 'SalaryScaleController');
     Route::get('grade-levels/{id}', 'GradeLevelController@show');
-    Route::get('grade-levels', 'GradeLevelController@show');
+    Route::get('grade-levels', 'GradeLevelController@index');
     Route::post('grade-levels', 'GradeLevelController@store');
     Route::put('grade-levels/{id}', 'GradeLevelController@update');
     Route::delete('grade-levels/{id}', 'GradeLevelController@destroy');
@@ -60,8 +60,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('leave-entitlement-salary-scales', 'LeaveSalaryScaleEntitlementController');
     Route::resource('leave-entitlement-grade-levels', 'LeaveGradeLevelEntitlementController');
     Route::resource('leave-years', 'LeaveYearController');
+    Route::resource('leave-requests', 'LeaveRequestController');
+    Route::resource('leave-requests-closed', 'LeaveRequestClosedController');
     Route::resource('hr-informations', 'HrInformationController');
     Route::resource('leave-credits', 'LeaveCreditController');
+    Route::get('leave-credits-view', 'LeaveCreditController@LeaveCreditView');
     Route::resource('public-holidays', 'PublicHolidayController');
 
     /*Employees*/
@@ -70,6 +73,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('employees/{id}', 'EmployeeController@update');
     Route::post('employees/{id}/details', 'EmployeeController@employeeDetails');
     Route::post('employees/{id}/job-profile', 'EmployeeController@jobProfile');
+    Route::resource('employees-job-profiles', 'JobProfileController');
     Route::post('employees/{id}/location', 'EmployeeController@location');
     Route::post('employees/{id}/progression', 'EmployeeController@employeeProgression');
     Route::post('employees/status', 'EmployeeController@setStatusForEmployee');

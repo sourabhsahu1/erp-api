@@ -20,15 +20,30 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  *
  * @package Modules\Hr\Models
  */
-class LeaveYear extends Eloquent
+class LeaveRequestClosed extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
-	protected $table = 'hr_leave_year';
+	protected $table = 'hr_leave_request_closed';
 	protected $casts = [
-		'is_active' => 'bool'
+		'approvedHod' => 'bool',
+		'approvedHr' => 'bool',
 	];
 	protected $fillable = [
-		'year',
-		'is_active',
+		"leaveRequestId" => "required",
+		'daysSpent'=> 'required',
+		'preparedVDate',
+		'preparedTDate',
+		'preparedLoginId',
+		'hodStaffId',
+		'approvedHodVDate',
+		'approvedHodTDate',
+		'approvedHodLoginId',
+		'approvedHrStaffId',
+		'approvedHrVDate',
+		'approvedHrTDate',
+		'approvedHrLoginId',
+		'userRemarks',
+		'hodRemarks',
+		'HrRemarks',
 	];
 }

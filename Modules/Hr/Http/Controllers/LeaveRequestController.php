@@ -8,18 +8,18 @@ use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\BaseController;
 use Luezoid\Laravelcore\Jobs\BaseJob;
-use Modules\Hr\Http\Requests\LeaveCredit\Create;
-use Modules\Hr\Http\Requests\LeaveCredit\Update;
-use Modules\Hr\Repositories\LeaveCreditRepository;
+use Modules\Hr\Http\Requests\LeaveRequest\Create;
+use Modules\Hr\Http\Requests\LeaveRequest\Update;
+use Modules\Hr\Repositories\LeaveRequestRepository;
 
-class LeaveCreditController extends BaseController
+class LeaveRequestController extends BaseController
 {
     protected $indexWith = [
         'leave',
         'employee',
         'leave_year',
     ];
-    protected $repository = LeaveCreditRepository::class;
+    protected $repository = LeaveRequestRepository::class;
     protected $createJob =  BaseJob::class;
     protected $updateJob = BaseJob::class;
     protected $deleteJob = BaseJob::class;
@@ -28,11 +28,4 @@ class LeaveCreditController extends BaseController
     protected $deleteJobMethod = "delete";
     protected $storeRequest = Create::class;
     protected $updateRequest = Update::class;
-
-    public function LeaveCreditView(Request $request)
-    {
-        $this->jobMethod = "leaveCreditView";
-        $data = DB::table('viewStaffLeaveEntitlement')->get();
-        return $this->standardResponse($data,200);
-    }
 }

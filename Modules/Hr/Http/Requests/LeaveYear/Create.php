@@ -10,6 +10,7 @@ class Create extends BaseRequest
     {
         return [
             "year" => "required",
+            'isActive'=> 'required|boolean',
         ];
     }
 }

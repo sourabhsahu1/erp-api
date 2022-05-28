@@ -10,6 +10,7 @@ class Update extends BaseRequest
     {
         return [
             "year" => "required",
+            'isActive'=> 'required|boolean',
         ];
     }
 }

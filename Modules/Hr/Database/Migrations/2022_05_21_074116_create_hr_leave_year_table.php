@@ -17,6 +17,7 @@ class CreateHrLeaveYearTable extends Migration
             $table->unique(['year']);
             $table->bigIncrements('id');
             $table->bigInteger('year');
+            $table->boolean('is_active')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });
