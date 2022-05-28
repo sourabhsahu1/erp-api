@@ -25,29 +25,40 @@ class LeaveRequest extends Eloquent
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 	protected $table = 'hr_leave_request';
 	protected $casts = [
-		'approvedHod' => 'bool',
-		'approvedHr' => 'bool',
-		'requestClosed' => 'bool'
+		'approved_hod' => 'bool',
+		'approved_hr' => 'bool',
+		'request_closed' => 'bool'
 	];
 	protected $fillable = [
-		"staffId" ,
-		'leaveCreditId',
-		'startDate',
-		'reliefOfficerStaffId',
+		"staff_id" ,
+		'leave_credit_id',
+		'start_date',
+		'relief_officer_staff_id',
 		'duration',
-		'preparedVDate',
-		'preparedTDate',
-		'preparedLoginId',
-		'hodStaffId',
-		'approvedHodVDate',
-		'approvedHodTDate',
-		'approvedHodLoginId',
-		'approvedHrStaffId',
-		'approvedHrVDate',
-		'approvedHrTDate',
-		'approvedHrLoginId',
-		'userRemarks',
-		'hodRemarks',
-		'HrRemarks',
+		'prepared_v_date',
+		'prepared_t_date',
+		'prepared_login_id',
+		'hod_staff_id',
+		'approved_hod_v_date',
+		'approved_hod_t_date',
+		'approved_hod_login_id',
+		'approved_hr_staff_id',
+		'approved_hr_v_date',
+		'approved_hr_t_date',
+		'approved_hr_login_id',
+		'user_remarks',
+		'hod_remarks',
+		'hr_remarks',
 	];
+
+	public function staff()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class,'staff_id', 'id');
+    }
+
+	public function relief_officer()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class,'relief_officer_staff_id', 'id');
+    }
+
 }
