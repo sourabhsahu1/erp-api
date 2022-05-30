@@ -12,6 +12,7 @@ use Modules\Hr\Repositories\LeaveRequestRepository;
 class LeaveRequestController extends BaseController
 {
     protected $indexWith = [
+        'leave_credit.leave',
         'staff',
         'relief_officer',
         'approved_hod_staff',

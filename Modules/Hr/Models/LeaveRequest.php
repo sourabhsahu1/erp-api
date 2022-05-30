@@ -74,4 +74,9 @@ class LeaveRequest extends Eloquent
         return $this->belongsTo(\Modules\Hr\Models\Employee::class,'approved_hr_staff_id', 'id');
     }
 
+	public function leave_credit()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\LeaveCredit::class,'leave_credit_id', 'id');
+    }
+
 }

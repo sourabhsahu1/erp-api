@@ -25,26 +25,27 @@ class LeaveRequestClosed extends Eloquent
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 	protected $table = 'hr_leave_request_closed';
 	protected $casts = [
-		'approvedHod' => 'bool',
-		'approvedHr' => 'bool',
 		'request_ready' => 'bool'
 	];
 	protected $fillable = [
-		"leaveRequestId" => "required",
-		'daysSpent'=> 'required',
-		'preparedVDate',
-		'preparedTDate',
-		'preparedLoginId',
-		'hodStaffId',
-		'approvedHodVDate',
-		'approvedHodTDate',
-		'approvedHodLoginId',
-		'approvedHrStaffId',
-		'approvedHrVDate',
-		'approvedHrTDate',
-		'approvedHrLoginId',
-		'userRemarks',
-		'hodRemarks',
-		'HrRemarks',
+		"leave_request_id" => "required",
+		'days_spent'=> 'required',
+		'prepared_v_date',
+		'prepared_t_date',
+		'prepared_login_id',
+		'request_ready',
+		'hod_staff_id',
+		'approved_hod',
+		'approved_hod_v_date',
+		'approved_hod_t_date',
+		'approved_hod_login_id',
+		'approved_hr_staff_id',
+		'approved_hr',
+		'approved_hr_v_date',
+		'approved_hr_t_date',
+		'approved_hr_login_id',
+		'user_remarks',
+		'hod_remarks',
+		'hr_remarks',
 	];
 }
