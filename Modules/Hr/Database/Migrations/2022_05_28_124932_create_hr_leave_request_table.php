@@ -23,13 +23,14 @@ class CreateHrLeaveRequestTable extends Migration
             $table->dateTime('prepared_v_date')->nullable();
             $table->dateTime('prepared_t_date')->nullable();
             $table->string('prepared_login_id')->nullable();
+            $table->boolean('request_ready')->default(0);
             $table->integer('hod_staff_id')->nullable();
-            $table->boolean('approved_hod')->default(false);
+            $table->string('approved_hod')->default('pending');
             $table->dateTime('approved_hod_v_date')->nullable();
             $table->dateTime('approved_hod_t_date')->nullable();
             $table->string('approved_hod_login_id')->nullable();
             $table->integer('approved_hr_staff_id')->nullable();
-            $table->boolean('approved_hr')->default(false);
+            $table->string('approved_hr')->default('pending');
             $table->dateTime('approved_hr_v_date')->nullable();
             $table->dateTime('approved_hr_t_date')->nullable();
             $table->string('approved_hr_login_id')->nullable();

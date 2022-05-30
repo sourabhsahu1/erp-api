@@ -17,6 +17,7 @@ class Create extends BaseRequest
             'preparedVDate'=> 'required',
             'preparedTDate'=> 'required',
             'preparedLoginId'=> 'required',
+            'requestReady'=> 'required',
             'hodStaffId'=> 'required',
             'approvedHod'=> '',
             'approvedHodVDate'=> '',

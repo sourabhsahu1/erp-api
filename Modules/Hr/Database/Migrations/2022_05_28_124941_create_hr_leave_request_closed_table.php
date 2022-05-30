@@ -21,12 +21,13 @@ class CreateHrLeaveRequestClosedTable extends Migration
             $table->dateTime('prepared_t_date');
             $table->integer('prepared_login_id');
             $table->integer('hod_staff_id');
-            $table->boolean('approved_hod')->default(false);
+            $table->boolean('request_ready');
+            $table->string('approved_hod')->default('pending');
             $table->dateTime('approved_hod_v_date');
             $table->dateTime('approved_hod_t_date');
             $table->integer('approved_hod_login_id');
             $table->integer('approved_hr_staff_id');
-            $table->boolean('approved_hr')->default(false);
+            $table->string('approved_hr')->default('pending');
             $table->dateTime('approved_hr_v_date');
             $table->dateTime('approved_hr_t_date');
             $table->integer('approved_hr_login_id');

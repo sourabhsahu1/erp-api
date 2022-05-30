@@ -12,8 +12,10 @@ use Modules\Hr\Repositories\LeaveRequestRepository;
 class LeaveRequestController extends BaseController
 {
     protected $indexWith = [
-        'staff.User',
+        'staff',
         'relief_officer',
+        'approved_hod_staff',
+        'approved_hr_staff'
     ];
     protected $repository = LeaveRequestRepository::class;
     protected $createJob =  BaseJob::class;

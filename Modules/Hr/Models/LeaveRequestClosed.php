@@ -27,6 +27,7 @@ class LeaveRequestClosed extends Eloquent
 	protected $casts = [
 		'approvedHod' => 'bool',
 		'approvedHr' => 'bool',
+		'request_ready' => 'bool'
 	];
 	protected $fillable = [
 		"leaveRequestId" => "required",

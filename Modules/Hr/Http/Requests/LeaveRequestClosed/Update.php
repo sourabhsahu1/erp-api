@@ -14,6 +14,7 @@ class Update extends BaseRequest
             'preparedVDate'=> 'required',
             'preparedTDate'=> 'required',
             'preparedLoginId'=> 'required',
+            'requestReady'=> 'required',
             'hodStaffId'=> 'required',
             'approvedHod'=> 'nullable',
             'approvedHodVDate'=> 'nullable',
