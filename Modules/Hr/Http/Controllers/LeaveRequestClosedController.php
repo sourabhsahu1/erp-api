@@ -15,9 +15,9 @@ use Modules\Hr\Repositories\LeaveRequestClosedRepository;
 class LeaveRequestClosedController extends BaseController
 {
     protected $indexWith = [
-        'leave',
-        'employee',
-        'leave_year',
+        'leave_request',
+        'approved_hod_staff',
+        'approved_hr_staff'
     ];
     protected $repository = LeaveRequestClosedRepository::class;
     protected $createJob =  BaseJob::class;

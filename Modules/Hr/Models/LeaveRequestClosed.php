@@ -28,8 +28,8 @@ class LeaveRequestClosed extends Eloquent
 		'request_ready' => 'bool'
 	];
 	protected $fillable = [
-		"leave_request_id" => "required",
-		'days_spent'=> 'required',
+		"leave_request_id",
+		'days_spent',
 		'prepared_v_date',
 		'prepared_t_date',
 		'prepared_login_id',
@@ -48,4 +48,19 @@ class LeaveRequestClosed extends Eloquent
 		'hod_remarks',
 		'hr_remarks',
 	];
+
+	public function leave_request()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\LeaveRequest::class,'leave_request_id', 'id')->with('leave_credit.leave','staff','relief_officer','approved_hod_staff','approved_hr_staff');
+    }
+
+	public function approved_hod_staff()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class,'hod_staff_id', 'id');
+    }
+
+	public function approved_hr_staff()
+    {
+        return $this->belongsTo(\Modules\Hr\Models\Employee::class,'approved_hr_staff_id', 'id');
+    }
 }
