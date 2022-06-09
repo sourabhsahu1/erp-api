@@ -14,6 +14,7 @@ class CreateHrLeaveRequestClosedTable extends Migration
     public function up()
     {
         Schema::create('hr_leave_request_closed', function (Blueprint $table) {
+            $table->unique(['leave_request_id']);
             $table->bigIncrements('id');
             $table->integer('leave_request_id')->nullable();
             $table->integer('days_spent')->nullable();
