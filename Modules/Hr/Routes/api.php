@@ -65,6 +65,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('hr-informations', 'HrInformationController');
     Route::resource('leave-credits', 'LeaveCreditController');
     Route::post('bulk-upload-leave-credits', 'LeaveCreditController@BulkUpload');
+    Route::delete('delete-all-leave-credits', 'LeaveCreditController@DeleteAllLeaveCredits');
     Route::get('leave-credits-view', 'LeaveCreditController@LeaveCreditView');
     Route::resource('public-holidays', 'PublicHolidayController');
 

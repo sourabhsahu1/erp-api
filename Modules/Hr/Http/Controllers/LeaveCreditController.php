@@ -34,25 +34,33 @@ class LeaveCreditController extends BaseController
     {
         $this->jobMethod = "leaveCreditView";
         $data = DB::table('viewStaffLeaveEntitlement')->get();
-        return $this->standardResponse($data,200);
+        return $this->standardResponse($data, 200);
     }
 
     public function BulkUpload(Request $request)
     {
         $data = $request->all();
         $finalArray = array();
-        foreach($data as $key=>$value){
-           array_push($finalArray, array(
-                        'prepared_login_id'=>$value['preparedLoginId'],
-                        'staff_id'=>$value['staffId'],
-                        'leave_type_id'=>$value['leaveTypeId'],
-                        'due_days'=>$value['dueDays'],
-                        'leave_year_id'=>$value['leaveYearId'],
-                        'prepared_v_date'=> $value['preparedVDate'],
-                        'prepared_t_date'=> $value['preparedTDate'] )
-           );
+        foreach ($data as $key => $value) {
+            array_push(
+                $finalArray,
+                array(
+                    'prepared_login_id' => $value['preparedLoginId'],
+                    'staff_id' => $value['staffId'],
+                    'leave_type_id' => $value['leaveTypeId'],
+                    'due_days' => $value['dueDays'],
+                    'leave_year_id' => $value['leaveYearId'],
+                    'prepared_v_date' => $value['preparedVDate'],
+                    'prepared_t_date' => $value['preparedTDate']
+                )
+            );
         };
         DB::table('hr_leave_credit')->insertOrIgnore($finalArray);
-        return $this->standardResponse($data,200);
+        return $this->standardResponse($data, 200);
+    }
+    public function DeleteAllLeaveCredits()
+    {
+        DB::table('hr_leave_credit')->truncate();
+        return $this->standardResponse([], 200);
     }
 }
