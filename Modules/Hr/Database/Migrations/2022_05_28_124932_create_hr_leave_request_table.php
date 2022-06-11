@@ -20,6 +20,7 @@ class CreateHrLeaveRequestTable extends Migration
             $table->dateTime('start_date')->nullable();
             $table->integer('relief_officer_staff_id')->nullable();
             $table->string('duration')->nullable();
+            $table->integer('days_spent')->nullable();
             $table->dateTime('prepared_v_date')->nullable();
             $table->dateTime('prepared_t_date')->nullable();
             $table->string('prepared_login_id')->nullable();

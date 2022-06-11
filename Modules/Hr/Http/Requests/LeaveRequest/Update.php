@@ -14,6 +14,7 @@ class Update extends BaseRequest
             'startDate'=> 'required',
             'reliefOfficerStaffId'=> 'required',
             'duration'=> 'required',
+            'daysSpent'=> 'required',
             'preparedVDate'=> 'required',
             'preparedTDate'=> 'required',
             'preparedLoginId'=> 'required',

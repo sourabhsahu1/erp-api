@@ -34,6 +34,7 @@ class LeaveRequest extends Eloquent
 		'start_date',
 		'relief_officer_staff_id',
 		'duration',
+		'days_spent',
 		'prepared_v_date',
 		'prepared_t_date',
 		'prepared_login_id',
