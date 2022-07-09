@@ -15,6 +15,10 @@ class LeaveRequestReportController extends BaseController
         'LeaveCredit',
         'staff',
     ];
+    public $filterable = [
+        'approved_HOD',
+        'approved_HR',
+    ];
     protected $repository = LeaveRequestReportRepository::class;
     protected $createJob =  BaseJob::class;
     protected $updateJob = BaseJob::class;
