@@ -89,12 +89,16 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('marriages', 'ConstantApiController@getMarriageData');
     Route::get('religions', 'ConstantApiController@getReligions');
     Route::get('type-of-appointments', 'ConstantApiController@getTypeOfAppointments');
-//    Route::get('banks', 'ConstantApiController@getBanks');
+    //    Route::get('banks', 'ConstantApiController@getBanks');
     Route::get('bank/{id}/branches', 'ConstantApiController@getBranches');
 
     Route::resource('address-type', 'AddressTypeController');
     Route::resource('phone-type', 'PhoneNumberTypeController');
-
+    
+    //Leave Reports
+    Route::resource('leave-balance-report', 'LeaveBalanceReportController');
+    Route::resource('leave-schedule-report', 'LeaveScheduleReportController');
+    Route::resource('leave-request-report', 'LeaveRequestReportController');
 
     /*employee bank details*/
     Route::get('employee/{employeeId}/banks', 'EmployeeBankDetailController@index');
@@ -182,12 +186,12 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('employee-histories/{id}', 'EmploymentHistoryController@destroy');
 
     /*employee progression history*/
-    Route::get('employee/{employeeId}/progression-history','EmployeeProgressionController@index');
-    Route::post('employee/{employeeId}/progression-history','EmployeeProgressionController@store');
-    Route::put('employee/{employeeId}/progression-history/{id}','EmployeeProgressionController@update');
+    Route::get('employee/{employeeId}/progression-history', 'EmployeeProgressionController@index');
+    Route::post('employee/{employeeId}/progression-history', 'EmployeeProgressionController@store');
+    Route::put('employee/{employeeId}/progression-history/{id}', 'EmployeeProgressionController@update');
 
     /*employee login*/
-    Route::post('employee-login-access/{employeeId}','EmployeeController@employeeLoginCreate' );
+    Route::post('employee-login-access/{employeeId}', 'EmployeeController@employeeLoginCreate');
 });
 Route::get('employee/{id}/details-download', 'EmployeeController@downloadDetails');
 Route::get('employee/{id}/emp-details-download', 'EmployeeController@downloadEmpDetails');
