@@ -32,9 +32,9 @@ class CreateHrLeaveRequestClosedTable extends Migration
             $table->dateTime('approved_hr_v_date')->nullable();
             $table->dateTime('approved_hr_t_date')->nullable();
             $table->string('approved_hr_login_id')->nullable();
-            $table->longText('user_remarks')->default('');
-            $table->longText('hod_remarks')->default('');
-            $table->longText('hr_remarks')->default('');
+            $table->longText('user_remarks')->nullable();
+            $table->longText('hod_remarks')->nullable();
+            $table->longText('hr_remarks')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
