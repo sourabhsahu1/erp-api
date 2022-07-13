@@ -13,29 +13,24 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * Class LeaveGroup
  * 
  * @property int $id
- * @property string $title
- * @property boolean $is_active
+ * @property int $leave_year
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
  * @package Modules\Hr\Models
  */
-class LeaveGroup extends Eloquent
+class HrInformation extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
-	protected $table = 'hr_leave_group';
+	protected $table = 'hr_informations';
 
-    protected $casts = [
-        'is_active' => 'bool',
-    ];
 	protected $fillable = [
-		'title',
-        'is_active'
+		'current_leave_year_id',
 	];
 
-	public function leave_group_members()
+	public function leave_year()
     {
-        return $this->hasMany(\Modules\Hr\Models\LeaveGroupMember::class, 'leave_group_id');
+        return $this->belongsTo(\Modules\Hr\Models\LeaveYear::class,'current_leave_year_id', 'id');
     }
 }

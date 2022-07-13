@@ -15,13 +15,13 @@ class CreateHrLeavesTable extends Migration
     {
         Schema::create('hr_leaves', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
+            $table->string('title')->unique();
             $table->string('short_name');
-            $table->boolean('is_carry_over_unused_leave');
+            $table->boolean('entitled_annually');
             $table->boolean('is_paid_leave');
             $table->boolean('is_calender_days');
+            $table->boolean('roll_over_unused_leave');
             $table->boolean('is_active')->default(1);
-            $table->boolean('auto_create')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });

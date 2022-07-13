@@ -1,19 +1,16 @@
 <?php
 
 
-namespace Modules\Hr\Http\Requests\LeaveGroup;
-
-
+namespace Modules\Hr\Http\Requests\LeaveYear;
 use Luezoid\Laravelcore\Requests\BaseRequest;
 
 class Create extends BaseRequest
 {
-
     public function rules()
     {
         return [
-            "title" => "required"
+            "year" => "required",
+            'isActive'=> 'required|boolean',
         ];
     }
-
 }

@@ -43,6 +43,7 @@ Route::middleware(['auth:api'])->group(function () {
     /*Salary scale and grade Level*/
     Route::resource('salary-scales', 'SalaryScaleController');
     Route::get('grade-levels/{id}', 'GradeLevelController@show');
+    Route::get('grade-levels', 'GradeLevelController@index');
     Route::post('grade-levels', 'GradeLevelController@store');
     Route::put('grade-levels/{id}', 'GradeLevelController@update');
     Route::delete('grade-levels/{id}', 'GradeLevelController@destroy');
@@ -54,6 +55,18 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('job-positions', 'JobPositionController');
     Route::resource('leaves', 'LeaveController');
     Route::resource('leave-groups', 'LeaveGroupController');
+    Route::resource('leave-group-members', 'LeaveGroupMemberController');
+    Route::resource('leave-group-entitlements', 'LeaveGroupEntitlementController');
+    Route::resource('leave-entitlement-salary-scales', 'LeaveSalaryScaleEntitlementController');
+    Route::resource('leave-entitlement-grade-levels', 'LeaveGradeLevelEntitlementController');
+    Route::resource('leave-years', 'LeaveYearController');
+    Route::resource('leave-requests', 'LeaveRequestController');
+    Route::resource('leave-requests-closed', 'LeaveRequestClosedController');
+    Route::resource('hr-informations', 'HrInformationController');
+    Route::resource('leave-credits', 'LeaveCreditController');
+    Route::post('bulk-upload-leave-credits', 'LeaveCreditController@BulkUpload');
+    Route::delete('delete-all-leave-credits', 'LeaveCreditController@DeleteAllLeaveCredits');
+    Route::get('leave-credits-view', 'LeaveCreditController@LeaveCreditView');
     Route::resource('public-holidays', 'PublicHolidayController');
 
     /*Employees*/
@@ -62,6 +75,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('employees/{id}', 'EmployeeController@update');
     Route::post('employees/{id}/details', 'EmployeeController@employeeDetails');
     Route::post('employees/{id}/job-profile', 'EmployeeController@jobProfile');
+    Route::resource('employees-job-profiles', 'JobProfileController');
     Route::post('employees/{id}/location', 'EmployeeController@location');
     Route::post('employees/{id}/progression', 'EmployeeController@employeeProgression');
     Route::post('employees/status', 'EmployeeController@setStatusForEmployee');
@@ -75,12 +89,16 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('marriages', 'ConstantApiController@getMarriageData');
     Route::get('religions', 'ConstantApiController@getReligions');
     Route::get('type-of-appointments', 'ConstantApiController@getTypeOfAppointments');
-//    Route::get('banks', 'ConstantApiController@getBanks');
+    //    Route::get('banks', 'ConstantApiController@getBanks');
     Route::get('bank/{id}/branches', 'ConstantApiController@getBranches');
 
     Route::resource('address-type', 'AddressTypeController');
     Route::resource('phone-type', 'PhoneNumberTypeController');
-
+    
+    //Leave Reports
+    Route::resource('leave-balance-report', 'LeaveBalanceReportController');
+    Route::resource('leave-schedule-report', 'LeaveScheduleReportController');
+    Route::resource('leave-request-report', 'LeaveRequestReportController');
 
     /*employee bank details*/
     Route::get('employee/{employeeId}/banks', 'EmployeeBankDetailController@index');
@@ -168,12 +186,12 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('employee-histories/{id}', 'EmploymentHistoryController@destroy');
 
     /*employee progression history*/
-    Route::get('employee/{employeeId}/progression-history','EmployeeProgressionController@index');
-    Route::post('employee/{employeeId}/progression-history','EmployeeProgressionController@store');
-    Route::put('employee/{employeeId}/progression-history/{id}','EmployeeProgressionController@update');
+    Route::get('employee/{employeeId}/progression-history', 'EmployeeProgressionController@index');
+    Route::post('employee/{employeeId}/progression-history', 'EmployeeProgressionController@store');
+    Route::put('employee/{employeeId}/progression-history/{id}', 'EmployeeProgressionController@update');
 
     /*employee login*/
-    Route::post('employee-login-access/{employeeId}','EmployeeController@employeeLoginCreate' );
+    Route::post('employee-login-access/{employeeId}', 'EmployeeController@employeeLoginCreate');
 });
 Route::get('employee/{id}/details-download', 'EmployeeController@downloadDetails');
 Route::get('employee/{id}/emp-details-download', 'EmployeeController@downloadEmpDetails');

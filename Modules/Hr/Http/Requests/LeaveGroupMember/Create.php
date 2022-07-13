@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Modules\Hr\Http\Requests\LeaveGroup;
+namespace Modules\Hr\Http\Requests\LeaveGroupMember;
 
 
 use Luezoid\Laravelcore\Requests\BaseRequest;
@@ -12,7 +12,9 @@ class Create extends BaseRequest
     public function rules()
     {
         return [
-            "title" => "required"
+            "leaveGroupId" => "required",
+            "staffId" => "required",
+
         ];
     }
 
