@@ -11,7 +11,7 @@ class CreateBankRequest  extends BaseRequest
     public function rules()
     {
         return [
-            "name" =>"required"
+            "name" =>"required|string"
         ];
     }
 }
