@@ -156,6 +156,15 @@ class ReportRepository extends EloquentBaseRepository
             ->join('admin_segments as asd', 'jd.economic_segment_id', '=', 'asd.id')
             ->select('journal_vouchers.*', 'jd.*', 'as.combined_code', 'asd.name');
 
+        if(isset($params['inputs']['from_date']) && isset($params['inputs']['to_date'])){
+
+            $from = Carbon::parse($params['inputs']['from_date']);
+            $to = Carbon::parse($params['inputs']['to_date']);
+
+            $to = $to->addDays(1);
+            $query->whereBetween('jd.created_at',[$from,$to]);
+        }
+
         if (isset($params['inputs']['programme_segment_id'])) {
             $query->where('jd.programme_segment_id', $params['inputs']['programme_segment_id']);
         }
@@ -167,6 +176,7 @@ class ReportRepository extends EloquentBaseRepository
 
         $creditSum = 0;
         $debitSum = 0;
+        $openingBalance = 0.00;
 
         foreach ($jvreport['items'] as $item){
             if ($item['line_value_type'] === 'CREDIT') {
@@ -177,6 +187,7 @@ class ReportRepository extends EloquentBaseRepository
         }
         $endBalance = $creditSum + $debitSum;
 
+            $jvreport['openingBalance'] = $openingBalance;
             $jvreport['totalDebits'] = $debitSum;
             $jvreport['totalCredits'] = $creditSum;
             $jvreport['endBalance'] = $endBalance;
@@ -303,6 +314,15 @@ class ReportRepository extends EloquentBaseRepository
             ->where('status', AppConstant::JV_STATUS_POSTED)
             ->whereNull('jd.deleted_at');
 
+        if(isset($params['inputs']['from_date']) && isset($params['inputs']['to_date'])){
+
+            $from = Carbon::parse($params['inputs']['from_date']);
+            $to = Carbon::parse($params['inputs']['to_date']);
+
+            $to = $to->addDays(1);
+            $query->whereBetween('jd.created_at',[$from,$to]);
+        }
+
         $q = clone $query;
         if (isset($params['inputs']['economic_segment_id'])) {
             $query->where('jd.economic_segment_id', $params['inputs']['economic_segment_id']);
@@ -314,6 +334,7 @@ class ReportRepository extends EloquentBaseRepository
             $jvreport = parent::getAll($params, $q);
 
 
+            $openingBalance = 0.00;
             $creditSum = 0;
             $debitSum = 0;
 
@@ -326,6 +347,7 @@ class ReportRepository extends EloquentBaseRepository
             }
             $endBalance = $creditSum + $debitSum;
 
+            $jvreport['openingBalance'] = $openingBalance;
             $jvreport['totalDebits'] = $debitSum;
             $jvreport['totalCredits'] = $creditSum;
             $jvreport['endBalance'] = $endBalance;
@@ -336,6 +358,7 @@ class ReportRepository extends EloquentBaseRepository
 
         $jvreport = parent::getAll($params, $query);
 
+        $openingBalance = 0.00;
         $creditSum = 0;
         $debitSum = 0;
 
@@ -348,6 +371,7 @@ class ReportRepository extends EloquentBaseRepository
         }
         $endBalance = $creditSum + $debitSum;
 
+        $jvreport['openingBalance'] = $openingBalance;
         $jvreport['totalDebits'] = $debitSum;
         $jvreport['totalCredits'] = $creditSum;
         $jvreport['endBalance'] = $endBalance;
