@@ -172,6 +172,22 @@ class ReportRepository extends EloquentBaseRepository
         if (isset($params['inputs']['economic_segment_id'])) {
             $query->where('jd.economic_segment_id', $params['inputs']['economic_segment_id']);
         }
+
+        if (isset($params['inputs']['admin_segment_id'])) {
+            $query->where('jd.admin_segment_id', $params['inputs']['admin_segment_id']);
+        }
+
+        if (isset($params['inputs']['fund_segment_id'])) {
+            $query->where('jd.fund_segment_id', $params['inputs']['fund_segment_id']);
+        }
+
+        if (isset($params['inputs']['functional_segment_id'])) {
+            $query->where('jd.functional_segment_id', $params['inputs']['functional_segment_id']);
+        }
+
+        if (isset($params['inputs']['geo_code_segment_id'])) {
+            $query->where('jd.geo_code_segment_id', $params['inputs']['geo_code_segment_id']);
+        }
         $jvreport = parent::getAll($params, $query);
 
         $creditSum = 0;
